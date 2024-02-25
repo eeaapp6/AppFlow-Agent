@@ -1,0 +1,6 @@
+.vs
+*.bat
+*.sln
+.*stash
+*.vcxproj
+*.filters

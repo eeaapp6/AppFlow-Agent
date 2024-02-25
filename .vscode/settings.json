@@ -1,0 +1,36 @@
+{
+    // Doxygen documentation generator set
+    // 文件注释的组成及其排序
+    "doxdocgen.file.fileOrder": [
+        "custom""empty"
+        //          "copyright",// 版权
+        //          "empty"
+        "file", // @file
+        "brief", // @brief 简介
+        "author", // 作者
+        //      "version",     // 版本
+        "date", // 日期
+        "empty", // 空行
+    ],
+    // 下面时设置上面标签tag的具体信息
+    "doxdocgen.file.fileTemplate": "@file {name}",
+    "doxdocgen.file.versionTag": "@version 1.0",
+    "doxdocgen.generic.authorEmail": "libaojunqd@foxmail.com",
+    "doxdocgen.generic.authorName": "LiBaojun",
+    "doxdocgen.generic.authorTag": "@author {author} ({email})",
+    // 日期格式与模板
+    "doxdocgen.generic.dateFormat": "YYYY-MM-DD",
+    "doxdocgen.generic.dateTemplate": "@date {date}",
+    // 根据自动生成的注释模板（目前主要体现在函数注释上）
+    "doxdocgen.generic.order": [
+        "brief",
+        "tparam",
+        "param",
+        "return",
+        "author",
+        "date"
+    ],
+    "doxdocgen.generic.paramTemplate": "@param[]{indent:10}{param}{indent:25}My Param doc",
+    "doxdocgen.generic.returnTemplate": "@return {type} ",
+    "doxdocgen.generic.splitCasingSmartText": true,
+}
