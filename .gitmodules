@@ -1,0 +1,9 @@
+[submodule "FITK_Kernal"]
+	path = FITK_Kernal
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernal/FITK_Kernal.git
+[submodule "FITK_Test"]
+	path = FITK_Test
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Test.git
+[submodule "Tools"]
+	path = Tools
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/Tools.git
