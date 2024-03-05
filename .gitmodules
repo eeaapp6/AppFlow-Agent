@@ -10,3 +10,6 @@
 [submodule "FITK_Interface"]
 	path = FITK_Interface
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITK_Interface.git
+[submodule "FITK_GeneralComponent"]
+	path = FITK_GeneralComponent
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_GeneralComponent/FITK_GeneralComponent.git
