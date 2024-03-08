@@ -15,8 +15,8 @@
     // 下面时设置上面标签tag的具体信息
     "doxdocgen.file.fileTemplate": "@file {name}",
     "doxdocgen.file.versionTag": "@version 1.0",
-    "doxdocgen.generic.authorEmail": "libaojunqd@foxmail.com",
-    "doxdocgen.generic.authorName": "LiBaojun",
+    "doxdocgen.generic.authorEmail": "XXXXXXXXXXXXXXXXXXXXX",
+    "doxdocgen.generic.authorName": "XXXXXXXXXXXXXXXXX",
     "doxdocgen.generic.authorTag": "@author {author} ({email})",
     // 日期格式与模板
     "doxdocgen.generic.dateFormat": "YYYY-MM-DD",
