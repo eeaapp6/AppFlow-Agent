@@ -25,6 +25,9 @@ win32{
         -lFITKCore \
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
+        -lFITKInterfaceOCC \
     
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -38,6 +41,9 @@ win32{
         -lFITKCore \
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
+        -lFITKInterfaceOCC \
 
 
     message("Windows FlowApp generated")
@@ -60,6 +66,11 @@ unix{
         -L../output/bin \
         -lFITKAppFramework \
         -lFITKCore \
+        -lFITKCompMessageWidget \
+        -lFITKRenderWindowVTK \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
+        -lFITKInterfaceOCC \
        
 
     message("Linux FlowApp generated")

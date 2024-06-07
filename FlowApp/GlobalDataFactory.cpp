@@ -1,4 +1,6 @@
 ﻿#include "GlobalDataFactory.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryDataOCC.h"
+
 
 Core::FITKAbstractDataObject *GlobalDataFactory::createMeshData()
 {
@@ -6,10 +8,10 @@ Core::FITKAbstractDataObject *GlobalDataFactory::createMeshData()
     return nullptr;
 }
 
-Core::FITKAbstractDataObject *GlobalDataFactory::createGeoData()
+Core::FITKAbstractDataObject* GlobalDataFactory::createGeoData()
 {
-    // 不创建几何数据
-    return nullptr;
+    // 创建几何数据
+    return new Interface::FITKOFGeometryDataOCC;
 }
 
 Core::FITKAbstractDataObject *GlobalDataFactory::createPhysicsData()
