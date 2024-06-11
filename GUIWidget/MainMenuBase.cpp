@@ -6,16 +6,16 @@ namespace GUI {
 		m_Separator = true;
 	}
 	MenuActionItem::MenuActionItem(QString title, QString action, QIcon icon, bool checkable, QString checkGroup)
-		: m_Title(title), m_Action(action), m_Icon(icon), m_Checkable(checkable), m_CheckGroup(checkGroup)
+		: m_Title(title), m_OperAction(action), m_Icon(icon), m_Checkable(checkable), m_CheckGroup(checkGroup)
 	{
 	}
 
 	MenuActionItem::MenuActionItem(QString title, QString action, bool checkable, QString checkGroup)
-		: m_Title(title), m_Action(action), m_Checkable(checkable), m_CheckGroup(checkGroup)
+		: m_Title(title), m_OperAction(action), m_Checkable(checkable), m_CheckGroup(checkGroup)
 	{
 	}
 	MenuActionItem::MenuActionItem(QString title, QString action, QList<MenuActionItem*> childs)
-		: m_Title(title), m_Action(action), m_Childs(childs)
+		: m_Title(title), m_OperAction(action), m_Childs(childs)
 	{
 	}
 	bool MenuActionItem::getSeparator() const
@@ -38,9 +38,9 @@ namespace GUI {
 	{
 		return m_Icon;
 	}
-	QString MenuActionItem::getAction() const
+	QString MenuActionItem::getOperAction() const
 	{
-		return m_Action;
+		return m_OperAction;
 	}
 	QList<MenuActionItem*> MenuActionItem::getChilds() const
 	{

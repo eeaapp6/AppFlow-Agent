@@ -40,45 +40,32 @@ namespace GUI
 		// 根据不同风格创建不同的菜单
 		m_MainMenu = new MainMenu(this);
 
+
+		auto spearator = new MenuActionItem;
 		// 文件菜单
-		auto fileMenuActions = {
-			new MenuActionItem(tr("Open"), "actionFileOpen"),
-			new MenuActionItem,
-			new MenuActionItem(tr("Save"), "actionFileSave"),
-			new MenuActionItem(tr("SaveAs"), "actionFileSaveAs"),
-			new MenuActionItem,
-			new MenuActionItem(tr("Exit"), "actionFileExit"),
-		};
-		m_MainMenu->addMenu(tr("File"), fileMenuActions);
+		auto fileOpen = new MenuActionItem(tr("Open"), "actionFileOpen", QIcon(":/icons/open.png"));
+		auto fileSave = new MenuActionItem(tr("Save"), "actionFileSave", QIcon(":/icons/save.png"));
+		auto fileSaveAs = new MenuActionItem(tr("SaveAs"), "actionFileSaveAs", QIcon(":/icons/saveas.png"));
+		auto fileExit = new MenuActionItem(tr("Exit"), "actionFileExit");
 
 		// 视图菜单
-		auto viewMenuActions = {
-			new MenuActionItem(tr("Auto Fit"), "actionViewAutoFit"),
-			new MenuActionItem,
-			new MenuActionItem(tr("Front"), "actionViewFront"),
-			new MenuActionItem(tr("Back"), "actionViewBack"),
-			new MenuActionItem(tr("Top"), "actionViewTop"),
-			new MenuActionItem(tr("Bottom"), "actionViewBottom"),
-			new MenuActionItem(tr("Left"), "actionViewLeft"),
-			new MenuActionItem(tr("Right"), "actionViewRight"),
-			new MenuActionItem,
-			new MenuActionItem(tr("Display"), "actionViewDisplay",
-				{
-					new MenuActionItem(tr("Display Node"), "actionViewDisplayNode", true, "DisplayMode"),
-					new MenuActionItem(tr("Display WireFrame"), "actionViewDisplayWireFrame", true, "DisplayMode"),
-					new MenuActionItem(tr("Display Surface"), "actionViewDisplaySurface", true, "DisplayMode"),
-				}
-			),
-		};
-		m_MainMenu->addMenu(tr("View"), viewMenuActions);
-
-
-		auto fileToolBar = {
-			new MenuActionItem(tr("Open"), "actionFileOpen", QIcon(":/icons/open.png")),
-			new MenuActionItem(tr("Save"), "actionFileSave", QIcon(":/icons/save.png")),
-			new MenuActionItem(tr("SaveAs"), "actionFileSaveAs", QIcon(":/icons/saveas.png")),
-		};
-		m_MainMenu->addToolMenu(tr("File"), fileToolBar);
+		auto viewAutoFit = new MenuActionItem(tr("Auto Fit"), "actionViewAutoFit", QIcon(":/icons/autofit.png"));
+		auto viewFront = new MenuActionItem(tr("Front"), "actionViewFront", QIcon(":/icons/view_front.png"));
+		auto viewBack = new MenuActionItem(tr("Back"), "actionViewBack", QIcon(":/icons/view_back.png"));
+		auto viewTop = new MenuActionItem(tr("Top"), "actionViewTop", QIcon(":/icons/view_top.png"));
+		auto viewBottom = new MenuActionItem(tr("Bottom"), "actionViewBottom", QIcon(":/icons/view_bottom.png"));
+		auto viewLeft = new MenuActionItem(tr("Left"), "actionViewLeft", QIcon(":/icons/view_left.png"));
+		auto viewRight = new MenuActionItem(tr("Right"), "actionViewRight", QIcon(":/icons/view_right.png"));
+		auto viewDisplayNode = new MenuActionItem(tr("Display Node"), "actionViewDisplayNode", true, "DisplayMode");
+		auto viewDisplayWireFrame = new MenuActionItem(tr("Display WireFrame"), "actionViewDisplayWireFrame", true, "DisplayMode");
+		auto viewDisplaySurface = new MenuActionItem(tr("Display Surface"), "actionViewDisplaySurface", true, "DisplayMode");
+		auto viewDisplay = new MenuActionItem(tr("Display"), "actionViewDisplay", { viewDisplayNode, viewDisplayWireFrame, viewDisplaySurface });
+		// 菜单栏
+		m_MainMenu->addMenu(tr("File"), { fileOpen, spearator, fileSave, fileSaveAs, spearator, fileExit });
+		m_MainMenu->addMenu(tr("View"), { viewAutoFit, spearator, viewFront, viewBack, viewTop, viewBottom, viewLeft, viewRight, spearator, viewDisplay });
+		// 工具栏菜单
+		m_MainMenu->addToolMenu(tr("File"), { fileOpen, fileSave, fileSaveAs });
+		m_MainMenu->addToolMenu(tr("View"), { viewAutoFit, viewFront, viewBack, viewTop, viewBottom, viewLeft, viewRight });
 
 	}
 

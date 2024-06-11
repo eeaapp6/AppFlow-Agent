@@ -26,7 +26,7 @@ namespace GUI
 		QString getCheckGroup() const;
 		QString getTitle() const;
 		QIcon getIcon() const;
-		QString getAction() const;
+		QString getOperAction() const;
 		QList<MenuActionItem*> getChilds() const;
 		QKeySequence getKey() const;
 	private:
@@ -35,7 +35,7 @@ namespace GUI
 		QString m_CheckGroup{};
 		QString m_Title{};
 		QIcon m_Icon{};
-		QString m_Action{};
+		QString m_OperAction{};
 		QList<MenuActionItem*> m_Childs{};
 		QKeySequence m_Key{};
 	};

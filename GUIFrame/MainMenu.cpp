@@ -33,7 +33,7 @@ namespace GUI
 			}
 			// 否则，只需要添加action
 			auto action = parent->addAction(actionItem->getIcon(), actionItem->getTitle());
-			action->setObjectName(actionItem->getAction());
+			action->setObjectName(actionItem->getOperAction());
 			// 设置action的可选中状态，并进行分组实现只能单选
 			action->setCheckable(actionItem->getCheckable());
 			auto checkGroup = actionItem->getCheckGroup();
@@ -63,7 +63,7 @@ namespace GUI
 				continue;
 			}
 			auto action = m_MenuToolBars[title]->addAction(actionItem->getIcon(), actionItem->getTitle());
-			action->setObjectName(actionItem->getAction());
+			action->setObjectName(actionItem->getOperAction());
 		}
 		m_MainWindow->addToolBar(Qt::TopToolBarArea, m_MenuToolBars[title]);
 
