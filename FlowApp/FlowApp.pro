@@ -28,6 +28,7 @@ win32{
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceOCC \
+        -lGUIFrame \
     
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -44,6 +45,7 @@ win32{
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceOCC \
+        -lGUIFrame \
 
 
     message("Windows FlowApp generated")
@@ -71,6 +73,7 @@ unix{
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceOCC \
+        -lGUIFrame \
        
 
     message("Linux FlowApp generated")

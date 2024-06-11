@@ -6,8 +6,8 @@ SUBDIRS += \
     $$PWD/FITK_Test \
     $$PWD/FITK_GeneralComponent \
     $$PWD/FlowApp \
-    
-
+    $$PWD/GUIFrame \
+    $$PWD/GUIWidget \
   
  
 

@@ -1,16 +1,13 @@
 ﻿#include "MainWindowGenerator.h"
-// #include "FITK_Kernal/FITKAppFramework/FITKAppFramework.h"
-// #include "FITK_Kernal/FITKAppFramework/FITKCommandLineHandler.h"
-
-#include <QMainWindow>
+#include "GUIFrame/MainWindow.h"
 
 MainWindowGenerator::MainWindowGenerator()
 {
-//    this->setStyle("://Structural.qss");
-//    this->showMaximize(false);
+	//    this->setStyle("://Structural.qss");
+	//    this->showMaximize(false);
 }
 
 QWidget * MainWindowGenerator::genMainWindow()
 {
-    return new QMainWindow;
+	return new GUI::MainWindow;
 }

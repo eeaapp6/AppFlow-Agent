@@ -4,3 +4,7 @@
 .*stash
 *.vcxproj
 *.filters
+/*.user
+*.user
+/output
+/generate
