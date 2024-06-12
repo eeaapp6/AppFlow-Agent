@@ -59,6 +59,7 @@ namespace GUI {
 		cylinder->setRadius(radius);
 		cylinder->setLength(height);
 
+		cylinder->update();
 		auto geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryDataOCC>();
 		if (geometryData == nullptr) return;
 

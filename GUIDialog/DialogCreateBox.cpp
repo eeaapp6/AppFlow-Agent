@@ -25,6 +25,7 @@ namespace GUI {
 		m_Ui->le_width->setText("10.0");
 		m_Ui->le_height->setText("10.0");
 
+
 		auto geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryDataOCC>();
 		if (geometryData == nullptr) return;
 		m_Ui->le_name->setText(geometryData->checkName(QString("Box-%1").arg(geometryData->getDataCount() + 1)));
@@ -52,6 +53,7 @@ namespace GUI {
 
 		box->setPoint1(point1);
 		box->setPoint2(point2);
+		box->update();
 
 		auto geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryDataOCC>();
 		if (geometryData == nullptr) return;

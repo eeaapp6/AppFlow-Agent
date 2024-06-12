@@ -48,6 +48,7 @@ namespace GUI {
 		sphere->setLocation(point1);
 		sphere->setRadius(radius);
 
+		sphere->update();
 		auto geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryDataOCC>();
 		if (geometryData == nullptr) return;
 
