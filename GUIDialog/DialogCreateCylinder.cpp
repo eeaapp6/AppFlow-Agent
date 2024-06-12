@@ -59,6 +59,24 @@ namespace GUI {
 		cylinder->setRadius(radius);
 		cylinder->setLength(height);
 
+		double dir[3] = {0.0, 0.0, 0.0};
+		if (m_Ui->rb_xAxis->isChecked()) {
+			dir[0] = 1.0;
+		}
+		else if (m_Ui->rb_yAxis->isChecked()) {
+			dir[1] = 1.0;
+		}
+		else if (m_Ui->rb_zAxis->isChecked()) {
+			dir[2] = 1.0;
+		}
+		else if (m_Ui->rb_customAxis->isChecked()) {
+			dir[0] = m_Ui->le_axisx->text().toDouble();
+			dir[1] = m_Ui->le_axisy->text().toDouble();
+			dir[2] = m_Ui->le_axisz->text().toDouble();
+		}
+		if (qFuzzyIsNull(dir[0]) && qFuzzyIsNull(dir[1]) && qFuzzyIsNull(dir[2])) return;
+		cylinder->setDirection(dir);
+
 		cylinder->update();
 		auto geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryDataOCC>();
 		if (geometryData == nullptr) return;

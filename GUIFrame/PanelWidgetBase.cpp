@@ -13,7 +13,7 @@ namespace GUI
 		m_Layout->setSpacing(3);
 		// 设置标题
 		m_TitleLabel = new QLabel(this);
-		m_TitleLabel->setStyleSheet(" \
+		m_TitleLabel->setStyleSheet(" QLabel{\
 			background-color: qlineargradient(x1 : 0, x2 : 0, y1 : 0, y2 : 1, stop : 0 #f7f7f7, stop:1 #dbdbdb); \
 			min-height:32px; \
 			max-height:32px; \
