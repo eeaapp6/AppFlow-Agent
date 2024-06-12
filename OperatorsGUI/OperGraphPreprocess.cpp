@@ -8,28 +8,42 @@
 // Global data
 #include "FITK_Kernal/FITKCore/FITKDataRepo.h"
 
-// Data
-
-// Graph
-#include "FITK_GeneralComponent/FITKOCCGraphAdaptor/FITKGraphObjectShapeOCC.h"
-#include "FITK_GeneralComponent/FITKOCCGraphAdaptor/FITKGraphObjectShapeVTK.h"
-
-// Render VTK
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraphRender.h"
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
-
-// Render OCC
-#include "FITK_GeneralComponent/FITKRenderWindowOCC/FITKGraph3DWindowOCC.h"
+// Graph widget and object
+#include "FITK_Kernal/FITKCore/FITKAbstractGraphWidget.h"
+#include "FITK_Kernal/FITKCore/FITKAbstractGraphObject.h"
 
 // Graph data manager
+#include "GraphDataProvider/GraphProviderManager.h"
+#include "GraphDataProvider/GraphModelProvider.h"
 
 // GUI
 
 namespace GUIOper
 {
-    void OperGraphPreprocess::updateGraph(int id)
+    void OperGraphPreprocess::updateGraph(int dataId)
     {
+        // 获取可视化窗口。
+        Core::FITKAbstractGraph3DWidget* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return;
+        }
 
+        // 获取模型可视化对象管理器。
+        GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
+        if (!modelProvider)
+        {
+            return;
+        }
+
+        // 获取或创建可视化对象。
+        Core::FITKAbstractGraphObject* obj = modelProvider->getModelGraphObject(dataId);
+        if (!obj)
+        {
+            return;
+        }
+
+        // 添加至三维窗口。
+        addGraphObjectToWidget(obj, graphWidget);
     }
 }  // namespace GUIOper

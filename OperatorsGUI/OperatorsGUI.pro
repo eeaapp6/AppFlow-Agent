@@ -29,7 +29,8 @@ win32{
         -lOperatorsInterface \
         -lFITKOCCGraphAdaptor \
         -lFITKRenderWindowOCC \
-        -lFITKRenderWindowVTK
+        -lFITKRenderWindowVTK \
+        -lGraphDataProvider
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -44,7 +45,8 @@ win32{
         -lOperatorsInterface \
         -lFITKOCCGraphAdaptor \
         -lFITKRenderWindowOCC \
-        -lFITKRenderWindowVTK
+        -lFITKRenderWindowVTK \
+        -lGraphDataProvider
 
     message("Windows OperatorsGUI generated")
 }
@@ -69,7 +71,8 @@ unix{
         -lOperatorsInterface \
         -lFITKOCCGraphAdaptor \
         -lFITKRenderWindowOCC \
-        -lFITKRenderWindowVTK
+        -lFITKRenderWindowVTK \
+        -lGraphDataProvider
         
     message("Linux OperatorsGUI generated")
 }

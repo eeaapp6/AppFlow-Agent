@@ -48,13 +48,33 @@ namespace GraphData
          */
         QString getClassName() override;
 
-    private:
         /**
-         * @brief   构造函数。
+         * @brief   根据数据ID获取对应可视化对象。（没有则创建）
+         * @param   dataId：数据ID
+         * @return  可视化对象
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        GraphModelProvider();
+        Core::FITKAbstractGraphObject* getModelGraphObject(int dataId);
+
+        /**
+         * @brief   根据数据ID更新可视化对象，没有则跳出。
+         * @param   dataId：数据ID
+         * @param   info：附加信息[缺省]
+         * @return  是否存在该数据ID所对应可视化对象。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-06-12
+         */
+        bool updateObjById(int dataId, QVariant info = QVariant());
+
+    private:
+        /**
+         * @brief   构造函数。
+         * @param   graphWidget：可视化窗口
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-06-12
+         */
+        GraphModelProvider(Core::FITKAbstractGraph3DWidget* graphWidget);
 
         /**
          * @brief   析构函数。
@@ -64,6 +84,12 @@ namespace GraphData
         ~GraphModelProvider();
 
     private:
+        /**
+         * @brief   模型（几何）数据字典。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-06-12
+         */
+        QHash<int, Core::FITKAbstractGraphObject*> m_modelObjHash;
 
     };
 }   // namespace GraphData

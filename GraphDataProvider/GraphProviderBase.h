@@ -18,7 +18,7 @@
 // 前置声明
 namespace Core
 {
-    class FITKAbstractGraphWidget;
+    class FITKAbstractGraph3DWidget;
     class FITKAbstractGraphObject;
 }
 
@@ -91,10 +91,11 @@ namespace GraphData
     protected:
         /**
          * @brief   构造函数。
+         * @param   graphWidget：可视化窗口
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        GraphProviderBase();
+        GraphProviderBase(Core::FITKAbstractGraph3DWidget* graphWidget);
 
         /**
          * @brief   析构函数。[虚函数]
@@ -120,6 +121,20 @@ namespace GraphData
         void deleteObjsHash(QHash<int, QHash<int, Core::FITKAbstractGraphObject*>>& hash);
 
     protected:
+        /**
+         * @brief   三维可视化引擎名称。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-06-12
+         */
+        QString m_visualEngineName = "";
+
+        /**
+         * @brief   管理器所管理的可视化窗口。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-06-12
+         */
+        Core::FITKAbstractGraph3DWidget* m_graphWidget{ nullptr };
+
         /**
          * @brief   临时预览可视化对象数据字典。
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)

@@ -13,6 +13,7 @@
 #include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
 
 // Render OCC
+#include "FITK_GeneralComponent/FITKRenderWindowOCC/FITKGraph3DWindowOCC.h"
 #include "FITK_GeneralComponent/FITKRenderWindowOCC/FITKGraphObjectOCC.h"
 
 // Graph
@@ -24,9 +25,28 @@
 
 namespace GraphData
 {
-    GraphProviderBase::GraphProviderBase()
+    GraphProviderBase::GraphProviderBase(Core::FITKAbstractGraph3DWidget* graphWidget) :
+        m_graphWidget(graphWidget)
     {
+        // 获取三维可视化窗口引擎类型。
+        if (!m_graphWidget)
+        {
+            return;
+        }
 
+        // VTK与OCC窗口检测。
+        Comp::FITKGraph3DWindowVTK* vtkW = dynamic_cast<Comp::FITKGraph3DWindowVTK*>(m_graphWidget);
+        Render::FITKGraph3DWindowOCC* occW = dynamic_cast<Render::FITKGraph3DWindowOCC*>(m_graphWidget);
+
+        if (vtkW)
+        {
+            m_visualEngineName = "VTK";
+        }
+
+        if (occW)
+        {
+            m_visualEngineName = "OCC";
+        }
     }
 
     GraphProviderBase::~GraphProviderBase()
@@ -96,6 +116,8 @@ namespace GraphData
 
     bool GraphProviderBase::updateObjById(int dataId, QVariant info)
     {
+        Q_UNUSED(dataId);
+        Q_UNUSED(info);
         return false;
     }
 

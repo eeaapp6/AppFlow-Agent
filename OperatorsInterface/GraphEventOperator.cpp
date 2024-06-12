@@ -2,9 +2,9 @@
 
 namespace EventOper
 {
-    void GraphEventOperator::updateGraph(int id)
+    void GraphEventOperator::updateGraph(int dataId)
     {
         // 根据不同子类重写。
-        Q_UNUSED(id);
+        Q_UNUSED(dataId);
     }
 }  // namespace EventOper
