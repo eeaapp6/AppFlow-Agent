@@ -1,4 +1,10 @@
-﻿#ifndef __MAINWINDOW_H__
+﻿/**
+ * @file   MainWindow.h
+ * @brief  主窗口界面
+ * @author YanZhiHui (chanyuantiandao@126.com)
+ * @date   2024-06-12
+ */
+#ifndef __MAINWINDOW_H__
 #define __MAINWINDOW_H__
 
 #include <QMainWindow>
@@ -15,14 +21,38 @@ namespace GUI
 	class RenderWidget;
 	class PropertyWidget;
 	class GroupPropertyWidget;
+	class ActionEventHandler;
 
+	/**
+	 * @brief  主窗口界面类
+	 * @author YanZhiHui (chanyuantiandao@126.com)
+	 * @date   2024-06-12
+	 */
 	class GUIFRAMEAPI MainWindow : public QMainWindow
 	{
 		Q_OBJECT
 
 	public:
+		/**
+		 * @brief  构造函数
+		 * @author YanZhiHui (chanyuantiandao@126.com)
+		 * @date   2024-06-12
+		 */
 		explicit MainWindow(QWidget *parent = nullptr);
+		/**
+		 * @brief  析构函数
+		 * @author YanZhiHui (chanyuantiandao@126.com)
+		 * @date   2024-06-12
+		 */
 		~MainWindow();
+
+		/**
+		 * @brief  获取界面的action消息处理器
+		 * @return 消息处理器
+		 * @author YanZhiHui (chanyuantiandao@126.com)
+		 * @data   2024-06-12
+		 */
+		ActionEventHandler* getActionEventHandle() const;
 
 	private:
 		/**
@@ -87,6 +117,12 @@ namespace GUI
 		 * @date   2024-06-11
 		 */
 		GroupPropertyWidget* m_GroupPropertyWidget{};
+		/**
+		 * @brief  action点击事件处理
+		 * @author YanZhiHui (chanyuantiandao@126.com)
+		 * @date   2024-06-12
+		 */
+		ActionEventHandler* m_ActionHandler{};
 
 	};
 }

@@ -26,6 +26,7 @@ win32{
         -lFITKCore \
         -lGUIFrame \
         -lGUIWidget \
+        -lGUIDialog \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -39,6 +40,7 @@ win32{
         -lFITKCore \
         -lGUIFrame \
         -lGUIWidget \
+        -lGUIDialog \
 
 
     message("Windows OperatorsModel generated")
@@ -63,6 +65,7 @@ unix{
         -lFITKCore \
         -lGUIFrame \
         -lGUIWidget \
+        -lGUIDialog \
         
     message("Linux OperatorsModel generated")
 }
