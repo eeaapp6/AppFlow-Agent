@@ -4,6 +4,7 @@
 #include "RenderWidget.h"
 #include <QGroupBox>
 #include <QGridLayout>
+#include <QMdiSubWindow>
 #include "FITK_GeneralComponent/FITKWidget/FITKMdiArea.h"
 #include "FITK_Kernal/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernal/FITKAppFramework/FITKComponentFactory.h"
@@ -36,9 +37,16 @@ namespace GUI
 
 		// 获取三维渲染组件的界面，并将其作为一个子窗口添加到MDI区域
 		QWidget *graph3DWidget = graph3DComp->getWidget(1);
-		m_MdiArea->addSubWidget(graph3DWidget, "Graph3DWindowVTK");
-
+		auto id = m_MdiArea->addSubWidget(graph3DWidget, "Graph3DWindowVTK");
 		this->setWidget(m_MdiArea);
+
+		// 最大化显示
+		auto currentSubWidget = m_MdiArea->getSubWidget(id);
+		if (currentSubWidget != nullptr)
+		{
+			currentSubWidget->setStyleSheet("background: red; border: 5px solid blue;");
+			currentSubWidget->showMaximized();
+		}
 
 	}
 
