@@ -51,38 +51,38 @@ namespace GUI
 		m_MainMenu = new MainMenu(this);
 
 
-		auto spearator = new MenuActionItem;
+		MenuActionItem spearator;
 		// 文件菜单
-		auto fileOpen = new MenuActionItem(tr("Open"), "actionFileOpen", QIcon(":/icons/open.png"));
-		auto fileSave = new MenuActionItem(tr("Save"), "actionFileSave", QIcon(":/icons/save.png"));
-		auto fileSaveAs = new MenuActionItem(tr("SaveAs"), "actionFileSaveAs", QIcon(":/icons/saveas.png"));
-		auto fileExit = new MenuActionItem(tr("Exit"), "actionFileExit");
+		MenuActionItem fileOpen(tr("Open"), "actionFileOpen", QIcon(":/icons/open.png"));
+		MenuActionItem fileSave(tr("Save"), "actionFileSave", QIcon(":/icons/save.png"));
+		MenuActionItem fileSaveAs(tr("SaveAs"), "actionFileSaveAs", QIcon(":/icons/saveas.png"));
+		MenuActionItem fileExit(tr("Exit"), "actionFileExit");
 
 		// 视图菜单
-		auto viewAutoFit = new MenuActionItem(tr("Auto Fit"), "actionViewAutoFit", QIcon(":/icons/autofit.png"));
-		auto viewFront = new MenuActionItem(tr("Front"), "actionViewFront", QIcon(":/icons/view_front.png"));
-		auto viewBack = new MenuActionItem(tr("Back"), "actionViewBack", QIcon(":/icons/view_back.png"));
-		auto viewTop = new MenuActionItem(tr("Top"), "actionViewTop", QIcon(":/icons/view_top.png"));
-		auto viewBottom = new MenuActionItem(tr("Bottom"), "actionViewBottom", QIcon(":/icons/view_bottom.png"));
-		auto viewLeft = new MenuActionItem(tr("Left"), "actionViewLeft", QIcon(":/icons/view_left.png"));
-		auto viewRight = new MenuActionItem(tr("Right"), "actionViewRight", QIcon(":/icons/view_right.png"));
-		auto viewDisplayNode = new MenuActionItem(tr("Display Node"), "actionViewDisplayNode", true, "DisplayMode");
-		auto viewDisplayWireFrame = new MenuActionItem(tr("Display WireFrame"), "actionViewDisplayWireFrame", true, "DisplayMode");
-		auto viewDisplaySurface = new MenuActionItem(tr("Display Surface"), "actionViewDisplaySurface", true, "DisplayMode");
-		auto viewDisplay = new MenuActionItem(tr("Display"), "actionViewDisplay", { viewDisplayNode, viewDisplayWireFrame, viewDisplaySurface });
+		MenuActionItem viewAutoFit(tr("Auto Fit"), "actionViewAutoFit", QIcon(":/icons/autofit.png"));
+		MenuActionItem viewFront(tr("Front"), "actionViewFront", QIcon(":/icons/view_front.png"));
+		MenuActionItem viewBack(tr("Back"), "actionViewBack", QIcon(":/icons/view_back.png"));
+		MenuActionItem viewTop(tr("Top"), "actionViewTop", QIcon(":/icons/view_top.png"));
+		MenuActionItem viewBottom(tr("Bottom"), "actionViewBottom", QIcon(":/icons/view_bottom.png"));
+		MenuActionItem viewLeft(tr("Left"), "actionViewLeft", QIcon(":/icons/view_left.png"));
+		MenuActionItem viewRight(tr("Right"), "actionViewRight", QIcon(":/icons/view_right.png"));
+		MenuActionItem viewDisplayNode(tr("Display Node"), "actionViewDisplayNode", true, "DisplayMode");
+		MenuActionItem viewDisplayWireFrame(tr("Display WireFrame"), "actionViewDisplayWireFrame", true, "DisplayMode");
+		MenuActionItem viewDisplaySurface(tr("Display Surface"), "actionViewDisplaySurface", true, "DisplayMode");
+		MenuActionItem viewDisplay(tr("Display"), "actionViewDisplay", { &viewDisplayNode, &viewDisplayWireFrame, &viewDisplaySurface });
 
 		// 创建几何
-		auto createBox = new MenuActionItem(tr("Box"), "actionCreateBox", QIcon(":/icons/createbox.png"));
-		auto createCylinder = new MenuActionItem(tr("Cylinder"), "actionCreateCylinder", QIcon(":/icons/createcylinder.png"));
-		auto createSphere = new MenuActionItem(tr("Sphere"), "actionCreateSphere", QIcon(":/icons/createsphere.png"));
+		MenuActionItem createBox(tr("Box"), "actionCreateBox", QIcon(":/icons/createbox.png"));
+		MenuActionItem createCylinder(tr("Cylinder"), "actionCreateCylinder", QIcon(":/icons/createcylinder.png"));
+		MenuActionItem createSphere(tr("Sphere"), "actionCreateSphere", QIcon(":/icons/createsphere.png"));
 		// 菜单栏
-		m_MainMenu->addMenu(tr("File"), { fileOpen, spearator, fileSave, fileSaveAs, spearator, fileExit });
-		m_MainMenu->addMenu(tr("View"), { viewAutoFit, spearator, viewFront, viewBack, viewTop, viewBottom, viewLeft, viewRight, spearator, viewDisplay });
-		m_MainMenu->addMenu(tr("Create"), { createBox, createCylinder, createSphere });
+		m_MainMenu->addMenu(tr("File"), { &fileOpen, &spearator, &fileSave, &fileSaveAs, &spearator, &fileExit });
+		m_MainMenu->addMenu(tr("View"), { &viewAutoFit, &spearator, &viewFront, &viewBack, &viewTop, &viewBottom, &viewLeft, &viewRight, &spearator, &viewDisplay });
+		m_MainMenu->addMenu(tr("Create"), { &createBox, &createCylinder, &createSphere });
 		// 工具栏菜单
-		m_MainMenu->addToolMenu(tr("File"), { fileOpen, fileSave, fileSaveAs });
-		m_MainMenu->addToolMenu(tr("View"), { viewAutoFit, viewFront, viewBack, viewTop, viewBottom, viewLeft, viewRight });
-		m_MainMenu->addToolMenu(tr("Create"), { createBox, createCylinder, createSphere });
+		m_MainMenu->addToolMenu(tr("File"), { &fileOpen, &fileSave, &fileSaveAs });
+		m_MainMenu->addToolMenu(tr("View"), { &viewAutoFit, &viewFront, &viewBack, &viewTop, &viewBottom, &viewLeft, &viewRight });
+		m_MainMenu->addToolMenu(tr("Create"), { &createBox, &createCylinder, &createSphere });
 
 	}
 
@@ -118,6 +118,31 @@ namespace GUI
 		setStatusBar(statusBar);
 
 		statusBar->addWidget(new QLabel(tr("Welcome to FlowApp")), 1);
+	}
+
+	MainMenuBase * MainWindow::getMainMenuBase() const
+	{
+		return m_MainMenu;
+	}
+
+	ControlPanelWidget * MainWindow::getControlPanelWidget() const
+	{
+		return m_ControlWidget;
+	}
+
+	RenderWidget * MainWindow::getRenderWidget() const
+	{
+		return m_RenderWidget;
+	}
+
+	PropertyWidget * MainWindow::getPropertyWidget() const
+	{
+		return m_PropertyWidget;
+	}
+
+	GroupPropertyWidget * MainWindow::getGroupPropertyWidget() const
+	{
+		return m_GroupPropertyWidget;
 	}
 
 }

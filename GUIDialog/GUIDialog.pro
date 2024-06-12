@@ -27,6 +27,9 @@ win32{
         -lGUIWidget \
         -lGUIFrame \
         -lFITKWidget \
+        -lFITKInterfaceOCC \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
    
 
 
@@ -44,6 +47,9 @@ win32{
         -lGUIWidget \
         -lGUIFrame \
         -lFITKWidget \
+        -lFITKInterfaceOCC \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
      
 
 
@@ -70,6 +76,9 @@ unix{
         -lGUIWidget \
         -lGUIFrame \
         -lFITKWidget \
+        -lFITKInterfaceOCC \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
        
 
     message("Linux GUIDialog generated")
