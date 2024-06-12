@@ -45,11 +45,11 @@ namespace EventOper
         //@{
         /**
          * @brief   根据提供的数据对象ID更新对应可视化对象。（没有则创建）[虚函数]
-         * @param   id：数据对象ID
+         * @param   dataId：数据对象ID
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        virtual void updateGraph(int id);
+        virtual void updateGraph(int dataId);
         //@}
 
         // 高亮功能接口。

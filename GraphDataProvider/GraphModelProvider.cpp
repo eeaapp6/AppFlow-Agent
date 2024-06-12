@@ -12,12 +12,22 @@
 #include "FITK_GeneralComponent/FITKOCCGraphAdaptor/FITKGraphObjectShapeOCC.h"
 #include "FITK_GeneralComponent/FITKOCCGraphAdaptor/FITKGraphObjectShapeVTK.h"
 
+// Adaptor
+#include "FITK_GeneralComponent/FITKOCCGraphAdaptor/FITKOCCViewAdaptorBase.h"
+
+// Global data
+#include "FITK_Kernal/FITKCore/FITKDataRepo.h"
+
+// Data
+#include "FITK_Interface/FITKInterfaceOCC/FITKAbstractOCCModel.h"
+
 // Graph widget
 #include "FITK_Kernal/FITKCore/FITKAbstractGraphWidget.h"
 
 namespace GraphData
 {
-    GraphModelProvider::GraphModelProvider()
+    GraphModelProvider::GraphModelProvider(Core::FITKAbstractGraph3DWidget* graphWidget)
+        : GraphProviderBase(graphWidget)
     {
 
     }
@@ -25,6 +35,7 @@ namespace GraphData
     GraphModelProvider::~GraphModelProvider()
     {
         // 析构三维可视化对象。
+        deleteObjsHash(m_modelObjHash);
     }
 
     QString GraphModelProvider::getClassName()
@@ -37,8 +48,93 @@ namespace GraphData
         // 当前所有模型可视化对象数据。
         QList<Core::FITKAbstractGraphObject*> objs;
 
-        // objs << .values();
+        // 模型（几何）可视化对象。
+        objs << m_modelObjHash.values();
 
         return objs;
+    }
+
+    Core::FITKAbstractGraphObject* GraphModelProvider::getModelGraphObject(int dataId)
+    {
+        // 检查数据ID。
+        Core::FITKAbstractGraphObject* obj{ nullptr };
+
+        // 检查可视化窗口。（可视化引擎）
+        if (m_visualEngineName.isEmpty())
+        {
+            return obj;
+        }
+
+        // 检查数据ID。
+        Interface::FITKAbstractOCCModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractOCCModel>(dataId);
+        if (!model)
+        {
+            return obj;
+        }
+
+        // 创建过则返回。
+        if (m_modelObjHash.contains(dataId))
+        {
+            return m_modelObjHash[dataId];
+        }
+
+        // 生成可视化对象。
+        Exchange::FITKOCCViewAdaptorBase* adaptor = FITKVIEWADAPTORFACTORY->createT<Exchange::FITKOCCViewAdaptorBase>("Model" + m_visualEngineName, model);
+        if (!adaptor)
+        {
+            return obj;
+        }
+
+        adaptor->setDataObject(model);
+        adaptor->update();
+
+        obj = adaptor->getOutputData();
+
+        // 适配器析构。
+        delete adaptor;
+
+        if (!obj)
+        {
+            return obj;
+        }
+
+        // 存储数据。
+        m_modelObjHash.insert(dataId, obj);
+
+        // 检测数据析构对三维数据进行析构并移出数据管理。
+        //@{
+        connect(model, &Interface::FITKAbstractOCCModel::dataObjectDestoried, this, [=]
+        {
+            Core::FITKAbstractGraphObject* gObj = m_modelObjHash.take(dataId);
+            if (gObj)
+            {
+                delete gObj;
+            }
+        });
+        //@}
+
+        return obj;
+    }
+
+    bool GraphModelProvider::updateObjById(int dataId, QVariant info)
+    {
+        // 参数预留。
+        Q_UNUSED(info);
+
+        if (!m_modelObjHash.contains(dataId))
+        {
+            return false;
+        }
+
+        // 获取可视化对象并更新。
+        Core::FITKAbstractGraphObject* obj = m_modelObjHash[dataId];
+        if (!obj)
+        {
+            return false;
+        }
+
+        obj->update();
+
+        return true;
     }
 }   // namespace GraphData

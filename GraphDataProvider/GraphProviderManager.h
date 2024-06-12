@@ -22,7 +22,7 @@
 // 前置声明
 namespace Core
 {
-    class FITKAbstractGraphWidget;
+    class FITKAbstractGraph3DWidget;
 }
 
 namespace GraphData
@@ -58,20 +58,13 @@ namespace GraphData
         static void Delete();
 
         /**
-         * @brief   获取预览模型数据管理类。
-         * @return  算例三维模型数据分装类指针
-         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
-         * @date    2024-06-12
-         */
-        GraphModelProvider* getPreviewModelProvider();
-
-        /**
          * @brief   获取三维模型数据分装类，没有则初始化。
+         * @param   graphWidget：可视化窗口
          * @return  三维模型数据分装类指针
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        GraphModelProvider* getModelProvider();
+        GraphModelProvider* getModelProvider(Core::FITKAbstractGraph3DWidget* graphWidget);
 
         /**
          * @brief   在所有算例数据管理尝试寻找该数据ID对应的可视化对象并刷新，如果不存在则跳出。
@@ -148,13 +141,6 @@ namespace GraphData
          * @date    2024-06-12
          */
         static QMutex m_mutex;
-
-        /**
-         * @brief   模型预览数据管理器。
-         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
-         * @date    2024-06-12
-         */
-        GraphModelProvider* m_previewModelProvider{ nullptr };
 
         /**
          * @brief   三维窗口中算例的三维模型数据分装类。

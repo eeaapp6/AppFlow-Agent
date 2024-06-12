@@ -36,30 +36,26 @@ namespace GraphData
 
     GraphProviderManager::GraphProviderManager()
     {
-        // 初始化预览数据管理器。
-        m_previewModelProvider = new GraphModelProvider;
+
     }
 
     GraphProviderManager::~GraphProviderManager()
     {
         // 清除数据管理器。
         deleteProvider(m_modelProvider);
-
-        // 清除预览数据管理器。
-        deleteProvider(m_previewModelProvider);
     }
 
-    GraphModelProvider* GraphProviderManager::getPreviewModelProvider()
-    {
-        return m_previewModelProvider;
-    }
-
-    GraphModelProvider* GraphProviderManager::getModelProvider()
+    GraphModelProvider* GraphProviderManager::getModelProvider(Core::FITKAbstractGraph3DWidget* graphWidget)
     {
         // 不存在则创建新管理器。
         if (!m_modelProvider)
         {
-            m_modelProvider = new GraphModelProvider;
+            if (!graphWidget)
+            {
+                return nullptr;
+            }
+
+            m_modelProvider = new GraphModelProvider(graphWidget);
         }
       
         return m_modelProvider;
