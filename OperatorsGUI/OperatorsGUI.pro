@@ -26,11 +26,13 @@ win32{
         -L../output/bin  \
         -lFITKAppFramework \
         -lFITKCore \
+        -lFITKWidget \
         -lOperatorsInterface \
         -lFITKOCCGraphAdaptor \
         -lFITKRenderWindowOCC \
         -lFITKRenderWindowVTK \
-        -lGraphDataProvider
+        -lGraphDataProvider \
+        -lGUIFrame
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -42,11 +44,13 @@ win32{
         -L../output/bin_d \
         -lFITKAppFramework \
         -lFITKCore \
+        -lFITKWidget \
         -lOperatorsInterface \
         -lFITKOCCGraphAdaptor \
         -lFITKRenderWindowOCC \
         -lFITKRenderWindowVTK \
-        -lGraphDataProvider
+        -lGraphDataProvider \
+        -lGUIFrame
 
     message("Windows OperatorsGUI generated")
 }
@@ -68,11 +72,13 @@ unix{
         -L../output/bin \
         -lFITKAppFramework \
         -lFITKCore \
+        -lFITKWidget \
         -lOperatorsInterface \
         -lFITKOCCGraphAdaptor \
         -lFITKRenderWindowOCC \
         -lFITKRenderWindowVTK \
-        -lGraphDataProvider
+        -lGraphDataProvider \
+        -lGUIFrame
         
     message("Linux OperatorsGUI generated")
 }

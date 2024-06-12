@@ -9,6 +9,7 @@
 #include "FITK_Kernal/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_GeneralComponent/FITKCompMessageWidget/FITKConsoleComponent.h"
 #include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
+#include "FITK_GeneralComponent/FITKRenderWindowOCC/FITKGraph3DWindowOCCInterface.h"
 #include "FITK_GeneralComponent/FITKAbaqusIOINP/FITKAbaqusIOINPInterface.h"
 #include "FITK_GeneralComponent/FITKCalculiXInpIO/FITKCalculiXINPIOInterface.h"
 #include "OperatorsModel/OpersModelInterface.h"
@@ -23,6 +24,8 @@ QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
 	// 3D图形窗口组件
 	auto compVTKrender = new Comp::FITKGraph3DWindowInterface;
 	componentList << compVTKrender;
+    // OCC图形窗口组件
+    componentList << new Render::FITKGraph3DWindowOCCInterface;
 	// 模型数据控制器组件
 	componentList << new OperModel::OpersModelInterface;
 	// 界面控制器组件

@@ -16,15 +16,40 @@
 // Render OCC
 #include "FITK_GeneralComponent/FITKRenderWindowOCC/FITKGraph3DWindowOCC.h"
 
-// Graph data manager
-
 // GUI
+#include "GUIFrame/MainWindow.h"
+#include "GUIFrame/RenderWidget.h"
+#include "FITK_GeneralComponent/FITKWidget/FITKMdiArea.h"
 
 namespace GUIOper
 {
     Core::FITKAbstractGraph3DWidget* OperGraphEvent3D::getGraphWidget()
     {
-        return nullptr;
+        // 获取主窗口。
+        GUI::MainWindow* mainWindow = FITKAPP->getGlobalData()->getMainWindowT<GUI::MainWindow>();
+        if (!mainWindow)
+        {
+            return nullptr;
+        }
+
+        // 获取可视化区。
+        GUI::RenderWidget* renderWidget = mainWindow->getRenderWidget();
+        if (!renderWidget)
+        {
+            return nullptr;
+        }
+
+        Comp::FITKMdiArea* mdiArea = renderWidget->getMdiArea();;
+        if (!mdiArea)
+        {
+            return nullptr;
+        }
+
+        // 获取当前窗口，尝试转换为三维窗口。
+        QWidget* w = mdiArea->getCurrentWidget();
+        Core::FITKAbstractGraph3DWidget* graphWidget = dynamic_cast<Core::FITKAbstractGraph3DWidget*>(w);
+
+        return graphWidget;
     }
 
     void OperGraphEvent3D::addGraphObjectToWidget(Core::FITKAbstractGraphObject* obj, Core::FITKAbstractGraph3DWidget* graphWidget, bool fitView)
