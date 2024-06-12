@@ -2,10 +2,11 @@
 #define DIALOGCREATESPHERE_H
 
 #include "GUIDialogAPI.h"
+#include "FITK_Kernal/FITKCore/FITKActionOperator.h"
 #include <QDialog>
 
 namespace Ui {
-class CreateSphereDialog;
+	class CreateSphereDialog;
 }
 
 namespace GUI {
@@ -14,7 +15,7 @@ namespace GUI {
 		Q_OBJECT
 
 	public:
-		explicit CreateSphereDialog(QWidget *parent = nullptr);
+		explicit CreateSphereDialog(Core::FITKActionOperator* oper, QWidget *parent = nullptr);
 		~CreateSphereDialog();
 
 	protected:
@@ -23,6 +24,7 @@ namespace GUI {
 
 	private:
 		Ui::CreateSphereDialog *m_Ui{};
+		Core::FITKActionOperator* m_Oper{};
 	};
 }
 

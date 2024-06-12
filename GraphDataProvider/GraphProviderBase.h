@@ -126,7 +126,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        QString m_visualEngineName = "";
+        QString m_visualEngineName;
 
         /**
          * @brief   管理器所管理的可视化窗口。

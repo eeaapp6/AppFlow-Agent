@@ -54,6 +54,37 @@ namespace GUI
 		 */
 		ActionEventHandler* getActionEventHandle() const;
 
+        /**
+         * @brief  获取菜单
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-06-12
+         */
+        MainMenuBase* getMainMenuBase() const;
+        /**
+         * @brief  获取控制面板子部件
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-06-12
+         */
+        ControlPanelWidget* getControlPanelWidget() const;
+        /**
+         * @brief  获取渲染子部件
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-06-12
+         */
+        RenderWidget* getRenderWidget() const;
+        /**
+         * @brief  获取属性子部件
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-06-12
+         */
+        PropertyWidget* getPropertyWidget() const;
+        /**
+         * @brief  获取组属性子部件
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-06-12
+         */
+        GroupPropertyWidget* getGroupPropertyWidget() const;
+
 	private:
 		/**
 		 * @brief  初始化

@@ -147,7 +147,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        GraphModelProvider* m_modelProvider;
+        GraphModelProvider* m_modelProvider{ nullptr };
 
     };
 }   // namespace GraphData

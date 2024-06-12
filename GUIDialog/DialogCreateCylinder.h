@@ -2,10 +2,11 @@
 #define DIALOGCREATECYLINDER_H
 
 #include "GUIDialogAPI.h"
+#include "FITK_Kernal/FITKCore/FITKActionOperator.h"
 #include <QDialog>
 
 namespace Ui {
-class CreateCylinderDialog;
+	class CreateCylinderDialog;
 }
 
 namespace GUI {
@@ -14,7 +15,7 @@ namespace GUI {
 		Q_OBJECT
 
 	public:
-		explicit CreateCylinderDialog(QWidget *parent = nullptr);
+		explicit CreateCylinderDialog(Core::FITKActionOperator* oper, QWidget *parent = nullptr);
 		~CreateCylinderDialog();
 
 	protected:
@@ -22,8 +23,12 @@ namespace GUI {
 		void reject() override;
 
 
+	private slots:
+		void on_rb_customAxis_toggled(bool checked);
+
 	private:
 		Ui::CreateCylinderDialog *m_Ui{};
+		Core::FITKActionOperator* m_Oper{};
 	};
 }
 

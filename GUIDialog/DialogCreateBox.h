@@ -2,6 +2,7 @@
 #define DIALOGCREATEBOX_H
 
 #include "GUIDialogAPI.h"
+#include "FITK_Kernal/FITKCore/FITKActionOperator.h"
 #include <QDialog>
 
 namespace Ui {
@@ -14,7 +15,7 @@ namespace GUI {
 		Q_OBJECT
 
 	public:
-		explicit CreateBoxDialog(QWidget *parent = nullptr);
+		explicit CreateBoxDialog(Core::FITKActionOperator* oper, QWidget *parent = nullptr);
 		~CreateBoxDialog();
 
 	protected:
@@ -23,6 +24,7 @@ namespace GUI {
 
 	private:
 		Ui::CreateBoxDialog *m_Ui{};
+		Core::FITKActionOperator* m_Oper{};
 	};
 }
 

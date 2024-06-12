@@ -10,8 +10,6 @@
 #include "FITK_Kernal/FITKAppFramework/FITKComponentFactory.h"
 #include "FITK_Kernal/FITKAppFramework/FITKComponentInterface.h"
 #include "FITK_Kernal/FITKAppFramework/FITKComponents.h"
-#include "FITK_Kernal/FITKPython/FITKPythonInterface.h"
-#include "FITK_GeneralComponent/FITKCompMessageWidget/FITKConsoleComponent.h"
 #include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
 #include "FITK_Kernal/FITKCore/FITKOperatorRepo.h"
 
@@ -48,6 +46,11 @@ namespace GUI
 			currentSubWidget->showMaximized();
 		}
 
+	}
+
+	Comp::FITKMdiArea * RenderWidget::getMdiArea() const
+	{
+		return m_MdiArea;
 	}
 
 }

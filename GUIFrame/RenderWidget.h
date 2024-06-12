@@ -7,6 +7,7 @@
 #ifndef __RENDERWIDGET_H__
 #define __RENDERWIDGET_H__
 
+#include "GUIFrameAPI.h"
 #include "PanelWidgetBase.h"
 
 namespace Comp
@@ -21,7 +22,7 @@ namespace GUI
 	 * @author YanZhiHui (chanyuantiandao@126.com)
 	 * @date   2024-06-11
 	 */
-	class RenderWidget : public PanelWidgetBase
+	class GUIFRAMEAPI RenderWidget : public PanelWidgetBase
 	{
 		Q_OBJECT
 
@@ -38,8 +39,18 @@ namespace GUI
 		 * @date   2024-06-11
 		 */
 		~RenderWidget() = default;
-
+		/**
+		 * @brief  获取多视口管理
+		 * @author YanZhiHui (chanyuantiandao@126.com)
+		 * @date   2024-06-12
+		 */
+		Comp::FITKMdiArea* getMdiArea() const;
 	private:
+		/**
+		 * @brief  多视口管理
+		 * @author YanZhiHui (chanyuantiandao@126.com)
+		 * @date   2024-06-12
+		 */
 		Comp::FITKMdiArea* m_MdiArea{};
 
 	};
