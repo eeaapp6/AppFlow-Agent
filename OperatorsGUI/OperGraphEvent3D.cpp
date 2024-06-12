@@ -33,13 +33,13 @@ namespace GUIOper
         }
 
         // 获取可视化区。
-        GUI::RenderWidget* renderWidget = mainWindow->getRenderWidget();
+        GUI::RenderWidget* renderWidget{ nullptr };// = mainWindow->getRenderWidget();
         if (!renderWidget)
         {
             return nullptr;
         }
 
-        Comp::FITKMdiArea* mdiArea = renderWidget->getMdiArea();;
+        Comp::FITKMdiArea* mdiArea{ nullptr };// = renderWidget->getMdiArea();;
         if (!mdiArea)
         {
             return nullptr;
