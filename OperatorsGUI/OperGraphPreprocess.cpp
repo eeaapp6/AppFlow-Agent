@@ -28,5 +28,8 @@
 
 namespace GUIOper
 {
-    
+    void OperGraphPreprocess::updateGraph(int id)
+    {
+
+    }
 }  // namespace GUIOper
