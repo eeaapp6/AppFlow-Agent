@@ -10,9 +10,9 @@
 #include <QtCore/QtGlobal>
 
 #ifdef GUIFrame_API
-#    define GUIFRAMEAPI Q_DECL_EXPORT
+#define GUIFRAMEAPI Q_DECL_EXPORT
 #else
-#    define GUIFRAMEAPI Q_DECL_IMPORT
+#define GUIFRAMEAPI Q_DECL_IMPORT
 #endif
 
 #endif // __GUIFRAMEAPI_H__

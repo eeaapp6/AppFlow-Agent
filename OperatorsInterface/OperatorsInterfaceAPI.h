@@ -10,7 +10,7 @@
 #include <QtCore/QtGlobal>
 
 
-#if defined(OperatorsInterface_API)
+#ifdef OperatorsInterface_API
 #define OperatorsInterfaceAPI Q_DECL_EXPORT
 #else
 #define OperatorsInterfaceAPI Q_DECL_IMPORT

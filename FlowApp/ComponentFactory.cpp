@@ -11,20 +11,23 @@
 #include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
 #include "FITK_GeneralComponent/FITKAbaqusIOINP/FITKAbaqusIOINPInterface.h"
 #include "FITK_GeneralComponent/FITKCalculiXInpIO/FITKCalculiXINPIOInterface.h"
-
+#include "OperatorsModel/OpersModelInterface.h"
+#include "OperatorsGUI/OpersGUIInterface.h"
 
 QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
 {
-    // 自定义组件列表
-    QList<AppFrame::FITKComponentInterface *> componentList;
-    // 消息窗口组件
-    componentList << new Comp::ConsoleComponent(FITKAPP->getGlobalData()->getMainWindow());
-    // 3D图形窗口组件
-    auto compVTKrender = new Comp::FITKGraph3DWindowInterface;
-    componentList << compVTKrender;
+	// 自定义组件列表
+	QList<AppFrame::FITKComponentInterface *> componentList;
+	// 消息窗口组件
+	componentList << new Comp::ConsoleComponent(FITKAPP->getGlobalData()->getMainWindow());
+	// 3D图形窗口组件
+	auto compVTKrender = new Comp::FITKGraph3DWindowInterface;
+	componentList << compVTKrender;
+	// 模型数据控制器组件
+	componentList << new OperModel::OpersModelInterface;
+	// 界面控制器组件
+	componentList << new GUIOper::OperatorsGUIInterface;
 
 
- //   compVTKrender->addInitializer(1, new PreWindowInitializer);
-
-    return componentList;
+	return componentList;
 }

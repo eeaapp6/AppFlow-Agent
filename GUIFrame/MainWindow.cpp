@@ -10,6 +10,8 @@
 #include <QStatusBar>
 #include <QLabel>
 
+#include "ActionEventHandler.h"
+
 namespace GUI
 {
 
@@ -20,6 +22,8 @@ namespace GUI
 	{
 		m_Ui->setupUi(this);
 		setWindowTitle(tr("Flow App"));
+
+
 		init();
 	}
 
@@ -28,8 +32,14 @@ namespace GUI
 		delete m_Ui;
 	}
 
+	ActionEventHandler * MainWindow::getActionEventHandle() const
+	{
+		return m_ActionHandler;
+	}
+
 	void MainWindow::init()
 	{
+		m_ActionHandler = new ActionEventHandler;
 		initMenu();
 		initCentralWidget();
 		initStatusBar();
@@ -62,9 +72,9 @@ namespace GUI
 		auto viewDisplay = new MenuActionItem(tr("Display"), "actionViewDisplay", { viewDisplayNode, viewDisplayWireFrame, viewDisplaySurface });
 
 		// 创建几何
-		auto createBox = new MenuActionItem(tr("Box"), "createBox", QIcon(":/icons/createbox.png"));
-		auto createCylinder = new MenuActionItem(tr("Cylinder"), "createCylinder", QIcon(":/icons/createcylinder.png"));
-		auto createSphere = new MenuActionItem(tr("Sphere"), "createSphere", QIcon(":/icons/createsphere.png"));
+		auto createBox = new MenuActionItem(tr("Box"), "actionCreateBox", QIcon(":/icons/createbox.png"));
+		auto createCylinder = new MenuActionItem(tr("Cylinder"), "actionCreateCylinder", QIcon(":/icons/createcylinder.png"));
+		auto createSphere = new MenuActionItem(tr("Sphere"), "actionCreateSphere", QIcon(":/icons/createsphere.png"));
 		// 菜单栏
 		m_MainMenu->addMenu(tr("File"), { fileOpen, spearator, fileSave, fileSaveAs, spearator, fileExit });
 		m_MainMenu->addMenu(tr("View"), { viewAutoFit, spearator, viewFront, viewBack, viewTop, viewBottom, viewLeft, viewRight, spearator, viewDisplay });

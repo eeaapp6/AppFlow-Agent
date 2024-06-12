@@ -28,6 +28,8 @@ win32{
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceOCC \
+        -lOperatorsModel \
+        -lOperatorsGUI \
         -lGUIFrame \
     
     Debug:CONFIG            +=  console
@@ -45,6 +47,8 @@ win32{
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceOCC \
+        -lOperatorsModel \
+        -lOperatorsGUI \
         -lGUIFrame \
 
 
@@ -73,6 +77,8 @@ unix{
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceOCC \
+        -lOperatorsModel \
+        -lOperatorsGUI \
         -lGUIFrame \
        
 

@@ -11,9 +11,9 @@
 
 #include <QtCore/QtGlobal>
 
-#if defined( OperatorsModel_API )
-#    define OperatorsModelAPI Q_DECL_EXPORT
+#ifdef OperatorsModel_API
+#define OperatorsModelAPI Q_DECL_EXPORT
 #else
-#    define OperatorsModelAPI Q_DECL_IMPORT
+#define OperatorsModelAPI Q_DECL_IMPORT
 #endif
 #endif
