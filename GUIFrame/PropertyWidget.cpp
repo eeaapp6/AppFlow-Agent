@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QScrollArea>
 #include <QDebug>
+#include "GUIWidget/PropertyEmptyWidget.h"
 
 namespace GUI
 {
@@ -14,18 +15,9 @@ namespace GUI
 	{
 		this->setTitle(tr("Property Area"));
 
-		auto area = new QScrollArea(this);
-		area->setObjectName("PropertyArea");
-
-		auto areaWidget = new QWidget;
-		areaWidget->setObjectName("PropertyAreaWidget");
-
-		area->setWidget(areaWidget);
-
-		auto vlayout = new QVBoxLayout(areaWidget);
-		areaWidget->setLayout(vlayout);
-
-		setWidget(area);
+		auto scrollArea = new QScrollArea(this);
+		scrollArea->setWidget(new PropertyEmptyWidget(m_MainWindow, tr("Welcome to FlowApp.")));
+		setWidget(scrollArea);
 
 	}
 

@@ -44,7 +44,6 @@ namespace GUI
 		auto currentSubWidget = m_MdiArea->getSubWidget(id);
 		if (currentSubWidget != nullptr)
 		{
-			currentSubWidget->setStyleSheet("background: red; border: 5px solid blue;");
 			currentSubWidget->showMaximized();
 		}
 

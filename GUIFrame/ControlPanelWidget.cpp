@@ -3,6 +3,7 @@
 #include "FITK_GeneralComponent/FITKWidget/FITKDrawerWidget.h"
 #include <QGroupBox>
 #include <QGridLayout>
+#include <QPixmap>
 
 namespace GUI
 {
@@ -10,6 +11,8 @@ namespace GUI
 	{
 		this->setTitle(tr("Control Panel"));
 		auto drawerWidget = new Comp::FITKDrawerWidget(this);
+
+		//drawerWidget->setLockerWidgetIcon(QPixmap(":/icons/fold.png"), QPixmap(":/icons/fold.png"));
 		drawerWidget->setAllItemFold(true); ///所有抽屉可同时关闭
 
 		drawerWidget->addWidget(new QWidget(nullptr), "test 1");
