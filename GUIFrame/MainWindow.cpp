@@ -60,12 +60,19 @@ namespace GUI
 		auto viewDisplayWireFrame = new MenuActionItem(tr("Display WireFrame"), "actionViewDisplayWireFrame", true, "DisplayMode");
 		auto viewDisplaySurface = new MenuActionItem(tr("Display Surface"), "actionViewDisplaySurface", true, "DisplayMode");
 		auto viewDisplay = new MenuActionItem(tr("Display"), "actionViewDisplay", { viewDisplayNode, viewDisplayWireFrame, viewDisplaySurface });
+
+		// 创建几何
+		auto createBox = new MenuActionItem(tr("Box"), "createBox", QIcon(":/icons/createbox.png"));
+		auto createCylinder = new MenuActionItem(tr("Cylinder"), "createCylinder", QIcon(":/icons/createcylinder.png"));
+		auto createSphere = new MenuActionItem(tr("Sphere"), "createSphere", QIcon(":/icons/createsphere.png"));
 		// 菜单栏
 		m_MainMenu->addMenu(tr("File"), { fileOpen, spearator, fileSave, fileSaveAs, spearator, fileExit });
 		m_MainMenu->addMenu(tr("View"), { viewAutoFit, spearator, viewFront, viewBack, viewTop, viewBottom, viewLeft, viewRight, spearator, viewDisplay });
+		m_MainMenu->addMenu(tr("Create"), { createBox, createCylinder, createSphere });
 		// 工具栏菜单
 		m_MainMenu->addToolMenu(tr("File"), { fileOpen, fileSave, fileSaveAs });
 		m_MainMenu->addToolMenu(tr("View"), { viewAutoFit, viewFront, viewBack, viewTop, viewBottom, viewLeft, viewRight });
+		m_MainMenu->addToolMenu(tr("Create"), { createBox, createCylinder, createSphere });
 
 	}
 

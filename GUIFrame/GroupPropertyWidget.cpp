@@ -8,7 +8,7 @@ namespace GUI
 		this->setTitle(tr("Objects Manage"));
 		auto drawerWidget = new Comp::FITKDrawerWidget(this);
 		drawerWidget->setAllItemFold(true); ///所有抽屉可同时关闭
-
+		drawerWidget->setLockerWidgetIcon(QPixmap(":/icons/fold.png"), QPixmap(":/icons/gfold.png"));
 		drawerWidget->addWidget(new QWidget(nullptr), "test 1");
 		drawerWidget->addWidget(new QWidget, "test 2");
 		drawerWidget->addWidget(new QWidget, "test 3");

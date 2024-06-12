@@ -8,6 +8,8 @@ SUBDIRS += \
     $$PWD/FlowApp \
     $$PWD/GUIFrame \
     $$PWD/GUIWidget \
+    $$PWD/OperatorsInterface \
+    $$PWD/OperatorsModel \
   
  
 

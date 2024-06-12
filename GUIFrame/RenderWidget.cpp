@@ -40,6 +40,7 @@ namespace GUI
 		auto id = m_MdiArea->addSubWidget(graph3DWidget, "Graph3DWindowVTK");
 		this->setWidget(m_MdiArea);
 
+		m_MdiArea->setLayoutType(Comp::FITKVportsLayoutType::CurrentMax);
 		// 最大化显示
 		auto currentSubWidget = m_MdiArea->getSubWidget(id);
 		if (currentSubWidget != nullptr)
