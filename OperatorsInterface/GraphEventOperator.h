@@ -46,10 +46,11 @@ namespace EventOper
         /**
          * @brief   根据提供的数据对象ID更新对应可视化对象。（没有则创建）[虚函数]
          * @param   dataId：数据对象ID
+         * @param   fitView：是否重置视角[缺省]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        virtual void updateGraph(int dataId);
+        virtual void updateGraph(int dataId, bool fitView = false);
         //@}
 
         // 高亮功能接口。

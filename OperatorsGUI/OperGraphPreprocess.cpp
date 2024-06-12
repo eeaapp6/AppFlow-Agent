@@ -20,7 +20,7 @@
 
 namespace GUIOper
 {
-    void OperGraphPreprocess::updateGraph(int dataId)
+    void OperGraphPreprocess::updateGraph(int dataId, bool fitView)
     {
         // 获取可视化窗口。
         Core::FITKAbstractGraph3DWidget* graphWidget = getGraphWidget();
@@ -44,6 +44,6 @@ namespace GUIOper
         }
 
         // 添加至三维窗口。
-        addGraphObjectToWidget(obj, graphWidget);
+        addGraphObjectToWidget(obj, graphWidget, fitView);
     }
 }  // namespace GUIOper

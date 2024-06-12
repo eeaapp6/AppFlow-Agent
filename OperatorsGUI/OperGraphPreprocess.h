@@ -48,10 +48,11 @@ namespace GUIOper
         /**
          * @brief   根据提供的数据对象ID更新对应可视化对象。（没有则创建）[重写]
          * @param   dataId：数据对象ID
+         * @param   fitView：是否重置视角[缺省]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        void updateGraph(int dataId) override;
+        void updateGraph(int dataId, bool fitView = false) override;
 
     };
 

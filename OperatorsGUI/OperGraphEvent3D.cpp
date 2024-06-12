@@ -71,11 +71,15 @@ namespace GUIOper
         //@{
         if (vtkW && vtkObj)
         {
+            // 移除可视化对象重新添加。
+            vtkObj->removeFromGraphWidget();
             vtkW->addObject(vtkObj->getRenderLayer(), vtkObj, fitView);
         }
 
         if (occW && occObj)
         {
+            // 移除可视化对象重新添加。
+            occObj->removeFromGraphWidget();
             occW->addObject(occObj, fitView);
         }
         //@}
