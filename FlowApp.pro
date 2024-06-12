@@ -10,6 +10,7 @@ SUBDIRS += \
     $$PWD/GUIWidget \
     $$PWD/OperatorsInterface \
     $$PWD/OperatorsModel \
+    $$PWD/OperatorsGUI
   
  
 
