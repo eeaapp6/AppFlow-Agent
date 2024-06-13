@@ -1,4 +1,4 @@
-﻿#define OCCRENDERMODE
+﻿//#define OCCRENDERMODE
 #include <QVariant>
 #include <QStackedLayout>
 #include <QPushButton>
@@ -12,6 +12,7 @@
 #include "FITK_Kernal/FITKAppFramework/FITKComponentInterface.h"
 #include "FITK_Kernal/FITKAppFramework/FITKComponents.h"
 #include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
+#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
 #include "FITK_GeneralComponent/FITKRenderWindowOCC/FITKGraph3DWindowOCCInterface.h"
 #include "FITK_Kernal/FITKCore/FITKOperatorRepo.h"
 
@@ -51,6 +52,10 @@ namespace GUI
 
 		// 获取三维渲染组件的界面，并将其作为一个子窗口添加到MDI区域
 		QWidget *graph3DWidget = graph3DComp->getWidget(1);
+        Comp::FITKGraph3DWindowVTK* graph3DVTKWidget = dynamic_cast<Comp::FITKGraph3DWindowVTK*>(graph3DWidget);
+        if (graph3DVTKWidget != nullptr) {
+            graph3DVTKWidget->setIsShowActions(true);
+        }
 		auto id = m_MdiArea->addSubWidget(graph3DWidget, "Graph3DWindowVTK");
 #endif // OCCRENDERMODE
 
@@ -59,11 +64,11 @@ namespace GUI
 
 		m_MdiArea->setLayoutType(Comp::FITKVportsLayoutType::CurrentMax);
 		// 最大化显示
-		auto currentSubWidget = m_MdiArea->getSubWidget(id);
+		/*auto currentSubWidget = m_MdiArea->getSubWidget(id);
 		if (currentSubWidget != nullptr)
 		{
 			currentSubWidget->showMaximized();
-		}
+		}*/
 
 	}
 

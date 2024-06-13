@@ -27,6 +27,7 @@ win32{
         -lFITKCore \
         -lFITKPython \
         -lFITKWidget \
+        -lFITKRenderWindowVTK \
         -lGUIWidget \
 
 
@@ -42,6 +43,7 @@ win32{
         -lFITKCore \
         -lFITKPython \
         -lFITKWidget \
+        -lFITKRenderWindowVTK \
         -lGUIWidget \
 
     message("Windows GUIFrame generated")
@@ -63,6 +65,7 @@ unix{
         -lFITKCore \
         -lFITKPython \
         -lFITKWidget \
+        -lFITKRenderWindowVTK \
         -lGUIWidget \
 
     message("Linux GUIFrame generated")
