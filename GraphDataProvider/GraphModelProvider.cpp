@@ -19,7 +19,7 @@
 #include "FITK_Kernal/FITKCore/FITKDataRepo.h"
 
 // Data
-#include "FITK_Interface/FITKInterfaceOCC/FITKAbstractOCCModel.h"
+#include "FITK_GeneralComponent/FITKGeoCompOCC/FITKAbstractOCCModel.h"
 
 // Graph widget
 #include "FITK_Kernal/FITKCore/FITKAbstractGraphWidget.h"
@@ -66,7 +66,7 @@ namespace GraphData
         }
 
         // 检查数据ID。
-        Interface::FITKAbstractOCCModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractOCCModel>(dataId);
+        Interface::FITKAbstractModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractModel>(dataId);
         if (!model)
         {
             return obj;
@@ -103,7 +103,7 @@ namespace GraphData
 
         // 检测数据析构对三维数据进行析构并移出数据管理。
         //@{
-        connect(model, &Interface::FITKAbstractOCCModel::dataObjectDestoried, this, [=]
+        connect(model, &Interface::FITKAbstractModel::dataObjectDestoried, this, [=]
         {
             Core::FITKAbstractGraphObject* gObj = m_modelObjHash.take(dataId);
             if (gObj)

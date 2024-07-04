@@ -1,7 +1,7 @@
 ﻿#include "DialogCreateBox.h"
 #include "ui_DialogCreateBox.h"
-#include "FITK_Interface/FITKInterfaceOCC/FITKAbstractOCCModel.h"
-#include "FITK_Interface/FITKInterfaceOCC/FITKOCCModelBox.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelBox.h"
 #include "FITK_Kernal/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernal/FITKAppFramework/FITKComponentFactory.h"
 #include "FITK_Kernal/FITKAppFramework/FITKComponentInterface.h"
@@ -38,7 +38,11 @@ namespace GUI {
 
 	void CreateBoxDialog::accept()
 	{
-		auto box = new Interface::FITKOCCModelBox;
+        auto fac = Interface::FITKInterfaceGeometryFactory::getInstance();
+
+        auto box = fac->createCommandT<Interface::FITKAbsGeoModelBox>
+            (Interface::FITKInterfaceGeometryCommand::FGTBox);
+        if (box == nullptr) return;
 
 		auto locX = m_Ui->le_x->text().toDouble();
 		auto locY = m_Ui->le_y->text().toDouble();

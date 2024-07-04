@@ -27,7 +27,7 @@ win32{
         -lGUIWidget \
         -lGUIFrame \
         -lFITKWidget \
-        -lFITKInterfaceOCC \
+        -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
    
@@ -47,7 +47,7 @@ win32{
         -lGUIWidget \
         -lGUIFrame \
         -lFITKWidget \
-        -lFITKInterfaceOCC \
+        -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
      
@@ -76,7 +76,7 @@ unix{
         -lGUIWidget \
         -lGUIFrame \
         -lFITKWidget \
-        -lFITKInterfaceOCC \
+        -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
        

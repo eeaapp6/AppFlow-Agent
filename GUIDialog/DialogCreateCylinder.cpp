@@ -1,7 +1,7 @@
 ﻿#include "DialogCreateCylinder.h"
 #include "ui_DialogCreateCylinder.h"
-#include "FITK_Interface/FITKInterfaceOCC/FITKAbstractOCCModel.h"
-#include "FITK_Interface/FITKInterfaceOCC/FITKOCCModelCylinder.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelCylinder.h"
 #include "FITK_Kernal/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernal/FITKAppFramework/FITKComponentFactory.h"
 #include "FITK_Kernal/FITKAppFramework/FITKComponentInterface.h"
@@ -44,7 +44,11 @@ namespace GUI {
 
 	void CreateCylinderDialog::accept()
 	{
-		auto cylinder = new Interface::FITKOCCModelCylinder;
+        auto fac = Interface::FITKInterfaceGeometryFactory::getInstance();
+ 
+		auto cylinder = fac->createCommandT<Interface::FITKAbsGeoModelCylinder>
+            (Interface::FITKInterfaceGeometryCommand::FGTCylinder);
+        if (cylinder == nullptr) return;
 
 		auto locX = m_Ui->le_x->text().toDouble();
 		auto locY = m_Ui->le_y->text().toDouble();

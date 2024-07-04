@@ -1,7 +1,7 @@
 ﻿#include "DialogCreateSphere.h"
 #include "ui_DialogCreateSphere.h"
-#include "FITK_Interface/FITKInterfaceOCC/FITKAbstractOCCModel.h"
-#include "FITK_Interface/FITKInterfaceOCC/FITKOCCModelSphere.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelSphere.h"
 #include "FITK_Kernal/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernal/FITKAppFramework/FITKComponentFactory.h"
 #include "FITK_Kernal/FITKAppFramework/FITKComponentInterface.h"
@@ -35,7 +35,11 @@ namespace GUI {
 
 	void CreateSphereDialog::accept()
 	{
-		auto sphere = new Interface::FITKOCCModelSphere;
+        auto fac = Interface::FITKInterfaceGeometryFactory::getInstance();
+
+        auto sphere = fac->createCommandT<Interface::FITKAbsGeoModelSphere>
+            (Interface::FITKInterfaceGeometryCommand::FGTSphere);
+        if (sphere == nullptr) return;
 
 		auto locX = m_Ui->le_x->text().toDouble();
 		auto locY = m_Ui->le_y->text().toDouble();
