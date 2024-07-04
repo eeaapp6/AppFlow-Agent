@@ -12,6 +12,7 @@
 #include "FITK_GeneralComponent/FITKRenderWindowOCC/FITKGraph3DWindowOCCInterface.h"
 #include "FITK_GeneralComponent/FITKAbaqusIOINP/FITKAbaqusIOINPInterface.h"
 #include "FITK_GeneralComponent/FITKCalculiXInpIO/FITKCalculiXINPIOInterface.h"
+#include "FITK_GeneralComponent/FITKGeoCompOCC/FITKGeoCompOCCInterface.h"
 #include "OperatorsModel/OpersModelInterface.h"
 #include "OperatorsGUI/OpersGUIInterface.h"
 
@@ -26,6 +27,8 @@ QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
 	componentList << compVTKrender;
     // OCC图形窗口组件
     componentList << new Render::FITKGraph3DWindowOCCInterface;
+    //occ 建模
+    componentList << new OCC::FITKGeoCompOCCInterface;
 	// 模型数据控制器组件
 	componentList << new OperModel::OpersModelInterface;
 	// 界面控制器组件

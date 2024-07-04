@@ -7,7 +7,7 @@
 #include "FITK_Kernal/FITKAppFramework/FITKComponentInterface.h"
 #include "FITK_Kernal/FITKAppFramework/FITKComponents.h"
 #include "FITK_Kernal/FITKAppFramework/FITKGlobalData.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryDataOCC.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Kernal/FITKCore/FITKOperatorRepo.h"
 #include "OperatorsInterface/GraphEventOperator.h"
 
@@ -23,7 +23,7 @@ namespace GUI {
 
 		m_Ui->le_radius->setText("10.0");
 
-		auto geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryDataOCC>();
+		auto geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
 		if (geometryData == nullptr) return;
 		m_Ui->le_name->setText(geometryData->checkName(QString("Sphere-%1").arg(geometryData->getDataCount() + 1)));
 	}
@@ -49,7 +49,7 @@ namespace GUI {
 		sphere->setRadius(radius);
 
 		sphere->update();
-		auto geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryDataOCC>();
+		auto geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
 		if (geometryData == nullptr) return;
 
 		geometryData->appendDataObj(sphere);

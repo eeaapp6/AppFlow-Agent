@@ -28,7 +28,8 @@ win32{
         -lFITKRenderWindowOCC \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
-        -lFITKInterfaceOCC \
+        -lFITKInterfaceGeometry \
+        -lFITKGeoCompOCC \
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
@@ -47,8 +48,9 @@ win32{
         -lFITKRenderWindowVTK \
         -lFITKRenderWindowOCC \
         -lFITKInterfaceFlowOF \
-        -lFITKInterfaceModel \
-        -lFITKInterfaceOCC \
+        -lFITKInterfaceModel \ 
+        -lFITKInterfaceGeometry \
+        -lFITKGeoCompOCC \
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
@@ -79,7 +81,8 @@ unix{
         -lFITKRenderWindowOCC \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
-        -lFITKInterfaceOCC \
+        -lFITKInterfaceGeometry \
+        -lFITKGeoCompOCC \
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
