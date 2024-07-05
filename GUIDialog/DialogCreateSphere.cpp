@@ -38,7 +38,7 @@ namespace GUI {
         auto fac = Interface::FITKInterfaceGeometryFactory::getInstance();
 
         auto sphere = fac->createCommandT<Interface::FITKAbsGeoModelSphere>
-            (Interface::FITKInterfaceGeometryCommand::FGTSphere);
+            (Interface::FITKGeoEnum::FGTSphere);
         if (sphere == nullptr) return;
 
 		auto locX = m_Ui->le_x->text().toDouble();

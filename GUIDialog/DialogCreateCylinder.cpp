@@ -47,7 +47,7 @@ namespace GUI {
         auto fac = Interface::FITKInterfaceGeometryFactory::getInstance();
  
 		auto cylinder = fac->createCommandT<Interface::FITKAbsGeoModelCylinder>
-            (Interface::FITKInterfaceGeometryCommand::FGTCylinder);
+            (Interface::FITKGeoEnum::FGTCylinder);
         if (cylinder == nullptr) return;
 
 		auto locX = m_Ui->le_x->text().toDouble();

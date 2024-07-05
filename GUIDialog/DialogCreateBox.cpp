@@ -41,7 +41,7 @@ namespace GUI {
         auto fac = Interface::FITKInterfaceGeometryFactory::getInstance();
 
         auto box = fac->createCommandT<Interface::FITKAbsGeoModelBox>
-            (Interface::FITKInterfaceGeometryCommand::FGTBox);
+            (Interface::FITKGeoEnum::FGTBox);
         if (box == nullptr) return;
 
 		auto locX = m_Ui->le_x->text().toDouble();
