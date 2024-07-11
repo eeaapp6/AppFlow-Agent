@@ -63,25 +63,57 @@ namespace GUIOper
         Comp::FITKGraph3DWindowVTK* vtkW = dynamic_cast<Comp::FITKGraph3DWindowVTK*>(graphWidget);
         Render::FITKGraph3DWindowOCC* occW = dynamic_cast<Render::FITKGraph3DWindowOCC*>(graphWidget);
 
-        // 转换可视化对象类型。
-        Exchange::FITKGraphObjectShapeVTK* vtkObj = dynamic_cast<Exchange::FITKGraphObjectShapeVTK*>(obj);
-        Exchange::FITKGraphObjectShapeOCC* occObj = dynamic_cast<Exchange::FITKGraphObjectShapeOCC*>(obj);
-
-        // 添加可视化对象。
-        //@{
-        if (vtkW && vtkObj)
+        // VTK
+        if (vtkW)
         {
-            // 移除可视化对象重新添加。
-            vtkObj->removeFromGraphWidget();
-            vtkW->addObject(vtkObj->getRenderLayer(), vtkObj, fitView);
-        }
+            // 转换可视化对象类型。
+            Exchange::FITKGraphObjectShapeVTK* vtkObj = dynamic_cast<Exchange::FITKGraphObjectShapeVTK*>(obj);
 
-        if (occW && occObj)
-        {
-            // 移除可视化对象重新添加。
-            occObj->removeFromGraphWidget();
-            occW->addObject(occObj, fitView);
+            // 添加可视化对象。
+            //@{
+            if (vtkObj)
+            {
+                // 移除可视化对象重新添加。
+                vtkObj->removeFromGraphWidget();
+                vtkW->addObject(vtkObj->getRenderLayer(), vtkObj, true);
+            }
+            //}
+
+            // 刷新窗口。
+            //@{
+            if (fitView)
+            {
+                vtkW->fitView();
+            }
+            else
+            {
+                vtkW->reRender();
+            }
+            //@}
         }
-        //@}
+        // OCC
+        else if (occW)
+        {
+            // 转换可视化对象类型。
+            Exchange::FITKGraphObjectShapeOCC* occObj = dynamic_cast<Exchange::FITKGraphObjectShapeOCC*>(obj);
+
+            // 添加可视化对象。
+            //@{
+            if (occObj)
+            {
+                // 移除可视化对象重新添加。
+                occObj->removeFromGraphWidget();
+                occW->addObject(occObj, false);
+            }
+            //}
+
+            // 刷新窗口。
+            //@{
+            if (fitView)
+            {
+                occW->fitView();
+            }
+            //@}
+        }
     }
 }  // namespace GUIOper
