@@ -1,3 +1,15 @@
 [submodule "Tools"]
 	path = Tools
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/Tools.git
+[submodule "FITK_Kernel/FITKCore"]
+	path = FITK_Kernel/FITKCore
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKCore.git
+[submodule "FITK_Kernel/FITKAppFramework"]
+	path = FITK_Kernel/FITKAppFramework
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKAppFramework.git
+[submodule "FITK_Kernel/FITKAdaptor"]
+	path = FITK_Kernel/FITKAdaptor
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKAdaptor.git
+[submodule "FITK_Kernel/FITKPython"]
+	path = FITK_Kernel/FITKPython
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKPython.git
