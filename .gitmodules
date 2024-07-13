@@ -37,3 +37,18 @@
 [submodule "FITK_Interface/FITKVTKAlgorithm"]
 	path = FITK_Interface/FITKVTKAlgorithm
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKVTKAlgorithm.git
+[submodule "FITK_Component/FITKGeoCompOCC"]
+	path = FITK_Component/FITKGeoCompOCC
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKGeoCompOCC.git
+[submodule "FITK_Component/FITKRenderWindowVTK"]
+	path = FITK_Component/FITKRenderWindowVTK
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKRenderWindowVTK.git
+[submodule "FITK_Component/FITKWidget"]
+	path = FITK_Component/FITKWidget
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKWidget.git
+[submodule "FITK_Component/FITKCompMessageWidget"]
+	path = FITK_Component/FITKCompMessageWidget
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKCompMessageWidget.git
+[submodule "FITK_Component/FITKOCCGraphAdaptor"]
+	path = FITK_Component/FITKOCCGraphAdaptor
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKOCCGraphAdaptor.git
