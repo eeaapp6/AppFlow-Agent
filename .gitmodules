@@ -13,3 +13,27 @@
 [submodule "FITK_Kernel/FITKPython"]
 	path = FITK_Kernel/FITKPython
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKPython.git
+[submodule "FITK_Interface/FITKInterfaceFlowOF"]
+	path = FITK_Interface/FITKInterfaceFlowOF
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceFlowOF.git
+[submodule "FITK_Interface/FITKInterfaceGeometry"]
+	path = FITK_Interface/FITKInterfaceGeometry
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceGeometry.git
+[submodule "FITK_Interface/FITKInterfaceModel"]
+	path = FITK_Interface/FITKInterfaceModel
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceModel.git
+[submodule "FITK_Interface/FITKInterfaceIO"]
+	path = FITK_Interface/FITKInterfaceIO
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceIO.git
+[submodule "FITK_Interface/FITKInterfaceMesh"]
+	path = FITK_Interface/FITKInterfaceMesh
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceMesh.git
+[submodule "FITK_Interface/FITKInterfaceMeshGen"]
+	path = FITK_Interface/FITKInterfaceMeshGen
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceMeshGen.git
+[submodule "FITK_Interface/FITKInterfacePhysics"]
+	path = FITK_Interface/FITKInterfacePhysics
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfacePhysics.git
+[submodule "FITK_Interface/FITKVTKAlgorithm"]
+	path = FITK_Interface/FITKVTKAlgorithm
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKVTKAlgorithm.git
