@@ -6,6 +6,7 @@ SUBDIRS += \
     $$PWD/FITKOCCGraphAdaptor \
     $$PWD/FITKWidget \
     $$PWD/FITKCompMessageWidget \
+    $$PWD/FITKRenderWindowOCC \
  
 
 CONFIG += ordered

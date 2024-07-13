@@ -52,3 +52,6 @@
 [submodule "FITK_Component/FITKOCCGraphAdaptor"]
 	path = FITK_Component/FITKOCCGraphAdaptor
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKOCCGraphAdaptor.git
+[submodule "FITK_Component/FITKRenderWindowOCC"]
+	path = FITK_Component/FITKRenderWindowOCC
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKRenderWindowOCC.git
