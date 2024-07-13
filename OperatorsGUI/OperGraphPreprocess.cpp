@@ -1,16 +1,16 @@
 ﻿#include "OperGraphPreprocess.h"
 
 // APP
-#include "FITK_Kernal/FITKAppFramework/FITKAppFramework.h"
-#include "FITK_Kernal/FITKAppFramework/FITKGlobalData.h"
-#include "FITK_Kernal/FITKAppFramework/FITKAPPSettings.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
+#include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAPPSettings.h"
 
 // Global data
-#include "FITK_Kernal/FITKCore/FITKDataRepo.h"
+#include "FITK_Kernel/FITKCore/FITKDataRepo.h"
 
 // Graph widget and object
-#include "FITK_Kernal/FITKCore/FITKAbstractGraphWidget.h"
-#include "FITK_Kernal/FITKCore/FITKAbstractGraphObject.h"
+#include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
+#include "FITK_Kernel/FITKCore/FITKAbstractGraphObject.h"
 
 // Graph data manager
 #include "GraphDataProvider/GraphProviderManager.h"

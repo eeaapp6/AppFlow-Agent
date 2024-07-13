@@ -1,28 +1,28 @@
 ﻿#include "GraphModelProvider.h"
 
 // Render VTK
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraphRender.h"
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraphRender.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
 
 // Render OCC
-#include "FITK_GeneralComponent/FITKRenderWindowOCC/FITKGraphObjectOCC.h"
+#include "FITK_Component/FITKRenderWindowOCC/FITKGraphObjectOCC.h"
 
 // Graph
-#include "FITK_GeneralComponent/FITKOCCGraphAdaptor/FITKGraphObjectShapeOCC.h"
-#include "FITK_GeneralComponent/FITKOCCGraphAdaptor/FITKGraphObjectShapeVTK.h"
+#include "FITK_Component/FITKOCCGraphAdaptor/FITKGraphObjectShapeOCC.h"
+#include "FITK_Component/FITKOCCGraphAdaptor/FITKGraphObjectShapeVTK.h"
 
 // Adaptor
-#include "FITK_GeneralComponent/FITKOCCGraphAdaptor/FITKOCCViewAdaptorBase.h"
+#include "FITK_Component/FITKOCCGraphAdaptor/FITKOCCViewAdaptorBase.h"
 
 // Global data
-#include "FITK_Kernal/FITKCore/FITKDataRepo.h"
+#include "FITK_Kernel/FITKCore/FITKDataRepo.h"
 
 // Data
-#include "FITK_GeneralComponent/FITKGeoCompOCC/FITKAbstractOCCModel.h"
+#include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
 
 // Graph widget
-#include "FITK_Kernal/FITKCore/FITKAbstractGraphWidget.h"
+#include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
 
 namespace GraphData
 {

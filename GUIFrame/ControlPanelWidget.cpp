@@ -1,6 +1,6 @@
 ﻿#include "ControlPanelWidget.h"
 #include "MainWindow.h"
-#include "FITK_GeneralComponent/FITKWidget/FITKDrawerWidget.h"
+#include "FITK_Component/FITKWidget/FITKDrawerWidget.h"
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QPixmap>

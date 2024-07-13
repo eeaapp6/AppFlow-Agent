@@ -7,7 +7,7 @@
 #ifndef __COMPONENTFACTORY__
 #define __COMPONENTFACTORY__
 
-#include "FITK_Kernal/FITKAppFramework/FITKComponentFactory.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponentFactory.h"
  /**
   * @brief 组件工厂类
   * @author YanZhiHui (chanyuantiandao@126.com)

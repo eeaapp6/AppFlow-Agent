@@ -8,7 +8,7 @@
 #define __OPERSGUIINTERFACE_H__
 
 #include "OperatorsGUIAPI.h"
-#include "FITK_Kernal/FITKAppFramework/FITKComponentInterface.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponentInterface.h"
 
 
 namespace GUIOper

@@ -5,14 +5,12 @@
  * @date 2024-04-19
  */
 #include "ComponentFactory.h"
-#include "FITK_Kernal/FITKAppFramework/FITKAppFramework.h"
-#include "FITK_Kernal/FITKAppFramework/FITKGlobalData.h"
-#include "FITK_GeneralComponent/FITKCompMessageWidget/FITKConsoleComponent.h"
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
-#include "FITK_GeneralComponent/FITKRenderWindowOCC/FITKGraph3DWindowOCCInterface.h"
-#include "FITK_GeneralComponent/FITKAbaqusIOINP/FITKAbaqusIOINPInterface.h"
-#include "FITK_GeneralComponent/FITKCalculiXInpIO/FITKCalculiXINPIOInterface.h"
-#include "FITK_GeneralComponent/FITKGeoCompOCC/FITKGeoCompOCCInterface.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
+#include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Component/FITKCompMessageWidget/FITKConsoleComponent.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
+#include "FITK_Component/FITKRenderWindowOCC/FITKGraph3DWindowOCCInterface.h"
+#include "FITK_Component/FITKGeoCompOCC/FITKGeoCompOCCInterface.h"
 #include "OperatorsModel/OpersModelInterface.h"
 #include "OperatorsGUI/OpersGUIInterface.h"
 

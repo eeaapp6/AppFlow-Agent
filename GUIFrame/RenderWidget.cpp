@@ -6,15 +6,15 @@
 #include <QGroupBox>
 #include <QGridLayout>
 #include <QMdiSubWindow>
-#include "FITK_GeneralComponent/FITKWidget/FITKMdiArea.h"
-#include "FITK_Kernal/FITKAppFramework/FITKAppFramework.h"
-#include "FITK_Kernal/FITKAppFramework/FITKComponentFactory.h"
-#include "FITK_Kernal/FITKAppFramework/FITKComponentInterface.h"
-#include "FITK_Kernal/FITKAppFramework/FITKComponents.h"
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
-#include "FITK_GeneralComponent/FITKRenderWindowOCC/FITKGraph3DWindowOCCInterface.h"
-#include "FITK_Kernal/FITKCore/FITKOperatorRepo.h"
+#include "FITK_Component/FITKWidget/FITKMdiArea.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponentFactory.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponentInterface.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
+#include "FITK_Component/FITKRenderWindowOCC/FITKGraph3DWindowOCCInterface.h"
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 
 namespace GUI
 {

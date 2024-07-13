@@ -11,7 +11,7 @@
 
 #include "OperGraphEvent3D.h"
 
-#include "FITK_Kernal/FITKCore/FITKOperatorRepo.h"
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 
 namespace Comp
 {

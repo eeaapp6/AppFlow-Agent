@@ -140,7 +140,7 @@
   <customwidget>
    <class>Comp::FITKSciNotationLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">FITK_GeneralComponent/FITKWidget/FITKSciNotationLineEdit.h</header>
+   <header location="global">FITK_Component/FITKWidget/FITKSciNotationLineEdit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

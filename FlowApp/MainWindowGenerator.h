@@ -7,7 +7,7 @@
 #ifndef __MAINWINDOWGENERATOR__
 #define __MAINWINDOWGENERATOR__
 
-#include "FITK_Kernal/FITKAppFramework/FITKAbstractMainWinGenerator.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAbstractMainWinGenerator.h"
 
 /**
  * @brief 主窗口生成器类

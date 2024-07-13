@@ -1,25 +1,25 @@
 ﻿#include "OperGraphEvent3D.h"
 
 // App
-#include "FITK_Kernal/FITKAppFramework/FITKAppFramework.h"
-#include "FITK_Kernal/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
+#include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 
 // Graph
-#include "FITK_GeneralComponent/FITKOCCGraphAdaptor/FITKGraphObjectShapeOCC.h"
-#include "FITK_GeneralComponent/FITKOCCGraphAdaptor/FITKGraphObjectShapeVTK.h"
+#include "FITK_Component/FITKOCCGraphAdaptor/FITKGraphObjectShapeOCC.h"
+#include "FITK_Component/FITKOCCGraphAdaptor/FITKGraphObjectShapeVTK.h"
 
 // Render VTK
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraphRender.h"
-#include "FITK_GeneralComponent/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraphRender.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
 
 // Render OCC
-#include "FITK_GeneralComponent/FITKRenderWindowOCC/FITKGraph3DWindowOCC.h"
+#include "FITK_Component/FITKRenderWindowOCC/FITKGraph3DWindowOCC.h"
 
 // GUI
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/RenderWidget.h"
-#include "FITK_GeneralComponent/FITKWidget/FITKMdiArea.h"
+#include "FITK_Component/FITKWidget/FITKMdiArea.h"
 
 namespace GUIOper
 {

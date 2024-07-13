@@ -1,9 +1,9 @@
 ﻿#include "CommandLineHandler.h"
-#include "FITK_Kernal/FITKCore/FITKOperatorRepo.h"
-#include "FITK_Kernal/FITKCore/FITKActionOperator.h"
-#include "FITK_Kernal/FITKAppFramework/FITKAppFramework.h"
-#include "FITK_Kernal/FITKAppFramework/FITKGlobalData.h"
-#include "FITK_Kernal/FITKAppFramework/FITKRunTimeSetting.h"
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
+#include "FITK_Kernel/FITKCore/FITKActionOperator.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
+#include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKAppFramework/FITKRunTimeSetting.h"
 
 void CommandLineHandler::exec()
 {

@@ -9,7 +9,7 @@
 #ifndef __GRAPHEVENTOPERATOR_H__
 #define __GRAPHEVENTOPERATOR_H__
 
-#include "FITK_Kernal/FITKCore/FITKAbstractOperator.h"
+#include "FITK_Kernel/FITKCore/FITKAbstractOperator.h"
 
 #include "OperatorsInterfaceAPI.h"
 

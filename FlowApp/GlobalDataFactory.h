@@ -7,7 +7,7 @@
 #ifndef __GLOBALDATAFACTORY__
 #define __GLOBALDATAFACTORY__
 
-#include "FITK_Kernal/FITKAppFramework/FITKAbstractGlobalDataFactory.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAbstractGlobalDataFactory.h"
 /**
  * @brief 全局数据工厂类
  * @author YanZhiHui (chanyuantiandao@126.com)

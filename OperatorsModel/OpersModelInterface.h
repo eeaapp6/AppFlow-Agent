@@ -10,7 +10,7 @@
 #define __MODELSOPERATOR_INTERFACE_H__
 
 #include "OperatorsModelAPI.h"
-#include "FITK_Kernal/FITKAppFramework/FITKComponentInterface.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponentInterface.h"
 
 
 namespace OperModel

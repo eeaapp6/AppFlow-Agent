@@ -1,7 +1,7 @@
 ﻿#include "ActionEventHandler.h"
-#include "FITK_Kernal/FITKCore/FITKOperatorRepo.h"
-#include "FITK_Kernal/FITKCore/FITKActionOperator.h"
-#include "FITK_Kernal/FITKAppFramework/FITKMessage.h"
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
+#include "FITK_Kernel/FITKCore/FITKActionOperator.h"
+#include "FITK_Kernel/FITKAppFramework/FITKMessage.h"
 
 namespace GUI
 {

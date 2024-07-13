@@ -2,9 +2,9 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     $$PWD/FITK_Kernel \ 
-#    $$PWD/FITK_Interface \
+    $$PWD/FITK_Interface \
 #    $$PWD/FITK_Test \
-#    $$PWD/FITK_GeneralComponent \
+    $$PWD/FITK_Component \
     $$PWD/FlowApp \
     $$PWD/GUIFrame \
     $$PWD/GUIWidget \

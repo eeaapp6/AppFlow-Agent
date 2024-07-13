@@ -9,7 +9,7 @@
 #ifndef __COMMANDLINEHANDLER_H__
 #define __COMMANDLINEHANDLER_H__
 
-#include "FITK_Kernal/FITKAppFramework/FITKCommandLineHandler.h"
+#include "FITK_Kernel/FITKAppFramework/FITKCommandLineHandler.h"
 
 /**
  * @brief 自定义命令行处理器

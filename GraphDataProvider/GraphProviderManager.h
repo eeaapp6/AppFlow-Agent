@@ -17,7 +17,7 @@
 #include <QMutexLocker>
 #include <QHash>
 
-#include "FITK_Kernal/FITKCore/FITKCoreMacros.h"
+#include "FITK_Kernel/FITKCore/FITKCoreMacros.h"
 
 // 前置声明
 namespace Core

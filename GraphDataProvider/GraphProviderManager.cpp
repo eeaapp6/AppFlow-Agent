@@ -1,7 +1,7 @@
 ﻿#include "GraphProviderManager.h"
 
 // Graph widget
-#include "FITK_Kernal/FITKCore/FITKAbstractGraphWidget.h"
+#include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
 
 // Provider
 #include "GraphModelProvider.h"

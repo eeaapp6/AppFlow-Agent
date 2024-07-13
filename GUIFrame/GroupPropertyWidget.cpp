@@ -1,5 +1,5 @@
 ﻿#include "GroupPropertyWidget.h"
-#include "FITK_GeneralComponent/FITKWidget/FITKDrawerWidget.h"
+#include "FITK_Component/FITKWidget/FITKDrawerWidget.h"
 
 namespace GUI
 {

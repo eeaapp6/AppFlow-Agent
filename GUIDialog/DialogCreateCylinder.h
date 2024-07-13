@@ -2,7 +2,7 @@
 #define DIALOGCREATECYLINDER_H
 
 #include "GUIDialogAPI.h"
-#include "FITK_Kernal/FITKCore/FITKActionOperator.h"
+#include "FITK_Kernel/FITKCore/FITKActionOperator.h"
 #include <QDialog>
 
 namespace Ui {

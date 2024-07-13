@@ -1,8 +1,8 @@
 ﻿#ifndef __OPERMODELMANAGER_H__
 #define __OPERMODELMANAGER_H__
 
-#include "FITK_Kernal/FITKCore/FITKActionOperator.h"
-#include "FITK_Kernal/FITKCore/FITKOperatorRepo.h"
+#include "FITK_Kernel/FITKCore/FITKActionOperator.h"
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 
 namespace Oper
 {

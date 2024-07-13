@@ -1,4 +1,4 @@
-﻿#include "FITK_Kernal/FITKAppFramework/FITKAppFramework.h"
+﻿#include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "MainWindowGenerator.h"
 #include "GlobalDataFactory.h"
 #include "ComponentFactory.h"
