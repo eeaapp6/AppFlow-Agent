@@ -13,6 +13,7 @@
 #include "FITK_Component/FITKGeoCompOCC/FITKGeoCompOCCInterface.h"
 #include "OperatorsModel/OpersModelInterface.h"
 #include "OperatorsGUI/OpersGUIInterface.h"
+#include "PreWindowInitializer.h"
 
 QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
 {
@@ -32,6 +33,8 @@ QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
 	// 界面控制器组件
 	componentList << new GUIOper::OperatorsGUIInterface;
 
+    // VTK窗口初始化器
+    compVTKrender->addInitializer(1, new PreWindowInitializer);
 
 	return componentList;
 }

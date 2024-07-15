@@ -1,7 +1,7 @@
 ﻿#include "GraphProviderManager.h"
 
 // Graph widget
-#include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
 
 // Provider
 #include "GraphModelProvider.h"
@@ -45,7 +45,7 @@ namespace GraphData
         deleteProvider(m_modelProvider);
     }
 
-    GraphModelProvider* GraphProviderManager::getModelProvider(Core::FITKAbstractGraph3DWidget* graphWidget)
+    GraphModelProvider* GraphProviderManager::getModelProvider(Comp::FITKGraph3DWindowVTK* graphWidget)
     {
         // 不存在则创建新管理器。
         if (!m_modelProvider)

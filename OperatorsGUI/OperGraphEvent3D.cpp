@@ -5,8 +5,7 @@
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 
 // Graph
-#include "FITK_Component/FITKOCCGraphAdaptor/FITKGraphObjectShapeOCC.h"
-#include "FITK_Component/FITKOCCGraphAdaptor/FITKGraphObjectShapeVTK.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectShape.h"
 
 // Render VTK
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
@@ -23,7 +22,7 @@
 
 namespace GUIOper
 {
-    Core::FITKAbstractGraph3DWidget* OperGraphEvent3D::getGraphWidget()
+    Comp::FITKGraph3DWindowVTK* OperGraphEvent3D::getGraphWidget()
     {
         // 获取主窗口。
         GUI::MainWindow* mainWindow = FITKAPP->getGlobalData()->getMainWindowT<GUI::MainWindow>();
@@ -47,73 +46,34 @@ namespace GUIOper
 
         // 获取当前窗口，尝试转换为三维窗口。
         QWidget* w = mdiArea->getCurrentWidget();
-        Core::FITKAbstractGraph3DWidget* graphWidget = dynamic_cast<Core::FITKAbstractGraph3DWidget*>(w);
+        Comp::FITKGraph3DWindowVTK* graphWidget = dynamic_cast<Comp::FITKGraph3DWindowVTK*>(w);
 
         return graphWidget;
     }
 
-    void OperGraphEvent3D::addGraphObjectToWidget(Core::FITKAbstractGraphObject* obj, Core::FITKAbstractGraph3DWidget* graphWidget, bool fitView)
+    void OperGraphEvent3D::addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObjectShape* obj, Comp::FITKGraph3DWindowVTK* graphWidget, bool fitView)
     {
         if (!obj || !graphWidget)
         {
             return;
         }
 
-        // 检查窗口可视化引擎。
-        Comp::FITKGraph3DWindowVTK* vtkW = dynamic_cast<Comp::FITKGraph3DWindowVTK*>(graphWidget);
-        Render::FITKGraph3DWindowOCC* occW = dynamic_cast<Render::FITKGraph3DWindowOCC*>(graphWidget);
+        // 添加可视化对象。
+        //@{
+        obj->removeFromGraphWidget();
+        graphWidget->addObject(obj->getRenderLayer(), obj, true);
+        //}
 
-        // VTK
-        if (vtkW)
+        // 刷新窗口。
+        //@{
+        if (fitView)
         {
-            // 转换可视化对象类型。
-            Exchange::FITKGraphObjectShapeVTK* vtkObj = dynamic_cast<Exchange::FITKGraphObjectShapeVTK*>(obj);
-
-            // 添加可视化对象。
-            //@{
-            if (vtkObj)
-            {
-                // 移除可视化对象重新添加。
-                vtkObj->removeFromGraphWidget();
-                vtkW->addObject(vtkObj->getRenderLayer(), vtkObj, true);
-            }
-            //}
-
-            // 刷新窗口。
-            //@{
-            if (fitView)
-            {
-                vtkW->fitView();
-            }
-            else
-            {
-                vtkW->reRender();
-            }
-            //@}
+            graphWidget->fitView();
         }
-        // OCC
-        else if (occW)
+        else
         {
-            // 转换可视化对象类型。
-            Exchange::FITKGraphObjectShapeOCC* occObj = dynamic_cast<Exchange::FITKGraphObjectShapeOCC*>(obj);
-
-            // 添加可视化对象。
-            //@{
-            if (occObj)
-            {
-                // 移除可视化对象重新添加。
-                occObj->removeFromGraphWidget();
-                occW->addObject(occObj, false);
-            }
-            //}
-
-            // 刷新窗口。
-            //@{
-            if (fitView)
-            {
-                occW->fitView();
-            }
-            //@}
+            graphWidget->reRender();
         }
+        //@}
     }
 }  // namespace GUIOper

@@ -12,10 +12,14 @@
 #include "OperatorsInterface/GraphEventOperator.h"
 
 // 前置声明
-namespace Core
+namespace Comp
 {
-    class FITKAbstractGraph3DWidget;
-    class FITKAbstractGraphObject;
+    class FITKGraph3DWindowVTK;
+}
+
+namespace Exchange
+{
+    class FITKOCC2VTKGraphObjectShape;
 }
 
 namespace GUIOper
@@ -50,7 +54,7 @@ namespace GUIOper
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        Core::FITKAbstractGraph3DWidget* getGraphWidget();
+        Comp::FITKGraph3DWindowVTK* getGraphWidget();
 
         /**
          * @brief   添加可视化对象至三维窗口。
@@ -60,7 +64,7 @@ namespace GUIOper
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        void addGraphObjectToWidget(Core::FITKAbstractGraphObject* obj, Core::FITKAbstractGraph3DWidget* graphWidget, bool fitView = false);
+        void addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObjectShape* obj, Comp::FITKGraph3DWindowVTK* graphWidget, bool fitView = false);
 
     };
 

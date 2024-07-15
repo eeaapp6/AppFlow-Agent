@@ -9,8 +9,8 @@
 #include "FITK_Kernel/FITKCore/FITKDataRepo.h"
 
 // Graph widget and object
-#include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
-#include "FITK_Kernel/FITKCore/FITKAbstractGraphObject.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
+#include "FITK_Component/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
 
 // Graph data manager
 #include "GraphDataProvider/GraphProviderManager.h"
@@ -23,7 +23,7 @@ namespace GUIOper
     void OperGraphPreprocess::updateGraph(int dataId, bool fitView)
     {
         // 获取可视化窗口。
-        Core::FITKAbstractGraph3DWidget* graphWidget = getGraphWidget();
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
         if (!graphWidget)
         {
             return;
@@ -37,7 +37,7 @@ namespace GUIOper
         }
 
         // 获取或创建可视化对象。
-        Core::FITKAbstractGraphObject* obj = modelProvider->getModelGraphObject(dataId);
+        Exchange::FITKOCC2VTKGraphObjectShape* obj = modelProvider->getModelGraphObject(dataId);
         if (!obj)
         {
             return;

@@ -6,6 +6,7 @@ QT         +=  core widgets gui
 
 unix:!mac{ QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN/\'" }
 
+include(./vtk.pri)
 include(./FlowApp.pri)
 
 win32{
@@ -33,6 +34,7 @@ win32{
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
+        -lFITKWidget
     
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -54,6 +56,7 @@ win32{
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
+        -lFITKWidget
 
 
     message("Windows FlowApp generated")
@@ -86,6 +89,7 @@ unix{
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
+        -lFITKWidget
        
 
     message("Linux FlowApp generated")

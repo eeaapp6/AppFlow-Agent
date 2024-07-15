@@ -20,9 +20,9 @@
 #include "FITK_Kernel/FITKCore/FITKCoreMacros.h"
 
 // 前置声明
-namespace Core
+namespace Comp
 {
-    class FITKAbstractGraph3DWidget;
+    class FITKGraph3DWindowVTK;
 }
 
 namespace GraphData
@@ -64,7 +64,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        GraphModelProvider* getModelProvider(Core::FITKAbstractGraph3DWidget* graphWidget);
+        GraphModelProvider* getModelProvider(Comp::FITKGraph3DWindowVTK* graphWidget);
 
         /**
          * @brief   在所有算例数据管理尝试寻找该数据ID对应的可视化对象并刷新，如果不存在则跳出。

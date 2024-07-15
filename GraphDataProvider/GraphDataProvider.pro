@@ -31,9 +31,8 @@ win32{
         -lFITKCore \
         -lFITKInterfaceGeometry \
         -lFITKAdaptor \
-        -lFITKOCCGraphAdaptor \
+        -lFITKOCC2VTKGraphAdaptor \
         -lFITKRenderWindowVTK \
-        -lFITKRenderWindowOCC \
         -lFITKVTKAlgorithm \
 
     Debug:CONFIG            +=  console
@@ -48,9 +47,8 @@ win32{
         -lFITKCore \
         -lFITKInterfaceGeometry \
         -lFITKAdaptor \
-        -lFITKOCCGraphAdaptor \
+        -lFITKOCC2VTKGraphAdaptor \
         -lFITKRenderWindowVTK \
-        -lFITKRenderWindowOCC \
         -lFITKVTKAlgorithm \
 
     message("Windows GraphDataProvider generated")
@@ -74,10 +72,9 @@ unix{
         -lFITKCore \
         -lFITKInterfaceGeometry \
         -lFITKAdaptor \
-        -lFITKOCCGraphAdaptor \
+        -lFITKOCC2VTKGraphAdaptor \
         -lFITKRenderWindowVTK \
-        -lFITKRenderWindowOCC \
-        -lFITKVTKAlgorithm \ 
+        -lFITKVTKAlgorithm \
 
     message("Linux GraphDataProvider generated")
 }
