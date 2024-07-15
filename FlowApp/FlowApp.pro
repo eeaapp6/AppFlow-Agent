@@ -26,7 +26,6 @@ win32{
         -lFITKCore \
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
-        -lFITKRenderWindowOCC \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceGeometry \
@@ -48,7 +47,6 @@ win32{
         -lFITKCore \
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
-        -lFITKRenderWindowOCC \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \ 
         -lFITKInterfaceGeometry \
@@ -81,7 +79,6 @@ unix{
         -lFITKCore \
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
-        -lFITKRenderWindowOCC \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceGeometry \
