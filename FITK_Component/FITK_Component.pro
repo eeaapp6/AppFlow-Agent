@@ -6,7 +6,7 @@ SUBDIRS += \
     #$$PWD/FITKOCCGraphAdaptor \
     $$PWD/FITKWidget \
     $$PWD/FITKCompMessageWidget \
-    $$PWD/FITKRenderWindowOCC \
+    #$$PWD/FITKRenderWindowOCC \
     $$PWD/FITKOCC2VTKGraphAdaptor
  
 
