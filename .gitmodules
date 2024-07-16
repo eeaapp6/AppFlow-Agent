@@ -49,9 +49,6 @@
 [submodule "FITK_Component/FITKCompMessageWidget"]
 	path = FITK_Component/FITKCompMessageWidget
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKCompMessageWidget.git
-[submodule "FITK_Component/FITKRenderWindowOCC"]
-	path = FITK_Component/FITKRenderWindowOCC
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKRenderWindowOCC.git
 [submodule "FITK_Component/FITKOCC2VTKGraphAdaptor"]
 	path = FITK_Component/FITKOCC2VTKGraphAdaptor
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKOCC2VTKGraphAdaptor.git
