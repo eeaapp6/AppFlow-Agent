@@ -7,7 +7,7 @@ SUBDIRS += \
     $$PWD/FITKWidget \
     $$PWD/FITKCompMessageWidget \
     #$$PWD/FITKRenderWindowOCC \
-    $$PWD/FITKOCC2VTKGraphAdaptor
- 
+    $$PWD/FITKOCC2VTKGraphAdaptor \
+    $$PWD/FITKOFDictWriter \
 
 CONFIG += ordered
