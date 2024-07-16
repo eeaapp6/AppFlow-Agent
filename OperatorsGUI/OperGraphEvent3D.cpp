@@ -13,7 +13,7 @@
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
 
 // Render OCC
-#include "FITK_Component/FITKRenderWindowOCC/FITKGraph3DWindowOCC.h"
+//#include "FITK_Component/FITKRenderWindowOCC/FITKGraph3DWindowOCC.h"
 
 // GUI
 #include "GUIFrame/MainWindow.h"
