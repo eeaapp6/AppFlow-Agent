@@ -13,7 +13,7 @@
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
-#include "FITK_Component/FITKRenderWindowOCC/FITKGraph3DWindowOCCInterface.h"
+//#include "FITK_Component/FITKRenderWindowOCC/FITKGraph3DWindowOCCInterface.h"
 #include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 
 namespace GUI
