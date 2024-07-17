@@ -12,17 +12,19 @@ namespace FITKTest
     {
         Q_OBJECT
     public:
-        TestOFMeshReader() = default;
-        ~TestOFMeshReader() = default;
+        explicit TestOFMeshReader(QString path = QString());
+        ~TestOFMeshReader();
+
+        void testRun();
 
     private slots:
         void initTestCase();
         void cleanupTestCase();
-
         void testReader();
 
     private:
         Interface::FITKOpenFOAMMeshReader* _reader{};
+        QString _path{};
     };
 }
 

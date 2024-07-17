@@ -24,10 +24,11 @@ namespace Interface {
     bool FITKOpenFOAMMeshReader::read()
     {
         if (_fileName.isEmpty()) return false;
-        QFileInfo fileInfo(_fileName);
+        QFileInfo fileInfo(_fileName + QDir::separator());
         if (!fileInfo.isDir()) return false;
 
         auto dir = fileInfo.dir();
+        auto dirname = dir.absolutePath();
         if (!dir.exists()) return false;
 
         if (!dir.exists("points") || !dir.exists("faces") || !dir.exists("owner") || !dir.exists("neighbour")) return false;
@@ -43,6 +44,8 @@ namespace Interface {
         if (!readNeighbour(dir.filePath("neighbour"))) return false;
 
         if (!setupCells()) return false;
+
+        printf("Finish reading. Node: %d, Element: %d\n", _unstructuredMesh->getNodeCount(), _unstructuredMesh->getElementCount());
         return true;
     }
 
@@ -463,6 +466,7 @@ namespace Interface {
         }
         // OpenFOAM的face节点是按右手螺旋定则排序的
         auto hex8Cell = new Interface::FITKElementHex8;
+        hex8Cell->setEleID(eleIndex);
         hex8Cell->setNodeID({ id0, id3, id2, id1, id4, id5, id6, id7 });
         return hex8Cell;
     }
