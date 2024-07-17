@@ -10,6 +10,7 @@
 #include "FITK_Component/FITKCompMessageWidget/FITKConsoleComponent.h"
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
 #include "FITK_Component/FITKGeoCompOCC/FITKGeoCompOCCInterface.h"
+#include "FITK_Component/FITKMeshGenOF/FITKMeshGenOFInterface.h"
 #include "OperatorsModel/OpersModelInterface.h"
 #include "OperatorsGUI/OpersGUIInterface.h"
 #include "PreWindowInitializer.h"
@@ -25,6 +26,8 @@ QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
 	componentList << compVTKrender;
     //occ 建模
     componentList << new OCC::FITKGeoCompOCCInterface;
+    //OF网格划分
+    componentList << new OF::FITKMeshGenOFInterface;
 	// 模型数据控制器组件
 	componentList << new OperModel::OpersModelInterface;
 	// 界面控制器组件

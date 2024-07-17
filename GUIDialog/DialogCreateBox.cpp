@@ -53,10 +53,10 @@ namespace GUI {
 		auto height = m_Ui->le_height->text().toDouble();
 
 		double point1[3] = { locX, locY, locZ };
-		double point2[3] = { locX + length, locY + width, locZ + height };
+		double leng[3] = {  length,   width,   height };
 
 		box->setPoint1(point1);
-		box->setPoint2(point2);
+		box->setLength(leng);
 		box->update();
 
 		auto geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();

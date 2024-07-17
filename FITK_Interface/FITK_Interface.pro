@@ -6,7 +6,7 @@ SUBDIRS += \
     $$PWD/FITKInterfacePhysics \
     $$PWD/FITKInterfaceIO \
     $$PWD/FITKInterfaceFlowOF \
-#    $$PWD/FITKInterfaceMeshGen \
+    $$PWD/FITKInterfaceMeshGen \
     $$PWD/FITKInterfaceGeometry \
     $$PWD/FITKVTKAlgorithm \
 

@@ -30,10 +30,11 @@ win32{
         -lFITKInterfaceModel \
         -lFITKInterfaceGeometry \
         -lFITKGeoCompOCC \
+        -lFITKMeshGenOF \
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
-        -lFITKWidget
+        -lFITKWidget \
     
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -51,10 +52,11 @@ win32{
         -lFITKInterfaceModel \ 
         -lFITKInterfaceGeometry \
         -lFITKGeoCompOCC \
+        -lFITKMeshGenOF \
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
-        -lFITKWidget
+        -lFITKWidget \
 
 
     message("Windows FlowApp generated")
@@ -83,10 +85,11 @@ unix{
         -lFITKInterfaceModel \
         -lFITKInterfaceGeometry \
         -lFITKGeoCompOCC \
+        -lFITKMeshGenOF \
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
-        -lFITKWidget
+        -lFITKWidget \
        
 
     message("Linux FlowApp generated")
