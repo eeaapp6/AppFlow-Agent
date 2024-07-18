@@ -25,14 +25,12 @@ namespace GUI {
 
     SphereInfoWidget::SphereInfoWidget(Interface::FITKAbsGeoModelSphere * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
         Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _isCreate(true), _obj(obj), _oper(oper)
+        _isCreate(false), _obj(obj), _oper(oper)
     {
         init();
 
         _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
         _ui->lineEdit_Name->setEnabled(false);
-
-        setDataToWidget();
     }
 
     SphereInfoWidget::~SphereInfoWidget()
@@ -57,6 +55,7 @@ namespace GUI {
         {
             name = _obj->getDataObjectName();
             _ui->lineEdit_Name->setText(name);
+            setDataToWidget();
         }
     }
 
@@ -96,6 +95,11 @@ namespace GUI {
             _obj->update();
             geometryData->appendDataObj(_obj);
         }
+        else {
+            if (_obj == nullptr)return;
+            getDataFormWidget();
+            _obj->update();
+        }
 
         if (_oper && _obj) {
             _oper->setArgs("objID", _obj->getDataObjectID());
@@ -110,19 +114,16 @@ namespace GUI {
 
     void SphereInfoWidget::setDataToWidget()
     {
-        //if (_obj == nullptr)return;
+        if (_obj == nullptr)return;
 
-        //double basicPoint[3] = { 0,0,0 };
-        //_obj->get(basicPoint);
-        //_ui->lineEdit_BasicPoint1->setText(QString::number(basicPoint[0]));
-        //_ui->lineEdit_BasicPoint2->setText(QString::number(basicPoint[1]));
-        //_ui->lineEdit_BasicPoint3->setText(QString::number(basicPoint[2]));
+        double centerPoint[3] = { 0,0,0 };
+        _obj->getLocation(centerPoint);
+        _ui->lineEdit_CenterPoint1->setText(QString::number(centerPoint[0]));
+        _ui->lineEdit_CenterPoint2->setText(QString::number(centerPoint[1]));
+        _ui->lineEdit_CenterPoint3->setText(QString::number(centerPoint[2]));
 
-        //double dimensions[3] = { 0,0,0 };
-        //_obj->getLength(dimensions);
-        //_ui->lineEdit_Dimensions1->setText(QString::number(dimensions[0]));
-        //_ui->lineEdit_Dimensions2->setText(QString::number(dimensions[1]));
-        //_ui->lineEdit_Dimensions3->setText(QString::number(dimensions[2]));
+        double radius = _obj->getRadius();
+        _ui->lineEdit_Radius->setText(QString::number(radius));
     }
 
     void SphereInfoWidget::getDataFormWidget()

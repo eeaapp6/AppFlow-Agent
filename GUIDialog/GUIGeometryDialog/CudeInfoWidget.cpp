@@ -25,14 +25,12 @@ namespace GUI {
 
     CudeInfoWidget::CudeInfoWidget(Interface::FITKAbsGeoModelBox * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
         Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _isCreate(true), _obj(obj), _oper(oper)
+        _isCreate(false), _obj(obj), _oper(oper)
     {
         init();
 
         _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
         _ui->lineEdit_Name->setEnabled(false);
-
-        setDataToWidget();
     }
 
     CudeInfoWidget::~CudeInfoWidget()
@@ -57,6 +55,7 @@ namespace GUI {
         {
             name = _obj->getDataObjectName();
             _ui->lineEdit_Name->setText(name);
+            setDataToWidget();
         }
     }
 
@@ -95,6 +94,11 @@ namespace GUI {
             _obj->setDataObjectName(name);
             _obj->update();
             geometryData->appendDataObj(_obj);
+        }
+        else {
+            if (_obj == nullptr)return;
+            getDataFormWidget();
+            _obj->update();
         }
 
         if (_oper && _obj) {

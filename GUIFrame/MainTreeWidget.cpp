@@ -26,12 +26,10 @@ namespace GUI
         QTreeWidgetItem* item = new QTreeWidgetItem(QStringList{ "geometry" });
         
         _treeWidget->addTopLevelItem(item);
-
-        updateWidget();
     }
 
-    void MainTreeWidget::updateWidget()
+    QTreeWidget * MainTreeWidget::getTreeWidget()
     {
-
+        return _treeWidget;
     }
 }

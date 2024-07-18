@@ -240,6 +240,11 @@ namespace GUI
         pannel->addAction(action, actionType);
     }
 
+    MainTreeWidget* MainWindow::getTreeWidget() const
+    {
+        return _treeWidget;
+    }
+
 	RenderWidget * MainWindow::getRenderWidget() const
 	{
 		return m_RenderWidget;

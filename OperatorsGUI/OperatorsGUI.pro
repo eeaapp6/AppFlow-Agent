@@ -31,7 +31,10 @@ win32{
         -lFITKOCC2VTKGraphAdaptor \
         -lFITKRenderWindowVTK \
         -lGraphDataProvider \
-        -lGUIFrame
+        -lGUIFrame \
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -48,7 +51,10 @@ win32{
         -lFITKOCC2VTKGraphAdaptor \
         -lFITKRenderWindowVTK \
         -lGraphDataProvider \
-        -lGUIFrame
+        -lGUIFrame \
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
 
     message("Windows OperatorsGUI generated")
 }
@@ -75,7 +81,10 @@ unix{
         -lFITKOCC2VTKGraphAdaptor \
         -lFITKRenderWindowVTK \
         -lGraphDataProvider \
-        -lGUIFrame
+        -lGUIFrame \
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
         
     message("Linux OperatorsGUI generated")
 }

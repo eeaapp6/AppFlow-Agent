@@ -64,6 +64,12 @@ namespace GUI
 		 */
 		ActionEventHandler* getActionEventHandle() const;
         /**
+         * @brief  获取树结构子部件
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-06-12
+         */
+        MainTreeWidget* getTreeWidget() const;
+        /**
          * @brief  获取渲染子部件
          * @author YanZhiHui (chanyuantiandao@126.com)
          * @date   2024-06-12

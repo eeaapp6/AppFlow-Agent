@@ -25,14 +25,12 @@ namespace GUI {
 
     CylinderInfoWidget::CylinderInfoWidget(Interface::FITKAbsGeoModelCylinder * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
         Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _isCreate(true), _obj(obj), _oper(oper)
+        _isCreate(false), _obj(obj), _oper(oper)
     {
         init();
 
         _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
         _ui->lineEdit_Name->setEnabled(false);
-
-        setDataToWidget();
     }
 
     CylinderInfoWidget::~CylinderInfoWidget()
@@ -57,6 +55,7 @@ namespace GUI {
         {
             name = _obj->getDataObjectName();
             _ui->lineEdit_Name->setText(name);
+            setDataToWidget();
         }
     }
 
@@ -99,6 +98,11 @@ namespace GUI {
             _obj->update();
             geometryData->appendDataObj(_obj);
         }
+        else {
+            if (_obj == nullptr)return;
+            getDataFormWidget();
+            _obj->update();
+        }
 
         if (_oper && _obj) {
             _oper->setArgs("objID", _obj->getDataObjectID());
@@ -113,18 +117,24 @@ namespace GUI {
 
     void CylinderInfoWidget::setDataToWidget()
     {
-        //if (_obj == nullptr)return;
-        //double originPoint[3] = { 0,0,0 };
-        //_obj->getPoint1(basicPoint);
-        //_ui->lineEdit_BasicPoint1->setText(QString::number(basicPoint[0]));
-        //_ui->lineEdit_BasicPoint2->setText(QString::number(basicPoint[1]));
-        //_ui->lineEdit_BasicPoint3->setText(QString::number(basicPoint[2]));
+        if (_obj == nullptr)return;
+        double originPoint[3] = { 0,0,0 };
+        _obj->getLocation(originPoint);
+        _ui->lineEdit_OriginPoint1->setText(QString::number(originPoint[0]));
+        _ui->lineEdit_OriginPoint2->setText(QString::number(originPoint[1]));
+        _ui->lineEdit_OriginPoint3->setText(QString::number(originPoint[2]));
 
-        //double dimensions[3] = { 0,0,0 };
-        //_obj->getLength(dimensions);
-        //_ui->lineEdit_Dimensions1->setText(QString::number(dimensions[0]));
-        //_ui->lineEdit_Dimensions2->setText(QString::number(dimensions[1]));
-        //_ui->lineEdit_Dimensions3->setText(QString::number(dimensions[2]));
+        double axisPoint[3] = { 0,0,0 };
+        _obj->getDirection(axisPoint);
+        _ui->lineEdit_AxisPoint1->setText(QString::number(axisPoint[0]));
+        _ui->lineEdit_AxisPoint2->setText(QString::number(axisPoint[1]));
+        _ui->lineEdit_AxisPoint3->setText(QString::number(axisPoint[2]));
+
+        double radius = _obj->getRadius();
+        _ui->lineEdit_Radius->setText(QString::number(radius));
+
+        double length = _obj->getLength();
+        _ui->lineEdit_Length->setText(QString::number(length));
     }
 
     void CylinderInfoWidget::getDataFormWidget()

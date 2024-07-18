@@ -11,6 +11,14 @@ namespace GUI
 {
     class MainWindow;
 
+    enum class MainTreeEnum {
+        MainTree_None = 0,
+        MainTree_Geomety,
+        MainTree_GeometyItem,
+        MainTree_Mesh,
+        MainTree_MeshItem,
+    };
+
     class GUIFRAMEAPI MainTreeWidget : public PanelWidgetBase
     {
         Q_OBJECT;
@@ -20,7 +28,8 @@ namespace GUI
 
         void init();
 
-        void updateWidget();
+        QTreeWidget* getTreeWidget();
+
     private:
         QTreeWidget* _treeWidget = nullptr;
     };
