@@ -4,6 +4,7 @@ HEADERS += \
     $$PWD/OperManagerBase.h \
     $$PWD/OperatorsCubeManager.h \
     $$PWD/OperatorsCylinderManager.h \
+    $$PWD/OperatorsSphereManager.h \
 
 
 SOURCES += \
@@ -11,5 +12,6 @@ SOURCES += \
     $$PWD/OperManagerBase.cpp \
     $$PWD/OperatorsCubeManager.cpp \
     $$PWD/OperatorsCylinderManager.cpp \
+    $$PWD/OperatorsSphereManager.cpp \
 
 FORMS += \
