@@ -55,7 +55,7 @@ namespace GUI {
         }
         else
         {
-            //name = _obj->objectName();
+            name = _obj->getDataObjectName();
             _ui->lineEdit_Name->setText(name);
         }
     }
@@ -92,6 +92,7 @@ namespace GUI {
             _obj = dynamic_cast<Interface::FITKAbsGeoModelBox*>(geofactory->createCommand(Interface::FITKGeoEnum::FITKGeometryComType::FGTBox));
             if (_obj == nullptr)return;
             getDataFormWidget();
+            _obj->setDataObjectName(name);
             _obj->update();
             geometryData->appendDataObj(_obj);
         }
@@ -120,6 +121,7 @@ namespace GUI {
     void CudeInfoWidget::setDataToWidget()
     {
         if (_obj == nullptr)return;
+
         double basicPoint[3] = { 0,0,0 };
         _obj->getPoint1(basicPoint);
         _ui->lineEdit_BasicPoint1->setText(QString::number(basicPoint[0]));

@@ -47,8 +47,14 @@
       </item>
       <item row="0" column="3">
        <widget class="QPushButton" name="pushButton_BasicPoint">
+        <property name="maximumSize">
+         <size>
+          <width>30</width>
+          <height>30</height>
+         </size>
+        </property>
         <property name="text">
-         <string>PushButton</string>
+         <string/>
         </property>
        </widget>
       </item>
