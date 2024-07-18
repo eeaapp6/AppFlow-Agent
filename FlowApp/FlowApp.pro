@@ -55,6 +55,11 @@ win32{
         -lOperatorsGUI \
         -lGUIFrame \
 
+Debug:LIBS +=  -L$$PWD/../Tools/Win64/SARibbon/libd/  \                                  
+               -lSARibbonBard  \
+
+Release:LIBS +=  -L$$PWD/../Tools/Win64/SARibbon/lib/  \
+               -lSARibbonBar  \
 
     message("Windows FlowApp generated")
 }

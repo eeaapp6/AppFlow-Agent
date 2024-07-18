@@ -1,6 +1,8 @@
 HEADERS += \
     $$PWD/GUIFrameAPI.h \
+    $$PWD/GUIFramEnum.h \
     $$PWD/ActionEventHandler.h \
+    $$PWD/MainTreeWidget.h \
     $$PWD/MainWindow.h \
     $$PWD/MainMenu.h \
     $$PWD/PanelWidgetBase.h \
@@ -12,6 +14,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/ActionEventHandler.cpp \
+    $$PWD/MainTreeWidget.cpp \
     $$PWD/MainWindow.cpp \
     $$PWD/MainMenu.cpp \
     $$PWD/PanelWidgetBase.cpp \

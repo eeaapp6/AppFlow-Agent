@@ -15,6 +15,7 @@ win32{
 
     INCLUDEPATH    +=  ./   \
                        ../  \
+                       ../Tools/Win64/SARibbon/include/SARibbon-2.0.1/  \
 
     Release:DESTDIR         = ../output/bin
     Release:MOC_DIR         = ../generate/GUIFrame/release/moc
@@ -31,6 +32,7 @@ win32{
         -lGUIWidget \
 
 
+
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
     Debug:MOC_DIR         = ../generate/GUIFrame/debug/moc
@@ -45,6 +47,12 @@ win32{
         -lFITKWidget \
         -lFITKRenderWindowVTK \
         -lGUIWidget \
+    
+Debug:LIBS +=  -L$$PWD/../Tools/Win64/SARibbon/libd/  \                                  
+               -lSARibbonBard  \
+
+Release:LIBS +=  -L$$PWD/../Tools/Win64/SARibbon/lib/  \
+               -lSARibbonBar  \
 
     message("Windows GUIFrame generated")
 }

@@ -5,31 +5,55 @@
 #include "RenderWidget.h"
 #include "GroupPropertyWidget.h"
 #include "MainMenu.h"
+#include "ActionEventHandler.h"
+#include "MainTreeWidget.h"
+
+#include <SARibbonBar.h>
+#include <SARibbonApplicationButton.h>
+#include <SARibbonQuickAccessBar.h>
+#include <SARibbonTabBar.h>
+
+#include <QString>
+#include <QMenu>
+#include <QDebug>
+#include <QToolBar>
+#include <QHash>
+#include <QApplication>
+#include <QCoreApplication>
+#include <QPainter>
+#include <QColor>
 #include <QSplitter>
 #include <QGridLayout>
 #include <QStatusBar>
 #include <QLabel>
 
-#include "ActionEventHandler.h"
 
 namespace GUI
 {
-
-
-	MainWindow::MainWindow(QWidget *parent) :
-		QMainWindow(parent),
-		m_Ui(new Ui::MainWindow)
+	MainWindow::MainWindow(QWidget *parent) : SARibbonMainWindow(parent)
 	{
-		m_Ui->setupUi(this);
-		setWindowTitle(tr("Flow App"));
+        _currentWidget = new QWidget(this);
 
+        _ribbonBar = this->ribbonBar();
+        
+        //使用Office2013风格
+        sa_set_ribbon_theme(_ribbonBar, SARibbonTheme::RibbonThemeOffice2013);
+
+        //设置顶部线条颜色
+        _ribbonBar->setTabBarBaseLineColor(QColor(186, 201, 219));
+
+        _ribbonBar->setRibbonStyle(SARibbonBar::RibbonStyleLooseThreeRow);
+        _ribbonBar->setFont(_font);
+
+        setWindowTitle("FastCAE");
+        _ribbonBar->setWindowTitleTextColor(Qt::black);
 
 		init();
 	}
 
 	MainWindow::~MainWindow()
 	{
-		delete m_Ui;
+
 	}
 
 	ActionEventHandler * MainWindow::getActionEventHandle() const
@@ -40,50 +64,14 @@ namespace GUI
 	void MainWindow::init()
 	{
 		m_ActionHandler = new ActionEventHandler;
-		initMenu();
 		initCentralWidget();
-		initStatusBar();
-	}
-
-	void MainWindow::initMenu()
-	{
-		// 根据不同风格创建不同的菜单
-		m_MainMenu = new MainMenu(this);
-
-
-		MenuActionItem spearator;
-		// 文件菜单
-		MenuActionItem fileOpen(tr("Open"), "actionFileOpen", QIcon(":/icons/open.png"));
-		MenuActionItem fileSave(tr("Save"), "actionFileSave", QIcon(":/icons/save.png"));
-		MenuActionItem fileSaveAs(tr("SaveAs"), "actionFileSaveAs", QIcon(":/icons/saveas.png"));
-		MenuActionItem fileExit(tr("Exit"), "actionFileExit");
-
-		// 视图菜单
-		MenuActionItem viewAutoFit(tr("Auto Fit"), "actionViewAutoFit", QIcon(":/icons/autofit.png"));
-		MenuActionItem viewFront(tr("Front"), "actionViewFront", QIcon(":/icons/view_front.png"));
-		MenuActionItem viewBack(tr("Back"), "actionViewBack", QIcon(":/icons/view_back.png"));
-		MenuActionItem viewTop(tr("Top"), "actionViewTop", QIcon(":/icons/view_top.png"));
-		MenuActionItem viewBottom(tr("Bottom"), "actionViewBottom", QIcon(":/icons/view_bottom.png"));
-		MenuActionItem viewLeft(tr("Left"), "actionViewLeft", QIcon(":/icons/view_left.png"));
-		MenuActionItem viewRight(tr("Right"), "actionViewRight", QIcon(":/icons/view_right.png"));
-		MenuActionItem viewDisplayNode(tr("Display Node"), "actionViewDisplayNode", true, "DisplayMode");
-		MenuActionItem viewDisplayWireFrame(tr("Display WireFrame"), "actionViewDisplayWireFrame", true, "DisplayMode");
-		MenuActionItem viewDisplaySurface(tr("Display Surface"), "actionViewDisplaySurface", true, "DisplayMode");
-		MenuActionItem viewDisplay(tr("Display"), "actionViewDisplay", { &viewDisplayNode, &viewDisplayWireFrame, &viewDisplaySurface });
-
-		// 创建几何
-		MenuActionItem createBox(tr("Box"), "actionCreateBox", QIcon(":/icons/createbox.png"));
-		MenuActionItem createCylinder(tr("Cylinder"), "actionCreateCylinder", QIcon(":/icons/createcylinder.png"));
-		MenuActionItem createSphere(tr("Sphere"), "actionCreateSphere", QIcon(":/icons/createsphere.png"));
-		// 菜单栏
-		m_MainMenu->addMenu(tr("File"), { &fileOpen, &spearator, &fileSave, &fileSaveAs, &spearator, &fileExit });
-		m_MainMenu->addMenu(tr("View"), { &viewAutoFit, &spearator, &viewFront, &viewBack, &viewTop, &viewBottom, &viewLeft, &viewRight, &spearator, &viewDisplay });
-		m_MainMenu->addMenu(tr("Create"), { &createBox, &createCylinder, &createSphere });
-		// 工具栏菜单
-		m_MainMenu->addToolMenu(tr("File"), { &fileOpen, &fileSave, &fileSaveAs });
-		m_MainMenu->addToolMenu(tr("View"), { &viewAutoFit, &viewFront, &viewBack, &viewTop, &viewBottom, &viewLeft, &viewRight });
-		m_MainMenu->addToolMenu(tr("Create"), { &createBox, &createCylinder, &createSphere });
-
+		
+        initApplicationButton();
+        initGeometry();
+        initMesh();
+        initSetting();
+        initResult();
+        initHelp();
 	}
 
 	void MainWindow::initCentralWidget()
@@ -93,42 +81,98 @@ namespace GUI
 		spliterLayout->setMouseTracking(true);
 		spliterLayout->setHandleWidth(5);
 
-		m_ControlWidget = new ControlPanelWidget(this);
+        _treeWidget = new MainTreeWidget(this);
 		m_PropertyWidget = new PropertyWidget(this);
 		m_RenderWidget = new RenderWidget(this);
 		m_GroupPropertyWidget = new GroupPropertyWidget(this);
 
-		spliterLayout->addWidget(m_ControlWidget);
+		spliterLayout->addWidget(_treeWidget);
 		spliterLayout->addWidget(m_PropertyWidget);
 		spliterLayout->addWidget(m_RenderWidget);
 		spliterLayout->addWidget(m_GroupPropertyWidget);
 		// 设置大小
 		spliterLayout->setSizes({ 200, 300, 1000, 200 });
 
-		auto mainLayout = new QGridLayout();
-		mainLayout->setObjectName("CentralGridLayout");
-		mainLayout->setContentsMargins(5, 5, 5, 0);
-		m_Ui->centralwidget->setLayout(mainLayout);
-		mainLayout->addWidget(spliterLayout);
+        auto mainLayout = new QGridLayout();
+        mainLayout->setObjectName("CentralGridLayout");
+        mainLayout->setContentsMargins(5, 5, 5, 0);
+        mainLayout->addWidget(spliterLayout);
+
+        _currentWidget->setLayout(mainLayout);
+        setCentralWidget(_currentWidget);
 	}
 
-	void MainWindow::initStatusBar()
-	{
-		auto statusBar = new QStatusBar;
-		setStatusBar(statusBar);
+    void MainWindow::initApplicationButton()
+    {
+        //文件部分添加
+        QAbstractButton* fileAppButton = _ribbonBar->applicationButton();
+        fileAppButton->setText(tr("File"));
+        fileAppButton->setFixedWidth(60);
 
-		statusBar->addWidget(new QLabel(tr("Welcome to FlowApp")), 1);
-	}
+        QMenu* menu = nullptr;
+        QAction* action = nullptr;
+    }
 
-	MainMenuBase * MainWindow::getMainMenuBase() const
-	{
-		return m_MainMenu;
-	}
+    void MainWindow::initHome()
+    {
+        QString type = tr("Home");
+        SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
+        _ribbonBar->raiseCategory(gategory);
 
-	ControlPanelWidget * MainWindow::getControlPanelWidget() const
-	{
-		return m_ControlWidget;
-	}
+        QAction* action = nullptr;
+        //文件部分按钮添加
+        SARibbonPannel* pannel = gategory->addPannel(tr("File"));
+    }
+
+    void MainWindow::initGeometry()
+    {
+        QString type = tr("Geometry");
+        SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
+        _ribbonBar->raiseCategory(gategory);
+
+        QAction* action = nullptr;
+        SARibbonPannel* pannel = gategory->addPannel(tr("Geometry"));
+    }
+
+    void MainWindow::initMesh()
+    {
+        QString type = tr("Mesh");
+        SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
+        _ribbonBar->raiseCategory(gategory);
+
+        QAction* action = nullptr;
+        SARibbonPannel* pannel = gategory->addPannel(tr("Mesh import"));
+    }
+
+    void MainWindow::initSetting()
+    {
+        QString type = tr("Setting");
+        SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
+        _ribbonBar->raiseCategory(gategory);
+
+        QAction* action = nullptr;
+        SARibbonPannel* pannel = gategory->addPannel(tr("calculate setting"));
+    }
+
+    void MainWindow::initResult()
+    {
+        QString type = tr("Result");
+        SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
+        _ribbonBar->raiseCategory(gategory);
+
+        QAction* action = nullptr;
+        SARibbonPannel* pannel = gategory->addPannel(tr("Result"));
+    }
+
+    void MainWindow::initHelp()
+    {
+        QString type = tr("Help");
+        SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
+        _ribbonBar->raiseCategory(gategory);
+
+        QAction* action = nullptr;
+        SARibbonPannel* pannel = gategory->addPannel(tr("Help"));
+    }
 
 	RenderWidget * MainWindow::getRenderWidget() const
 	{

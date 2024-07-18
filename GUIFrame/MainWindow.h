@@ -10,6 +10,13 @@
 #include <QMainWindow>
 #include "GUIFrameAPI.h"
 
+#include "FITK_Kernel/FITKCore/FITKAbstractGUIObject.h"
+#include "Tools/Win64/SARibbon/include/SARibbon-2.0.1/SARibbonMainWindow.h"
+
+#include <QFont>
+
+class SARibbonBar;
+
 namespace Ui {
 	class MainWindow;
 }
@@ -22,23 +29,23 @@ namespace GUI
 	class PropertyWidget;
 	class GroupPropertyWidget;
 	class ActionEventHandler;
+    class MainTreeWidget;
 
 	/**
 	 * @brief  主窗口界面类
 	 * @author YanZhiHui (chanyuantiandao@126.com)
 	 * @date   2024-06-12
 	 */
-	class GUIFRAMEAPI MainWindow : public QMainWindow
+	class GUIFRAMEAPI MainWindow : public SARibbonMainWindow, public Core::FITKAbstractGUIObject
 	{
-		Q_OBJECT
-
+        Q_OBJECT;
 	public:
 		/**
 		 * @brief  构造函数
 		 * @author YanZhiHui (chanyuantiandao@126.com)
 		 * @date   2024-06-12
 		 */
-		explicit MainWindow(QWidget *parent = nullptr);
+		MainWindow(QWidget *parent = nullptr);
 		/**
 		 * @brief  析构函数
 		 * @author YanZhiHui (chanyuantiandao@126.com)
@@ -53,19 +60,6 @@ namespace GUI
 		 * @data   2024-06-12
 		 */
 		ActionEventHandler* getActionEventHandle() const;
-
-        /**
-         * @brief  获取菜单
-         * @author YanZhiHui (chanyuantiandao@126.com)
-         * @date   2024-06-12
-         */
-        MainMenuBase* getMainMenuBase() const;
-        /**
-         * @brief  获取控制面板子部件
-         * @author YanZhiHui (chanyuantiandao@126.com)
-         * @date   2024-06-12
-         */
-        ControlPanelWidget* getControlPanelWidget() const;
         /**
          * @brief  获取渲染子部件
          * @author YanZhiHui (chanyuantiandao@126.com)
@@ -93,43 +87,37 @@ namespace GUI
 		 */
 		void init();
 		/**
-		 * @brief  初始化菜单（包括菜单栏和工具栏）
-		 * @author YanZhiHui (chanyuantiandao@126.com)
-		 * @date   2024-06-11
-		 */
-		void initMenu();
-		/**
 		 * @brief  初始化中间部件
 		 * @author YanZhiHui (chanyuantiandao@126.com)
 		 * @date   2024-06-11
 		 */
 		void initCentralWidget();
-		/**
-		 * @brief  初始化状态栏
-		 * @author YanZhiHui (chanyuantiandao@126.com)
-		 * @date   2024-06-11
-		 */
-		void initStatusBar();
-
+        /**
+         * @brief 模块初始化
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-05-11
+         */
+        void initApplicationButton();
+        void initHome();
+        void initGeometry();
+        void initMesh();
+        void initSetting();
+        void initResult();
+        void initHelp();
 	private:
-		/**
-		 * @brief  Ui
-		 * @author YanZhiHui (chanyuantiandao@126.com)
-		 * @date   2024-06-11
-		 */
-		Ui::MainWindow *m_Ui{};
-		/**
-		 * @brief  菜单
-		 * @author YanZhiHui (chanyuantiandao@126.com)
-		 * @date   2024-06-11
-		 */
-		MainMenuBase* m_MainMenu{};
-		/**
-		 * @brief  控制面板
-		 * @author YanZhiHui (chanyuantiandao@126.com)
-		 * @date   2024-06-11
-		 */
-		ControlPanelWidget* m_ControlWidget{};
+        QWidget* _currentWidget = nullptr;
+        /**
+         * @brief RibbonBar对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-05-30
+         */
+        SARibbonBar* _ribbonBar = nullptr;
+        /**
+         * @brief 树结构界面
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-05-30
+         */
+        MainTreeWidget* _treeWidget = nullptr;
 		/**
 		 * @brief  渲染部件
 		 * @author YanZhiHui (chanyuantiandao@126.com)
@@ -154,6 +142,12 @@ namespace GUI
 		 * @date   2024-06-12
 		 */
 		ActionEventHandler* m_ActionHandler{};
+        /**
+         * @brief 字符格式
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-05-30
+         */
+        QFont _font = QFont("Arial", 9);
 
 	};
 }
