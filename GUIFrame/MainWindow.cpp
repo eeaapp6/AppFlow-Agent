@@ -49,6 +49,14 @@ namespace GUI
         _ribbonBar->setWindowTitleTextColor(Qt::black);
 
 		init();
+
+        QList<QAction*> actionList = this->findChildren<QAction*>();
+        for (QAction* action: actionList){
+            if (action == nullptr)continue;
+            connect(action, SIGNAL(triggered()), this->getActionEventHandle(), SLOT(execOperator()));
+        }
+
+        _ribbonBar->setCurrentIndex(1);
 	}
 
 	MainWindow::~MainWindow()
@@ -61,7 +69,22 @@ namespace GUI
 		return m_ActionHandler;
 	}
 
-	void MainWindow::init()
+    QAction * MainWindow::createAction(const QString & toolTip, const QString & objectName, const QString & iconPath, const QString & iconText)
+    {
+        // 实例化一个action
+        QAction* tempAction = new QAction(this);
+
+        // 设置action的ObjectName
+        tempAction->setObjectName(objectName);
+        // 设置action的ToolTip
+        tempAction->setToolTip(toolTip);
+        // 设置action的图标
+        changeAction(tempAction, iconPath, iconText);
+
+        return tempAction;
+    }
+
+    void MainWindow::init()
 	{
 		m_ActionHandler = new ActionEventHandler;
 		initCentralWidget();
@@ -132,6 +155,22 @@ namespace GUI
 
         QAction* action = nullptr;
         SARibbonPannel* pannel = gategory->addPannel(tr("Geometry"));
+        action = createAction(tr("Import Geometry"), "actionImportGeometry", "", tr("import geometry"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        
+        pannel = gategory->addPannel(tr("3D model"));
+        action = createAction(tr("Create Cube"), "actionCreateCube", "", tr("Create Cube"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = createAction(tr("Create Sphere"), "actionCreateSphere", "", tr("Create Sphere"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = createAction(tr("Create Cone"), "actionCreateCone", "", tr("Create Cone"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = createAction(tr("Create Cirque"), "actionCreateCirque", "", tr("Create Cirque"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = createAction(tr("Create Cylinder"), "actionCreateCylinder", "", tr("Create Cylinder"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = createAction(tr("Create Spiral"), "actionCreateSpiral", "", tr("Create Spiral"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
     }
 
     void MainWindow::initMesh()
@@ -172,6 +211,33 @@ namespace GUI
 
         QAction* action = nullptr;
         SARibbonPannel* pannel = gategory->addPannel(tr("Help"));
+    }
+
+    bool MainWindow::changeAction(QAction * action, const QString iconPath, const QString & iconText)
+    {
+        if (action == nullptr)return false;
+        //图片修改
+        if (!iconPath.isEmpty()) {
+            action->setIcon(QIcon(iconPath));
+        };
+
+        //图注修改
+        if (iconText.isEmpty()) {
+            action->setText(action->toolTip());
+        }
+        else {
+            action->setText(iconText);
+        }
+
+        action->setFont(_font);
+        return true;
+    }
+
+    void MainWindow::pannelAddAction(SARibbonPannel * pannel, QAction * action, SARibbonPannelItem::RowProportion actionType)
+    {
+        //pannel中添加action
+        if (pannel == nullptr || action == nullptr)return;
+        pannel->addAction(action, actionType);
     }
 
 	RenderWidget * MainWindow::getRenderWidget() const

@@ -1,6 +1,7 @@
 ﻿#ifndef _MainTreeWidget_H
 #define _MainTreeWidget_H
 
+#include "GUIFrameAPI.h"
 #include "PanelWidgetBase.h"
 #include "GUIFramEnum.h"
 
@@ -10,7 +11,7 @@ namespace GUI
 {
     class MainWindow;
 
-    class MainTreeWidget : public PanelWidgetBase
+    class GUIFRAMEAPI MainTreeWidget : public PanelWidgetBase
     {
         Q_OBJECT;
     public:

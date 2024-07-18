@@ -7,6 +7,7 @@
 #ifndef __PROPERTYWINDOW_H__
 #define __PROPERTYWINDOW_H__
 
+#include "GUIFrameAPI.h"
 #include "PanelWidgetBase.h"
 
 namespace GUI
@@ -16,7 +17,7 @@ namespace GUI
 	 * @author YanZhiHui (chanyuantiandao@126.com)
 	 * @date   2024-06-11
 	 */
-	class PropertyWidget : public PanelWidgetBase
+	class GUIFRAMEAPI PropertyWidget : public PanelWidgetBase
 	{
 		Q_OBJECT
 	public:
@@ -32,7 +33,6 @@ namespace GUI
 		 * @date   2024-06-11
 		 */
 		~PropertyWidget() = default;
-
 	};
 }
 #endif // !__PROPERTYWINDOW_H__

@@ -1,11 +1,13 @@
 HEADERS += \ 
     $$PWD/OperatorsModelAPI.h \ 
     $$PWD/OpersModelInterface.h \
-    $$PWD/OperModelManager.h \
+    $$PWD/OperManagerBase.h \
+    $$PWD/OperatorsCubeManager.h \
 
 
 SOURCES += \
-    $$PWD/OperModelManager.cpp \
     $$PWD/OpersModelInterface.cpp \
+    $$PWD/OperManagerBase.cpp \
+    $$PWD/OperatorsCubeManager.cpp \
 
 FORMS += \

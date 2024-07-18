@@ -18,8 +18,5 @@ namespace GUI
 		auto scrollArea = new QScrollArea(this);
 		scrollArea->setWidget(new PropertyEmptyWidget(m_MainWindow, tr("Welcome to FlowApp.")));
 		setWidget(scrollArea);
-
 	}
-
-
 }

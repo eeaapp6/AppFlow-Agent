@@ -12,10 +12,12 @@
 
 #include "FITK_Kernel/FITKCore/FITKAbstractGUIObject.h"
 #include "Tools/Win64/SARibbon/include/SARibbon-2.0.1/SARibbonMainWindow.h"
+#include "Tools/Win64/SARibbon/include/SARibbon-2.0.1/SARibbonPannelItem.h"
 
 #include <QFont>
 
 class SARibbonBar;
+class SARibbonPannel;
 
 namespace Ui {
 	class MainWindow;
@@ -29,6 +31,7 @@ namespace GUI
 	class PropertyWidget;
 	class GroupPropertyWidget;
 	class ActionEventHandler;
+ 
     class MainTreeWidget;
 
 	/**
@@ -78,7 +81,17 @@ namespace GUI
          * @date   2024-06-12
          */
         GroupPropertyWidget* getGroupPropertyWidget() const;
-
+        /**
+         * @brief 创建按钮
+         * @param[i]  toolTip        提示信息
+         * @param[i]  objectName     按钮名称
+         * @param[i]  iconPath       按钮图标
+         * @param[i]  iconText       图注
+         * @return QAction* action对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-05-11
+         */
+        QAction* createAction(const QString &toolTip, const QString &objectName, const QString &iconPath = "", const QString& iconText = "");
 	private:
 		/**
 		 * @brief  初始化
@@ -104,6 +117,25 @@ namespace GUI
         void initSetting();
         void initResult();
         void initHelp();
+        /**
+         * @brief 按钮修改
+         * @param[i]  action         按钮对象
+         * @param[i]  iconPath       图标路径
+         * @return true 成功
+         * @return false 失败
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-05-11
+         */
+        bool changeAction(QAction* action, const QString iconPath, const QString& iconText = "");
+        /**
+         * @brief RibbonPannel中添加action
+         * @param[i]  pannel         pannel对象
+         * @param[i]  action         action对象
+         * @param[i]  actionType     action的类型
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-05-30
+         */
+        void pannelAddAction(SARibbonPannel* pannel, QAction* action, SARibbonPannelItem::RowProportion actionType = SARibbonPannelItem::Large);
 	private:
         QWidget* _currentWidget = nullptr;
         /**

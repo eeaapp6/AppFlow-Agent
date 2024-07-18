@@ -7,6 +7,7 @@
 #ifndef __PANELWIDGETBASE_H__
 #define __PANELWIDGETBASE_H__
 
+#include "GUIFrameAPI.h"
 #include <QWidget>
 #include <QList>
 
@@ -21,7 +22,7 @@ namespace GUI
 	 * @author YanZhiHui (chanyuantiandao@126.com)
 	 * @date   2024-06-11
 	 */
-	class PanelWidgetBase : public QWidget
+	class GUIFRAMEAPI PanelWidgetBase : public QWidget
 	{
 		Q_OBJECT
 	public:
