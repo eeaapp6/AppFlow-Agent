@@ -33,6 +33,8 @@ namespace GUI
 		 * @date   2024-06-11
 		 */
 		~PropertyWidget() = default;
+
+        void init();
 	};
 }
 #endif // !__PROPERTYWINDOW_H__

@@ -56,7 +56,7 @@ namespace GUI
             connect(action, SIGNAL(triggered()), this->getActionEventHandle(), SLOT(execOperator()));
         }
 
-        _ribbonBar->setCurrentIndex(1);
+        _ribbonBar->setCurrentIndex(0);
 	}
 
 	MainWindow::~MainWindow()

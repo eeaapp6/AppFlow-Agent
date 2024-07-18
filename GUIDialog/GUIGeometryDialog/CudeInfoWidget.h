@@ -29,10 +29,26 @@ namespace GUI
         ~CudeInfoWidget();
 
         void init();
+    private slots:
+        ;
+        void on_pushButton_BasicPoint_clicked();
+
+        void on_pushButton_Cancel_clicked();
+
+        void on_pushButton_CreateOrEdit_clicked();
+
+        void on_pushButton_Clear_clicked();
+
+        void on_pushButton_Add_clicked();
+    private:
+        bool checkValue();
+        void setDataToWidget();
+        void getDataFormWidget();
     private:
         bool _isCreate = false;
         Interface::FITKAbsGeoModelBox* _obj = nullptr;
         Ui::CudeInfoWidget* _ui = nullptr;
+        EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
     };
 }
 
