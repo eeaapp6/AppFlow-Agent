@@ -6,6 +6,7 @@ QT         +=  core widgets gui
 
 unix:!mac{ QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN/\'" }
 
+include(./vtk.pri)
 include(./FlowApp.pri)
 
 win32{
@@ -25,14 +26,15 @@ win32{
         -lFITKCore \
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
-        -lFITKRenderWindowOCC \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceGeometry \
         -lFITKGeoCompOCC \
+        -lFITKMeshGenOF \
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
+        -lFITKWidget \
     
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -46,14 +48,15 @@ win32{
         -lFITKCore \
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
-        -lFITKRenderWindowOCC \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \ 
         -lFITKInterfaceGeometry \
         -lFITKGeoCompOCC \
+        -lFITKMeshGenOF \
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
+        -lFITKWidget \
 
 Debug:LIBS +=  -L$$PWD/../Tools/Win64/SARibbon/libd/  \                                  
                -lSARibbonBard  \
@@ -83,14 +86,15 @@ unix{
         -lFITKCore \
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
-        -lFITKRenderWindowOCC \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceGeometry \
         -lFITKGeoCompOCC \
+        -lFITKMeshGenOF \
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
+        -lFITKWidget \
        
 
     message("Linux FlowApp generated")

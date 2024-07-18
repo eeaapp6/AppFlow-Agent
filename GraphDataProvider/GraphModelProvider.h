@@ -38,7 +38,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        QList<Core::FITKAbstractGraphObject*> getCurrentGraphObjs() override;
+        QList<Exchange::FITKOCC2VTKGraphObjectShape*> getCurrentGraphObjs() override;
 
         /**
          * @brief   获取类名。[重写]
@@ -55,7 +55,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        Core::FITKAbstractGraphObject* getModelGraphObject(int dataId);
+        Exchange::FITKOCC2VTKGraphObjectShape* getModelGraphObject(int dataId);
 
         /**
          * @brief   根据数据ID更新可视化对象，没有则跳出。
@@ -74,7 +74,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        GraphModelProvider(Core::FITKAbstractGraph3DWidget* graphWidget);
+        GraphModelProvider(Comp::FITKGraph3DWindowVTK* graphWidget);
 
         /**
          * @brief   析构函数。
@@ -89,7 +89,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        QHash<int, Core::FITKAbstractGraphObject*> m_modelObjHash;
+        QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*> m_modelObjHash;
 
     };
 }   // namespace GraphData

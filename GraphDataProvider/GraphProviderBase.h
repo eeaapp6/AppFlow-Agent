@@ -16,20 +16,14 @@
 #include <QHash>
 
 // 前置声明
-namespace Core
-{
-    class FITKAbstractGraph3DWidget;
-    class FITKAbstractGraphObject;
-}
-
 namespace Comp
 {
-    class FITKGraphObjectVTK;
+    class FITKGraph3DWindowVTK;
 }
 
-namespace Render
+namespace Exchange
 {
-    class FITKGraphObjectOCC;
+    class FITKOCC2VTKGraphObjectShape;
 }
 
 namespace GraphData
@@ -53,7 +47,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        virtual QList<Core::FITKAbstractGraphObject*> getCurrentGraphObjs() = 0;
+        virtual QList<Exchange::FITKOCC2VTKGraphObjectShape*> getCurrentGraphObjs() = 0;
 
         /**
          * @brief   获取当前算例已实例化的当前可见可视化对象。
@@ -61,7 +55,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        QList<Core::FITKAbstractGraphObject*> getCurrentVisibleGraphObjs();
+        QList<Exchange::FITKOCC2VTKGraphObjectShape*> getCurrentVisibleGraphObjs();
 
         /**
          * @brief   获取类名。[虚函数]
@@ -95,7 +89,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        GraphProviderBase(Core::FITKAbstractGraph3DWidget* graphWidget);
+        GraphProviderBase(Comp::FITKGraph3DWindowVTK* graphWidget);
 
         /**
          * @brief   析构函数。[虚函数]
@@ -110,7 +104,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        void deleteObjsHash(QHash<int, Core::FITKAbstractGraphObject*>& hash);
+        void deleteObjsHash(QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*>& hash);
 
         /**
          * @brief   移除数据管理字典中的所有可视化对象数据并析构。
@@ -118,29 +112,22 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        void deleteObjsHash(QHash<int, QHash<int, Core::FITKAbstractGraphObject*>>& hash);
+        void deleteObjsHash(QHash<int, QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*>>& hash);
 
     protected:
-        /**
-         * @brief   三维可视化引擎名称。
-         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
-         * @date    2024-06-12
-         */
-        QString m_visualEngineName;
-
         /**
          * @brief   管理器所管理的可视化窗口。
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        Core::FITKAbstractGraph3DWidget* m_graphWidget{ nullptr };
+        Comp::FITKGraph3DWindowVTK* m_graphWidget{ nullptr };
 
         /**
          * @brief   临时预览可视化对象数据字典。
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        QHash<int, Core::FITKAbstractGraphObject*> m_previewObjHash = {};
+        QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*> m_previewObjHash = {};
 
     };
 }   // namespace GraphData

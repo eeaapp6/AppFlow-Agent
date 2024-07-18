@@ -12,40 +12,21 @@
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraphRender.h"
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
 
-// Render OCC
-#include "FITK_Component/FITKRenderWindowOCC/FITKGraph3DWindowOCC.h"
-#include "FITK_Component/FITKRenderWindowOCC/FITKGraphObjectOCC.h"
-
 // Graph
-#include "FITK_Component/FITKOCCGraphAdaptor/FITKGraphObjectShapeOCC.h"
-#include "FITK_Component/FITKOCCGraphAdaptor/FITKGraphObjectShapeVTK.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectShape.h"
 
 // Graph widget
 #include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
 
 namespace GraphData
 {
-    GraphProviderBase::GraphProviderBase(Core::FITKAbstractGraph3DWidget* graphWidget) :
+    GraphProviderBase::GraphProviderBase(Comp::FITKGraph3DWindowVTK* graphWidget) :
         m_graphWidget(graphWidget)
     {
         // 获取三维可视化窗口引擎类型。
         if (!m_graphWidget)
         {
             return;
-        }
-
-        // VTK与OCC窗口检测。
-        Comp::FITKGraph3DWindowVTK* vtkW = dynamic_cast<Comp::FITKGraph3DWindowVTK*>(m_graphWidget);
-        Render::FITKGraph3DWindowOCC* occW = dynamic_cast<Render::FITKGraph3DWindowOCC*>(m_graphWidget);
-
-        if (vtkW)
-        {
-            m_visualEngineName = "VTK";
-        }
-
-        if (occW)
-        {
-            m_visualEngineName = "OCC";
         }
     }
 
@@ -54,13 +35,13 @@ namespace GraphData
         // 析构三维可视化对象。
     }
 
-    QList<Core::FITKAbstractGraphObject*> GraphProviderBase::getCurrentVisibleGraphObjs()
+    QList<Exchange::FITKOCC2VTKGraphObjectShape*> GraphProviderBase::getCurrentVisibleGraphObjs()
     {
         //获取所有可视化对象数据。
-        QList<Core::FITKAbstractGraphObject*> objs = getCurrentGraphObjs();
+        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
 
-        QList<Core::FITKAbstractGraphObject*> objsVisible;
-        for (Core::FITKAbstractGraphObject* obj : objs)
+        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objsVisible;
+        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
         {
             if (!obj)
             {
@@ -83,10 +64,10 @@ namespace GraphData
     }
 
     // 批量析构Hash指针。
-    void GraphProviderBase::deleteObjsHash(QHash<int, Core::FITKAbstractGraphObject*>& hash)
+    void GraphProviderBase::deleteObjsHash(QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*>& hash)
     {
         // 传入数据管理字典。
-        for (Core::FITKAbstractGraphObject* obj : hash.values())
+        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : hash.values())
         {
             delete obj;
         }
@@ -95,12 +76,12 @@ namespace GraphData
     }
 
     // 批量析构双层Hash指针。
-    void GraphProviderBase::deleteObjsHash(QHash<int, QHash<int, Core::FITKAbstractGraphObject*>>& hash)
+    void GraphProviderBase::deleteObjsHash(QHash<int, QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*>>& hash)
     {
         // 传入数据管理字典。
-        for (QHash<int, Core::FITKAbstractGraphObject* > subHash : hash.values())
+        for (QHash<int, Exchange::FITKOCC2VTKGraphObjectShape* > subHash : hash.values())
         {
-            for (Core::FITKAbstractGraphObject* obj : subHash.values())
+            for (Exchange::FITKOCC2VTKGraphObjectShape* obj : subHash.values())
             {
                 if (obj)
                 {

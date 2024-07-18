@@ -3,17 +3,12 @@
 // Render VTK
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraphRender.h"
-#include "FITK_Component/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
-
-// Render OCC
-#include "FITK_Component/FITKRenderWindowOCC/FITKGraphObjectOCC.h"
 
 // Graph
-#include "FITK_Component/FITKOCCGraphAdaptor/FITKGraphObjectShapeOCC.h"
-#include "FITK_Component/FITKOCCGraphAdaptor/FITKGraphObjectShapeVTK.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectShape.h"
 
 // Adaptor
-#include "FITK_Component/FITKOCCGraphAdaptor/FITKOCCViewAdaptorBase.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKViewAdaptorBase.h"
 
 // Global data
 #include "FITK_Kernel/FITKCore/FITKDataRepo.h"
@@ -26,7 +21,7 @@
 
 namespace GraphData
 {
-    GraphModelProvider::GraphModelProvider(Core::FITKAbstractGraph3DWidget* graphWidget)
+    GraphModelProvider::GraphModelProvider(Comp::FITKGraph3DWindowVTK* graphWidget)
         : GraphProviderBase(graphWidget)
     {
 
@@ -43,10 +38,10 @@ namespace GraphData
         return "GraphModelProvider";
     }
 
-    QList<Core::FITKAbstractGraphObject*> GraphModelProvider::getCurrentGraphObjs()
+    QList<Exchange::FITKOCC2VTKGraphObjectShape*> GraphModelProvider::getCurrentGraphObjs()
     {
         // 当前所有模型可视化对象数据。
-        QList<Core::FITKAbstractGraphObject*> objs;
+        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs;
 
         // 模型（几何）可视化对象。
         objs << m_modelObjHash.values();
@@ -54,16 +49,10 @@ namespace GraphData
         return objs;
     }
 
-    Core::FITKAbstractGraphObject* GraphModelProvider::getModelGraphObject(int dataId)
+    Exchange::FITKOCC2VTKGraphObjectShape* GraphModelProvider::getModelGraphObject(int dataId)
     {
         // 检查数据ID。
-        Core::FITKAbstractGraphObject* obj{ nullptr };
-
-        // 检查可视化窗口。（可视化引擎）
-        if (m_visualEngineName.isEmpty())
-        {
-            return obj;
-        }
+        Exchange::FITKOCC2VTKGraphObjectShape* obj{ nullptr };
 
         // 检查数据ID。
         Interface::FITKAbstractModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractModel>(dataId);
@@ -79,7 +68,7 @@ namespace GraphData
         }
 
         // 生成可视化对象。
-        Exchange::FITKOCCViewAdaptorBase* adaptor = FITKVIEWADAPTORFACTORY->createT<Exchange::FITKOCCViewAdaptorBase>("Model" + m_visualEngineName, model);
+        Exchange::FITKOCC2VTKViewAdaptorBase* adaptor = FITKVIEWADAPTORFACTORY->createT<Exchange::FITKOCC2VTKViewAdaptorBase>("ModelVTK", model);
         if (!adaptor)
         {
             return obj;
