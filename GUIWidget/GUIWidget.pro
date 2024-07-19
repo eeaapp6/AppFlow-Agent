@@ -32,6 +32,7 @@ win32{
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
     Debug:MOC_DIR         = ../generate/GUIWidget/debug/moc
