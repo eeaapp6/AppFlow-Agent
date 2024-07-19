@@ -150,7 +150,7 @@ LIBS +=  -L../OCC/lib \
                       -lTKGeomBase  \   
                       -lTKHLR  \        
                       -lTKIGES  \       
-                      -lTKIVtk  \       
+                      #-lTKIVtk  \
                       #-lTKIVtkDraw  \   
                       -lTKLCAF  \       
                       -lTKMath  \       

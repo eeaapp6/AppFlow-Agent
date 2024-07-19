@@ -95,9 +95,11 @@ unix{
         -lFITKMeshGenOF \
         -lOperatorsModel \
         -lOperatorsGUI \
+        -lOperatorsInterface \
         -lGUIFrame \
         -lGUIWidget \
         -lFITKWidget \
+        -lSARibbonBar \
        
 
     message("Linux FlowApp generated")
