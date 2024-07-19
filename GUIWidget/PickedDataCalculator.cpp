@@ -14,9 +14,6 @@
 #include <vtkPointData.h>
 #include <vtkLine.h>
 
-// OCC
-#include <TopAbs_ShapeEnum.hxx>
-
 // APP
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKKeyMouseStates.h"
@@ -99,19 +96,19 @@ namespace GraphData
         {
         case PickedDataType::ModelVertPick:
             // 查找点。
-            id = gobj->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_VERTEX);
+            id = gobj->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_VERTEX);
             break;
         case PickedDataType::ModelEdgePick:
             // 查找线。
-            id = gobj->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_EDGE);
+            id = gobj->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_EDGE);
             break;
         case PickedDataType::ModelFacePick:
             // 查找面。
-            id = gobj->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_FACE);
+            id = gobj->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_FACE);
             break;
         case PickedDataType::ModelSolidPick:
             // 查找体。
-            id = gobj->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_SOLID);
+            id = gobj->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_SOLID);
             break;
         default:
             return;

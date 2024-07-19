@@ -15,9 +15,6 @@
 #include <vtkExtractSelection.h>
 #include <vtkIdTypeArray.h>
 
-// OCC
-#include <TopAbs_ShapeEnum.hxx>
-
 // APP
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKKeyMouseStates.h"
@@ -432,16 +429,16 @@ namespace GraphData
         switch (m_pickedInfo._pickObjType)
         {
         case GUI::GUIPickInfo::PickObjType::POBJVert:
-            id = this->GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_VERTEX);
+            id = this->GraphObject->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_VERTEX);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJEdge:
-            id = this->GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_EDGE);
+            id = this->GraphObject->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_EDGE);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJFace:
-            id = this->GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_FACE);
+            id = this->GraphObject->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_FACE);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJSolid:
-            id = this->GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_SOLID);
+            id = this->GraphObject->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_SOLID);
             break;
         {
             return false;
@@ -503,7 +500,7 @@ namespace GraphData
         }
 
         vtkDataSet* dataSet{ nullptr };
-        TopAbs_ShapeEnum shapeEnum;
+        ShapeAbsEnum shapeEnum;
 
         // 根据拾取模型数据类型获取数据集。
         switch (Type)
@@ -511,25 +508,25 @@ namespace GraphData
         case PickedDataType::ModelVertPick:
         {
             dataSet = this->GraphObject->getMesh(ShapeType::ModelVertex);
-            shapeEnum = TopAbs_ShapeEnum::TopAbs_VERTEX;
+            shapeEnum = ShapeAbsEnum::STA_VERTEX;
             break;
         }
         case PickedDataType::ModelEdgePick:
         {
             dataSet = this->GraphObject->getMesh(ShapeType::ModelEdge);
-            shapeEnum = TopAbs_ShapeEnum::TopAbs_EDGE;
+            shapeEnum = ShapeAbsEnum::STA_EDGE;
             break;
         }
         case PickedDataType::ModelFacePick:
         {
             dataSet = this->GraphObject->getMesh(ShapeType::ModelFace);
-            shapeEnum = TopAbs_ShapeEnum::TopAbs_FACE;
+            shapeEnum = ShapeAbsEnum::STA_FACE;
             break;
         }
         case PickedDataType::ModelSolidPick:
         {
             dataSet = this->GraphObject->getMesh(ShapeType::ModelSolid);
-            shapeEnum = TopAbs_ShapeEnum::TopAbs_SOLID;
+            shapeEnum = ShapeAbsEnum::STA_SOLID;
             break;
         }
         default:
