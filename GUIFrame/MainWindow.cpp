@@ -7,6 +7,7 @@
 #include "MainMenu.h"
 #include "ActionEventHandler.h"
 #include "MainTreeWidget.h"
+#include "TabWidget.h"
 
 #include <SARibbonBar.h>
 #include <SARibbonApplicationButton.h>
@@ -107,11 +108,21 @@ namespace GUI
         _treeWidget = new MainTreeWidget(this);
 		m_PropertyWidget = new PropertyWidget(this);
 		m_RenderWidget = new RenderWidget(this);
+        _tabWidgete = new TabWidget(this);
 		m_GroupPropertyWidget = new GroupPropertyWidget(this);
 
+        //添加树界面
 		spliterLayout->addWidget(_treeWidget);
+        //添加属性界面
 		spliterLayout->addWidget(m_PropertyWidget);
-		spliterLayout->addWidget(m_RenderWidget);
+
+        QSplitter* verLayout = new QSplitter(Qt::Vertical);
+        spliterLayout->setMouseTracking(true);
+        spliterLayout->setHandleWidth(5);
+        verLayout->addWidget(m_RenderWidget);
+        verLayout->addWidget(_tabWidgete);
+
+		spliterLayout->addWidget(verLayout);
 		spliterLayout->addWidget(m_GroupPropertyWidget);
 		// 设置大小
 		spliterLayout->setSizes({ 200, 300, 1000, 200 });
