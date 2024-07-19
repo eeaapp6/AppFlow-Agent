@@ -17,6 +17,7 @@
 #include <QStandardItemModel>
 #include <QTreeView>
 #include <QTreeWidgetItem>
+#include <QHeaderView>
 
 Q_DECLARE_METATYPE(GUI::MainTreeEnum)
 
@@ -30,6 +31,9 @@ namespace GUI{
         setContextMenuPolicy(Qt::CustomContextMenu);
         connect(this, SIGNAL(itemClicked(QTreeWidgetItem*, int)), this, SLOT(onItemClicked(QTreeWidgetItem*, int)));
         connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onModelCustomContextMenu(QPoint)));
+
+        //隐藏列标题
+        setHeaderHidden(true);
     }
     // TreeWidget类析构函数
     TreeWidget::~TreeWidget()
@@ -71,6 +75,10 @@ namespace GUI{
 
             geometryItem->addChild(item);
         }
+
+        //展开全部子集
+        setItemsExpandable(true);		
+        expandAll();
     }
 
     void TreeWidget::onItemClicked(QTreeWidgetItem * item, int column)
