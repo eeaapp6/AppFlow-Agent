@@ -178,7 +178,7 @@ private:
     void pick(bool isPreview = false);
 
     /**
-     * @brief   在当前鼠标位置执行一次点击拾取节点操作。
+     * @brief   在当前鼠标位置执行一次点击拾取节点操作。（预留）
      * @param   graphWindow：可视化窗口
      * @param   pos：拾取位置
      * @param   isPreview：是否为预选
@@ -189,7 +189,7 @@ private:
     void pickPoint(Comp::FITKGraph3DWindowVTK* graphWindow, int* pos, bool isPreview, double tol = 0.005);
 
     /**
-     * @brief   在当前鼠标位置执行一次点击拾取单元操作。（线、面、体拾取均使用此方法）
+     * @brief   在当前鼠标位置执行一次点击拾取单元操作。（点、线、面、体拾取均使用此方法）
      * @param   graphWindow：可视化窗口
      * @param   pos：拾取位置
      * @param   isPreview：是否为预选

@@ -115,7 +115,7 @@ namespace GUIOper
             break;
         case GUI::GUIPickInfo::POBJFace:
         case GUI::GUIPickInfo::POBJSolid:
-            m_graphObjPreview->setPickedType(3);
+            m_graphObjPreview->setPickedType(2);
             break;
         default:
             m_graphObjPreview->setVisible(false);

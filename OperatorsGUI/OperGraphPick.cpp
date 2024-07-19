@@ -75,7 +75,7 @@ namespace GUIOper
             break;
         case GUI::GUIPickInfo::POBJFace:
         case GUI::GUIPickInfo::POBJSolid:
-            m_graphObjPick->setPickedType(3);
+            m_graphObjPick->setPickedType(2);
             break;
         default:
             m_graphObjPick->setVisible(false);
@@ -132,7 +132,7 @@ namespace GUIOper
             break;
         case GUI::GUIPickInfo::POBJFace:
         case GUI::GUIPickInfo::POBJSolid:
-            m_graphObjPick->setPickedType(3);
+            m_graphObjPick->setPickedType(2);
             break;
         default:
             m_graphObjPick->setVisible(false);

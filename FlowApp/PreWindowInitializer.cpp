@@ -277,8 +277,6 @@ void PreWindowInteractionStyle::pick(bool isPreview)
     switch (type)
     {
     case GUI::GUIPickInfo::POBJVert:
-        pickPoint(graphWindow, pos, isPreview);
-        break;
     case GUI::GUIPickInfo::POBJEdge:
     case GUI::GUIPickInfo::POBJFace:
     case GUI::GUIPickInfo::POBJSolid:
