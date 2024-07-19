@@ -17,4 +17,7 @@ namespace EventOper
     {
 
     }
+    void TreeEventOperator::moveProcessToStep(int step, void * addInfo)
+    {
+    }
 }

@@ -6,16 +6,9 @@
 #define _OPERMODOELTREEEVENTMOUDE_H__
 
 #include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
-#include <QAction>
 #include "OperatorsInterface/TreeEventOperator.h"
 #include "OperatorsGUIAPI.h"
 
-class QTreeWidget;
-class QTreeWidgetItem;
-
-namespace GUI {
-    class ModelCaseTree;
-}
 namespace GUIOper
 {
     /**
@@ -31,21 +24,8 @@ namespace GUIOper
          * @brief  更新整棵树
          */
         void updateTree() override;
-        /**
-         * @brief 鼠标单击事件
-         * @param  item 当前操作节点
-         */
-    private slots:
-        ;
-        void onItemClicked(QTreeWidgetItem *item, int column);
-        /**
-         * @brief 鼠标双击事件
-         * @param  item 当前操作节点
-         */
-        void onDoubleClicked(QTreeWidgetItem *item, int column);
 
-    private:
-        QTreeWidget* _treeWidget = nullptr;
+        virtual void moveProcessToStep(int step, void *addInfo = nullptr) override;
     };
 
     Register2FITKOPeratorRepo(ModelTreeEvent, OperModelTreeMouseEvent);

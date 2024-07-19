@@ -48,6 +48,10 @@ namespace GUI {
 
         QString name = "";
         if (_isCreate) {
+            QList<Interface::FITKAbsGeoCommand*> getList;
+            for (int i = 0; geometryData->getDataCount(); i++) {
+                Interface::FITKAbstractGeoModel* geo = dynamic_cast<Interface::FITKAbstractGeoModel*>(geometryData->getDataByID(i));
+            }
             name = QString(tr("Box-%1").arg(geometryData->getDataCount() + 1));
             _ui->lineEdit_Name->setText(name);
         }

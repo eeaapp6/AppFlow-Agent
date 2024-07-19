@@ -20,6 +20,8 @@ namespace ModelOper
     // 按钮注册相关操作
     Register2FITKOPeratorRepo(actionCreateSphere, OperatorsSphereManager);
     Register2FITKOPeratorRepo(actionEditSphere, OperatorsSphereManager);
+    Register2FITKOPeratorRepo(actionDeleteSphere, OperatorsSphereManager);
+    Register2FITKOPeratorRepo(actionRenameSphere, OperatorsSphereManager);
 }
 
 #endif

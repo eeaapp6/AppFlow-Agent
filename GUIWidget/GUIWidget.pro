@@ -24,7 +24,10 @@ win32{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
-
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
+        -lOperatorsInterface \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -37,7 +40,10 @@ win32{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
-     
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
+        -lOperatorsInterface \
 
 
     message("Windows GUIWidget generated")
@@ -60,7 +66,10 @@ unix{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
-       
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
+        -lOperatorsInterface \
 
     message("Linux GUIWidget generated")
 }

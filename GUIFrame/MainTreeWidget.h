@@ -5,16 +5,17 @@
 #include "PanelWidgetBase.h"
 #include "GUIFramEnum.h"
 
-class QTreeWidget;
-
 namespace GUI
 {
     class MainWindow;
+    class TreeWidget;
 
     enum class MainTreeEnum {
         MainTree_None = 0,
         MainTree_Geomety,
-        MainTree_GeometyItem,
+        MainTree_GeometyBoxItem,
+        MainTree_GeometyCylinderItem,
+        MainTree_GeometySphereItem,
         MainTree_Mesh,
         MainTree_MeshItem,
     };
@@ -28,10 +29,10 @@ namespace GUI
 
         void init();
 
-        QTreeWidget* getTreeWidget();
+        TreeWidget* getTreeWidget();
 
     private:
-        QTreeWidget* _treeWidget = nullptr;
+        TreeWidget* _treeWidget = nullptr;
     };
 }
 
