@@ -1,6 +1,6 @@
 ﻿#include "MainTreeWidget.h"
 
-#include <QTreeWidget>
+#include "GUIWidget/TreeWidget.h"
 #include <QTreeWidgetItem>
 
 namespace GUI
@@ -10,7 +10,7 @@ namespace GUI
     {
         this->setTitle(tr("Tree"));
 
-        _treeWidget = new QTreeWidget(this);
+        _treeWidget = new TreeWidget(this);
         this->setWidget(_treeWidget);
 
         init();
@@ -28,7 +28,7 @@ namespace GUI
         _treeWidget->addTopLevelItem(item);
     }
 
-    QTreeWidget * MainTreeWidget::getTreeWidget()
+    TreeWidget * MainTreeWidget::getTreeWidget()
     {
         return _treeWidget;
     }

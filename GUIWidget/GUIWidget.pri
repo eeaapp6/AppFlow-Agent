@@ -6,7 +6,8 @@ HEADERS += \
     $$PWD/GUIPickInfo.h \
     $$PWD/PickedData.h \
     $$PWD/PickedDataCalculator.h \
-    $$PWD/PickedDataProvider.h 
+    $$PWD/PickedDataProvider.h \
+    $$PWD/TreeWidget.h \
 
 SOURCES += \
     $$PWD/MainMenuBase.cpp \
@@ -15,7 +16,8 @@ SOURCES += \
     $$PWD/GUIPickInfo.cpp \
     $$PWD/PickedData.cpp \
     $$PWD/PickedDataCalculator.cpp \
-    $$PWD/PickedDataProvider.cpp 
+    $$PWD/PickedDataProvider.cpp \
+    $$PWD/TreeWidget.cpp \
 
 FORMS += \
     $$PWD/PropertyEmptyWidget.ui \

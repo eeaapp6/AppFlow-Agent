@@ -32,6 +32,8 @@ namespace EventOper
          * @brief  更新树
          */
         virtual void updateTree();
+
+        virtual void moveProcessToStep(int step, void *addInfo = nullptr);
     protected:
         /**
          * @brief  主窗口

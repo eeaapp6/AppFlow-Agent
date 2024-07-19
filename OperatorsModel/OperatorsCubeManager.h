@@ -20,6 +20,8 @@ namespace ModelOper
     // 按钮注册相关操作
     Register2FITKOPeratorRepo(actionCreateCube, OperatorsCubeManager);
     Register2FITKOPeratorRepo(actionEditCube, OperatorsCubeManager);
+    Register2FITKOPeratorRepo(actionDeleteCube, OperatorsCubeManager);
+    Register2FITKOPeratorRepo(actionRenameCube, OperatorsCubeManager);
 }
 
 #endif

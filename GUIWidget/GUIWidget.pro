@@ -28,9 +28,11 @@ win32{
         -lFITKCore \
         -lOperatorsInterface \
         -lFITKOCC2VTKGraphAdaptor \
-        -lFITKVTKAlgorithm
-
-
+        -lFITKVTKAlgorithm \
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
+        
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
     Debug:MOC_DIR         = ../generate/GUIWidget/debug/moc
@@ -44,9 +46,10 @@ win32{
         -lFITKCore \
         -lOperatorsInterface \
         -lFITKOCC2VTKGraphAdaptor \
-        -lFITKVTKAlgorithm
-     
-
+        -lFITKVTKAlgorithm \
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
 
     message("Windows GUIWidget generated")
 }
@@ -70,7 +73,10 @@ unix{
         -lFITKCore \
         -lOperatorsInterface \
         -lFITKOCC2VTKGraphAdaptor \
-        -lFITKVTKAlgorithm
+        -lFITKVTKAlgorithm \
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
        
 
     message("Linux GUIWidget generated")

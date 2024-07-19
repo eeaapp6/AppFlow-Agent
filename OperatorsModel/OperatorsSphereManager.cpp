@@ -5,6 +5,7 @@
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "OperatorsInterface/TreeEventOperator.h"
 #include "GUIDialog/GUIGeometryDialog/SphereInfoWidget.h"
+#include "GUIDialog/GUIGeometryDialog/GeometryDeleteDialog.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -27,6 +28,7 @@ namespace ModelOper
     bool OperatorsSphereManager::execGUI()
     {
         QWidget* widget = nullptr;
+        QDialog* dialog = nullptr;
 
         GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
         if (mainWindow == nullptr)return false;
@@ -50,13 +52,18 @@ namespace ModelOper
         case ModelOper::OperManagerBase::Copy:
             break;
         case ModelOper::OperManagerBase::Delete:
+            dialog = new GUI::GeometryDeleteDialog(dynamic_cast<Interface::FITKAbsGeoCommand*>(geometryData->getDataByID(objID)), this);
             break;
         case ModelOper::OperManagerBase::Rename:
             break;
         }
 
-        if (mainWindow->getPropertyWidget()) {
+        if (mainWindow->getPropertyWidget() && widget) {
             propertyWidget->setWidget(widget);
+        }
+
+        if (dialog) {
+            dialog->show();
         }
 
         return false;
@@ -89,6 +96,8 @@ namespace ModelOper
         case ModelOper::OperManagerBase::Copy:
             break;
         case ModelOper::OperManagerBase::Delete:
+            graphOper->updateGraph(objID);
+            treeOper->updateTree();
             break;
         case ModelOper::OperManagerBase::Rename:
             break;
