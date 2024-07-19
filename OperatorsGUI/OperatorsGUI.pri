@@ -5,7 +5,8 @@ HEADERS += \
     $$PWD/OperGraphPreprocess.h \
     $$PWD/OperModelTreeMouseEvent.h \
     $$PWD/OperGraphPick.h \
-    $$PWD/OperGraphPickPreview.h 
+    $$PWD/OperGraphPickPreview.h \
+    $$PWD/OperToolbarViews.h \
     
 SOURCES += \
     $$PWD/OpersGUIInterface.cpp \
@@ -13,7 +14,8 @@ SOURCES += \
     $$PWD/OperGraphPreprocess.cpp \
     $$PWD/OperModelTreeMouseEvent.cpp \
     $$PWD/OperGraphPick.cpp \
-    $$PWD/OperGraphPickPreview.cpp
+    $$PWD/OperGraphPickPreview.cpp \
+    $$PWD/OperToolbarViews.cpp \
 
 #FORMS += \
  

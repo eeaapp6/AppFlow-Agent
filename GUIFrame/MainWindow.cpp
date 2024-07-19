@@ -91,6 +91,7 @@ namespace GUI
 		initCentralWidget();
 		
         initApplicationButton();
+        initHome();
         initGeometry();
         initMesh();
         initSetting();
@@ -145,6 +146,20 @@ namespace GUI
 
         QMenu* menu = nullptr;
         QAction* action = nullptr;
+
+        //导入几何文件
+        action = createAction(tr("import geometry"), "actionImportGeometry");
+        action->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+G", nullptr));
+        fileAppButton->addAction(action);
+
+        //导入网格文件
+        action = createAction(tr("import mesh"), "actionImportMesh");
+        action->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+M", nullptr));
+        fileAppButton->addAction(action);
+
+        //工作目录
+        action = createAction(tr("Working Dir"), "actionWorkingDir");
+        fileAppButton->addAction(action);
     }
 
     void MainWindow::initHome()
@@ -154,8 +169,66 @@ namespace GUI
         _ribbonBar->raiseCategory(gategory);
 
         QAction* action = nullptr;
-        //文件部分按钮添加
-        SARibbonPannel* pannel = gategory->addPannel(tr("File"));
+        QMenu* menu = nullptr;
+
+        //项目
+        SARibbonPannel* pannel = gategory->addPannel(tr("Object"));
+        menu = new QMenu(tr("New"), this);
+        action = createAction(tr("New"), "actionNew");
+        action->setMenu(menu);
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+
+        menu = new QMenu(tr("Open"), this);
+        action = createAction(tr("Open"), "actionOpen");
+        action->setMenu(menu);
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+
+        menu = new QMenu(tr("Save"), this);
+        action = createAction(tr("Save"), "actionSave");
+        action->setMenu(menu);
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+
+        //模型结构
+        pannel = gategory->addPannel(tr("Model"));
+        menu = new QMenu(tr("Geometry import"), this);
+        action = createAction(tr("Geometry import"), "actionImportGeometry");
+        action->setMenu(menu);
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+
+        menu = new QMenu(tr("Mesh import"), this);
+        action = createAction(tr("Mesh import"), "actionImportMesh");
+        action->setMenu(menu);
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+
+        //三维交互
+        pannel = gategory->addPannel(tr("View"));
+        action = createAction(tr("Auto"), "actionViewPan");
+        changeAction(action, ":FITKIcons/icoR_viewPan.svg");
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+
+        action = createAction(tr("X forward"), "actionViewLeft");
+        changeAction(action, ":FITKIcons/icoR_viewLeft.svg");
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+
+        action = createAction(tr("X negative"), "actionViewRight");
+        changeAction(action, ":FITKIcons/icoR_viewRight.svg");
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+
+        action = createAction(tr("Y forward"), "actionViewTop");
+        changeAction(action, ":FITKIcons/icoR_viewTop.svg");
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+
+        action = createAction(tr("Y negative"), "actionViewBottom");
+        changeAction(action, ":FITKIcons/icoR_viewBottom.svg");
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+
+        action = createAction(tr("Z forward"), "actionViewFront");
+        changeAction(action, ":FITKIcons/icoR_viewFront.svg");
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+
+        action = createAction(tr("Z negative"), "actionViewBack");
+        changeAction(action, ":FITKIcons/icoR_viewBack.svg");
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
     }
 
     void MainWindow::initGeometry()
