@@ -94,11 +94,11 @@ namespace GraphData
         }
 
         PickedData* data = new PickedData;
-        data->Type = Type;
-        data->DataObjId = DataObjId;
+        data->Type = this->Type;
+        data->DataObjId = this->DataObjId;
 
-        data->Ids = Ids;
-        data->GraphObject = GraphObject;
+        data->Ids = this->Ids;
+        data->GraphObject = this->GraphObject;
 
         data->m_pickedActor = m_pickedActor;
         data->m_pickedActor2D = m_pickedActor2D;
@@ -117,8 +117,8 @@ namespace GraphData
 
         if (data->Type == Type &&
             data->getPickedActor() == m_pickedActor &&
-            // data->CaseId == CaseId &&
-            data->DataObjId == DataObjId)
+            // data->CaseId == this->CaseId &&
+            data->DataObjId == this->DataObjId)
         {
             return true;
         }
@@ -130,7 +130,7 @@ namespace GraphData
 
     void PickedData::sort()
     {
-        std::sort(Ids.begin(), Ids.end());
+        std::sort(this->Ids.begin(), this->Ids.end());
     }
 
     void PickedData::add(PickedData* data)
@@ -145,12 +145,12 @@ namespace GraphData
         data->sort();
 
         // 获取最大ID开数组存取存在标识。
-        if (Ids.count() && data->Ids.count())
+        if (this->Ids.count() && data->Ids.count())
         {
-            int nIdsMax = qMax(Ids.last(), data->Ids.last());
+            int nIdsMax = qMax(this->Ids.last(), data->Ids.last());
             QVector<int> idFlag(nIdsMax);
             idFlag.fill(-1);
-            for (const int & id : Ids)
+            for (const int & id : this->Ids)
             {
                 idFlag[id - 1] = 1;
             }
@@ -160,7 +160,7 @@ namespace GraphData
             {
                 if (idFlag[id - 1] == -1)
                 {
-                    Ids.push_back(id);
+                    this->Ids.push_back(id);
                     idFlag[id - 1] = 1;
                 }
             }
@@ -182,12 +182,12 @@ namespace GraphData
         data->sort();
 
         // 获取最大ID开数组存取存在标识。
-        if (Ids.count() && data->Ids.count())
+        if (this->Ids.count() && data->Ids.count())
         {
-            int nIdsMax = qMax(Ids.last(), data->Ids.last());
+            int nIdsMax = qMax(this->Ids.last(), data->Ids.last());
             QVector<int> idFlags(nIdsMax);
             idFlags.fill(-1);
-            for (const int & id : Ids)
+            for (const int & id : this->Ids)
             {
                 idFlags[id - 1] = 1;
             }
@@ -201,13 +201,13 @@ namespace GraphData
                 }
             }
 
-            Ids.clear();
+            this->Ids.clear();
             for (int i = 0; i < idFlags.count(); i++)
             {
                 int& idFlag = idFlags[i];
                 if (idFlag == 1)
                 {
-                    Ids.push_back(i + 1);
+                    this->Ids.push_back(i + 1);
                 }
             }
         }
@@ -239,16 +239,33 @@ namespace GraphData
         }
 
         // 保存可视化对象。
-        GraphObject = obj;
-        DataObjId = obj->getDataId();
+        this->GraphObject = obj;
+        this->DataObjId = obj->getDataId();
 
         ShapeInfo sInfo = obj->getShapeInfo();
 
-        // 后续需增加枚举转换方法。
-        Type = PickedDataType(sInfo.Type);
-        DataObjId = sInfo.DataObjId;
+        switch (m_pickedInfo._pickObjType)
+        {
+        case GUI::GUIPickInfo::PickObjType::POBJVert:
+            this->Type = ModelVertPick;
+            break;
+        case GUI::GUIPickInfo::PickObjType::POBJEdge:
+            this->Type = ModelEdgePick;
+            break;
+        case GUI::GUIPickInfo::PickObjType::POBJFace:
+            this->Type = ModelFacePick;
+            break;
+        case GUI::GUIPickInfo::PickObjType::POBJSolid:
+            this->Type = ModelSolidPick;
+            break;
+        default:
+            this->Type = OtherPick;
+            break;
+        }
 
-        if (Type == OtherPick)
+        this->DataObjId = sInfo.DataObjId;
+
+        if (this->Type == OtherPick)
         {
             return;
         }
@@ -274,16 +291,33 @@ namespace GraphData
         }
 
         // 保存可视化对象。
-        GraphObject = obj;
-        DataObjId = obj->getDataId();
+        this->GraphObject = obj;
+        this->DataObjId = obj->getDataId();
 
         ShapeInfo sInfo = obj->getShapeInfo();
 
-        // 后续需增加枚举转换方法。
-        Type = PickedDataType(sInfo.Type);
-        DataObjId = sInfo.DataObjId;
+        switch (m_pickedInfo._pickObjType)
+        {
+        case GUI::GUIPickInfo::PickObjType::POBJVert:
+            this->Type = ModelVertPick;
+            break;
+        case GUI::GUIPickInfo::PickObjType::POBJEdge:
+            this->Type = ModelEdgePick;
+            break;
+        case GUI::GUIPickInfo::PickObjType::POBJFace:
+            this->Type = ModelFacePick;
+            break;
+        case GUI::GUIPickInfo::PickObjType::POBJSolid:
+            this->Type = ModelSolidPick;
+            break;
+        default:
+            this->Type = OtherPick;
+            break;
+        }
 
-        if (Type == OtherPick)
+        this->DataObjId = sInfo.DataObjId;
+
+        if (this->Type == OtherPick)
         {
             return;
         }
@@ -294,7 +328,7 @@ namespace GraphData
 
     void PickedData::highlight()
     {
-        if (!GraphObject)
+        if (!this->GraphObject)
         {
             return;
         }
@@ -302,21 +336,21 @@ namespace GraphData
         // 如果是预选并且没有在高亮则预选。
         if (m_isPreview)
         {
-            if (!GraphObject->isHighlighting())
+            if (!this->GraphObject->isHighlighting())
             {
-                GraphObject->preHighlight();
+                this->GraphObject->preHighlight();
             }
         }
         else
         {
-            GraphObject->highlight();
+            this->GraphObject->highlight();
         }
     }
 
     void PickedData::clearHighlight()
     {
         // 取消高亮。
-        if (!GraphObject)
+        if (!this->GraphObject)
         {
             return;
         }
@@ -325,20 +359,20 @@ namespace GraphData
         if (m_isPreview)
         {
             // 如果为高亮状态则还原为高亮。
-            if (GraphObject->isHighlighting())
+            if (this->GraphObject->isHighlighting())
             {
-                GraphObject->highlight();
+                this->GraphObject->highlight();
             }
             // 否则取消预选高亮。
             else
             {
-                GraphObject->disHighlight();
+                this->GraphObject->disHighlight();
             }
         }
         // 高亮则直接取消高亮。
         else
         {
-            GraphObject->disHighlight();
+            this->GraphObject->disHighlight();
         }
     }
 
@@ -368,18 +402,18 @@ namespace GraphData
     bool PickedData::isEmpty()
     {
         // 如果数据对象ID为空则一定为空拾取数据。
-        if (DataObjId < 0)
+        if (this->DataObjId < 0)
         {
             return true;
         }
 
-        bool isEmpty = Ids.isEmpty();
+        bool isEmpty = this->Ids.isEmpty();
         return isEmpty;
     }
 
     bool PickedData::contains(vtkActor* actor, int index)
     {
-        if (!actor || index < 0 || !GraphObject)
+        if (!actor || index < 0 || !this->GraphObject)
         {
             return false;
         }
@@ -395,16 +429,16 @@ namespace GraphData
         switch (m_pickedInfo._pickObjType)
         {
         case GUI::GUIPickInfo::PickObjType::POBJVert:
-            id = GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_VERTEX);
+            id = this->GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_VERTEX);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJEdge:
-            id = GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_EDGE);
+            id = this->GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_EDGE);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJFace:
-            id = GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_FACE);
+            id = this->GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_FACE);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJSolid:
-            id = GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_SOLID);
+            id = this->GraphObject->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_SOLID);
             break;
         {
             return false;
@@ -416,19 +450,19 @@ namespace GraphData
             return false;
         }
 
-        return Ids.contains(id);
+        return this->Ids.contains(id);
     }
 
     bool PickedData::contains(vtkActor2D* actor)
     {
-        if (!actor || !GraphObject)
+        if (!actor || !this->GraphObject)
         {
             return false;
         }
 
         // 新版本
         //@{
-        return GraphObject->contains(actor);
+        return this->GraphObject->contains(actor);
         //@}
     }
 
@@ -460,7 +494,7 @@ namespace GraphData
     void PickedData::getDataSet(vtkUnstructuredGrid* ugrid)
     {
         // 未计算过的数据直接跳出。
-        if (m_needToCal || !ugrid || !GraphObject)
+        if (m_needToCal || !ugrid || !this->GraphObject)
         {
             return;
         }
@@ -473,25 +507,25 @@ namespace GraphData
         {
         case PickedDataType::ModelVertPick:
         {
-            dataSet = GraphObject->getMesh(ShapeType::ModelVertex);
+            dataSet = this->GraphObject->getMesh(ShapeType::ModelVertex);
             shapeEnum = TopAbs_ShapeEnum::TopAbs_VERTEX;
             break;
         }
         case PickedDataType::ModelEdgePick:
         {
-            dataSet = GraphObject->getMesh(ShapeType::ModelEdge);
+            dataSet = this->GraphObject->getMesh(ShapeType::ModelEdge);
             shapeEnum = TopAbs_ShapeEnum::TopAbs_EDGE;
             break;
         }
         case PickedDataType::ModelFacePick:
         {
-            dataSet = GraphObject->getMesh(ShapeType::ModelFace);
+            dataSet = this->GraphObject->getMesh(ShapeType::ModelFace);
             shapeEnum = TopAbs_ShapeEnum::TopAbs_FACE;
             break;
         }
         case PickedDataType::ModelSolidPick:
         {
-            dataSet = GraphObject->getMesh(ShapeType::ModelSolid);
+            dataSet = this->GraphObject->getMesh(ShapeType::ModelSolid);
             shapeEnum = TopAbs_ShapeEnum::TopAbs_SOLID;
             break;
         }

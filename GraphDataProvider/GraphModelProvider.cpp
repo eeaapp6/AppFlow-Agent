@@ -6,6 +6,7 @@
 
 // Graph
 #include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectShape.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectModel.h"
 
 // Adaptor
 #include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKViewAdaptorBase.h"
@@ -125,5 +126,70 @@ namespace GraphData
         obj->update();
 
         return true;
+    }
+
+    void GraphModelProvider::setVertPickable()
+    {
+        // 开启可拾取状态。
+        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
+        {
+            if (obj)
+            {
+                obj->setPickMode(ShapePickMode::PickVertex);
+            }
+        }
+    }
+
+    void GraphModelProvider::setEdgePickable()
+    {
+        // 开启可拾取状态。
+        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
+        {
+            if (obj)
+            {
+                obj->setPickMode(ShapePickMode::PickEdge);
+            }
+        }
+    }
+
+    void GraphModelProvider::setFacePickable()
+    {
+        // 开启可拾取状态。
+        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
+        {
+            if (obj)
+            {
+                obj->setPickMode(ShapePickMode::PickFace);
+            }
+        }
+    }
+
+    void GraphModelProvider::setSolidPickable()
+    {
+        // 开启可拾取状态。
+        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
+        {
+            if (obj)
+            {
+                obj->setPickMode(ShapePickMode::PickSolid);
+            }
+        }
+    }
+
+    void GraphModelProvider::setNonePickable()
+    {
+        // 关闭可拾取状态。
+        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
+        {
+            if (obj)
+            {
+                obj->setPickMode(ShapePickMode::PickNone);
+            }
+        }
     }
 }   // namespace GraphData

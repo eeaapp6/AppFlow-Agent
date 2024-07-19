@@ -67,6 +67,41 @@ namespace GraphData
          */
         bool updateObjById(int dataId, QVariant info = QVariant());
 
+        /**
+         * @brief   设置当前所有实例化模型可视化对象是否可拾取点。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-19
+         */
+        void setVertPickable();
+
+        /**
+         * @brief   设置当前所有实例化模型可视化对象是否可拾取线。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-19
+         */
+        void setEdgePickable();
+
+        /**
+         * @brief   设置当前所有实例化模型可视化对象是否可拾取面。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-19
+         */
+        void setFacePickable();
+
+        /**
+         * @brief   设置当前所有实例化模型可视化对象是否可拾取体。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-19
+         */
+        void setSolidPickable();
+
+        /**
+         * @brief   关闭模型拾取状态。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-19
+         */
+        void setNonePickable();
+
     private:
         /**
          * @brief   构造函数。

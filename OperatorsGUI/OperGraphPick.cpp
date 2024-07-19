@@ -201,6 +201,6 @@ namespace GUIOper
 
     void OperGraphPick::setActorStateByPickInfo(int pickObjType, int pickMethod)
     {
-        // GraphData::GraphProviderManager::getInstance()->setActorStateByPickInfo(pickObjType, pickMethod, getCurrentGraphWindow());
+        GraphData::GraphProviderManager::getInstance()->setActorStateByPickInfo(pickObjType, pickMethod);
     }
 }  // namespace GUIOper

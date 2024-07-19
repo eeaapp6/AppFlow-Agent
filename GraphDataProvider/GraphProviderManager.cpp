@@ -1,7 +1,11 @@
 ﻿#include "GraphProviderManager.h"
 
 // Graph widget
+#include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
+
+// GUI
+#include "GUIWidget/GUIPickInfo.h"
 
 // Provider
 #include "GraphModelProvider.h"
@@ -70,5 +74,35 @@ namespace GraphData
 
         bool flag = m_modelProvider->updateObjById(dataId);
         Q_UNUSED(flag);
+    }
+
+    void GraphProviderManager::setActorStateByPickInfo(int pickObjType, int pickMethod)
+    {
+        Q_UNUSED(pickMethod);
+
+        if (!m_modelProvider)
+        {
+            return;
+        }
+
+        switch (pickObjType)
+        {
+        case GUI::GUIPickInfo::POBJVert:
+            m_modelProvider->setVertPickable();
+            break;
+        case GUI::GUIPickInfo::POBJEdge:
+            m_modelProvider->setEdgePickable();
+            break;
+        case GUI::GUIPickInfo::POBJFace:
+            m_modelProvider->setFacePickable();
+            break;
+        case GUI::GUIPickInfo::POBJSolid:
+            m_modelProvider->setSolidPickable();
+            break;
+        default:
+            // m_modelProvider->setNonePickable();
+            m_modelProvider->setFacePickable();
+            break;
+        }
     }
 }   // namespace GraphData

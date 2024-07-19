@@ -79,6 +79,14 @@ PreWindowInteractionStyle::PreWindowInteractionStyle()
 
 void PreWindowInteractionStyle::OnLeftButtonDown()
 {
+    // TEST.
+    //@{
+    //GUI::GUIPickInfoStru info = GUI::GUIPickInfo::GetPickInfo();
+    //info._pickObjType = GUI::GUIPickInfo::PickObjType::POBJSolid;
+    //info._pickMethod = GUI::GUIPickInfo::PickMethod::PMIndividually;
+    //GUI::GUIPickInfo::SetPickInfo(info);
+    //@}
+
     this->Interactor->GetEventPosition(m_leftButtonDowmPos);
 
     if (m_areaPick != nullptr)
