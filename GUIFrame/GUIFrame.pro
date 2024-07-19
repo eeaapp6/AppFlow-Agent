@@ -27,6 +27,7 @@ win32{
         -lFITKAppFramework \
         -lFITKCore \
         -lFITKPython \
+        -lFITKCompMessageWidget \
         -lFITKWidget \
         -lFITKRenderWindowVTK \
         -lGUIWidget \
@@ -44,6 +45,7 @@ win32{
         -lFITKAppFramework \
         -lFITKCore \
         -lFITKPython \
+        -lFITKCompMessageWidget \
         -lFITKWidget \
         -lFITKRenderWindowVTK \
         -lGUIWidget \
@@ -72,6 +74,7 @@ unix{
         -lFITKAppFramework \
         -lFITKCore \
         -lFITKPython \
+        -lFITKCompMessageWidget \
         -lFITKWidget \
         -lFITKRenderWindowVTK \
         -lGUIWidget \

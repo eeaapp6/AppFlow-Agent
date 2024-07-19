@@ -33,6 +33,7 @@ namespace GUI
 	class ActionEventHandler;
  
     class MainTreeWidget;
+    class TabWidget;
 
 	/**
 	 * @brief  主窗口界面类
@@ -156,6 +157,12 @@ namespace GUI
          * @date 2024-05-30
          */
         MainTreeWidget* _treeWidget = nullptr;
+        /**
+         * @brief Tab界面
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-05-30
+         */
+        TabWidget* _tabWidgete = nullptr;
 		/**
 		 * @brief  渲染部件
 		 * @author YanZhiHui (chanyuantiandao@126.com)
