@@ -32,6 +32,7 @@ win32{
         -lFITKRenderWindowVTK \
         -lGraphDataProvider \
         -lGUIFrame \
+        -lGUIWidget \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
@@ -52,6 +53,7 @@ win32{
         -lFITKRenderWindowVTK \
         -lGraphDataProvider \
         -lGUIFrame \
+        -lGUIWidget \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
@@ -82,6 +84,7 @@ unix{
         -lFITKRenderWindowVTK \
         -lGraphDataProvider \
         -lGUIFrame \
+        -lGUIWidget \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \

@@ -7,6 +7,8 @@ DEFINES     += GUIWidget_API
 
 unix:!mac{ QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN/\'" }
 
+include(./occ.pri)
+include(./vtk.pri)
 include(./GUIWidget.pri)
 
 win32{
@@ -24,6 +26,9 @@ win32{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
+        -lOperatorsInterface \
+        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKVTKAlgorithm
 
 
     Debug:CONFIG            +=  console
@@ -37,6 +42,9 @@ win32{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
+        -lOperatorsInterface \
+        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKVTKAlgorithm
      
 
 
@@ -60,6 +68,9 @@ unix{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
+        -lOperatorsInterface \
+        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKVTKAlgorithm
        
 
     message("Linux GUIWidget generated")
