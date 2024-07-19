@@ -33,6 +33,9 @@ win32{
         -lGraphDataProvider \
         -lGUIFrame \
         -lGUIWidget \
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -51,6 +54,9 @@ win32{
         -lGraphDataProvider \
         -lGUIFrame \
         -lGUIWidget \
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
 
     message("Windows OperatorsGUI generated")
 }
@@ -79,6 +85,9 @@ unix{
         -lGraphDataProvider \
         -lGUIFrame \
         -lGUIWidget \
+        -lFITKInterfaceGeometry \
+        -lFITKInterfaceFlowOF \
+        -lFITKInterfaceModel \
         
     message("Linux OperatorsGUI generated")
 }

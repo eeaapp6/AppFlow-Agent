@@ -186,10 +186,10 @@ private:
      * @author  ChengHaotian (yeguangbaozi@foxmail.com)
      * @date    2024-04-17
      */
-    void pickNode(Comp::FITKGraph3DWindowVTK* graphWindow, int* pos, bool isPreview, double tol = 0.005);
+    void pickPoint(Comp::FITKGraph3DWindowVTK* graphWindow, int* pos, bool isPreview, double tol = 0.005);
 
     /**
-     * @brief   在当前鼠标位置执行一次点击拾取单元操作。
+     * @brief   在当前鼠标位置执行一次点击拾取单元操作。（线、面、体拾取均使用此方法）
      * @param   graphWindow：可视化窗口
      * @param   pos：拾取位置
      * @param   isPreview：是否为预选
@@ -197,18 +197,7 @@ private:
      * @author  ChengHaotian (yeguangbaozi@foxmail.com)
      * @date    2024-04-17
      */
-    void pickElement(Comp::FITKGraph3DWindowVTK* graphWindow, int* pos, bool isPreview, double tol = 0.003);
-
-    /**
-     * @brief   在当前鼠标位置执行一次点击拾取线操作。
-     * @param   graphWindow：可视化窗口
-     * @param   pos：拾取位置
-     * @param   isPreview：是否为预选
-     * @param   tol：拾取精度容差[缺省]
-     * @author  ChengHaotian (yeguangbaozi@foxmail.com)
-     * @date    2024-07-02
-     */
-    void pickWire(Comp::FITKGraph3DWindowVTK* graphWindow, int* pos, bool isPreview, double tol = 0.003);
+    void pickCell(Comp::FITKGraph3DWindowVTK* graphWindow, int* pos, bool isPreview, double tol = 0.003);
 
 private slots:
     /**

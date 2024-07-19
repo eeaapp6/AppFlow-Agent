@@ -4,13 +4,16 @@ HEADERS += \
     $$PWD/OperGraphEvent3D.h \
     $$PWD/OperGraphPreprocess.h \
     $$PWD/OperModelTreeMouseEvent.h \
+    $$PWD/OperGraphPick.h \
+    $$PWD/OperGraphPickPreview.h 
     
 SOURCES += \
     $$PWD/OpersGUIInterface.cpp \
     $$PWD/OperGraphEvent3D.cpp \
     $$PWD/OperGraphPreprocess.cpp \
     $$PWD/OperModelTreeMouseEvent.cpp \
-    
+    $$PWD/OperGraphPick.cpp \
+    $$PWD/OperGraphPickPreview.cpp
 
 #FORMS += \
  

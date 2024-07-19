@@ -36,6 +36,7 @@
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/RenderWidget.h"
 #include "FITK_Component/FITKWidget/FITKMdiArea.h"
+#include "GUIWidget/GUIPickInfo.h"
 
 PreWindowInitializer::PreWindowInitializer()
 {
@@ -100,15 +101,12 @@ void PreWindowInteractionStyle::OnLeftButtonUp()
         if (m_areaPick->isEnable())
             m_areaPick->pick();
         m_areaPick->enable(false);
-        //         if (m == GUI::OperSelectMethod::SelectSingle)
-        //             m_areaPick->pick();
-
     }
     else
     {
-
+        pick();
     }
-    //创建参考点回调函数
+
     AppFrame::FITKComponentInterface* fcInterface
         = FITKAPP->getComponents()->getComponentByName("Graph3DWindowVTK");
     if (fcInterface)
@@ -161,7 +159,6 @@ void PreWindowInteractionStyle::OnMouseMove()
         m_areaPick->drawRectangle();
         return;
     }
-    //    this->prePickMesh();
 }
 
 void PreWindowInteractionStyle::OnMouseWheelForward()
@@ -275,9 +272,24 @@ void PreWindowInteractionStyle::pick(bool isPreview)
 
     int* pos = interactor->GetEventPosition();
 
+    // 获取当前拾取类型。
+    GUI::GUIPickInfo::PickObjType type = GUI::GUIPickInfo::GetPickInfo()._pickObjType;
+    switch (type)
+    {
+    case GUI::GUIPickInfo::POBJVert:
+        pickPoint(graphWindow, pos, isPreview);
+        break;
+    case GUI::GUIPickInfo::POBJEdge:
+    case GUI::GUIPickInfo::POBJFace:
+    case GUI::GUIPickInfo::POBJSolid:
+        pickCell(graphWindow, pos, isPreview);
+        break;
+    default:
+        return;
+    }
 }
 
-void PreWindowInteractionStyle::pickNode(Comp::FITKGraph3DWindowVTK* graphWindow, int* pos, bool isPreview, double tol)
+void PreWindowInteractionStyle::pickPoint(Comp::FITKGraph3DWindowVTK* graphWindow, int* pos, bool isPreview, double tol)
 {
     // 节点拾取器。
     vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
@@ -290,29 +302,7 @@ void PreWindowInteractionStyle::pickNode(Comp::FITKGraph3DWindowVTK* graphWindow
     {
         vtkRenderer* renderer = graphWindow->getRenderer(i)->getRenderer();
 
-        // 优先进行参考点标签与符号拾取。
-        int ret = pickerProp->Pick(pos[0], pos[1], 0, renderer);
-
-        // 是否拾取到对象。
-        if (ret)
-        {
-            vtkActor2D* actor2d = pickerProp->GetActor2D();
-            if (actor2d)
-            {
-                if (isPreview)
-                {
-                    m_operPreview->picked(graphWindow, actor2d);
-                }
-                else
-                {
-                    m_operPick->picked(graphWindow, actor2d);
-                }
-
-                return;
-            }
-        }
-
-        ret = picker->Pick(pos[0], pos[1], 0, renderer);
+        int ret = picker->Pick(pos[0], pos[1], 0, renderer);
 
         // 是否拾取到对象。
         if (!ret)
@@ -360,11 +350,10 @@ void PreWindowInteractionStyle::pickNode(Comp::FITKGraph3DWindowVTK* graphWindow
     }
 }
 
-void PreWindowInteractionStyle::pickElement(Comp::FITKGraph3DWindowVTK* graphWindow, int* pos, bool isPreview, double tol)
+void PreWindowInteractionStyle::pickCell(Comp::FITKGraph3DWindowVTK* graphWindow, int* pos, bool isPreview, double tol)
 {
     // 单元拾取器。
     vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
-    vtkSmartPointer<vtkPropPicker> pickerProp = vtkSmartPointer<vtkPropPicker>::New();
 
     picker->SetTolerance(tol);
 
@@ -373,86 +362,7 @@ void PreWindowInteractionStyle::pickElement(Comp::FITKGraph3DWindowVTK* graphWin
     {
         vtkRenderer* renderer = graphWindow->getRenderer(i)->getRenderer();
 
-        // 优先进行坐标系标签拾取。
-        int ret = pickerProp->Pick(pos[0], pos[1], 0, renderer);
-        // 是否拾取到对象。
-        if (ret)
-        {
-            vtkActor2D* actor2d = pickerProp->GetActor2D();
-            if (actor2d)
-            {
-                if (isPreview)
-                {
-                    m_operPreview->picked(graphWindow, actor2d);
-                }
-                else
-                {
-                    m_operPick->picked(graphWindow, actor2d);
-                }
-
-                return;
-            }
-        }
-
-        ret = picker->Pick(pos[0], pos[1], 0, renderer);
-
-        // 是否拾取到对象。
-        if (!ret)
-        {
-            continue;
-        }
-
-        // 获取拾取单元索引。
-        vtkActor* actor = picker->GetActor();
-        int index = picker->GetCellId();
-        if (index < 0)
-        {
-            continue;
-        }
-
-        double* pickedWorldPos = picker->GetPickPosition();
-
-        if (isPreview)
-        {
-            m_operPreview->picked(graphWindow, actor, index, pickedWorldPos);
-        }
-        else
-        {
-            m_operPick->picked(graphWindow, actor, index, pickedWorldPos);
-        }
-
-        return;
-    }
-
-    // 没有拾取到则清除拾取。
-    if (isPreview)
-    {
-        m_operPreview->clear(graphWindow);
-    }
-    else
-    {
-        // 没有拾取到，且不是Shift与Ctrl拾取模式则清除拾取。
-        AppFrame::FITKKeyMouseStates* settings = FITKGLODATA->getKeyMouseStates();
-        bool shiftOrCtrlPick = (settings->keyPressed(Qt::Key_Shift) && !settings->keyPressed(Qt::Key_Control))
-            || (!settings->keyPressed(Qt::Key_Shift) && settings->keyPressed(Qt::Key_Control));
-        if (!shiftOrCtrlPick)
-        {
-            m_operPick->clear(graphWindow);
-        }
-    }
-}
-
-void PreWindowInteractionStyle::pickWire(Comp::FITKGraph3DWindowVTK* graphWindow, int* pos, bool isPreview, double tol)
-{
-    // 单元拾取器。
-    vtkSmartPointer<vtkCellPicker> picker = vtkSmartPointer<vtkCellPicker>::New();
-    picker->SetTolerance(tol);
-
-    // 优先拾取最后一层，反向遍历。
-    for (int i = graphWindow->getRenderCount() - 1; i >= 0; i--)
-    {
-        vtkRenderer* renderer = graphWindow->getRenderer(i)->getRenderer();
-
+        // 优先进行参考点标签与符号拾取。
         int ret = picker->Pick(pos[0], pos[1], 0, renderer);
 
         // 是否拾取到对象。

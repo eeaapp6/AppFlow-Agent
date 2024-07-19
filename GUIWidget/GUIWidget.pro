@@ -7,6 +7,8 @@ DEFINES     += GUIWidget_API
 
 unix:!mac{ QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN/\'" }
 
+include(./occ.pri)
+include(./vtk.pri)
 include(./GUIWidget.pri)
 
 win32{
@@ -24,11 +26,12 @@ win32{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
+        -lOperatorsInterface \
+        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKVTKAlgorithm \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
-        -lOperatorsInterface \
-
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
     Debug:MOC_DIR         = ../generate/GUIWidget/debug/moc
@@ -40,11 +43,12 @@ win32{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
+        -lOperatorsInterface \
+        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKVTKAlgorithm \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
-        -lOperatorsInterface \
-
 
     message("Windows GUIWidget generated")
 }
@@ -66,10 +70,13 @@ unix{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
+        -lOperatorsInterface \
+        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKVTKAlgorithm \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
-        -lOperatorsInterface \
+       
 
     message("Linux GUIWidget generated")
 }

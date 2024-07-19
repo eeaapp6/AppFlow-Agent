@@ -34,6 +34,7 @@ win32{
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
+        -lGUIWidget \
         -lFITKWidget \
     
     Debug:CONFIG            +=  console
@@ -56,6 +57,7 @@ win32{
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
+        -lGUIWidget \
         -lFITKWidget \
 
 Debug:LIBS +=  -L$$PWD/../Tools/Win64/SARibbon/libd/  \                                  
@@ -94,6 +96,7 @@ unix{
         -lOperatorsModel \
         -lOperatorsGUI \
         -lGUIFrame \
+        -lGUIWidget \
         -lFITKWidget \
        
 
