@@ -74,6 +74,15 @@ namespace GraphData
          */
         void updateObjectById(int dataId);
 
+        /**
+         * @brief   根据当前拾取类型与方法初始化演员属性。
+         * @param   pickObjType：拾取对象类型
+         * @param   pickMethod：拾取方法
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-19
+         */
+        void setActorStateByPickInfo(int pickObjType, int pickMethod);
+
     private:
         /**
          * @brief   构造函数。
