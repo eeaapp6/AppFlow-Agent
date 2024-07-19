@@ -14,10 +14,6 @@
 #include <vtkSelection.h>
 #include <vtkExtractSelection.h>
 #include <vtkIdTypeArray.h>
-#include <vtkTransform.h>
-#include <vtkTransformFilter.h>
-#include <vtkAppendFilter.h>
-#include <vtkDataSetSurfaceFilter.h>
 
 // APP
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
@@ -434,38 +430,6 @@ namespace GraphData
         //@{
         return GraphObject->contains(actor);
         //@}
-
-        // 旧版本
-        //@{
-        //// 比较演员内存储的可视化对象数据。
-        //FITKGraphActor2D* fActor2D = FITKGraphActor2D::SafeDownCast(actor);
-
-        //FITKGraphActor* fActorSaved = FITKGraphActor::SafeDownCast(m_pickedActor);
-        //FITKGraphActor2D* fActor2DSaved = FITKGraphActor2D::SafeDownCast(m_pickedActor2D);
-        //if (!fActor2D || (!fActor2DSaved && !fActorSaved))
-        //{
-        //    return false;
-        //}
-
-        //Exchange::FITKGraphObject3D* obj = fActor2D->getGraphObject();
-        //Exchange::FITKGraphObject3D* objSaved{ nullptr };
-        //if (fActor2DSaved)
-        //{
-        //    objSaved = fActor2DSaved->getGraphObject();
-        //}
-
-        //if (fActorSaved)
-        //{
-        //    objSaved = fActorSaved->getGraphObject();
-        //}
-
-        //if (!objSaved)
-        //{
-        //    return false;
-        //}
-
-        //return (objSaved == obj);
-        //@}
     }
 
     GUI::GUIPickInfoStru PickedData::getPickedInfo()
@@ -496,40 +460,105 @@ namespace GraphData
     void PickedData::getDataSet(vtkUnstructuredGrid* ugrid)
     {
         // 未计算过的数据直接跳出。
-        if (m_needToCal || !ugrid)
+        if (m_needToCal || !ugrid || !GraphObject)
         {
             return;
         }
 
+        vtkDataSet* dataSet{ nullptr };
+        TopAbs_ShapeEnum shapeEnum;
+
+        // 根据拾取模型数据类型获取数据集。
         switch (Type)
         {
         case PickedDataType::ModelVertPick:
         {
+            dataSet = GraphObject->getMesh(ShapeType::ModelVertex);
+            shapeEnum = TopAbs_ShapeEnum::TopAbs_VERTEX;
             break;
         }
         case PickedDataType::ModelEdgePick:
         {
+            dataSet = GraphObject->getMesh(ShapeType::ModelEdge);
+            shapeEnum = TopAbs_ShapeEnum::TopAbs_EDGE;
             break;
         }
         case PickedDataType::ModelFacePick:
         {
+            dataSet = GraphObject->getMesh(ShapeType::ModelFace);
+            shapeEnum = TopAbs_ShapeEnum::TopAbs_FACE;
             break;
         }
         case PickedDataType::ModelSolidPick:
         {
+            dataSet = GraphObject->getMesh(ShapeType::ModelSolid);
+            shapeEnum = TopAbs_ShapeEnum::TopAbs_SOLID;
             break;
         }
         default:
-        //{
-        //    // 高亮。
-        //    //@{
-        //    highlight();
-        //    //@}
-
-        //    break;
-        //}
             return;
         }
+
+        if (!dataSet)
+        {
+            return;
+        }
+
+        int nCell = dataSet->GetNumberOfCells();
+
+        // 创建ID数组，加速合并数据。
+        vtkSmartPointer<vtkIntArray> idArray = vtkSmartPointer<vtkIntArray>::New();
+        idArray->SetNumberOfComponents(1);
+        idArray->SetNumberOfValues(nCell);
+        idArray->FillComponent(0, 0);
+
+        // 根据OCC形状ID获取所有VTK数据。
+        for (const int & id : Ids)
+        {
+            const QVector<int> subCellIds = this->GraphObject->getVTKCellIdsByOCCId(id, shapeEnum);
+            for (const int & cId : subCellIds)
+            {
+                idArray->SetValue(cId, 1);
+            }
+        }
+
+        // 通过ID获取实际VTK索引。
+        vtkIdTypeArray* selectIdArray = vtkIdTypeArray::New();
+        vtkSelectionNode* selectNode = vtkSelectionNode::New();
+        vtkExtractSelection* extractSelection = vtkExtractSelection::New();
+
+        for (int i = 0; i < nCell; i++)
+        {
+            if (idArray->GetValue(i) == 1)
+            {
+                selectIdArray->InsertNextValue(i);
+            }
+        }
+
+        // 从原始网格数据提取。
+        selectNode->SetFieldType(vtkSelectionNode::SelectionField::CELL);
+        extractSelection->SetInputData(dataSet);
+
+        // 提取VTK数据。
+        //@{
+        vtkSelection* section = vtkSelection::New();
+        selectNode->SetContentType(vtkSelectionNode::INDICES);
+        section->AddNode(selectNode);
+        extractSelection->SetInputData(1, section);
+        selectNode->SetSelectionList(selectIdArray);
+        extractSelection->Update();
+        //@}
+
+        // 数据拷贝。
+        ugrid->DeepCopy(extractSelection->GetOutput());
+
+        // 析构。
+        //@{
+        selectNode->Delete();
+        section->Delete();
+        selectIdArray->Delete();
+        extractSelection->Delete();
+        //@}
     }
 
     void PickedData::getPickedWorldPosition(double* pos)

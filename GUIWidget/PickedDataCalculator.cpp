@@ -26,7 +26,6 @@
 #include "FITK_Interface/FITKVTKAlgorithm/FITKShellFeatureEdges.h"
 #include "FITK_Interface/FITKVTKAlgorithm/FITKSurfaceFilter.h"
 #include "FITK_Interface/FITKVTKAlgorithm/FITKExtractGeometry.h"
-#include "FITK_Interface/FITKVTKAlgorithm/FITKPolyDataTool.h"
 
 // Graph
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor.h"
@@ -83,17 +82,44 @@ namespace GraphData
 
     void PickedDataCalculator::individually()
     {
+        Exchange::FITKOCC2VTKGraphObjectShape* gobj = m_pickedData->GraphObject;
+        int index = m_pickedData->getPickedIndex();
+        if (!gobj || index < 0)
+        {
+            return;
+        }
+
+        int id = -1;
+
         // 根据拾取数据类型进行不同数据获取。
         switch (m_pickedData->Type)
         {
-            // 部件与装配实例相同。
         case PickedDataType::ModelVertPick:
+            // 查找点。
+            id = gobj->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_VERTEX);
+            break;
         case PickedDataType::ModelEdgePick:
+            // 查找线。
+            id = gobj->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_EDGE);
+            break;
         case PickedDataType::ModelFacePick:
+            // 查找面。
+            id = gobj->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_FACE);
+            break;
         case PickedDataType::ModelSolidPick:
+            // 查找体。
+            id = gobj->getOCCIdByVTKCellId(index, TopAbs_ShapeEnum::TopAbs_SOLID);
+            break;
         default:
             return;
         }
+
+        if (id == -1)
+        {
+            return;
+        }
+
+        m_pickedData->Ids.push_back(id);
     } 
 
     void PickedDataCalculator::byAreaPick()
