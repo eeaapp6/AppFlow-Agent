@@ -14,6 +14,9 @@
 #include <vtkPointData.h>
 #include <vtkLine.h>
 
+// OCC
+#include <TopAbs_ShapeEnum.hxx>
+
 // APP
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKKeyMouseStates.h"

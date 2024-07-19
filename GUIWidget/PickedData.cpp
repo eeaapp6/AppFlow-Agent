@@ -15,6 +15,9 @@
 #include <vtkExtractSelection.h>
 #include <vtkIdTypeArray.h>
 
+// OCC
+#include <TopAbs_ShapeEnum.hxx>
+
 // APP
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKKeyMouseStates.h"
