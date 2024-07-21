@@ -67,8 +67,10 @@ unix{
     UI_DIR          = ../generate/GUIFrame/release/qui
     RCC_DIR         = ../generate/GUIFrame/release/rcc
     OBJECTS_DIR     = ../generate/GUIFrame/release/obj
-    INCLUDEPATH    +=   ./  \
-                        ../ \
+    INCLUDEPATH    += ./  \
+                      ../ \
+                      ../Tools/Linux64/SARibbon/include/  \
+
     LIBS += \
         -L../output/bin \
         -lFITKAppFramework \

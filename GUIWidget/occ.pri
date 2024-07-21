@@ -127,9 +127,9 @@ Release:LIBS +=  -L../Tools/Win64/OCC/lib  \
 
 unix{
 
-INCLUDEPATH +=  ../OCC/include/opencascade \
+INCLUDEPATH +=  ../Tools/Linux64/OCC/include/opencascade \
     
-LIBS +=  -L../OCC/lib \
+LIBS +=  -L../Tools/Linux64/OCC/lib \
                       -lTKBin  \        
                       -lTKBinL  \       
                       -lTKBinTObj  \    
@@ -150,7 +150,7 @@ LIBS +=  -L../OCC/lib \
                       -lTKGeomBase  \   
                       -lTKHLR  \        
                       -lTKIGES  \       
-                      -lTKIVtk  \       
+                      #-lTKIVtk  \
                       #-lTKIVtkDraw  \   
                       -lTKLCAF  \       
                       -lTKMath  \       

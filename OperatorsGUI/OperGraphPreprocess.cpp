@@ -3,7 +3,7 @@
 // APP
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
-#include "FITK_Kernel/FITKAppFramework/FITKAPPSettings.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
 
 // Global data
 #include "FITK_Kernel/FITKCore/FITKDataRepo.h"

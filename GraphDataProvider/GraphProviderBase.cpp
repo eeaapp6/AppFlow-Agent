@@ -5,7 +5,7 @@
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Kernel/FITKAppFramework/FITKComponentFactory.h"
-#include "FITK_Kernel/FITKAppFramework/FITKAPPSettings.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
 
 // Render VTK
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"

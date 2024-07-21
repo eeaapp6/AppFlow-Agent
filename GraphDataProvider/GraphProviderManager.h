@@ -13,7 +13,7 @@
 
 #include "GraphDataProviderAPI.h"
 
-#include <QMuteX>
+#include <QMutex>
 #include <QMutexLocker>
 #include <QHash>
 

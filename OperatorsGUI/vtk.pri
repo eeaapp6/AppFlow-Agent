@@ -273,10 +273,9 @@ Release:LIBS +=  -L../Tools/Win64/VTK/lib/  \
 }
 
 unix{
-INCLUDEPATH +=  ../VTK/include/vtk-9.0/  \
+INCLUDEPATH +=  ../Tools/Linux64/VTK/include/vtk-9.0/  \
 
-
-LIBS +=  -L../VTK/lib/  \  
+LIBS +=  -L../Tools/Linux64/VTK/lib/  \
                  -lvtkChartsCore-9.0  \
                  -lvtkCommonColor-9.0  \
                  -lvtkCommonComputationalGeometry-9.0  \

@@ -26,7 +26,6 @@ win32{
         -lFITKCore \
         -lGUIFrame \
         -lGUIWidget \
-        -lGUIDialog \
         -lOperatorsInterface \
         -lGUIGeometryDialog \
 
@@ -42,7 +41,6 @@ win32{
         -lFITKCore \
         -lGUIFrame \
         -lGUIWidget \
-        -lGUIDialog \
         -lOperatorsInterface \
         -lGUIGeometryDialog \
 
@@ -69,7 +67,6 @@ unix{
         -lFITKCore \
         -lGUIFrame \
         -lGUIWidget \
-        -lGUIDialog \
         -lOperatorsInterface \
         -lGUIGeometryDialog \
         
