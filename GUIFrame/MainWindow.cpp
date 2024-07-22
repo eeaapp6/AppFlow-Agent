@@ -31,12 +31,12 @@
 
 namespace GUI
 {
-	MainWindow::MainWindow(QWidget *parent) : SARibbonMainWindow(parent)
-	{
+    MainWindow::MainWindow(QWidget *parent) : SARibbonMainWindow(parent)
+    {
         _currentWidget = new QWidget(this);
 
         _ribbonBar = this->ribbonBar();
-        
+
         //使用Office2013风格
         sa_set_ribbon_theme(_ribbonBar, SARibbonTheme::RibbonThemeOffice2013);
 
@@ -49,26 +49,26 @@ namespace GUI
         setWindowTitle("FastCAE");
         _ribbonBar->setWindowTitleTextColor(Qt::black);
 
-		init();
+        init();
 
         QList<QAction*> actionList = this->findChildren<QAction*>();
-        for (QAction* action: actionList){
+        for (QAction* action : actionList) {
             if (action == nullptr)continue;
             connect(action, SIGNAL(triggered()), this->getActionEventHandle(), SLOT(execOperator()));
         }
 
         _ribbonBar->setCurrentIndex(0);
-	}
+    }
 
-	MainWindow::~MainWindow()
-	{
+    MainWindow::~MainWindow()
+    {
 
-	}
+    }
 
-	ActionEventHandler * MainWindow::getActionEventHandle() const
-	{
-		return m_ActionHandler;
-	}
+    ActionEventHandler * MainWindow::getActionEventHandle() const
+    {
+        return m_ActionHandler;
+    }
 
     QAction * MainWindow::createAction(const QString & toolTip, const QString & objectName, const QString & iconPath, const QString & iconText)
     {
@@ -86,10 +86,10 @@ namespace GUI
     }
 
     void MainWindow::init()
-	{
-		m_ActionHandler = new ActionEventHandler;
-		initCentralWidget();
-		
+    {
+        m_ActionHandler = new ActionEventHandler;
+        initCentralWidget();
+
         initApplicationButton();
         initHome();
         initGeometry();
@@ -97,25 +97,25 @@ namespace GUI
         initSetting();
         initResult();
         initHelp();
-	}
+    }
 
-	void MainWindow::initCentralWidget()
-	{
-		// 子部件水平排布
-		QSplitter *spliterLayout = new QSplitter(Qt::Horizontal);
-		spliterLayout->setMouseTracking(true);
-		spliterLayout->setHandleWidth(5);
+    void MainWindow::initCentralWidget()
+    {
+        // 子部件水平排布
+        QSplitter *spliterLayout = new QSplitter(Qt::Horizontal);
+        spliterLayout->setMouseTracking(true);
+        spliterLayout->setHandleWidth(5);
 
         _treeWidget = new MainTreeWidget(this);
-		m_PropertyWidget = new PropertyWidget(this);
-		m_RenderWidget = new RenderWidget(this);
+        m_PropertyWidget = new PropertyWidget(this);
+        m_RenderWidget = new RenderWidget(this);
         _tabWidgete = new TabWidget(this);
-		m_GroupPropertyWidget = new GroupPropertyWidget(this);
+        m_GroupPropertyWidget = new GroupPropertyWidget(this);
 
         //添加树界面
-		spliterLayout->addWidget(_treeWidget);
+        spliterLayout->addWidget(_treeWidget);
         //添加属性界面
-		spliterLayout->addWidget(m_PropertyWidget);
+        spliterLayout->addWidget(m_PropertyWidget);
 
         QSplitter* verLayout = new QSplitter(Qt::Vertical);
         spliterLayout->setMouseTracking(true);
@@ -123,10 +123,10 @@ namespace GUI
         verLayout->addWidget(m_RenderWidget);
         verLayout->addWidget(_tabWidgete);
 
-		spliterLayout->addWidget(verLayout);
-		spliterLayout->addWidget(m_GroupPropertyWidget);
-		// 设置大小
-		spliterLayout->setSizes({ 200, 300, 1000, 200 });
+        spliterLayout->addWidget(verLayout);
+        spliterLayout->addWidget(m_GroupPropertyWidget);
+        // 设置大小
+        spliterLayout->setSizes({ 200, 300, 1000, 200 });
 
         auto mainLayout = new QGridLayout();
         mainLayout->setObjectName("CentralGridLayout");
@@ -135,7 +135,7 @@ namespace GUI
 
         _currentWidget->setLayout(mainLayout);
         setCentralWidget(_currentWidget);
-	}
+    }
 
     void MainWindow::initApplicationButton()
     {
@@ -241,7 +241,7 @@ namespace GUI
         SARibbonPannel* pannel = gategory->addPannel(tr("Geometry"));
         action = createAction(tr("Import Geometry"), "actionImportGeometry", "", tr("import geometry"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
-        
+
         pannel = gategory->addPannel(tr("3D model"));
         action = createAction(tr("Create Cube"), "actionCreateCube", "", tr("Create Cube"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
@@ -263,8 +263,45 @@ namespace GUI
         SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
         _ribbonBar->raiseCategory(gategory);
 
+
         QAction* action = nullptr;
-        SARibbonPannel* pannel = gategory->addPannel(tr("Mesh import"));
+
+        // 网格导入
+        auto pannel = gategory->addPannel(tr("Import Mesh"));
+        auto menu = new QMenu(tr("Import Mesh"), this);
+        action = createAction(tr("Import Mesh"), "actionImportMesh");
+        action->setIcon(QIcon(":/icons/displayedge.png"));
+        action->setMenu(menu);
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+
+        action = createAction(tr("Tet"), "actionTetMesh", ":/icons/displayedge.png", tr("Cube"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = createAction(tr("Hex"), "actionHexMesh", ":/icons/displayedge.png", tr("Hex"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = createAction(tr("Tri"), "actionTriMesh", ":/icons/displayedge.png", tr("Tri"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = createAction(tr("Quad"), "actionQuadMesh", ":/icons/displayedge.png", tr("Quad"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+
+        // 网格质量检查
+        pannel = gategory->addPannel(tr("Check Mesh"));
+        action = createAction(tr("Config A"), "action", ":/icons/displayedge.png", tr("Config A"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = createAction(tr("Config B"), "actionHexMesh", ":/icons/displayedge.png", tr("Config B"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = createAction(tr("Calc"), "actionTriMesh", ":/icons/displayedge.png", tr("Calc"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = createAction(tr("Stat"), "actionQuadMesh", ":/icons/displayedge.png", tr("Stat"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+
+        // 网格操作
+        pannel = gategory->addPannel(tr("Oper Mesh"));
+        action = createAction(tr("Mesh"), "action", ":/icons/displayedge.png", tr("Mesh"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = createAction(tr("Extrude"), "action", ":/icons/displayedge.png", tr("Extrude"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = createAction(tr("Rotate"), "actionHexMesh", ":/icons/displayedge.png", tr("Rotate"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
     }
 
     void MainWindow::initSetting()
@@ -329,19 +366,19 @@ namespace GUI
         return _treeWidget;
     }
 
-	RenderWidget * MainWindow::getRenderWidget() const
-	{
-		return m_RenderWidget;
-	}
+    RenderWidget * MainWindow::getRenderWidget() const
+    {
+        return m_RenderWidget;
+    }
 
-	PropertyWidget * MainWindow::getPropertyWidget() const
-	{
-		return m_PropertyWidget;
-	}
+    PropertyWidget * MainWindow::getPropertyWidget() const
+    {
+        return m_PropertyWidget;
+    }
 
-	GroupPropertyWidget * MainWindow::getGroupPropertyWidget() const
-	{
-		return m_GroupPropertyWidget;
-	}
+    GroupPropertyWidget * MainWindow::getGroupPropertyWidget() const
+    {
+        return m_GroupPropertyWidget;
+    }
 
 }
