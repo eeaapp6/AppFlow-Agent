@@ -127,9 +127,9 @@ Release:LIBS +=  -L../Tools/Win64/OCC/lib  \
 
 unix{
 
-INCLUDEPATH +=  ../OCC/include/opencascade \
-    
-LIBS +=  -L../OCC/lib \
+INCLUDEPATH +=  ../Tools/Linux64/OCC/include/opencascade \
+
+LIBS +=  -L../Tools/Linux64/OCC/lib \
                       -lTKBin  \        
                       -lTKBinL  \       
                       -lTKBinTObj  \    
