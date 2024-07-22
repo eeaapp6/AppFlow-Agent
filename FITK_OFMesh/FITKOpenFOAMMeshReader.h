@@ -21,12 +21,28 @@ namespace Interface {
      * @author YanZhiHui (chanyuantiandao@126.com)
      * @date   2024-07-17
      */
-    struct FoamFileHeader {
+    typedef struct {
         QString format{};
         QString clazz{};
         QString location{};
         QString object{};
-    };
+    }FoamFileHeader;
+    /**
+     * @brief  边界
+     * @author YanZhiHui (chanyuantiandao@126.com)
+     * @date   2024-07-22
+     */
+    typedef struct {
+        QString name{};
+        QString type{};
+        QString group{};
+        int nFaces{};
+        int startFace{};
+
+        bool isValid() {
+            return !name.isEmpty() && !type.isEmpty() && nFaces != 0 && startFace != 0;
+        }
+    } Boundary;
     /**
      * @brief  OpenFOAM网格文件读取类
      * @author YanZhiHui (chanyuantiandao@126.com)
@@ -142,6 +158,27 @@ namespace Interface {
          */
         bool readNeighbour(const QString &owner);
         /**
+         * @brief  读取boundary文件中的单个边界信息
+         * @param  file 文件
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-07-22
+         */
+        bool readSingleBoundaryData(QFile& file, Boundary*);
+        /**
+         * @brief  读取boundary文件中的边界信息
+         * @param  file 文件
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-07-22
+         */
+        bool readBoundaryData(QFile& file);
+        /**
+         * @brief  读取boundary文件
+         * @param  file 文件
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-07-22
+         */
+        bool readBoundary(const QString & boundary);
+        /**
          * @brief  计算hex8单元的节点信息
          * @param  face 面（节点列表）
          * @param  inIdPrev 已知节点1（按OpenFOAM右手法则排序在前）
@@ -220,7 +257,12 @@ namespace Interface {
          * @date   2024-07-16
          */
         QMap<int, QList<int>> _tempNeighbour{};
-
+        /**
+         * @brief  边界
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-07-22
+         */
+        QList<Boundary*> _Boundarys{};
     };
 }
 #endif // FITKOPENFOAMMESHREADER_H
