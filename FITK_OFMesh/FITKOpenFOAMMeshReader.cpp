@@ -31,18 +31,21 @@ namespace Interface {
         auto dirname = dir.absolutePath();
         if (!dir.exists()) return false;
 
-        if (!dir.exists("points") || !dir.exists("faces") || !dir.exists("owner") || !dir.exists("neighbour")) return false;
+        if (!dir.exists("points") || !dir.exists("faces") || !dir.exists("owner") || !dir.exists("neighbour") || !dir.exists("boundary")) return false;
 
         _unstructuredMesh = new Interface::FITKUnstructuredMesh;
 
+        printf("Reading points...\n");
         if (!readPoints(dir.filePath("points"))) return false;
-
+        printf("Reading faces...\n");
         if (!readFaces(dir.filePath("faces"))) return false;
-
+        printf("Reading owner...\n");
         if (!readOwner(dir.filePath("owner"))) return false;
-
+        printf("Reading neighbour...\n");
         if (!readNeighbour(dir.filePath("neighbour"))) return false;
-
+        printf("Reading boundary...\n");
+        if (!readBoundary(dir.filePath("boundary"))) return false;
+        printf("Setup cells...\n");
         if (!setupCells()) return false;
 
         printf("Finish reading. Node: %d, Element: %d\n", _unstructuredMesh->getNodeCount(), _unstructuredMesh->getElementCount());
@@ -364,6 +367,98 @@ namespace Interface {
             }
         }
         neighbourFile.close();
+
+        return true;
+    }
+
+    bool FITKOpenFOAMMeshReader::readSingleBoundaryData(QFile & file, Boundary*  boundary)
+    {
+
+        QString line;
+
+        do
+        {
+            line = file.readLine().simplified();
+            if (line == "{") continue;
+            if (line == "}") break;
+
+            if (line.startsWith("type")) {
+                boundary->type = line.mid(4).simplified().chopped(1);
+            }
+            else if (line.startsWith("inGroups")) {
+                boundary->group = line.mid(8).simplified().chopped(1);
+            }
+            else if (line.startsWith("nFaces")) {
+                boundary->nFaces = line.mid(6).simplified().chopped(1).toInt();
+            }
+            else if (line.startsWith("startFace")) {
+                boundary->startFace = line.mid(9).simplified().chopped(1).toInt();
+            }
+        } while (!file.atEnd());
+        return true;
+    }
+
+    bool FITKOpenFOAMMeshReader::readBoundaryData(QFile & file)
+    {
+        QString line;
+        bool ok;
+        int faceIndex = -1;
+        Boundary boundary{};
+        do
+        {
+            line = file.readLine().simplified();
+            if (line == "(") continue;
+            if (line == ")") break;
+
+            auto boundary = new Boundary;
+            boundary->name = line;
+            readSingleBoundaryData(file, boundary);
+            if (!boundary->isValid()) {
+                delete boundary;
+                boundary = nullptr;
+                break;
+            }
+            else {
+                _Boundarys.append(boundary);
+            }
+
+        } while (!file.atEnd());
+        return true;
+    }
+
+    bool FITKOpenFOAMMeshReader::readBoundary(const QString & boundary)
+    {
+        QFile boundaryFile(boundary);
+
+        if (!boundaryFile.exists()) return false;
+
+        if (!boundaryFile.open(QIODevice::ReadOnly | QIODevice::Text)) return false;
+
+        QString line;
+        bool inComment{ false };
+        bool isInt{ false };
+        int boundaryNum{};
+        while (!boundaryFile.atEnd())
+        {
+            line = boundaryFile.readLine();
+            inComment = processLine(line, inComment);
+            line = line.simplified();
+            if (line.isEmpty()) continue;
+            // 读取文件头信息
+            if (line.startsWith("FoamFile")) {
+                FoamFileHeader header;
+                if (!readFoamFileHeader(boundaryFile, header)) return false;
+                // 只支持文本格式
+                if (header.format != "ascii") return false;
+            }
+
+            // 读取boundary数据
+            boundaryNum = line.toInt(&isInt);
+            if (isInt) {
+                if (!readBoundaryData(boundaryFile)) return false;
+            }
+        }
+        boundaryFile.close();
 
         return true;
     }
