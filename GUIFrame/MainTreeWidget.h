@@ -17,7 +17,9 @@ namespace GUI
         MainTree_GeometyCylinderItem,
         MainTree_GeometySphereItem,
         MainTree_Mesh,
-        MainTree_MeshItem,
+        MainTree_MeshBase,
+        MainTree_MeshLocal,
+        MainTree_MeshLocalItem,
     };
 
     class GUIFRAMEAPI MainTreeWidget : public PanelWidgetBase

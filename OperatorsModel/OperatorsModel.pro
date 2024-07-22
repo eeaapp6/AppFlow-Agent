@@ -28,6 +28,7 @@ win32{
         -lGUIWidget \
         -lOperatorsInterface \
         -lGUIGeometryDialog \
+        -lGUIMeshDialog \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -43,6 +44,7 @@ win32{
         -lGUIWidget \
         -lOperatorsInterface \
         -lGUIGeometryDialog \
+        -lGUIMeshDialog \
 
 
     message("Windows OperatorsModel generated")
@@ -69,6 +71,7 @@ unix{
         -lGUIWidget \
         -lOperatorsInterface \
         -lGUIGeometryDialog \
+        -lGUIMeshDialog \
         
     message("Linux OperatorsModel generated")
 }

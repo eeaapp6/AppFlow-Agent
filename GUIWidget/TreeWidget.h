@@ -51,6 +51,8 @@ namespace GUI {
 
         void acitonClicked();
     private:
+        void updateGeometryItems();
+        void updateMeshItems();
         //添加actions
         void addMenuActions(QMenu& menu, QString actions, QString objectName);
     };

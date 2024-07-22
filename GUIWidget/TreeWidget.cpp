@@ -45,36 +45,8 @@ namespace GUI{
     void TreeWidget::updateTree()
     {
         this->clear();
-
-        Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
-        if (geometryData == nullptr) return;
-
-        QTreeWidgetItem* geometryItem = new QTreeWidgetItem();
-        geometryItem->setText(0, "geometry");
-        geometryItem->setExpanded(true);
-        this->addTopLevelItem(geometryItem);
-
-        for (int i = 0; i < geometryData->getDataCount(); i++) {
-            auto geometryObj = dynamic_cast<Interface::FITKAbsGeoCommand*>(geometryData->getDataByIndex(i));
-            if (geometryObj == nullptr)continue;
-
-            QTreeWidgetItem* item = new QTreeWidgetItem();
-            item->setExpanded(true);
-            item->setText(0, geometryObj->getDataObjectName());
-            item->setData(1, 0, geometryObj->getDataObjectID());
-
-            GUI::MainTreeEnum treeType = GUI::MainTreeEnum::MainTree_None;
-            Interface::FITKGeoEnum::FITKGeometryComType geometryType = geometryObj->getGeometryCommandType();
-            switch (geometryType) {
-            case Interface::FITKGeoEnum::FGTNone:break;
-            case Interface::FITKGeoEnum::FGTBox:  treeType = GUI::MainTreeEnum::MainTree_GeometyBoxItem; break;
-            case Interface::FITKGeoEnum::FGTCylinder:treeType = GUI::MainTreeEnum::MainTree_GeometyCylinderItem; break;
-            case Interface::FITKGeoEnum::FGTSphere:treeType = GUI::MainTreeEnum::MainTree_GeometySphereItem;  break;
-            }
-            item->setData(2, 0, QVariant::fromValue(treeType));
-
-            geometryItem->addChild(item);
-        }
+        updateGeometryItems();
+        updateMeshItems();
 
         //展开全部子集
         setItemsExpandable(true);		
@@ -96,7 +68,9 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:name = "actionEditCylinder"; break;
         case GUI::MainTreeEnum::MainTree_GeometySphereItem:name = "actionEditSphere"; break;
         case GUI::MainTreeEnum::MainTree_Mesh: break;
-        case GUI::MainTreeEnum::MainTree_MeshItem: break;
+        case GUI::MainTreeEnum::MainTree_MeshBase: name = "actionEditBase"; break;
+        case GUI::MainTreeEnum::MainTree_MeshLocal: break;
+        case GUI::MainTreeEnum::MainTree_MeshLocalItem: break;
         }
 
         if (!name.isEmpty()) {
@@ -151,7 +125,9 @@ namespace GUI{
             break;
         }
         case GUI::MainTreeEnum::MainTree_Mesh: break;
-        case GUI::MainTreeEnum::MainTree_MeshItem: break;
+        case GUI::MainTreeEnum::MainTree_MeshBase: break;
+        case GUI::MainTreeEnum::MainTree_MeshLocal: break;
+        case GUI::MainTreeEnum::MainTree_MeshLocalItem: break;
         }
 
         if (menu.actions().size() == 0) return;
@@ -173,6 +149,50 @@ namespace GUI{
         acOper->setEmitter(senderObject);
         acOper->setArgs("objID", objID);
         acOper->actionTriggered();
+    }
+
+    void TreeWidget::updateGeometryItems()
+    {
+        Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
+        if (geometryData == nullptr) return;
+
+        QTreeWidgetItem* geometryItem = new QTreeWidgetItem();
+        geometryItem->setText(0, tr("geometry"));
+        this->addTopLevelItem(geometryItem);
+
+        for (int i = 0; i < geometryData->getDataCount(); i++) {
+            auto geometryObj = dynamic_cast<Interface::FITKAbsGeoCommand*>(geometryData->getDataByIndex(i));
+            if (geometryObj == nullptr)continue;
+
+            QTreeWidgetItem* item = new QTreeWidgetItem();
+            item->setText(0, geometryObj->getDataObjectName());
+            item->setData(1, 0, geometryObj->getDataObjectID());
+
+            GUI::MainTreeEnum treeType = GUI::MainTreeEnum::MainTree_None;
+            Interface::FITKGeoEnum::FITKGeometryComType geometryType = geometryObj->getGeometryCommandType();
+            switch (geometryType) {
+            case Interface::FITKGeoEnum::FGTNone:break;
+            case Interface::FITKGeoEnum::FGTBox:  treeType = GUI::MainTreeEnum::MainTree_GeometyBoxItem; break;
+            case Interface::FITKGeoEnum::FGTCylinder:treeType = GUI::MainTreeEnum::MainTree_GeometyCylinderItem; break;
+            case Interface::FITKGeoEnum::FGTSphere:treeType = GUI::MainTreeEnum::MainTree_GeometySphereItem;  break;
+            }
+            item->setData(2, 0, QVariant::fromValue(treeType));
+
+            geometryItem->addChild(item);
+        }
+    }
+
+    void TreeWidget::updateMeshItems()
+    {
+        QTreeWidgetItem* meshItem = new QTreeWidgetItem();
+        meshItem->setText(0, tr("mesh"));
+        this->addTopLevelItem(meshItem);
+
+        QTreeWidgetItem* meshBaseItem = new QTreeWidgetItem();
+        meshBaseItem->setText(0, tr("Base"));
+        meshBaseItem->setData(1, 0, -1);
+        meshBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshBase));
+        meshItem->addChild(meshBaseItem);
     }
 
     void TreeWidget::addMenuActions(QMenu & menu, QString actions, QString objectName)
