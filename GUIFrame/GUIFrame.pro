@@ -80,6 +80,7 @@ unix{
         -lFITKWidget \
         -lFITKRenderWindowVTK \
         -lGUIWidget \
+        -lSARibbonBar \
 
     message("Linux GUIFrame generated")
 }
