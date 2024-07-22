@@ -60,7 +60,7 @@ namespace GUIOper
             return;
         }
 
-        auto pickType = GUI::GUIPickInfo::GetPickInfo()._pickObjType;
+        GUI::GUIPickInfo::PickObjType pickType = GUI::GUIPickInfo::GetPickInfo()._pickObjType;
         m_pickedProvider->addPicked(actor, index, pickedWorldPos);
 
         // 设置演员样式。
@@ -110,7 +110,7 @@ namespace GUIOper
 
     void OperGraphPick::picked(Comp::FITKGraph3DWindowVTK* graphWindow, QList<vtkActor*> actors, vtkPlanes* cutPlane)
     {
-        auto pickType = GUI::GUIPickInfo::GetPickInfo()._pickObjType;
+        GUI::GUIPickInfo::PickObjType pickType = GUI::GUIPickInfo::GetPickInfo()._pickObjType;
         m_pickedProvider->addPicked(actors, cutPlane);
 
         // 如果不是Individually则不执行框选。

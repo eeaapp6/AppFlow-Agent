@@ -81,10 +81,10 @@ void PreWindowInteractionStyle::OnLeftButtonDown()
 {
     // TEST.
     //@{
-    //GUI::GUIPickInfoStru info = GUI::GUIPickInfo::GetPickInfo();
-    //info._pickObjType = GUI::GUIPickInfo::PickObjType::POBJFace;
-    //info._pickMethod = GUI::GUIPickInfo::PickMethod::PMIndividually;
-    //GUI::GUIPickInfo::SetPickInfo(info);
+    GUI::GUIPickInfoStru info = GUI::GUIPickInfo::GetPickInfo();
+    info._pickObjType = GUI::GUIPickInfo::PickObjType::POBJEdge;
+    info._pickMethod = GUI::GUIPickInfo::PickMethod::PMIndividually;
+    GUI::GUIPickInfo::SetPickInfo(info);
     //@}
 
     this->Interactor->GetEventPosition(m_leftButtonDowmPos);
@@ -219,52 +219,52 @@ void PreWindowInteractionStyle::OnRightButtonUp()
 
 void PreWindowInteractionStyle::areaPick(int* startPos, int* endPos)
 {
-    //// 获取当前三维窗口。
-    //Comp::FITKGraph3DWindowVTK* graphWindow = getCurrentGraphWindow();
-    //if (!graphWindow)
-    //{
-    //    return;
-    //}
+    // 获取当前三维窗口。
+    Comp::FITKGraph3DWindowVTK* graphWindow = getCurrentGraphWindow();
+    if (!graphWindow || !m_operPick)
+    {
+        return;
+    }
 
-    //// 所有渲染层均执行一次框选并获取拾取演员。
-    ////@{
-    //QList<vtkActor*> actors;
-    //vtkSmartPointer<vtkAreaPicker> areaPicker = vtkSmartPointer<vtkAreaPicker>::New();
+    // 所有渲染层均执行一次框选并获取拾取演员。
+    //@{
+    QList<vtkActor*> actors;
+    vtkSmartPointer<vtkAreaPicker> areaPicker = vtkSmartPointer<vtkAreaPicker>::New();
 
-    //for (int i = 0; i < graphWindow->getRenderCount(); i++)
-    //{
-    //    vtkRenderer* renderer = graphWindow->getRenderer(i)->getRenderer();
-    //    areaPicker->AreaPick(startPos[0], startPos[1], endPos[0], endPos[1], renderer);
-    //    vtkProp3DCollection* props = areaPicker->GetProp3Ds();
-    //    props->InitTraversal();
+    for (int i = 0; i < graphWindow->getRenderCount(); i++)
+    {
+        vtkRenderer* renderer = graphWindow->getRenderer(i)->getRenderer();
+        areaPicker->AreaPick(startPos[0], startPos[1], endPos[0], endPos[1], renderer);
+        vtkProp3DCollection* props = areaPicker->GetProp3Ds();
+        props->InitTraversal();
 
-    //    const int nActors = props->GetNumberOfItems();
-    //    for (vtkIdType i = 0; i < nActors; i++)
-    //    {
-    //        vtkProp3D* prop = props->GetNextProp3D();
-    //        vtkActor* actor = vtkActor::SafeDownCast(prop);
-    //        if (actor)
-    //        {
-    //            actors.append(actor);
-    //        }
-    //    }
-    //}
-    ////@}
+        const int nActors = props->GetNumberOfItems();
+        for (vtkIdType i = 0; i < nActors; i++)
+        {
+            vtkProp3D* prop = props->GetNextProp3D();
+            vtkActor* actor = vtkActor::SafeDownCast(prop);
+            if (actor)
+            {
+                actors.append(actor);
+            }
+        }
+    }
+    //@}
 
-    //// 没有拾取到，且不是Shift与Ctrl拾取模式则清除拾取。
-    //AppFrame::FITKKeyMouseStates* settings = FITKGLODATA->getKeyMouseStates();
-    //bool shiftOrCtrlPick = (settings->keyPressed(Qt::Key_Shift) && !settings->keyPressed(Qt::Key_Control))
-    //    || (!settings->keyPressed(Qt::Key_Shift) && settings->keyPressed(Qt::Key_Control));
-    //if (actors.isEmpty() && !shiftOrCtrlPick)
-    //{
-    //    m_operPick->clear(graphWindow);
-    //    return;
-    //}
+    // 没有拾取到，且不是Shift与Ctrl拾取模式则清除拾取。
+    AppFrame::FITKKeyMouseStates* settings = FITKGLODATA->getKeyMouseStates();
+    bool shiftOrCtrlPick = (settings->keyPressed(Qt::Key_Shift) && !settings->keyPressed(Qt::Key_Control))
+        || (!settings->keyPressed(Qt::Key_Shift) && settings->keyPressed(Qt::Key_Control));
+    if (actors.isEmpty() && !shiftOrCtrlPick)
+    {
+        m_operPick->clear(graphWindow);
+        return;
+    }
 
-    //vtkPlanes* cutPlane = areaPicker->GetFrustum();
+    vtkPlanes* cutPlane = areaPicker->GetFrustum();
 
-    //// 操作器执行高亮。
-    //m_operPick->picked(graphWindow, actors, cutPlane);
+    // 操作器执行高亮。
+    m_operPick->picked(graphWindow, actors, cutPlane);
 }
 
 void PreWindowInteractionStyle::pick(bool isPreview)

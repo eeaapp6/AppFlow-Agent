@@ -118,22 +118,104 @@ namespace GraphData
     {
         Exchange::FITKOCC2VTKGraphObjectShape* gobj = m_pickedData->GraphObject;
         vtkPlanes* planes = m_pickedData->getCutPlane();
-        if (!gobj || !planes)
+        vtkActor* actor = m_pickedData->getPickedActor();
+        if (!gobj || !planes || !actor)
         {
             return;
         }
 
+        // 获取拾取数据集。
+        vtkDataSet* dataSet = actor->GetMapper()->GetInputAsDataSet();
+        if (!dataSet)
+        {
+            return;
+        }
+
+        vtkSmartPointer<FITKExtractGeometry> extractor = vtkSmartPointer<FITKExtractGeometry>::New();
+        extractor->SetImplicitFunction(planes);
+        extractor->SetInputData(dataSet);
+        extractor->Update();
+
+        // 通过单元索引获取单元ID。
+        const QList<int> cellsIndice = extractor->getSelectOriginalCells();
+        if (cellsIndice.isEmpty())
+        {
+            return;
+        }
+
+        // 拾取状态数组。（加速数据判断包含）
         QVector<int> flags;
+        int len = 0;        
+        ShapeAbsEnum sType;
 
         // 根据拾取数据类型进行不同数据获取。
         switch (m_pickedData->Type)
         {
         case PickedDataType::ModelVertPick:
+            len = gobj->getNumberOf(ShapeType::ModelVertex);
+            sType = ShapeAbsEnum::STA_VERTEX;
+            break;
         case PickedDataType::ModelEdgePick:
+            len = gobj->getNumberOf(ShapeType::ModelEdge);
+            sType = ShapeAbsEnum::STA_EDGE;
+            break;
         case PickedDataType::ModelFacePick:
+            len = gobj->getNumberOf(ShapeType::ModelFace);
+            sType = ShapeAbsEnum::STA_FACE;
+            break;
         case PickedDataType::ModelSolidPick:
+            len = gobj->getNumberOf(ShapeType::ModelSolid);
+            sType = ShapeAbsEnum::STA_SOLID;
+            break;
         default:
             return;
         }
+
+        if (len == 0)
+        {
+            return;
+        }
+
+        // OCC数据Id从1开始，需额外开一位数字。
+        flags.resize(len + 1);
+        flags.fill(0);
+
+        // 预处理拾取单元数据。（加速判断拾取子Id包含关系）
+        int nCells = dataSet->GetNumberOfCells();
+        QVector<int> cellPickedFlags;
+        cellPickedFlags.resize(nCells);
+        cellPickedFlags.fill(0);
+
+        // 获取OCC数据Id。
+        for (const int & index : cellsIndice)
+        {
+            int id = gobj->getOCCIdByVTKCellId(index, sType);
+            flags[id] = 1;
+            cellPickedFlags[index] = 1;
+        }
+
+        // 保存拾取数据。
+        for (int i = 1; i <= len; i++)
+        {
+            if (flags[i])
+            {
+                // 检测当前OCC数据是否完全被选中。
+                QVector<int> subIds = gobj->getVTKCellIdsByOCCId(i, sType);
+
+                bool isFullPicked = true;
+                for (const int & id : subIds)
+                {
+                    isFullPicked &= (cellPickedFlags[id] == 1);
+                }
+
+                // 完全选中则视为被框选。
+                if (isFullPicked)
+                {
+                    m_pickedData->Ids.push_back(i);
+                }
+            }
+        }
+
+        flags.clear();
     }
 }

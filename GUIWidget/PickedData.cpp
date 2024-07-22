@@ -225,12 +225,6 @@ namespace GraphData
             return;
         }
 
-        // 框选到特征边则跳出。
-        if (fActor->getActorType() == ActorType::EdgeActor && m_mouseOper == PickedMouseType::PickedMouseRubber)
-        {
-            return;
-        }
-
         // 获取演员存储的可视化对象。
         Exchange::FITKOCC2VTKGraphObjectShape* obj = fActor->getGraphObjectAs<Exchange::FITKOCC2VTKGraphObjectShape>();
         if (!obj)
