@@ -333,9 +333,15 @@ namespace GraphData
         // 获取拾取方式及附加信息。
         GUI::GUIPickInfoStru pickInfo = GUI::GUIPickInfo::GetPickInfo();
 
+        // Single拾取模式禁止框选。
+        if (pickInfo._pickMethod == GUI::GUIPickInfo::PickMethod::PMSingle)
+        {
+            return;
+        }
+
         // 是否需要合并或移除数据。
-        bool needAddOrSubData = (m_settings->keyPressed(Qt::Key_Shift) && !m_settings->keyPressed(Qt::Key_Control))
-            || (!m_settings->keyPressed(Qt::Key_Shift) && m_settings->keyPressed(Qt::Key_Control));
+        bool needAddOrSubData = (m_settings->keyPressed(Qt::Key_Shift) && !m_settings->keyPressed(Qt::Key_Control)) ||
+            (!m_settings->keyPressed(Qt::Key_Shift) && m_settings->keyPressed(Qt::Key_Control));
 
         // 不需要操作数据说明是普通框选，需要清空历史拾取信息。
         if (!needAddOrSubData)
@@ -462,9 +468,14 @@ namespace GraphData
 
     void PickedDataProvider::dealPickedData(PickedData* data, bool isAreaPick)
     {
+        // 获取拾取方式及附加信息。
+        GUI::GUIPickInfoStru pickInfo = GUI::GUIPickInfo::GetPickInfo();
+
         // 根据当前键盘按键判断数据处理逻辑。
         // Shift按下则进行增量拾取。
-        if (m_settings->keyPressed(Qt::Key_Shift) && !m_settings->keyPressed(Qt::Key_Control))
+        if (m_settings->keyPressed(Qt::Key_Shift) && !m_settings->keyPressed(Qt::Key_Control) &&
+            // Single拾取模式不支持增量拾取。
+            pickInfo._pickMethod != GUI::GUIPickInfo::PickMethod::PMSingle)
         {
             // 获取相同模型拾取信息进行合并，否则直接添加。
             PickedData* brotherData = getSameModelPickData(data);

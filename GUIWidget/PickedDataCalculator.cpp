@@ -1,18 +1,9 @@
 ﻿#include "PickedDataCalculator.h"
 
 // VTK
-#include <vtkCellData.h>
 #include <vtkActor.h>
 #include <vtkMapper.h>
-#include <vtkUnstructuredGrid.h>
 #include <vtkPlanes.h>
-#include <vtkTransform.h>
-#include <vtkTransformFilter.h>
-#include <vtkPolygon.h>
-#include <vtkDataSetSurfaceFilter.h>
-#include <vtkOBBTree.h>
-#include <vtkPointData.h>
-#include <vtkLine.h>
 
 // APP
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
@@ -59,6 +50,7 @@ namespace GraphData
             switch (pickInfo._pickMethod)
             {
             case GUI::GUIPickInfo::PickMethod::PMIndividually:
+            case GUI::GUIPickInfo::PickMethod::PMSingle:
             {
                 individually();
                 break;
@@ -124,10 +116,18 @@ namespace GraphData
 
     void PickedDataCalculator::byAreaPick()
     {
+        Exchange::FITKOCC2VTKGraphObjectShape* gobj = m_pickedData->GraphObject;
+        vtkPlanes* planes = m_pickedData->getCutPlane();
+        if (!gobj || !planes)
+        {
+            return;
+        }
+
+        QVector<int> flags;
+
         // 根据拾取数据类型进行不同数据获取。
         switch (m_pickedData->Type)
         {
-            // 部件与装配实例相同。
         case PickedDataType::ModelVertPick:
         case PickedDataType::ModelEdgePick:
         case PickedDataType::ModelFacePick:
