@@ -101,12 +101,12 @@ void PreWindowInteractionStyle::OnLeftButtonUp()
     vtkInteractorStyleRubberBandPick::OnLeftButtonUp();
     this->Interactor->GetEventPosition(m_leftButtonUpPos);
 
-    /// 只有在逐个选择模式下支持框选
-//    GUI::OperSelectMethod m = _pickOper->getSelectMethod();
+    // 只有在逐个选择模式下支持框选。
+    bool canAreaPick = GUI::GUIPickInfo::GetPickInfo()._pickMethod == GUI::GUIPickInfo::PickMethod::PMIndividually;
 
     if (m_areaPick != nullptr && isMouseMoved())
     {
-        if (m_areaPick->isEnable())
+        if (m_areaPick->isEnable() && canAreaPick)
             m_areaPick->pick();
         m_areaPick->enable(false);
     }
@@ -161,8 +161,12 @@ void PreWindowInteractionStyle::OnMouseMove()
     vtkInteractorStyleRubberBandPick::OnMouseMove();
     bool isMoved = this->isMouseMoved();
     const bool lbd = FITKAPP->getGlobalData()->getKeyMouseStates()->mousePressed(Qt::LeftButton);
+
+    // 非单独拾取，且非算法拾取或非拾取状态时可绘制橡皮筋。
+    bool needDrawRect = (GUI::GUIPickInfo::GetPickInfo()._pickMethod == GUI::GUIPickInfo::PickMethod::PMIndividually ||
+        GUI::GUIPickInfo::GetPickInfo()._pickMethod == GUI::GUIPickInfo::PickMethod::PMNone);
    
-    if (lbd && isMoved)
+    if (lbd && isMoved && needDrawRect)
     {
         m_areaPick->drawRectangle();
         return;
