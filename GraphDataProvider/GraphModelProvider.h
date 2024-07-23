@@ -38,7 +38,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        QList<Exchange::FITKOCC2VTKGraphObjectShape*> getCurrentGraphObjs() override;
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> getCurrentGraphObjs() override;
 
         /**
          * @brief   获取类名。[重写]
@@ -55,7 +55,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        Exchange::FITKOCC2VTKGraphObjectShape* getModelGraphObject(int dataObjId);
+        Exchange::FITKOCC2VTKGraphObject3D* getModelGraphObject(int dataObjId);
 
         /**
          * @brief   根据数据ID获取对应可视化对象。（没有则不创建）
@@ -64,7 +64,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-23
          */
-        Exchange::FITKOCC2VTKGraphObjectShape* getCurrentGraphObjByDataId(int dataObjId);
+        Exchange::FITKOCC2VTKGraphObject3D* getCurrentGraphObjByDataId(int dataObjId);
 
         /**
          * @brief   根据数据ID更新可视化对象，没有则跳出。
@@ -138,7 +138,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*> m_modelObjHash;
+        QHash<int, Exchange::FITKOCC2VTKGraphObject3D*> m_modelObjHash;
 
     };
 }   // namespace GraphData

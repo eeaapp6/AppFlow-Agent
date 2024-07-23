@@ -19,7 +19,7 @@ namespace Comp
 
 namespace Exchange
 {
-    class FITKOCC2VTKGraphObjectShape;
+    class FITKOCC2VTKGraphObject3D;
 }
 
 namespace GUIOper
@@ -64,7 +64,7 @@ namespace GUIOper
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        void addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObjectShape* obj, Comp::FITKGraph3DWindowVTK* graphWidget, bool fitView = false);
+        void addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget, bool fitView = false);
 
     };
 

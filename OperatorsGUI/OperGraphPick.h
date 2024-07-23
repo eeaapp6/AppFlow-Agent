@@ -18,7 +18,7 @@ class vtkDataSet;
 
 namespace Exchange
 {
-    class FITKOCC2VTKGraphObjectShape;
+    class FITKOCC2VTKGraphObject3D;
     class FITKOCC2VTKGraphObjectPick;
 }
 
@@ -115,7 +115,7 @@ namespace GUIOper
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        void addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObjectShape* obj, Comp::FITKGraph3DWindowVTK* graphWidget);
+        void addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget);
 
     private:
         /**

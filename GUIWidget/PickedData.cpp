@@ -29,7 +29,7 @@
 // Graph
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor.h"
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor2D.h"
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectShape.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
 
 // Filter ( Algorithm )
 #include "FITK_Interface/FITKVTKAlgorithm/FITKShellFeatureEdges.h"
@@ -277,7 +277,7 @@ namespace GraphData
         }
 
         // 获取演员存储的可视化对象。
-        Exchange::FITKOCC2VTKGraphObjectShape* obj = fActor->getGraphObjectAs<Exchange::FITKOCC2VTKGraphObjectShape>();
+        Exchange::FITKOCC2VTKGraphObject3D* obj = fActor->getGraphObjectAs<Exchange::FITKOCC2VTKGraphObject3D>();
         if (!obj)
         {
             return;
@@ -329,7 +329,7 @@ namespace GraphData
         }
 
         // 获取演员存储的可视化对象。
-        Exchange::FITKOCC2VTKGraphObjectShape* obj = fActor2D->getGraphObjectAs<Exchange::FITKOCC2VTKGraphObjectShape>();
+        Exchange::FITKOCC2VTKGraphObject3D* obj = fActor2D->getGraphObjectAs<Exchange::FITKOCC2VTKGraphObject3D>();
         if (!obj)
         {
             return;

@@ -5,7 +5,7 @@
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraphRender.h"
 
 // Graph
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectShape.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
 #include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectModel.h"
 
 // Adaptor
@@ -39,10 +39,10 @@ namespace GraphData
         return "GraphModelProvider";
     }
 
-    QList<Exchange::FITKOCC2VTKGraphObjectShape*> GraphModelProvider::getCurrentGraphObjs()
+    QList<Exchange::FITKOCC2VTKGraphObject3D*> GraphModelProvider::getCurrentGraphObjs()
     {
         // 当前所有模型可视化对象数据。
-        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs;
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
 
         // 模型（几何）可视化对象。
         objs << m_modelObjHash.values();
@@ -50,10 +50,10 @@ namespace GraphData
         return objs;
     }
 
-    Exchange::FITKOCC2VTKGraphObjectShape* GraphModelProvider::getModelGraphObject(int dataObjId)
+    Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getModelGraphObject(int dataObjId)
     {
         // 检查数据ID。
-        Exchange::FITKOCC2VTKGraphObjectShape* obj{ nullptr };
+        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
 
         // 检查数据ID。
         Interface::FITKAbstractModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractModel>(dataObjId);
@@ -106,7 +106,7 @@ namespace GraphData
         return obj;
     }
 
-    Exchange::FITKOCC2VTKGraphObjectShape* GraphModelProvider::getCurrentGraphObjByDataId(int dataObjId)
+    Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getCurrentGraphObjByDataId(int dataObjId)
     {
         // 查找模型。
         if (m_modelObjHash.contains(dataObjId))
@@ -142,8 +142,8 @@ namespace GraphData
     void GraphModelProvider::setVertPickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
-        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
             if (obj)
             {
@@ -155,8 +155,8 @@ namespace GraphData
     void GraphModelProvider::setEdgePickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
-        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
@@ -177,8 +177,8 @@ namespace GraphData
     void GraphModelProvider::setFacePickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
-        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
@@ -199,8 +199,8 @@ namespace GraphData
     void GraphModelProvider::setSolidPickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
-        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
@@ -221,8 +221,8 @@ namespace GraphData
     void GraphModelProvider::setNonePickable(int dataObjId)
     {
         // 关闭可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
-        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {

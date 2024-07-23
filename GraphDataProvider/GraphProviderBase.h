@@ -23,7 +23,7 @@ namespace Comp
 
 namespace Exchange
 {
-    class FITKOCC2VTKGraphObjectShape;
+    class FITKOCC2VTKGraphObject3D;
 }
 
 namespace GraphData
@@ -47,7 +47,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        virtual QList<Exchange::FITKOCC2VTKGraphObjectShape*> getCurrentGraphObjs() = 0;
+        virtual QList<Exchange::FITKOCC2VTKGraphObject3D*> getCurrentGraphObjs() = 0;
 
         /**
          * @brief   获取当前算例已实例化的当前可见可视化对象。
@@ -55,7 +55,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        QList<Exchange::FITKOCC2VTKGraphObjectShape*> getCurrentVisibleGraphObjs();
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> getCurrentVisibleGraphObjs();
 
         /**
          * @brief   获取类名。[虚函数]
@@ -104,7 +104,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        void deleteObjsHash(QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*>& hash);
+        void deleteObjsHash(QHash<int, Exchange::FITKOCC2VTKGraphObject3D*>& hash);
 
         /**
          * @brief   移除数据管理字典中的所有可视化对象数据并析构。
@@ -112,7 +112,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        void deleteObjsHash(QHash<int, QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*>>& hash);
+        void deleteObjsHash(QHash<int, QHash<int, Exchange::FITKOCC2VTKGraphObject3D*>>& hash);
 
     protected:
         /**
@@ -127,7 +127,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*> m_previewObjHash = {};
+        QHash<int, Exchange::FITKOCC2VTKGraphObject3D*> m_previewObjHash = {};
 
     };
 }   // namespace GraphData

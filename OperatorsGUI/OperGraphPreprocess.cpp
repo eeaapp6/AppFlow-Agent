@@ -37,7 +37,7 @@ namespace GUIOper
         }
 
         // 获取或创建可视化对象。
-        Exchange::FITKOCC2VTKGraphObjectShape* obj = modelProvider->getModelGraphObject(dataObjId);
+        Exchange::FITKOCC2VTKGraphObject3D* obj = modelProvider->getModelGraphObject(dataObjId);
         if (!obj)
         {
             return;
@@ -47,10 +47,10 @@ namespace GUIOper
         addGraphObjectToWidget(obj, graphWidget, fitView);
     }
 
-    Exchange::FITKOCC2VTKGraphObjectShape* OperGraphPreprocess::getModelGraphObjectByDataId(int dataObjId)
+    Exchange::FITKOCC2VTKGraphObject3D* OperGraphPreprocess::getModelGraphObjectByDataId(int dataObjId)
     {
         // 可视化对象。
-        Exchange::FITKOCC2VTKGraphObjectShape* obj{ nullptr };
+        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
         // 获取可视化窗口。
         Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
         if (!graphWidget)
