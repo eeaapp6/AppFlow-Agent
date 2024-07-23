@@ -24,6 +24,7 @@ win32{
         -L../output/bin  \
         -lFITKAppFramework \
         -lFITKCore \
+        -lFITKOFDictWriter \
         -lGUIFrame \
         -lGUIWidget \
         -lOperatorsInterface \
@@ -40,6 +41,7 @@ win32{
         -L../output/bin_d  \
         -lFITKAppFramework \
         -lFITKCore \
+        -lFITKOFDictWriter \
         -lGUIFrame \
         -lGUIWidget \
         -lOperatorsInterface \
@@ -67,6 +69,7 @@ unix{
         -L../output/bin  \
         -lFITKAppFramework \
         -lFITKCore \
+        -lFITKOFDictWriter \
         -lGUIFrame \
         -lGUIWidget \
         -lOperatorsInterface \

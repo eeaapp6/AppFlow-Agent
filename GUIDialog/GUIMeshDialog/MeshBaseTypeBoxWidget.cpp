@@ -26,35 +26,35 @@ namespace GUI
 
     void MeshBaseTypeBoxWidget::init()
     {
-        _ui->comboBox_X0->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
-        _ui->comboBox_X0->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
-        _ui->comboBox_X0->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
-        _ui->comboBox_X0->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
-
         _ui->comboBox_X1->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
         _ui->comboBox_X1->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
         _ui->comboBox_X1->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
         _ui->comboBox_X1->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
 
-        _ui->comboBox_Y0->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
-        _ui->comboBox_Y0->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
-        _ui->comboBox_Y0->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
-        _ui->comboBox_Y0->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
+        _ui->comboBox_X0->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
+        _ui->comboBox_X0->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
+        _ui->comboBox_X0->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
+        _ui->comboBox_X0->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
 
         _ui->comboBox_Y1->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
         _ui->comboBox_Y1->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
         _ui->comboBox_Y1->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
         _ui->comboBox_Y1->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
 
-        _ui->comboBox_Z0->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
-        _ui->comboBox_Z0->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
-        _ui->comboBox_Z0->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
-        _ui->comboBox_Z0->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
+        _ui->comboBox_Y0->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
+        _ui->comboBox_Y0->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
+        _ui->comboBox_Y0->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
+        _ui->comboBox_Y0->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
 
         _ui->comboBox_Z1->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
         _ui->comboBox_Z1->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
         _ui->comboBox_Z1->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
         _ui->comboBox_Z1->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
+
+        _ui->comboBox_Z0->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
+        _ui->comboBox_Z0->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
+        _ui->comboBox_Z0->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
+        _ui->comboBox_Z0->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
     }
 
     bool MeshBaseTypeBoxWidget::checkValue()
@@ -88,6 +88,12 @@ namespace GUI
         _ui->lineEdit_Grading2->setText(QString::number(boxObj->getGrading(1)));
         _ui->lineEdit_Grading3->setText(QString::number(boxObj->getGrading(2)));
 
+        _ui->comboBox_X1->setCurrentIndex(_ui->comboBox_X1->findData(boxObj->getBoundary(0)));
+        _ui->comboBox_X0->setCurrentIndex(_ui->comboBox_X0->findData(boxObj->getBoundary(1)));
+        _ui->comboBox_Y1->setCurrentIndex(_ui->comboBox_Y1->findData(boxObj->getBoundary(2)));
+        _ui->comboBox_Y0->setCurrentIndex(_ui->comboBox_Y0->findData(boxObj->getBoundary(3)));
+        _ui->comboBox_Z1->setCurrentIndex(_ui->comboBox_Z1->findData(boxObj->getBoundary(4)));
+        _ui->comboBox_Z0->setCurrentIndex(_ui->comboBox_Z0->findData(boxObj->getBoundary(5)));
         return true;
     }
 
@@ -115,6 +121,13 @@ namespace GUI
         boxObj->setGrading(0, _ui->lineEdit_Grading1->text().toInt());
         boxObj->setGrading(1, _ui->lineEdit_Grading2->text().toInt());
         boxObj->setGrading(2, _ui->lineEdit_Grading3->text().toInt());
+
+        boxObj->insertBoundary(0, _ui->comboBox_X1->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        boxObj->insertBoundary(1, _ui->comboBox_X0->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        boxObj->insertBoundary(2, _ui->comboBox_Y1->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        boxObj->insertBoundary(3, _ui->comboBox_Y0->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        boxObj->insertBoundary(4, _ui->comboBox_Z1->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        boxObj->insertBoundary(5, _ui->comboBox_Z0->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
 
         return true;
     }

@@ -285,13 +285,13 @@ namespace GUI
 
         // 网格质量检查
         pannel = gategory->addPannel(tr("Check Mesh"));
-        action = createAction(tr("Config A"), "action", ":/icons/displayedge.png", tr("Config A"));
+        action = createAction(tr("Config A"), "actionConfigAMesh", ":/icons/displayedge.png", tr("Config A"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
-        action = createAction(tr("Config B"), "actionHexMesh", ":/icons/displayedge.png", tr("Config B"));
+        action = createAction(tr("Config B"), "actionConfigBMesh", ":/icons/displayedge.png", tr("Config B"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
-        action = createAction(tr("Calc"), "actionTriMesh", ":/icons/displayedge.png", tr("Calc"));
+        action = createAction(tr("Calculate"), "actionMeshCalc", ":/icons/displayedge.png", tr("Calculate"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
-        action = createAction(tr("Stat"), "actionQuadMesh", ":/icons/displayedge.png", tr("Stat"));
+        action = createAction(tr("Statistics"), "actionMeshStat", ":/icons/displayedge.png", tr("Statistics"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         // 网格操作
