@@ -291,7 +291,7 @@ namespace GraphData
 
         /**
          * @brief   获取拾取数据ID。
-         * @return  拾取数据列表
+         * @return  拾取数据列表[引用]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-23
          */
@@ -342,10 +342,26 @@ namespace GraphData
          */
         void initManual();
 
+        /**
+         * @brief   内部方法，设置拾取到的可视化对象指针。
+         * @param   obj：可视化对象
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-23
+         */
+        void setPickedGraphObject(Exchange::FITKOCC2VTKGraphObject3D* obj);
+
         // 获取数据方法。
         //@{
         
         //@}
+
+    private slots:
+        /**
+         * @brief   清空可视化对象指针。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-23
+         */
+        void slot_resetGraphObject();
 
     private:
         // 拾取时的信息。

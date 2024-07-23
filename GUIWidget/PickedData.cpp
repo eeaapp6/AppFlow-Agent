@@ -388,6 +388,29 @@ namespace GraphData
         m_isValid = m_graphObject != nullptr;
     }
 
+    void PickedData::setPickedGraphObject(Exchange::FITKOCC2VTKGraphObject3D* obj)
+    {
+        if (!obj)
+        {
+            return;
+        }
+
+        // 断开旧数据信号。
+        if (m_graphObject)
+        {
+            disconnect(m_graphObject, &Exchange::FITKOCC2VTKGraphObject3D::destroyed, this, &PickedData::slot_resetGraphObject);
+        }
+
+        // 保存数据，连接信号。
+        m_graphObject = obj;
+        connect(m_graphObject, &Exchange::FITKOCC2VTKGraphObject3D::destroyed, this, &PickedData::slot_resetGraphObject, Qt::UniqueConnection);
+    }
+
+    void PickedData::slot_resetGraphObject()
+    {
+        m_graphObject = nullptr;
+    }
+
     void PickedData::highlight()
     {
         if (!m_graphObject)
