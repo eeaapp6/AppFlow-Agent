@@ -4,6 +4,8 @@
 #include "GUIGeometryDialogAPI.h"
 #include "FITK_Kernel/FITKCore/FITKAbstractGUI.h"
 
+class QTableWidgetItem;
+
 namespace Ui{
     class CudeInfoWidget;
 }
@@ -31,6 +33,8 @@ namespace GUI
         void init();
         //重新设置基点
         void setBasicPoint(double* point);
+
+        void updateTableWidget();
     private slots:
         ;
         void on_pushButton_BasicPoint_clicked();
@@ -42,10 +46,25 @@ namespace GUI
         void on_pushButton_Clear_clicked();
 
         void on_pushButton_Add_clicked();
+        /**
+         * @brief 表格点击事件
+         * @param[i]  item           表格对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void itemTableClickedSlot(QTableWidgetItem* item);
+        /**
+         * @brief 表格双击事件
+         * @param[i]  item           表格对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void itemTableDoubleClickedSlot(QTableWidgetItem* item);
     private:
         bool checkValue();
         void setDataToWidget();
         void getDataFormWidget();
+        void initTableWidget();
     private:
         bool _isCreate = false;
         Interface::FITKAbsGeoModelBox* _obj = nullptr;

@@ -17,7 +17,7 @@ namespace GUI
         WidgetOCCEvent();
         ~WidgetOCCEvent();
 
-        static double* getPoint(GraphData::PickedData* data, bool isOk = true);
+        static void getPoint(GraphData::PickedData* data, double* point, bool isOk = true);
     };
 }
 
