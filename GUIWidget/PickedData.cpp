@@ -36,6 +36,10 @@
 // GUI
 #include "GUIPickInfo.h"
 
+// Operator
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
+#include "OperatorsInterface/GraphEventOperator.h"
+
 namespace GraphData
 {
     PickedData::PickedData(GUI::GUIPickInfoStru pickedInfo, vtkActor* pickedActor, int pickedIndex, double* pickedWorldPos, bool isPreview) :
@@ -73,6 +77,16 @@ namespace GraphData
 
         // 初始化。
         init2D();
+    }
+
+    PickedData::PickedData(int dataObjectId, QList<int> & indice)
+    {
+        // 存储数据对象ID与数据索引。
+        this->DataObjId = dataObjectId;
+        this->Ids = indice;
+
+        // 初始化。
+        initManual();
     }
 
     PickedData::PickedData()
@@ -318,6 +332,23 @@ namespace GraphData
 
         m_needToCal = false;
         m_isValid = true;
+    }
+
+    void PickedData::initManual()
+    {
+        // 通过操作器获取可视化对象。
+        Core::FITKOperatorRepo* operatorRepo = Core::FITKOperatorRepo::getInstance();
+        EventOper::GraphEventOperator* operPre = operatorRepo->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (!operPre)
+        {
+            return;
+        }
+
+        this->GraphObject = operPre->getModelGraphObjectByDataId(this->DataObjId);
+
+        // 判断数据是否可用。
+        m_needToCal = false;
+        m_isValid = this->GraphObject != nullptr;
     }
 
     void PickedData::highlight()

@@ -20,7 +20,7 @@
 
 namespace GUIOper
 {
-    void OperGraphPreprocess::updateGraph(int dataId, bool fitView)
+    void OperGraphPreprocess::updateGraph(int dataObjId, bool fitView)
     {
         // 获取可视化窗口。
         Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
@@ -37,7 +37,7 @@ namespace GUIOper
         }
 
         // 获取或创建可视化对象。
-        Exchange::FITKOCC2VTKGraphObjectShape* obj = modelProvider->getModelGraphObject(dataId);
+        Exchange::FITKOCC2VTKGraphObjectShape* obj = modelProvider->getModelGraphObject(dataObjId);
         if (!obj)
         {
             return;
@@ -45,5 +45,27 @@ namespace GUIOper
 
         // 添加至三维窗口。
         addGraphObjectToWidget(obj, graphWidget, fitView);
+    }
+
+    Exchange::FITKOCC2VTKGraphObjectShape* OperGraphPreprocess::getModelGraphObjectByDataId(int dataObjId)
+    {
+        // 可视化对象。
+        Exchange::FITKOCC2VTKGraphObjectShape* obj{ nullptr };
+        // 获取可视化窗口。
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return obj;
+        }
+
+        // 获取模型可视化对象管理器。
+        GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
+        if (!modelProvider)
+        {
+            return obj;
+        }
+
+        obj = modelProvider->getCurrentGraphObjByDataId(dataObjId);
+        return obj;
     }
 }  // namespace GUIOper

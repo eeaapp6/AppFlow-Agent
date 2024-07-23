@@ -101,6 +101,15 @@ namespace GraphData
         PickedData(GUI::GUIPickInfoStru pickedInfo, vtkActor2D* pickedActor, bool isPreview = false);
 
         /**
+         * @brief   构造函数。（手动添加数据，模拟拾取）
+         * @param   dataObjectId：数据对象ID
+         * @param   indice：需要添加的数据索引[引用]
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-23
+         */
+        PickedData(int dataObjectId, QList<int> & indice);
+
+        /**
          * @brief   析构函数。
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
@@ -288,6 +297,13 @@ namespace GraphData
          * @date    2024-07-19
          */
         void init2D();
+
+        /**
+         * @brief   初始化手动添加数据，判断数据类型并反向填充拾取数据。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-23
+         */
+        void initManual();
 
         // 获取数据方法。
         //@{

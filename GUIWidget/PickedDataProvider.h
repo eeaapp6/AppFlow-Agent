@@ -59,6 +59,15 @@ namespace GraphData
         static void Delete();
 
         /**
+         * @brief   手动添加数据，模拟拾取。
+         * @param   dataObjId：数据对象ID
+         * @param   indice：数据索引[引用]
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-23
+         */
+        void addDataManually(int dataObjId, QList<int> & indice);
+
+        /**
          * @brief   清空拾取数据。
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-04-18

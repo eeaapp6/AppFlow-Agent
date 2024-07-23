@@ -50,22 +50,22 @@ namespace GraphData
         return objs;
     }
 
-    Exchange::FITKOCC2VTKGraphObjectShape* GraphModelProvider::getModelGraphObject(int dataId)
+    Exchange::FITKOCC2VTKGraphObjectShape* GraphModelProvider::getModelGraphObject(int dataObjId)
     {
         // 检查数据ID。
         Exchange::FITKOCC2VTKGraphObjectShape* obj{ nullptr };
 
         // 检查数据ID。
-        Interface::FITKAbstractModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractModel>(dataId);
+        Interface::FITKAbstractModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractModel>(dataObjId);
         if (!model)
         {
             return obj;
         }
 
         // 创建过则返回。
-        if (m_modelObjHash.contains(dataId))
+        if (m_modelObjHash.contains(dataObjId))
         {
-            return m_modelObjHash[dataId];
+            return m_modelObjHash[dataObjId];
         }
 
         // 生成可视化对象。
@@ -89,13 +89,13 @@ namespace GraphData
         }
 
         // 存储数据。
-        m_modelObjHash.insert(dataId, obj);
+        m_modelObjHash.insert(dataObjId, obj);
 
         // 检测数据析构对三维数据进行析构并移出数据管理。
         //@{
         connect(model, &Interface::FITKAbstractModel::dataObjectDestoried, this, [=]
         {
-            Core::FITKAbstractGraphObject* gObj = m_modelObjHash.take(dataId);
+            Core::FITKAbstractGraphObject* gObj = m_modelObjHash.take(dataObjId);
             if (gObj)
             {
                 delete gObj;
@@ -106,18 +106,29 @@ namespace GraphData
         return obj;
     }
 
-    bool GraphModelProvider::updateObjById(int dataId, QVariant info)
+    Exchange::FITKOCC2VTKGraphObjectShape* GraphModelProvider::getCurrentGraphObjByDataId(int dataObjId)
+    {
+        // 查找模型。
+        if (m_modelObjHash.contains(dataObjId))
+        {
+            return m_modelObjHash[dataObjId];
+        }
+
+        return nullptr;
+    }
+
+    bool GraphModelProvider::updateObjById(int dataObjId, QVariant info)
     {
         // 参数预留。
         Q_UNUSED(info);
 
-        if (!m_modelObjHash.contains(dataId))
+        if (!m_modelObjHash.contains(dataObjId))
         {
             return false;
         }
 
         // 获取可视化对象并更新。
-        Core::FITKAbstractGraphObject* obj = m_modelObjHash[dataId];
+        Core::FITKAbstractGraphObject* obj = m_modelObjHash[dataObjId];
         if (!obj)
         {
             return false;

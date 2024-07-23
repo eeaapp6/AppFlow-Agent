@@ -64,6 +64,21 @@ namespace GUIOper
         graphWidget->addObject(obj->getRenderLayer(), obj, true);
         //}
 
+        // 添加附加可视化对象。
+        //@{
+        QList<Exchange::FITKOCC2VTKGraphObjectShape*> addinObjs = obj->getAddinGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObjectShape* addinObj : addinObjs)
+        {
+            if (!addinObj)
+            {
+                continue;
+            }
+
+            addinObj->removeFromGraphWidget();
+            graphWidget->addObject(addinObj->getRenderLayer(), addinObj, true);
+        }
+        //}
+
         // 刷新窗口。
         //@{
         if (fitView)

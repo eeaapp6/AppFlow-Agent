@@ -50,22 +50,31 @@ namespace GraphData
 
         /**
          * @brief   根据数据ID获取对应可视化对象。（没有则创建）
-         * @param   dataId：数据ID
+         * @param   dataObjId：数据ID
          * @return  可视化对象
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        Exchange::FITKOCC2VTKGraphObjectShape* getModelGraphObject(int dataId);
+        Exchange::FITKOCC2VTKGraphObjectShape* getModelGraphObject(int dataObjId);
+
+        /**
+         * @brief   根据数据ID获取对应可视化对象。（没有则不创建）
+         * @param   dataObjId：数据ID
+         * @return  可视化对象
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-23
+         */
+        Exchange::FITKOCC2VTKGraphObjectShape* getCurrentGraphObjByDataId(int dataObjId);
 
         /**
          * @brief   根据数据ID更新可视化对象，没有则跳出。
-         * @param   dataId：数据ID
+         * @param   dataObjId：数据ID
          * @param   info：附加信息[缺省]
          * @return  是否存在该数据ID所对应可视化对象。
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        bool updateObjById(int dataId, QVariant info = QVariant());
+        bool updateObjById(int dataObjId, QVariant info = QVariant());
 
         /**
          * @brief   设置当前所有实例化模型可视化对象是否可拾取点。

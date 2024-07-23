@@ -80,6 +80,22 @@ namespace GraphData
         }
     }
 
+    void PickedDataProvider::addDataManually(int dataObjId, QList<int> & indice)
+    {
+        // 创建拾取数据。
+        PickedData* data = new PickedData(dataObjId, indice);
+
+        // 判断是否有效。
+        if (data->isValid())
+        {
+            m_pickedDataList.push_back(data);
+        }
+        else
+        {
+            delete data;
+        }
+    }
+
     void PickedDataProvider::clearPickedData()
     {
         // 清除并析构。
