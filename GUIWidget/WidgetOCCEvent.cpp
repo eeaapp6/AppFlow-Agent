@@ -27,9 +27,9 @@ namespace GUI
 
     void WidgetOCCEvent::getPoint(GraphData::PickedData* data, double* point, bool isOk)
     {
-        QList<int> ids = data->Ids;
-        int DataObjId = data->DataObjId;
-        GraphData::PickedDataType type = data->Type;
+        QList<int> ids = data->getPickedIds();
+        int DataObjId = data->getPickedDataObjId();
+        GraphData::PickedDataType type = data->getPickedDataType();
         if (ids.size() == 0) {
             isOk = false;
             return;
