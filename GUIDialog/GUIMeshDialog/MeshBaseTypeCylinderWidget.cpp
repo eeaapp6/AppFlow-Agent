@@ -15,11 +15,31 @@ namespace GUI
     {
         _ui = new Ui::MeshBaseTypeCylinderWidget();
         _ui->setupUi(this);
+
+        init();
     }
 
     MeshBaseTypeCylinderWidget::~MeshBaseTypeCylinderWidget()
     {
         if (_ui)delete _ui;
+    }
+
+    void MeshBaseTypeCylinderWidget::init()
+    {
+        _ui->comboBox_FirstDisk->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
+        _ui->comboBox_FirstDisk->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
+        _ui->comboBox_FirstDisk->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
+        _ui->comboBox_FirstDisk->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
+
+        _ui->comboBox_SecondDisk->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
+        _ui->comboBox_SecondDisk->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
+        _ui->comboBox_SecondDisk->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
+        _ui->comboBox_SecondDisk->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
+
+        _ui->comboBox_Cylinder->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
+        _ui->comboBox_Cylinder->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
+        _ui->comboBox_Cylinder->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
+        _ui->comboBox_Cylinder->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
     }
 
     bool MeshBaseTypeCylinderWidget::checkValue()
@@ -29,11 +49,61 @@ namespace GUI
 
     bool MeshBaseTypeCylinderWidget::setDataToWidget(Interface::FITKAbstractRegionMeshSize * obj)
     {
+        Interface::FITKRegionMeshSizeCylinder* cylinderObj = dynamic_cast<Interface::FITKRegionMeshSizeCylinder*>(obj);
+        if (cylinderObj == nullptr)return false;
+
+        double origin[3] = { 0,0,0 };
+        cylinderObj->getLocation(origin);
+        _ui->lineEdit_OriginPoint1->setText(QString::number(origin[0]));
+        _ui->lineEdit_OriginPoint2->setText(QString::number(origin[1]));
+        _ui->lineEdit_OriginPoint3->setText(QString::number(origin[2]));
+
+        double axis[3] = { 0,0,0 };
+        cylinderObj->getDirection(axis);
+        _ui->lineEdit_AxisPoint1->setText(QString::number(axis[0]));
+        _ui->lineEdit_AxisPoint2->setText(QString::number(axis[1]));
+        _ui->lineEdit_AxisPoint3->setText(QString::number(axis[2]));
+
+        _ui->lineEdit_Length->setText(QString::number(cylinderObj->getLength()));
+        _ui->lineEdit_Radius->setText(QString::number(cylinderObj->getRadius()));
+
+        _ui->lineEdit_Division1->setText(QString::number(cylinderObj->getDivision(0)));
+        _ui->lineEdit_Division2->setText(QString::number(cylinderObj->getDivision(1)));
+        _ui->lineEdit_Division3->setText(QString::number(cylinderObj->getDivision(2)));
+
+        _ui->lineEdit_Grading1->setText(QString::number(cylinderObj->getGrading(0)));
+        _ui->lineEdit_Grading2->setText(QString::number(cylinderObj->getGrading(1)));
+
         return true;
     }
 
     bool MeshBaseTypeCylinderWidget::getDataFromWidget(Interface::FITKAbstractRegionMeshSize * obj)
     {
+        Interface::FITKRegionMeshSizeCylinder* cylinderObj = dynamic_cast<Interface::FITKRegionMeshSizeCylinder*>(obj);
+        if (cylinderObj == nullptr)return false;
+
+        double origin[3] = { 0,0,0 };
+        origin[0] = _ui->lineEdit_OriginPoint1->text().toDouble();
+        origin[1] = _ui->lineEdit_OriginPoint2->text().toDouble();
+        origin[2] = _ui->lineEdit_OriginPoint3->text().toDouble();
+        cylinderObj->setLocation(origin);
+
+        double axis[3] = { 0,0,0 };
+        axis[0] = _ui->lineEdit_AxisPoint1->text().toDouble();
+        axis[1] = _ui->lineEdit_AxisPoint2->text().toDouble();
+        axis[2] = _ui->lineEdit_AxisPoint3->text().toDouble();
+        cylinderObj->setDirection(axis);
+
+        cylinderObj->setLength(_ui->lineEdit_Length->text().toDouble());
+        cylinderObj->setRadius(_ui->lineEdit_Radius->text().toDouble());
+
+        cylinderObj->setDivision(0, _ui->lineEdit_Division1->text().toInt());
+        cylinderObj->setDivision(1, _ui->lineEdit_Division2->text().toInt());
+        cylinderObj->setDivision(2, _ui->lineEdit_Division3->text().toInt());
+
+        cylinderObj->setGrading(0, _ui->lineEdit_Grading1->text().toInt());
+        cylinderObj->setGrading(1, _ui->lineEdit_Grading2->text().toInt());
+
         return true;
     }
 }

@@ -30,13 +30,25 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="lineEdit_BasePoint1"/>
+         <widget class="QLineEdit" name="lineEdit_BasePoint1">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QLineEdit" name="lineEdit_BasePoint2"/>
+         <widget class="QLineEdit" name="lineEdit_BasePoint2">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
         </item>
         <item row="0" column="3">
-         <widget class="QLineEdit" name="lineEdit_BasePoint3"/>
+         <widget class="QLineEdit" name="lineEdit_BasePoint3">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="label_Dimensions">
@@ -46,13 +58,25 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="lineEdit_Dimensions1"/>
+         <widget class="QLineEdit" name="lineEdit_Dimensions1">
+          <property name="text">
+           <string>10</string>
+          </property>
+         </widget>
         </item>
         <item row="1" column="2">
-         <widget class="QLineEdit" name="lineEdit_Dimensions2"/>
+         <widget class="QLineEdit" name="lineEdit_Dimensions2">
+          <property name="text">
+           <string>10</string>
+          </property>
+         </widget>
         </item>
         <item row="1" column="3">
-         <widget class="QLineEdit" name="lineEdit_Dimensions3"/>
+         <widget class="QLineEdit" name="lineEdit_Dimensions3">
+          <property name="text">
+           <string>10</string>
+          </property>
+         </widget>
         </item>
         <item row="2" column="0" colspan="3">
          <spacer name="horizontalSpacer">
@@ -91,13 +115,25 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="lineEdit_Division1"/>
+         <widget class="QLineEdit" name="lineEdit_Division1">
+          <property name="text">
+           <string>10</string>
+          </property>
+         </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QLineEdit" name="lineEdit_Division2"/>
+         <widget class="QLineEdit" name="lineEdit_Division2">
+          <property name="text">
+           <string>10</string>
+          </property>
+         </widget>
         </item>
         <item row="0" column="3">
-         <widget class="QLineEdit" name="lineEdit_Division3"/>
+         <widget class="QLineEdit" name="lineEdit_Division3">
+          <property name="text">
+           <string>10</string>
+          </property>
+         </widget>
         </item>
         <item row="1" column="0">
          <widget class="QLabel" name="label_Dimensions_2">
@@ -107,13 +143,25 @@
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="lineEdit_Grading1"/>
+         <widget class="QLineEdit" name="lineEdit_Grading1">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
         </item>
         <item row="1" column="2">
-         <widget class="QLineEdit" name="lineEdit_Grading2"/>
+         <widget class="QLineEdit" name="lineEdit_Grading2">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
         </item>
         <item row="1" column="3">
-         <widget class="QLineEdit" name="lineEdit_Grading3"/>
+         <widget class="QLineEdit" name="lineEdit_Grading3">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
         </item>
         <item row="2" column="0" colspan="3">
          <spacer name="horizontalSpacer_2">

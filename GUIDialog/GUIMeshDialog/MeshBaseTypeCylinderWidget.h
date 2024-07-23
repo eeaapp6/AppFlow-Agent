@@ -16,6 +16,8 @@ namespace GUI
         MeshBaseTypeCylinderWidget();
         ~MeshBaseTypeCylinderWidget();
 
+        void init();
+
         bool checkValue();
 
         bool setDataToWidget(Interface::FITKAbstractRegionMeshSize* obj);
