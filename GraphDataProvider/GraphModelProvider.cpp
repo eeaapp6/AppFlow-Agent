@@ -69,7 +69,7 @@ namespace GraphData
         }
 
         // 生成可视化对象。
-        Exchange::FITKOCC2VTKViewAdaptorBase* adaptor = FITKVIEWADAPTORFACTORY->createT<Exchange::FITKOCC2VTKViewAdaptorBase>("ModelVTK", model);
+        Exchange::FITKOCC2VTKViewAdaptorBase* adaptor = FITKVIEWADAPTORFACTORY->createT<Exchange::FITKOCC2VTKViewAdaptorBase>("ModelOCC", model);
         if (!adaptor)
         {
             return obj;

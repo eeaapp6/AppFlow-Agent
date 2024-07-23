@@ -82,8 +82,8 @@ void PreWindowInteractionStyle::OnLeftButtonDown()
     // TEST.
     //@{
     //GUI::GUIPickInfoStru info = GUI::GUIPickInfo::GetPickInfo();
-    //info._pickObjType = GUI::GUIPickInfo::PickObjType::POBJEdge;
-    //info._pickMethod = GUI::GUIPickInfo::PickMethod::PMIndividually;
+    //info._pickObjType = GUI::GUIPickInfo::PickObjType::POBJVert;
+    //info._pickMethod = GUI::GUIPickInfo::PickMethod::PMSingle;
     //GUI::GUIPickInfo::SetPickInfo(info);
     //@}
 
@@ -269,6 +269,11 @@ void PreWindowInteractionStyle::areaPick(int* startPos, int* endPos)
 
 void PreWindowInteractionStyle::pick(bool isPreview)
 {
+    if (!m_operPreview || !m_operPick)
+    {
+        return;
+    }
+
     // 获取当前鼠标位置进行拾取。
     vtkRenderWindowInteractor* interactor = this->GetInteractor();
     if (!interactor)
