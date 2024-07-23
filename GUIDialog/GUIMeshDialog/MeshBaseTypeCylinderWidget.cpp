@@ -74,6 +74,9 @@ namespace GUI
         _ui->lineEdit_Grading1->setText(QString::number(cylinderObj->getGrading(0)));
         _ui->lineEdit_Grading2->setText(QString::number(cylinderObj->getGrading(1)));
 
+        _ui->comboBox_FirstDisk->setCurrentIndex(_ui->comboBox_FirstDisk->findData(cylinderObj->getBoundary(0)));
+        _ui->comboBox_SecondDisk->setCurrentIndex(_ui->comboBox_SecondDisk->findData(cylinderObj->getBoundary(1)));
+        _ui->comboBox_Cylinder->setCurrentIndex(_ui->comboBox_Cylinder->findData(cylinderObj->getBoundary(2)));
         return true;
     }
 
@@ -104,6 +107,9 @@ namespace GUI
         cylinderObj->setGrading(0, _ui->lineEdit_Grading1->text().toInt());
         cylinderObj->setGrading(1, _ui->lineEdit_Grading2->text().toInt());
 
+        cylinderObj->insertBoundary(0, _ui->comboBox_FirstDisk->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        cylinderObj->insertBoundary(1, _ui->comboBox_SecondDisk->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        cylinderObj->insertBoundary(2, _ui->comboBox_Cylinder->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
         return true;
     }
 }
