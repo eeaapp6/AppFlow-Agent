@@ -128,6 +128,19 @@ namespace ModelOper
             if (pickD == nullptr) return;
             connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectBasePoint()));
         }
+        //面组选择
+        else if (index == 1) {
+            //拾取信息设置
+            GUI::GUIPickInfoStru pinfo;
+            pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJFace;
+            pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMIndividually;
+            //保存参数
+            GUI::GUIPickInfo::SetPickInfo(pinfo);
+
+            //拾取对象获取事件绑定
+            GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
+            if (pickD == nullptr) return;
+        }
     }
 
     void OperatorsCubeManager::slotReselectBasePoint()
@@ -147,7 +160,8 @@ namespace ModelOper
         if (pickData.size() == 0)return;
         if (!pickData[0])return;
 
-        double* point = GUI::WidgetOCCEvent::getPoint(pickData[0]);
+        double point[3] = { 0,0,0 };
+        GUI::WidgetOCCEvent::getPoint(pickData[0], point);
 
         GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
         if (mainWindow == nullptr)return;
@@ -157,5 +171,7 @@ namespace ModelOper
         GUI::CudeInfoWidget* cudeWidget = dynamic_cast<GUI::CudeInfoWidget*>(propertyWidget->getCurrentWidget());
         if (cudeWidget == nullptr)return;
         cudeWidget->setBasicPoint(point);
+
+        pickD->clearPickedData();
     }
 }

@@ -11,6 +11,7 @@
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelBox.h"
 
 #include <QMessageBox>
+#include <QTableWidgetItem>
 
 namespace GUI {
     
@@ -46,6 +47,9 @@ namespace GUI {
         _ui = new Ui::CudeInfoWidget();
         _ui->setupUi(this);
 
+        initTableWidget();
+
+        
         QString name = "";
         if (_isCreate) {
             name = QString(tr("Box-%1").arg(geometryData->getDataCount() + 1));
@@ -68,6 +72,11 @@ namespace GUI {
         _ui->lineEdit_BasicPoint1->setText(QString::number(point[0]));
         _ui->lineEdit_BasicPoint2->setText(QString::number(point[1]));
         _ui->lineEdit_BasicPoint3->setText(QString::number(point[2]));
+    }
+
+    void CudeInfoWidget::updateTableWidget()
+    {
+
     }
 
     void CudeInfoWidget::on_pushButton_BasicPoint_clicked()
@@ -122,12 +131,44 @@ namespace GUI {
 
     void CudeInfoWidget::on_pushButton_Clear_clicked()
     {
-
+        _ui->tableWidget->clear();
+        initTableWidget();
     }
 
     void CudeInfoWidget::on_pushButton_Add_clicked()
     {
+        int rowNum = _ui->tableWidget->rowCount();
+        _ui->tableWidget->setRowCount(rowNum + 1);
 
+        QString name = tr("Group_%1 (empty)").arg(rowNum + 1);
+        QTableWidgetItem* item = new QTableWidgetItem(name);
+        _ui->tableWidget->setItem(rowNum, 0, item);
+
+        item = new QTableWidgetItem();
+        item->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+        _ui->tableWidget->setItem(rowNum, 1, item);
+    }
+
+    void CudeInfoWidget::itemTableClickedSlot(QTableWidgetItem * item)
+    {
+        int curRow = _ui->tableWidget->currentRow();
+        int curCol = _ui->tableWidget->currentColumn();
+
+        if (curCol == 0) {
+            if (_oper) {
+                _oper->moveToStep(1);
+            }
+        }
+        //删除操作
+        else if (curCol == 1) {
+            _ui->tableWidget->removeRow(curCol);
+        }
+    }
+
+    void CudeInfoWidget::itemTableDoubleClickedSlot(QTableWidgetItem * item)
+    {
+        int curRow = _ui->tableWidget->currentRow();
+        int curCol = _ui->tableWidget->currentColumn();
     }
 
     bool CudeInfoWidget::checkValue()
@@ -167,5 +208,21 @@ namespace GUI {
         dimensions[1] = _ui->lineEdit_Dimensions2->text().toDouble();
         dimensions[2] = _ui->lineEdit_Dimensions3->text().toDouble();
         _obj->setLength(dimensions);
+    }
+
+    void CudeInfoWidget::initTableWidget()
+    {
+        _ui->tableWidget->setRowCount(0);
+        _ui->tableWidget->setColumnCount(2);
+        QStringList header;
+        header << tr("Default(6 faces)") << tr("");
+        _ui->tableWidget->setHorizontalHeaderLabels(header);
+        _ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        _ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+
+        on_pushButton_Add_clicked();
+
+        connect(_ui->tableWidget, SIGNAL(itemClicked(QTableWidgetItem*)), this, SLOT(itemTableClickedSlot(QTableWidgetItem*)));
+        connect(_ui->tableWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(itemTableDoubleClickedSlot(QTableWidgetItem*)));
     }
 }

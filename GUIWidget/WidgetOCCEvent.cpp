@@ -25,16 +25,14 @@ namespace GUI
 
     }
 
-    double* WidgetOCCEvent::getPoint(GraphData::PickedData* data, bool isOk)
+    void WidgetOCCEvent::getPoint(GraphData::PickedData* data, double* point, bool isOk)
     {
-        double value[3] = { 0,0,0 };
-
         QList<int> ids = data->Ids;
         int DataObjId = data->DataObjId;
         GraphData::PickedDataType type = data->Type;
         if (ids.size() == 0) {
             isOk = false;
-            return value;
+            return;
         }
 
         //数据仓库中获取数据
@@ -44,21 +42,20 @@ namespace GUI
         OCC::FITKAbstractOCCModel* OCCModel = dynamic_cast<OCC::FITKAbstractOCCModel*>(model);
         if (OCCModel == nullptr) {
             isOk = false;
-            return value;
+            return;
         }
         shape = OCCModel->getShape(Interface::FITKModelEnum::FMSPoint, ids[0]);
 
         if (shape.IsNull()) {
             isOk = false;
-            return value;
+            return;
         }
 
         TopoDS_Vertex vertex = TopoDS::Vertex(shape);
         gp_Pnt pt = BRep_Tool::Pnt(vertex);
 
-        value[0] = pt.X();
-        value[1] = pt.Y();
-        value[2] = pt.Z();
-        return value;
+        point[0] = pt.X();
+        point[1] = pt.Y();
+        point[2] = pt.Z();
     }
 }

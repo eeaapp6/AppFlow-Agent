@@ -147,7 +147,8 @@ namespace ModelOper
         if (pickData.size() == 0)return;
         if (!pickData[0])return;
 
-        double* point = GUI::WidgetOCCEvent::getPoint(pickData[0]);
+        double point[3] = { 0,0,0 };
+        GUI::WidgetOCCEvent::getPoint(pickData[0], point);
 
         GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
         if (mainWindow == nullptr)return;
@@ -157,5 +158,7 @@ namespace ModelOper
         GUI::SphereInfoWidget* cudeWidget = dynamic_cast<GUI::SphereInfoWidget*>(propertyWidget->getCurrentWidget());
         if (cudeWidget == nullptr)return;
         cudeWidget->setCenterPoint(point);
+
+        pickD->clearPickedData();
     }
 }
