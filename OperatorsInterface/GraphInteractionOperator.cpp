@@ -38,10 +38,11 @@ namespace EventOper
         Q_UNUSED(color);
     }
 
-    void GraphInteractionOperator::setActorStateByPickInfo(int pickObjType, int pickMethod)
+    void GraphInteractionOperator::setActorStateByPickInfo(int pickObjType, int pickMethod, int dataObjId)
     {
         // 根据不同子类重写。
         Q_UNUSED(pickObjType);
         Q_UNUSED(pickMethod);
+        Q_UNUSED(dataObjId);
     }
 }  // namespace EventOper

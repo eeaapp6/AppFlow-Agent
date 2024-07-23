@@ -76,7 +76,7 @@ namespace GraphData
         Q_UNUSED(flag);
     }
 
-    void GraphProviderManager::setActorStateByPickInfo(int pickObjType, int pickMethod)
+    void GraphProviderManager::setActorStateByPickInfo(int pickObjType, int pickMethod, int dataObjId)
     {
         Q_UNUSED(pickMethod);
 
@@ -88,20 +88,20 @@ namespace GraphData
         switch (pickObjType)
         {
         case GUI::GUIPickInfo::POBJVert:
-            m_modelProvider->setVertPickable();
+            m_modelProvider->setVertPickable(dataObjId);
             break;
         case GUI::GUIPickInfo::POBJEdge:
-            m_modelProvider->setEdgePickable();
+            m_modelProvider->setEdgePickable(dataObjId);
             break;
         case GUI::GUIPickInfo::POBJFace:
-            m_modelProvider->setFacePickable();
+            m_modelProvider->setFacePickable(dataObjId);
             break;
         case GUI::GUIPickInfo::POBJSolid:
-            m_modelProvider->setSolidPickable();
+            m_modelProvider->setSolidPickable(dataObjId);
             break;
         default:
             // m_modelProvider->setNonePickable();
-            m_modelProvider->setFacePickable();
+            m_modelProvider->setFacePickable(dataObjId);
             break;
         }
     }

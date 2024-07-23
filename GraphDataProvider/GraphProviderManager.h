@@ -78,10 +78,11 @@ namespace GraphData
          * @brief   根据当前拾取类型与方法初始化演员属性。
          * @param   pickObjType：拾取对象类型
          * @param   pickMethod：拾取方法
+         * @param   dataObjId：生效数据ID（-1则对所有数据生效）[缺省]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        void setActorStateByPickInfo(int pickObjType, int pickMethod);
+        void setActorStateByPickInfo(int pickObjType, int pickMethod, int dataObjId = -1);
 
     private:
         /**

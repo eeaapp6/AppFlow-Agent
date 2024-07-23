@@ -101,10 +101,11 @@ namespace EventOper
          * @brief   根据当前拾取对象类型与拾取方法隐藏或显示部分演员，并设置其可拾取状态（特征边、参考点、坐标轴等）。[虚函数]
          * @param   pickObjType：拾取对象类型
          * @param   pickMethod：拾取方法
+         * @param   dataObjId：生效数据ID（-1则对所有数据生效）[缺省]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-04-30
          */
-        virtual void setActorStateByPickInfo(int pickObjType, int pickMethod);
+        virtual void setActorStateByPickInfo(int pickObjType, int pickMethod, int dataObjId = -1);
 
     };
 }   // namespace EventOper

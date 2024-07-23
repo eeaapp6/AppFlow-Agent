@@ -23,6 +23,9 @@
 // Global data
 #include "FITK_Kernel/FITKCore/FITKDataRepo.h"
 
+// Data
+#include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
+
 // Graph
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor.h"
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor2D.h"
@@ -35,6 +38,10 @@
 
 // GUI
 #include "GUIPickInfo.h"
+
+// Operator
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
+#include "OperatorsInterface/GraphEventOperator.h"
 
 namespace GraphData
 {
@@ -73,6 +80,50 @@ namespace GraphData
 
         // 初始化。
         init2D();
+    }
+
+    PickedData::PickedData(Interface::FITKModelEnum::FITKModelSetType pType, int dataObjectId, QList<int> & indice)
+    {
+        // 初始化鼠标操作方式。（点击）
+        m_mouseOper = PickedMouseType::PickedMouseClick;
+
+        // 反向获取拾取类型。
+        switch (pType)
+        {
+        case Interface::FITKModelEnum::FMSNode:
+            this->Type = PickedDataType::MeshNodePick;
+            break;
+        case Interface::FITKModelEnum::FMSElem:
+            this->Type = PickedDataType::MeshElementPick;
+            break;
+        case Interface::FITKModelEnum::FMSPoint:
+            this->Type = PickedDataType::ModelVertPick;
+            break;
+        case Interface::FITKModelEnum::FMSEdge:
+            this->Type = PickedDataType::ModelEdgePick;
+            break;
+        case Interface::FITKModelEnum::FMSSurface:
+            this->Type = PickedDataType::ModelFacePick;
+            break;
+        case Interface::FITKModelEnum::FMSSolid:
+            this->Type = PickedDataType::ModelSolidPick;
+            break;
+        case Interface::FITKModelEnum::FMSNone:
+        case Interface::FITKModelEnum::FMSMIX:
+        case Interface::FITKModelEnum::FMSComb:
+        default:
+            // 数据不可用。
+            m_needToCal = false;
+            m_isValid = false;
+            return;
+        }
+
+        // 存储数据对象ID与数据索引。
+        this->DataObjId = dataObjectId;
+        this->Ids = indice;
+
+        // 初始化。
+        initManual();
     }
 
     PickedData::PickedData()
@@ -318,6 +369,23 @@ namespace GraphData
 
         m_needToCal = false;
         m_isValid = true;
+    }
+
+    void PickedData::initManual()
+    {
+        // 通过操作器获取可视化对象。
+        Core::FITKOperatorRepo* operatorRepo = Core::FITKOperatorRepo::getInstance();
+        EventOper::GraphEventOperator* operPre = operatorRepo->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (!operPre)
+        {
+            return;
+        }
+
+        this->GraphObject = operPre->getModelGraphObjectByDataId(this->DataObjId);
+
+        // 判断数据是否可用。
+        m_needToCal = false;
+        m_isValid = this->GraphObject != nullptr;
     }
 
     void PickedData::highlight()

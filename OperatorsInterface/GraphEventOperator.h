@@ -15,6 +15,12 @@
 
 #include <QColor>
 
+// 前置声明
+namespace Exchange
+{
+    class FITKOCC2VTKGraphObjectShape;
+}
+
 namespace EventOper
 {
     /**
@@ -45,12 +51,21 @@ namespace EventOper
         //@{
         /**
          * @brief   根据提供的数据对象ID更新对应可视化对象。（没有则创建）[虚函数]
-         * @param   dataId：数据对象ID
+         * @param   dataObjId：数据对象ID
          * @param   fitView：是否重置视角[缺省]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        virtual void updateGraph(int dataId, bool fitView = false);
+        virtual void updateGraph(int dataObjId, bool fitView = false);
+
+        /**
+         * @brief   根据数据对象ID获取模型可视化对象。（没有则不创建）[虚函数]
+         * @param   dataObjId：数据对象ID
+         * @return  可视化对象
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-23
+         */
+        virtual Exchange::FITKOCC2VTKGraphObjectShape* getModelGraphObjectByDataId(int dataObjId);
         //@}
 
         // 高亮功能接口。
