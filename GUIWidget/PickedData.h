@@ -305,6 +305,14 @@ namespace GraphData
          */
         int getPickedDataObjId();
 
+        /**
+         * @brief   获取拾取到的可视化对象。
+         * @return  可视化对象
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-23
+         */
+        Exchange::FITKOCC2VTKGraphObject3D* getPickedGraphObejct();
+
     private:
         /**
          * @brief   构造函数。
@@ -338,14 +346,6 @@ namespace GraphData
         //@{
         
         //@}
-
-    public:
-        /**
-         * @brief   被拾取到的可视化对象。
-         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
-         * @date    2024-07-19
-         */
-        Exchange::FITKOCC2VTKGraphObject3D* GraphObject{ nullptr };
 
     private:
         // 拾取时的信息。
@@ -426,6 +426,13 @@ namespace GraphData
          * @date    2024-07-19
          */
         PickedDataType m_type = OtherPick;
+
+        /**
+         * @brief   被拾取到的可视化对象。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-19
+         */
+        Exchange::FITKOCC2VTKGraphObject3D* m_graphObject{ nullptr };
 
         /**
          * @brief   拾取到的ID列表。（OCC形状ID）

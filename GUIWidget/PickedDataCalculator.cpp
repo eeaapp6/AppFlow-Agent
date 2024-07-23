@@ -74,7 +74,7 @@ namespace GraphData
 
     void PickedDataCalculator::individually()
     {
-        Exchange::FITKOCC2VTKGraphObject3D* gobj = m_pickedData->GraphObject;
+        Exchange::FITKOCC2VTKGraphObject3D* gobj = m_pickedData->getPickedGraphObejct();
         int index = m_pickedData->getPickedIndex();
         if (!gobj || index < 0)
         {
@@ -116,7 +116,7 @@ namespace GraphData
 
     void PickedDataCalculator::byAreaPick()
     {
-        Exchange::FITKOCC2VTKGraphObject3D* gobj = m_pickedData->GraphObject;
+        Exchange::FITKOCC2VTKGraphObject3D* gobj = m_pickedData->getPickedGraphObejct();
         vtkPlanes* planes = m_pickedData->getCutPlane();
         vtkActor* actor = m_pickedData->getPickedActor();
         if (!gobj || !planes || !actor)
