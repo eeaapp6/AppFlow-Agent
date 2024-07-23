@@ -78,38 +78,43 @@ namespace GraphData
 
         /**
          * @brief   设置当前所有实例化模型可视化对象是否可拾取点。
+         * @param   dataObjId：生效数据ID（-1则对所有数据生效）[缺省]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        void setVertPickable();
+        void setVertPickable(int dataObjId = -1);
 
         /**
          * @brief   设置当前所有实例化模型可视化对象是否可拾取线。
+         * @param   dataObjId：生效数据ID（-1则对所有数据生效）[缺省]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        void setEdgePickable();
+        void setEdgePickable(int dataObjId = -1);
 
         /**
          * @brief   设置当前所有实例化模型可视化对象是否可拾取面。
+         * @param   dataObjId：生效数据ID（-1则对所有数据生效）[缺省]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        void setFacePickable();
+        void setFacePickable(int dataObjId = -1);
 
         /**
          * @brief   设置当前所有实例化模型可视化对象是否可拾取体。
+         * @param   dataObjId：生效数据ID（-1则对所有数据生效）[缺省]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        void setSolidPickable();
+        void setSolidPickable(int dataObjId = -1);
 
         /**
          * @brief   关闭模型拾取状态。
+         * @param   dataObjId：生效数据ID（-1则对所有数据生效）[缺省]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        void setNonePickable();
+        void setNonePickable(int dataObjId = -1);
 
     private:
         /**

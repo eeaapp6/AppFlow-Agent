@@ -101,10 +101,11 @@ namespace GUIOper
          * @brief   根据当前拾取对象类型隐藏或显示部分演员（特征边）。[重写]
          * @param   pickObjType：拾取对象类型
          * @param   pickMethod：拾取方法
+         * @param   dataObjId：生效数据ID（-1则对所有数据生效）[缺省]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        void setActorStateByPickInfo(int pickObjType, int pickMethod) override;
+        void setActorStateByPickInfo(int pickObjType, int pickMethod, int dataObjId = -1) override;
 
     private:
         /**

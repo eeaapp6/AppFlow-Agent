@@ -139,7 +139,7 @@ namespace GraphData
         return true;
     }
 
-    void GraphModelProvider::setVertPickable()
+    void GraphModelProvider::setVertPickable(int dataObjId)
     {
         // 开启可拾取状态。
         QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
@@ -152,54 +152,91 @@ namespace GraphData
         }
     }
 
-    void GraphModelProvider::setEdgePickable()
+    void GraphModelProvider::setEdgePickable(int dataObjId)
     {
         // 开启可拾取状态。
         QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
         for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
         {
-            if (obj)
+            if (!obj)
+            {
+                continue;
+            }
+
+            if (obj->getDataId() == dataObjId)
             {
                 obj->setPickMode(ShapePickMode::PickEdge);
             }
+            else
+            {
+                obj->setPickMode(ShapePickMode::PickNone);
+            }
         }
     }
 
-    void GraphModelProvider::setFacePickable()
+    void GraphModelProvider::setFacePickable(int dataObjId)
     {
         // 开启可拾取状态。
         QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
         for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
         {
-            if (obj)
+            if (!obj)
+            {
+                continue;
+            }
+
+            if (obj->getDataId() == dataObjId)
             {
                 obj->setPickMode(ShapePickMode::PickFace);
             }
+            else
+            {
+                obj->setPickMode(ShapePickMode::PickNone);
+            }
         }
     }
 
-    void GraphModelProvider::setSolidPickable()
+    void GraphModelProvider::setSolidPickable(int dataObjId)
     {
         // 开启可拾取状态。
         QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
         for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
         {
-            if (obj)
+            if (!obj)
+            {
+                continue;
+            }
+
+            if (obj->getDataId() == dataObjId)
             {
                 obj->setPickMode(ShapePickMode::PickSolid);
+            }
+            else
+            {
+                obj->setPickMode(ShapePickMode::PickNone);
             }
         }
     }
 
-    void GraphModelProvider::setNonePickable()
+    void GraphModelProvider::setNonePickable(int dataObjId)
     {
         // 关闭可拾取状态。
         QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
         for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
         {
-            if (obj)
+            if (!obj)
+            {
+                continue;
+            }
+
+            if (obj->getDataId() == dataObjId)
             {
                 obj->setPickMode(ShapePickMode::PickNone);
+            }
+            else
+            {
+                // 其他数据不取消拾取。
+                continue;
             }
         }
     }
