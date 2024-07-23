@@ -26,7 +26,7 @@ class vtkUnstructuredGrid;
 
 namespace Exchange
 {
-    class FITKOCC2VTKGraphObjectShape;
+    class FITKOCC2VTKGraphObject3D;
 }
 
 namespace GraphData
@@ -332,7 +332,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        Exchange::FITKOCC2VTKGraphObjectShape* GraphObject{ nullptr };
+        Exchange::FITKOCC2VTKGraphObject3D* GraphObject{ nullptr };
 
         // 模型数据ID。
         //@{

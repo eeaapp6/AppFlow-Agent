@@ -18,7 +18,7 @@
 // Graph
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor.h"
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor2D.h"
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectShape.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
 #include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectModel.h"
 #include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectPickPreview.h"
 
@@ -155,7 +155,7 @@ namespace GUIOper
         }
     }
 
-    void OperGraphPickPreview::addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObjectShape* obj, Comp::FITKGraph3DWindowVTK* graphWidget)
+    void OperGraphPickPreview::addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget)
     {
         if (!obj || !graphWidget)
         {

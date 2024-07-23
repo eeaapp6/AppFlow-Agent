@@ -9,7 +9,7 @@ namespace EventOper
         Q_UNUSED(fitView);
     }
 
-    Exchange::FITKOCC2VTKGraphObjectShape* GraphEventOperator::getModelGraphObjectByDataId(int dataObjId)
+    Exchange::FITKOCC2VTKGraphObject3D* GraphEventOperator::getModelGraphObjectByDataId(int dataObjId)
     {
         // 根据不同子类重写。
         Q_UNUSED(dataObjId);

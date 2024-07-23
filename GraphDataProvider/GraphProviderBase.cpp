@@ -13,7 +13,7 @@
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
 
 // Graph
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectShape.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
 
 // Graph widget
 #include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
@@ -35,13 +35,13 @@ namespace GraphData
         // 析构三维可视化对象。
     }
 
-    QList<Exchange::FITKOCC2VTKGraphObjectShape*> GraphProviderBase::getCurrentVisibleGraphObjs()
+    QList<Exchange::FITKOCC2VTKGraphObject3D*> GraphProviderBase::getCurrentVisibleGraphObjs()
     {
         //获取所有可视化对象数据。
-        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objs = getCurrentGraphObjs();
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
 
-        QList<Exchange::FITKOCC2VTKGraphObjectShape*> objsVisible;
-        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : objs)
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objsVisible;
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
@@ -64,10 +64,10 @@ namespace GraphData
     }
 
     // 批量析构Hash指针。
-    void GraphProviderBase::deleteObjsHash(QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*>& hash)
+    void GraphProviderBase::deleteObjsHash(QHash<int, Exchange::FITKOCC2VTKGraphObject3D*>& hash)
     {
         // 传入数据管理字典。
-        for (Exchange::FITKOCC2VTKGraphObjectShape* obj : hash.values())
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : hash.values())
         {
             delete obj;
         }
@@ -76,12 +76,12 @@ namespace GraphData
     }
 
     // 批量析构双层Hash指针。
-    void GraphProviderBase::deleteObjsHash(QHash<int, QHash<int, Exchange::FITKOCC2VTKGraphObjectShape*>>& hash)
+    void GraphProviderBase::deleteObjsHash(QHash<int, QHash<int, Exchange::FITKOCC2VTKGraphObject3D*>>& hash)
     {
         // 传入数据管理字典。
-        for (QHash<int, Exchange::FITKOCC2VTKGraphObjectShape* > subHash : hash.values())
+        for (QHash<int, Exchange::FITKOCC2VTKGraphObject3D* > subHash : hash.values())
         {
-            for (Exchange::FITKOCC2VTKGraphObjectShape* obj : subHash.values())
+            for (Exchange::FITKOCC2VTKGraphObject3D* obj : subHash.values())
             {
                 if (obj)
                 {

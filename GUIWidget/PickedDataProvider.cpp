@@ -10,7 +10,7 @@
 
 // Graph
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor.h"
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectShape.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
 
 // APP
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"

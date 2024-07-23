@@ -55,7 +55,7 @@ namespace GUIOper
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-23
          */
-        Exchange::FITKOCC2VTKGraphObjectShape* getModelGraphObjectByDataId(int dataObjId) override;
+        Exchange::FITKOCC2VTKGraphObject3D* getModelGraphObjectByDataId(int dataObjId) override;
 
     };
 

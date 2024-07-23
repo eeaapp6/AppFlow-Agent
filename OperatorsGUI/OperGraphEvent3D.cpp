@@ -5,7 +5,7 @@
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 
 // Graph
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectShape.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
 
 // Render VTK
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
@@ -51,7 +51,7 @@ namespace GUIOper
         return graphWidget;
     }
 
-    void OperGraphEvent3D::addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObjectShape* obj, Comp::FITKGraph3DWindowVTK* graphWidget, bool fitView)
+    void OperGraphEvent3D::addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget, bool fitView)
     {
         if (!obj || !graphWidget)
         {
@@ -66,8 +66,8 @@ namespace GUIOper
 
         // 添加附加可视化对象。
         //@{
-        QList<Exchange::FITKOCC2VTKGraphObjectShape*> addinObjs = obj->getAddinGraphObjs();
-        for (Exchange::FITKOCC2VTKGraphObjectShape* addinObj : addinObjs)
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> addinObjs = obj->getAddinGraphObjs();
+        for (Exchange::FITKOCC2VTKGraphObject3D* addinObj : addinObjs)
         {
             if (!addinObj)
             {
