@@ -91,22 +91,22 @@ namespace GraphData
         switch (pType)
         {
         case Interface::FITKModelEnum::FMSNode:
-            this->Type = PickedDataType::MeshNodePick;
+            m_type = PickedDataType::MeshNodePick;
             break;
         case Interface::FITKModelEnum::FMSElem:
-            this->Type = PickedDataType::MeshElementPick;
+            m_type = PickedDataType::MeshElementPick;
             break;
         case Interface::FITKModelEnum::FMSPoint:
-            this->Type = PickedDataType::ModelVertPick;
+            m_type = PickedDataType::ModelVertPick;
             break;
         case Interface::FITKModelEnum::FMSEdge:
-            this->Type = PickedDataType::ModelEdgePick;
+            m_type = PickedDataType::ModelEdgePick;
             break;
         case Interface::FITKModelEnum::FMSSurface:
-            this->Type = PickedDataType::ModelFacePick;
+            m_type = PickedDataType::ModelFacePick;
             break;
         case Interface::FITKModelEnum::FMSSolid:
-            this->Type = PickedDataType::ModelSolidPick;
+            m_type = PickedDataType::ModelSolidPick;
             break;
         case Interface::FITKModelEnum::FMSNone:
         case Interface::FITKModelEnum::FMSMIX:
@@ -119,8 +119,8 @@ namespace GraphData
         }
 
         // 存储数据对象ID与数据索引。
-        this->DataObjId = dataObjectId;
-        this->Ids = indice;
+        m_dataObjId = dataObjectId;
+        m_ids = indice;
 
         // 初始化。
         initManual();
@@ -145,10 +145,10 @@ namespace GraphData
         }
 
         PickedData* data = new PickedData;
-        data->Type = this->Type;
-        data->DataObjId = this->DataObjId;
+        data->m_type = m_type;
+        data->m_dataObjId = m_dataObjId;
 
-        data->Ids = this->Ids;
+        data->m_ids = m_ids;
         data->GraphObject = this->GraphObject;
 
         data->m_pickedActor = m_pickedActor;
@@ -166,10 +166,10 @@ namespace GraphData
             return false;
         }
 
-        if (data->Type == Type &&
+        if (data->m_type == m_type &&
             data->getPickedActor() == m_pickedActor &&
             // data->CaseId == this->CaseId &&
-            data->DataObjId == this->DataObjId)
+            data->m_dataObjId == m_dataObjId)
         {
             return true;
         }
@@ -181,7 +181,7 @@ namespace GraphData
 
     void PickedData::sort()
     {
-        std::sort(this->Ids.begin(), this->Ids.end());
+        std::sort(m_ids.begin(), m_ids.end());
     }
 
     void PickedData::add(PickedData* data)
@@ -196,22 +196,22 @@ namespace GraphData
         data->sort();
 
         // 获取最大ID开数组存取存在标识。
-        if (this->Ids.count() && data->Ids.count())
+        if (m_ids.count() && data->m_ids.count())
         {
-            int nIdsMax = qMax(this->Ids.last(), data->Ids.last());
+            int nIdsMax = qMax(m_ids.last(), data->m_ids.last());
             QVector<int> idFlag(nIdsMax);
             idFlag.fill(-1);
-            for (const int & id : this->Ids)
+            for (const int & id : m_ids)
             {
                 idFlag[id - 1] = 1;
             }
 
             // 合并单元或节点ID。
-            for (const int & id : data->Ids)
+            for (const int & id : data->m_ids)
             {
                 if (idFlag[id - 1] == -1)
                 {
-                    this->Ids.push_back(id);
+                    m_ids.push_back(id);
                     idFlag[id - 1] = 1;
                 }
             }
@@ -233,18 +233,18 @@ namespace GraphData
         data->sort();
 
         // 获取最大ID开数组存取存在标识。
-        if (this->Ids.count() && data->Ids.count())
+        if (m_ids.count() && data->m_ids.count())
         {
-            int nIdsMax = qMax(this->Ids.last(), data->Ids.last());
+            int nIdsMax = qMax(m_ids.last(), data->m_ids.last());
             QVector<int> idFlags(nIdsMax);
             idFlags.fill(-1);
-            for (const int & id : this->Ids)
+            for (const int & id : m_ids)
             {
                 idFlags[id - 1] = 1;
             }
 
             // 移除单元或节点ID。
-            for (const int & id : data->Ids)
+            for (const int & id : data->m_ids)
             {
                 if (idFlags[id - 1] == 1)
                 {
@@ -252,13 +252,13 @@ namespace GraphData
                 }
             }
 
-            this->Ids.clear();
+            m_ids.clear();
             for (int i = 0; i < idFlags.count(); i++)
             {
                 int& idFlag = idFlags[i];
                 if (idFlag == 1)
                 {
-                    this->Ids.push_back(i + 1);
+                    m_ids.push_back(i + 1);
                 }
             }
         }
@@ -285,32 +285,32 @@ namespace GraphData
 
         // 保存可视化对象。
         this->GraphObject = obj;
-        this->DataObjId = obj->getDataId();
+        m_dataObjId = obj->getDataId();
 
         ShapeInfo sInfo = obj->getShapeInfo();
 
         switch (m_pickedInfo._pickObjType)
         {
         case GUI::GUIPickInfo::PickObjType::POBJVert:
-            this->Type = ModelVertPick;
+            m_type = ModelVertPick;
             break;
         case GUI::GUIPickInfo::PickObjType::POBJEdge:
-            this->Type = ModelEdgePick;
+            m_type = ModelEdgePick;
             break;
         case GUI::GUIPickInfo::PickObjType::POBJFace:
-            this->Type = ModelFacePick;
+            m_type = ModelFacePick;
             break;
         case GUI::GUIPickInfo::PickObjType::POBJSolid:
-            this->Type = ModelSolidPick;
+            m_type = ModelSolidPick;
             break;
         default:
-            this->Type = OtherPick;
+            m_type = OtherPick;
             break;
         }
 
-        this->DataObjId = sInfo.DataObjId;
+        m_dataObjId = sInfo.DataObjId;
 
-        if (this->Type == OtherPick)
+        if (m_type == OtherPick)
         {
             return;
         }
@@ -337,32 +337,32 @@ namespace GraphData
 
         // 保存可视化对象。
         this->GraphObject = obj;
-        this->DataObjId = obj->getDataId();
+        m_dataObjId = obj->getDataId();
 
         ShapeInfo sInfo = obj->getShapeInfo();
 
         switch (m_pickedInfo._pickObjType)
         {
         case GUI::GUIPickInfo::PickObjType::POBJVert:
-            this->Type = ModelVertPick;
+            m_type = ModelVertPick;
             break;
         case GUI::GUIPickInfo::PickObjType::POBJEdge:
-            this->Type = ModelEdgePick;
+            m_type = ModelEdgePick;
             break;
         case GUI::GUIPickInfo::PickObjType::POBJFace:
-            this->Type = ModelFacePick;
+            m_type = ModelFacePick;
             break;
         case GUI::GUIPickInfo::PickObjType::POBJSolid:
-            this->Type = ModelSolidPick;
+            m_type = ModelSolidPick;
             break;
         default:
-            this->Type = OtherPick;
+            m_type = OtherPick;
             break;
         }
 
-        this->DataObjId = sInfo.DataObjId;
+        m_dataObjId = sInfo.DataObjId;
 
-        if (this->Type == OtherPick)
+        if (m_type == OtherPick)
         {
             return;
         }
@@ -381,7 +381,7 @@ namespace GraphData
             return;
         }
 
-        this->GraphObject = operPre->getModelGraphObjectByDataId(this->DataObjId);
+        this->GraphObject = operPre->getModelGraphObjectByDataId(m_dataObjId);
 
         // 判断数据是否可用。
         m_needToCal = false;
@@ -464,12 +464,12 @@ namespace GraphData
     bool PickedData::isEmpty()
     {
         // 如果数据对象ID为空则一定为空拾取数据。
-        if (this->DataObjId < 0)
+        if (m_dataObjId < 0)
         {
             return true;
         }
 
-        bool isEmpty = this->Ids.isEmpty();
+        bool isEmpty = m_ids.isEmpty();
         return isEmpty;
     }
 
@@ -512,7 +512,7 @@ namespace GraphData
             return false;
         }
 
-        return this->Ids.contains(id);
+        return m_ids.contains(id);
     }
 
     bool PickedData::contains(vtkActor2D* actor)
@@ -553,6 +553,21 @@ namespace GraphData
         return m_cutPlane;
     }
 
+    PickedDataType PickedData::getPickedDataType()
+    {
+        return m_type;
+    }
+
+    QList<int> & PickedData::getPickedIds()
+    {
+        return m_ids;
+    }
+
+    int PickedData::getPickedDataObjId()
+    {
+        return m_dataObjId;
+    }
+    
     void PickedData::getDataSet(vtkUnstructuredGrid* ugrid)
     {
         // 未计算过的数据直接跳出。
@@ -565,7 +580,7 @@ namespace GraphData
         ShapeAbsEnum shapeEnum;
 
         // 根据拾取模型数据类型获取数据集。
-        switch (Type)
+        switch (m_type)
         {
         case PickedDataType::ModelVertPick:
         {
@@ -609,7 +624,7 @@ namespace GraphData
         idArray->FillComponent(0, 0);
 
         // 根据OCC形状ID获取所有VTK数据。
-        for (const int & id : Ids)
+        for (const int & id : m_ids)
         {
             const QVector<int> subCellIds = this->GraphObject->getVTKCellIdsByOCCId(id, shapeEnum);
             for (const int & cId : subCellIds)

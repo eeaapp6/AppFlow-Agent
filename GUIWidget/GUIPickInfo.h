@@ -67,7 +67,7 @@ namespace GUI
          * @author LiBaojun (libaojunqd@foxmail.com)
          * @date 2024-04-18
          */
-        static void SetPickInfo(GUIPickInfoStru info);
+        static void SetPickInfo(GUIPickInfoStru info, int dataObjId = -1);
         /**
          * @brief 设置记录组件管理器
          * @param mgr 组件管理器

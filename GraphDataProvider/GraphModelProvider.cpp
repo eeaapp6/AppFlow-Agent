@@ -145,7 +145,16 @@ namespace GraphData
         QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
         for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
-            if (obj)
+            if (!obj)
+            {
+                continue;
+            }
+
+            if (obj->getDataId() != dataObjId && dataObjId != -1)
+            {
+                obj->setPickMode(ShapePickMode::PickNone);
+            }
+            else
             {
                 obj->setPickMode(ShapePickMode::PickVertex);
             }
@@ -163,13 +172,13 @@ namespace GraphData
                 continue;
             }
 
-            if (obj->getDataId() == dataObjId)
+            if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
-                obj->setPickMode(ShapePickMode::PickEdge);
+                obj->setPickMode(ShapePickMode::PickNone);
             }
             else
             {
-                obj->setPickMode(ShapePickMode::PickNone);
+                obj->setPickMode(ShapePickMode::PickEdge);
             }
         }
     }
@@ -185,13 +194,13 @@ namespace GraphData
                 continue;
             }
 
-            if (obj->getDataId() == dataObjId)
+            if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
-                obj->setPickMode(ShapePickMode::PickFace);
+                obj->setPickMode(ShapePickMode::PickNone);
             }
             else
             {
-                obj->setPickMode(ShapePickMode::PickNone);
+                obj->setPickMode(ShapePickMode::PickFace);
             }
         }
     }
@@ -207,13 +216,13 @@ namespace GraphData
                 continue;
             }
 
-            if (obj->getDataId() == dataObjId)
+            if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
-                obj->setPickMode(ShapePickMode::PickSolid);
+                obj->setPickMode(ShapePickMode::PickNone);
             }
             else
             {
-                obj->setPickMode(ShapePickMode::PickNone);
+                obj->setPickMode(ShapePickMode::PickSolid);
             }
         }
     }
@@ -229,14 +238,14 @@ namespace GraphData
                 continue;
             }
 
-            if (obj->getDataId() == dataObjId)
-            {
-                obj->setPickMode(ShapePickMode::PickNone);
-            }
-            else
+            if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
                 // 其他数据不取消拾取。
                 continue;
+            }
+            else
+            {
+                obj->setPickMode(ShapePickMode::PickNone);
             }
         }
     }

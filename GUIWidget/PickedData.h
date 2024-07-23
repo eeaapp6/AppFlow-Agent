@@ -39,11 +39,14 @@ namespace GraphData
     enum PickedDataType
     {
         OtherPick = -1,
+
+        // 模型。
         ModelVertPick = 0,
         ModelEdgePick,
         ModelFacePick,
         ModelSolidPick,
         
+        // 网格。
         MeshNodePick,
         MeshElementPick
     };
@@ -278,6 +281,30 @@ namespace GraphData
          */
         bool needToCalculate();
 
+        /**
+         * @brief   获取拾取数据类型。
+         * @return  拾取类型
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-23
+         */
+        PickedDataType getPickedDataType();
+
+        /**
+         * @brief   获取拾取数据ID。
+         * @return  拾取数据列表
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-23
+         */
+        QList<int> & getPickedIds();
+
+        /**
+         * @brief   获取拾取到的数据ID。
+         * @return  数据对象ID
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-23
+         */
+        int getPickedDataObjId();
+
     private:
         /**
          * @brief   构造函数。
@@ -314,42 +341,11 @@ namespace GraphData
 
     public:
         /**
-         * @brief   拾取到的数据类型。
-         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
-         * @date    2024-07-19
-         */
-        PickedDataType Type = OtherPick;
-
-        /**
-         * @brief   算例ID。
-         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
-         * @date    2024-07-19
-         */
-        // int CaseId = -1;
-
-        /**
          * @brief   被拾取到的可视化对象。
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
         Exchange::FITKOCC2VTKGraphObject3D* GraphObject{ nullptr };
-
-        // 模型数据ID。
-        //@{
-        /**
-         * @brief   数据对象ID。
-         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
-         * @date    2024-07-19
-         */
-        int DataObjId = -1;
-        //@}
-
-        /**
-         * @brief   拾取到的ID列表。（OCC形状索引）
-         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
-         * @date    2024-07-19
-         */
-        QList<int> Ids;
 
     private:
         // 拾取时的信息。
@@ -423,6 +419,30 @@ namespace GraphData
          * @date    2024-07-19
          */
         bool m_isPreview = false;
+
+        /**
+         * @brief   拾取到的数据类型。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-19
+         */
+        PickedDataType m_type = OtherPick;
+
+        /**
+         * @brief   拾取到的ID列表。（OCC形状ID）
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-19
+         */
+        QList<int> m_ids;
+
+        // 数据ID。
+        //@{
+        /**
+         * @brief   数据对象ID。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-19
+         */
+        int m_dataObjId = -1;
+        //@}
 
     };
 }

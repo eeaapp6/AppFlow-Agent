@@ -21,7 +21,7 @@
 // Graph
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor.h"
 #include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKCommons.h"
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectShape.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
 
 // Pick
 #include "PickedData.h"
@@ -74,7 +74,7 @@ namespace GraphData
 
     void PickedDataCalculator::individually()
     {
-        Exchange::FITKOCC2VTKGraphObjectShape* gobj = m_pickedData->GraphObject;
+        Exchange::FITKOCC2VTKGraphObject3D* gobj = m_pickedData->GraphObject;
         int index = m_pickedData->getPickedIndex();
         if (!gobj || index < 0)
         {
@@ -84,7 +84,7 @@ namespace GraphData
         int id = -1;
 
         // 根据拾取数据类型进行不同数据获取。
-        switch (m_pickedData->Type)
+        switch (m_pickedData->getPickedDataType())
         {
         case PickedDataType::ModelVertPick:
             // 查找点。
@@ -111,12 +111,12 @@ namespace GraphData
             return;
         }
 
-        m_pickedData->Ids.push_back(id);
+        m_pickedData->getPickedIds().push_back(id);
     } 
 
     void PickedDataCalculator::byAreaPick()
     {
-        Exchange::FITKOCC2VTKGraphObjectShape* gobj = m_pickedData->GraphObject;
+        Exchange::FITKOCC2VTKGraphObject3D* gobj = m_pickedData->GraphObject;
         vtkPlanes* planes = m_pickedData->getCutPlane();
         vtkActor* actor = m_pickedData->getPickedActor();
         if (!gobj || !planes || !actor)
@@ -149,7 +149,7 @@ namespace GraphData
         ShapeAbsEnum sType;
 
         // 根据拾取数据类型进行不同数据获取。
-        switch (m_pickedData->Type)
+        switch (m_pickedData->getPickedDataType())
         {
         case PickedDataType::ModelVertPick:
             len = gobj->getNumberOf(ShapeType::ModelVertex);
@@ -211,7 +211,7 @@ namespace GraphData
                 // 完全选中则视为被框选。
                 if (isFullPicked)
                 {
-                    m_pickedData->Ids.push_back(i);
+                    m_pickedData->getPickedIds().push_back(i);
                 }
             }
         }

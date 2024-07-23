@@ -46,7 +46,7 @@ namespace GUI
      * @param info 包含选择信息的结构体
      * 该函数用于设置运行时设置中的与选择信息相关的变量。
      */
-    void GUIPickInfo::SetPickInfo(GUIPickInfoStru info)
+    void GUIPickInfo::SetPickInfo(GUIPickInfoStru info, int dataObjId)
     {
         auto RTsetting = FITKAPP->getGlobalData()->getRunTimeSetting();
         if (RTsetting == nullptr) return;
@@ -61,7 +61,7 @@ namespace GUI
         EventOper::GraphInteractionOperator* operPick = Core::FITKOperatorRepo::getInstance()->
             getOperatorT<EventOper::GraphInteractionOperator>("GraphPick");
         if(operPick)
-            operPick->setActorStateByPickInfo(info._pickObjType, info._pickMethod);
+            operPick->setActorStateByPickInfo(info._pickObjType, info._pickMethod, dataObjId);
     }
 
     /**
