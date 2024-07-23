@@ -20,6 +20,7 @@ namespace GUI
         MainTree_MeshBase,
         MainTree_MeshLocal,
         MainTree_MeshLocalItem,
+        MainTree_MeshPoint,
     };
 
     class GUIFRAMEAPI MainTreeWidget : public PanelWidgetBase

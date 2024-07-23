@@ -29,6 +29,8 @@ namespace GUI
         ~SphereInfoWidget();
 
         void init();
+
+        void setCenterPoint(double* point);
     private slots:
         ;
         void on_pushButton_CenterPoint_clicked();

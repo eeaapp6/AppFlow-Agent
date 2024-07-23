@@ -59,9 +59,18 @@ namespace GUI {
         }
     }
 
+    void SphereInfoWidget::setCenterPoint(double * point)
+    {
+        _ui->lineEdit_CenterPoint1->setText(QString::number(point[0]));
+        _ui->lineEdit_CenterPoint2->setText(QString::number(point[1]));
+        _ui->lineEdit_CenterPoint3->setText(QString::number(point[2]));
+    }
+
     void SphereInfoWidget::on_pushButton_CenterPoint_clicked()
     {
-
+        if (_oper) {
+            _oper->moveToStep(0);
+        }
     }
 
     void SphereInfoWidget::on_pushButton_Cancel_clicked()

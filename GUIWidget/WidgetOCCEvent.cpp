@@ -40,29 +40,13 @@ namespace GUI
         //数据仓库中获取数据
         Interface::FITKAbstractModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractModel>(DataObjId);
         TopoDS_Shape shape;
-        switch (type){
-        case GraphData::ModelVertPick: {
-            OCC::FITKAbstractOCCModel* aaamodel = dynamic_cast<OCC::FITKAbstractOCCModel*>(model);
-            if (aaamodel == nullptr) {
-                isOk = false;
-                return value;
-            }
-            shape = aaamodel->getShape(Interface::FITKModelEnum::FMSPoint, ids[0] - 1);
-            break; 
+
+        OCC::FITKAbstractOCCModel* OCCModel = dynamic_cast<OCC::FITKAbstractOCCModel*>(model);
+        if (OCCModel == nullptr) {
+            isOk = false;
+            return value;
         }
-        case GraphData::ModelEdgePick:
-            break;
-        case GraphData::ModelFacePick:
-            break;
-        case GraphData::ModelSolidPick:
-            break;
-        case GraphData::MeshNodePick:
-            break;
-        case GraphData::MeshElementPick:
-            break;
-        default:
-            break;
-        }
+        shape = OCCModel->getShape(Interface::FITKModelEnum::FMSPoint, ids[0]);
 
         if (shape.IsNull()) {
             isOk = false;

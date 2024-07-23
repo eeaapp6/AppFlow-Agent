@@ -29,11 +29,11 @@ namespace GUI
         ~CylinderInfoWidget();
 
         void init();
+
+        void setOriginPoint(double* point);
     private slots:
         ;
         void on_pushButton_OriginPoint_clicked();
-
-        void on_pushButton_AxisPoint_clicked();
 
         void on_pushButton_Cancel_clicked();
 

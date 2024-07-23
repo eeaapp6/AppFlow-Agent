@@ -126,12 +126,16 @@ namespace ModelOper
             //拾取对象获取事件绑定
             GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
             if (pickD == nullptr) return;
-            connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectBasePoint()), Qt::UniqueConnection);
+            connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectBasePoint()));
         }
     }
 
     void OperatorsCubeManager::slotReselectBasePoint()
     {
+        GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
+        if (pickD == nullptr) return;
+        disconnect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectBasePoint()));
+
         //拾取信息设置
         GUI::GUIPickInfoStru pinfo;
         pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJNone;
@@ -139,8 +143,6 @@ namespace ModelOper
         //保存参数
         GUI::GUIPickInfo::SetPickInfo(pinfo);
 
-        GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
-        if (pickD == nullptr) return;
         QList<GraphData::PickedData*> pickData = pickD->getPickedList();
         if (pickData.size() == 0)return;
         if (!pickData[0])return;

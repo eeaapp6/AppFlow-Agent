@@ -59,12 +59,18 @@ namespace GUI {
         }
     }
 
-    void CylinderInfoWidget::on_pushButton_OriginPoint_clicked()
+    void CylinderInfoWidget::setOriginPoint(double * point)
     {
+        _ui->lineEdit_OriginPoint1->setText(QString::number(point[0]));
+        _ui->lineEdit_OriginPoint2->setText(QString::number(point[1]));
+        _ui->lineEdit_OriginPoint3->setText(QString::number(point[2]));
     }
 
-    void CylinderInfoWidget::on_pushButton_AxisPoint_clicked()
+    void CylinderInfoWidget::on_pushButton_OriginPoint_clicked()
     {
+        if (_oper) {
+            _oper->moveToStep(0);
+        }
     }
 
     void CylinderInfoWidget::on_pushButton_Cancel_clicked()
@@ -124,11 +130,11 @@ namespace GUI {
         _ui->lineEdit_OriginPoint2->setText(QString::number(originPoint[1]));
         _ui->lineEdit_OriginPoint3->setText(QString::number(originPoint[2]));
 
-        double axisPoint[3] = { 0,0,0 };
-        _obj->getDirection(axisPoint);
-        _ui->lineEdit_AxisPoint1->setText(QString::number(axisPoint[0]));
-        _ui->lineEdit_AxisPoint2->setText(QString::number(axisPoint[1]));
-        _ui->lineEdit_AxisPoint3->setText(QString::number(axisPoint[2]));
+        double axis[3] = { 0,0,0 };
+        _obj->getDirection(axis);
+        _ui->lineEdit_Axis1->setText(QString::number(axis[0]));
+        _ui->lineEdit_Axis2->setText(QString::number(axis[1]));
+        _ui->lineEdit_Axis3->setText(QString::number(axis[2]));
 
         double radius = _obj->getRadius();
         _ui->lineEdit_Radius->setText(QString::number(radius));
@@ -147,11 +153,11 @@ namespace GUI {
         originPoint[2] = _ui->lineEdit_OriginPoint3->text().toDouble();
         _obj->setLocation(originPoint);
 
-        double axisPoint[3] = { 0,0,0 };
-        axisPoint[0] = _ui->lineEdit_AxisPoint1->text().toDouble();
-        axisPoint[1] = _ui->lineEdit_AxisPoint2->text().toDouble();
-        axisPoint[2] = _ui->lineEdit_AxisPoint3->text().toDouble();
-        _obj->setDirection(axisPoint);
+        double axis[3] = { 0,0,0 };
+        axis[0] = _ui->lineEdit_Axis1->text().toDouble();
+        axis[1] = _ui->lineEdit_Axis2->text().toDouble();
+        axis[2] = _ui->lineEdit_Axis3->text().toDouble();
+        _obj->setDirection(axis);
 
         double radius = _ui->lineEdit_Radius->text().toDouble();
         _obj->setRadius(radius);

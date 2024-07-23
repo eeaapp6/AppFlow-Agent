@@ -2,6 +2,10 @@
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
+#include "GUIWidget/GUIPickInfo.h"
+#include "GUIWidget/PickedDataProvider.h"
+#include "GUIWidget/PickedData.h"
+#include "GUIWidget/WidgetOCCEvent.h"
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "OperatorsInterface/TreeEventOperator.h"
 #include "GUIDialog/GUIGeometryDialog/SphereInfoWidget.h"
@@ -106,5 +110,52 @@ namespace ModelOper
         propertyWidget->init();
 
         return true;
+    }
+
+    void OperatorsSphereManager::moveToStep(int index, QVariant value)
+    {
+        //几何基点重选择事件
+        if (index == 0) {
+            //拾取信息设置
+            GUI::GUIPickInfoStru pinfo;
+            pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJVert;
+            pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMSingle;
+            //保存参数
+            GUI::GUIPickInfo::SetPickInfo(pinfo);
+
+            //拾取对象获取事件绑定
+            GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
+            if (pickD == nullptr) return;
+            connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectCurrentPoint()));
+        }
+    }
+
+    void OperatorsSphereManager::slotReselectCurrentPoint()
+    {
+        GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
+        if (pickD == nullptr) return;
+        disconnect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectCurrentPoint()));
+
+        //拾取信息设置
+        GUI::GUIPickInfoStru pinfo;
+        pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJNone;
+        pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMNone;
+        //保存参数
+        GUI::GUIPickInfo::SetPickInfo(pinfo);
+
+        QList<GraphData::PickedData*> pickData = pickD->getPickedList();
+        if (pickData.size() == 0)return;
+        if (!pickData[0])return;
+
+        double* point = GUI::WidgetOCCEvent::getPoint(pickData[0]);
+
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return;
+
+        GUI::SphereInfoWidget* cudeWidget = dynamic_cast<GUI::SphereInfoWidget*>(propertyWidget->getCurrentWidget());
+        if (cudeWidget == nullptr)return;
+        cudeWidget->setCenterPoint(point);
     }
 }

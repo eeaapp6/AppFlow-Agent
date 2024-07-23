@@ -193,6 +193,18 @@ namespace GUI{
         meshBaseItem->setData(1, 0, -1);
         meshBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshBase));
         meshItem->addChild(meshBaseItem);
+
+        QTreeWidgetItem* localBaseItem = new QTreeWidgetItem();
+        localBaseItem->setText(0, tr("Local"));
+        localBaseItem->setData(1, 0, -1);
+        localBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocal));
+        meshItem->addChild(localBaseItem);
+
+        QTreeWidgetItem* pointBaseItem = new QTreeWidgetItem();
+        pointBaseItem->setText(0, tr("Points"));
+        pointBaseItem->setData(1, 0, -1);
+        pointBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshPoint));
+        meshItem->addChild(pointBaseItem);
     }
 
     void TreeWidget::addMenuActions(QMenu & menu, QString actions, QString objectName)
