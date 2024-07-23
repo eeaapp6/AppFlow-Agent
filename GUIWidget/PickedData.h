@@ -14,6 +14,7 @@
 #include "GUIWidgetAPI.h"
 
 #include "GUIPickInfo.h"
+#include "FITK_Interface/FITKInterfaceModel/FITKModelEnum.h"
 
 #include <QHash>
 
@@ -102,12 +103,13 @@ namespace GraphData
 
         /**
          * @brief   构造函数。（手动添加数据，模拟拾取）
+         * @param   pType：数据类型
          * @param   dataObjectId：数据对象ID
          * @param   indice：需要添加的数据索引[引用]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-23
          */
-        PickedData(int dataObjectId, QList<int> & indice);
+        PickedData(Interface::FITKModelEnum::FITKModelSetType pType, int dataObjectId, QList<int> & indice);
 
         /**
          * @brief   析构函数。

@@ -80,10 +80,10 @@ namespace GraphData
         }
     }
 
-    void PickedDataProvider::addDataManually(int dataObjId, QList<int> & indice)
+    void PickedDataProvider::addDataManually(Interface::FITKModelEnum::FITKModelSetType type, int dataObjId, QList<int> & indice)
     {
         // 创建拾取数据。
-        PickedData* data = new PickedData(dataObjId, indice);
+        PickedData* data = new PickedData(type, dataObjId, indice);
 
         // 判断是否有效。
         if (data->isValid())

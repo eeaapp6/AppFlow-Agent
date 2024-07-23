@@ -13,6 +13,8 @@
 
 #include "GUIWidgetAPI.h"
 
+#include "FITK_Interface/FITKInterfaceModel/FITKModelEnum.h"
+
 #include <QHash>
 
  // 前置声明
@@ -60,12 +62,13 @@ namespace GraphData
 
         /**
          * @brief   手动添加数据，模拟拾取。
+         * @param   type：数据类型
          * @param   dataObjId：数据对象ID
          * @param   indice：数据索引[引用]
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-23
          */
-        void addDataManually(int dataObjId, QList<int> & indice);
+        void addDataManually(Interface::FITKModelEnum::FITKModelSetType type, int dataObjId, QList<int> & indice);
 
         /**
          * @brief   清空拾取数据。
