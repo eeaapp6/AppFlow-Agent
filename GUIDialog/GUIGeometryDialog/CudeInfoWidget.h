@@ -29,6 +29,8 @@ namespace GUI
         ~CudeInfoWidget();
 
         void init();
+        //重新设置基点
+        void setBasicPoint(double* point);
     private slots:
         ;
         void on_pushButton_BasicPoint_clicked();

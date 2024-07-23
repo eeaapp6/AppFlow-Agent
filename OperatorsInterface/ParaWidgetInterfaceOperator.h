@@ -30,6 +30,8 @@ namespace EventOper
 
          */
         virtual ~ParaWidgetInterfaceOperator();
+        //其他事件执行
+        virtual void moveToStep(int index, QVariant value = QVariant());
     };
 }
 

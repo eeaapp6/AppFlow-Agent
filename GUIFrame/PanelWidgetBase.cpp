@@ -67,4 +67,9 @@ namespace GUI
 		m_Widget = nullptr;
 	}
 
+    QWidget* PanelWidgetBase::getCurrentWidget()
+    {
+        return m_Widget;
+    }
+
 }

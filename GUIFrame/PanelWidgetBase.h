@@ -72,7 +72,13 @@ namespace GUI
 		 * @date   2024-06-11
 		 */
 		void removeWidget();
-
+        /**
+         * @brief  获取当前界面
+         * @param  widget 显示部件
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-06-11
+         */
+        QWidget* getCurrentWidget();
 	protected:
 		/**
 		 * @brief  主窗口对象

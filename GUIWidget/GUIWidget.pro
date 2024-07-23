@@ -32,6 +32,7 @@ win32{
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        -lFITKGeoCompOCC \
         
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -50,6 +51,7 @@ win32{
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        -lFITKGeoCompOCC \
 
     message("Windows GUIWidget generated")
 }
@@ -77,6 +79,7 @@ unix{
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        -lFITKGeoCompOCC \
        
 
     message("Linux GUIWidget generated")

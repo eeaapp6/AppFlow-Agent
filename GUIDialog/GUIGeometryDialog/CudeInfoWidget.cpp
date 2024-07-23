@@ -48,10 +48,6 @@ namespace GUI {
 
         QString name = "";
         if (_isCreate) {
-            QList<Interface::FITKAbsGeoCommand*> getList;
-            for (int i = 0; geometryData->getDataCount(); i++) {
-                Interface::FITKAbstractGeoModel* geo = dynamic_cast<Interface::FITKAbstractGeoModel*>(geometryData->getDataByID(i));
-            }
             name = QString(tr("Box-%1").arg(geometryData->getDataCount() + 1));
             _ui->lineEdit_Name->setText(name);
         }
@@ -61,11 +57,24 @@ namespace GUI {
             _ui->lineEdit_Name->setText(name);
             setDataToWidget();
         }
+
+        QIcon icon1;
+        icon1.addFile(QString::fromUtf8(":/icons/icoR_selectBlue.png"), QSize(), QIcon::Normal, QIcon::Off);
+        _ui->pushButton_BasicPoint->setIcon(icon1);
+    }
+
+    void CudeInfoWidget::setBasicPoint(double * point)
+    {
+        _ui->lineEdit_BasicPoint1->setText(QString::number(point[0]));
+        _ui->lineEdit_BasicPoint2->setText(QString::number(point[1]));
+        _ui->lineEdit_BasicPoint3->setText(QString::number(point[2]));
     }
 
     void CudeInfoWidget::on_pushButton_BasicPoint_clicked()
     {
-
+        if (_oper) {
+            _oper->moveToStep(0);
+        }
     }
 
     void CudeInfoWidget::on_pushButton_Cancel_clicked()

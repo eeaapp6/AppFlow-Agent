@@ -15,6 +15,11 @@ namespace ModelOper
         virtual bool execGUI();
 
         virtual bool execProfession();
+
+        void moveToStep(int index, QVariant value = QVariant()) override;
+    private slots:
+        ;
+        void slotReselectBasePoint();
     };
 
     // 按钮注册相关操作
