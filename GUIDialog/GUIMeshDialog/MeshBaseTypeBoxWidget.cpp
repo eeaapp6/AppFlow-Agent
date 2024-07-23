@@ -26,22 +26,6 @@ namespace GUI
 
     void MeshBaseTypeBoxWidget::init()
     {
-        _ui->lineEdit_BasePoint1->setText("0");
-        _ui->lineEdit_BasePoint2->setText("0");
-        _ui->lineEdit_BasePoint3->setText("0");
-
-        _ui->lineEdit_Dimensions1->setText("10");
-        _ui->lineEdit_Dimensions2->setText("10");
-        _ui->lineEdit_Dimensions3->setText("10");
-
-        _ui->lineEdit_Division1->setText("10");
-        _ui->lineEdit_Division2->setText("10");
-        _ui->lineEdit_Division3->setText("10");
-
-        _ui->lineEdit_Grading1->setText("1.0");
-        _ui->lineEdit_Grading2->setText("1.0");
-        _ui->lineEdit_Grading3->setText("1.0");
-
         _ui->comboBox_X0->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
         _ui->comboBox_X0->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
         _ui->comboBox_X0->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);

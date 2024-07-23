@@ -110,10 +110,15 @@ namespace GUI
                 break;
             }
             _subWidget->getDataFromWidget(_currentObj);
-            _meshSizeManager->appendDataObj(_currentObj);
+
+            _meshSizeManager->insertDataObj(0, _currentObj);
         }
         else{
             _subWidget->getDataFromWidget(_currentObj);
+            //移除对象但不释放内存
+            _meshSizeManager->removeDataObjWithoutRelease(_currentObj);
+            //插入到首位
+            _meshSizeManager->insertDataObj(0, _currentObj);
         }
 
         if (_oper) {
