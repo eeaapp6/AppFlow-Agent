@@ -9,6 +9,8 @@ HEADERS += \
     $$PWD/PickedDataProvider.h \
     $$PWD/TreeWidget.h \
     $$PWD/WidgetOCCEvent.h \
+    $$PWD/GUIDialogBase.h \
+    $$PWD/GUIWidgetBase.h \
 
 SOURCES += \
     $$PWD/MainMenuBase.cpp \
@@ -20,6 +22,8 @@ SOURCES += \
     $$PWD/PickedDataProvider.cpp \
     $$PWD/TreeWidget.cpp \
     $$PWD/WidgetOCCEvent.cpp \
+    $$PWD/GUIDialogBase.cpp \
+    $$PWD/GUIWidgetBase.cpp \
 
 FORMS += \
     $$PWD/PropertyEmptyWidget.ui \

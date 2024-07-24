@@ -9,5 +9,6 @@ SUBDIRS += \
     #$$PWD/FITKRenderWindowOCC \
     $$PWD/FITKOCC2VTKGraphAdaptor \
     $$PWD/FITKOFDictWriter \
+    $$PWD/FITKOFDriver \
 
 CONFIG += ordered
