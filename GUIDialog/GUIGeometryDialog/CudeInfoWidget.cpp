@@ -58,8 +58,7 @@ namespace GUI {
         _ui->setupUi(this);
 
         initTableWidget();
-
-        
+  
         QString name = "";
         if (_isCreate) {
             name = QString(tr("Box-%1").arg(geometryData->getDataCount() + 1));
