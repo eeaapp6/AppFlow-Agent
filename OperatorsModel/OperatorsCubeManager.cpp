@@ -107,9 +107,6 @@ namespace ModelOper
         case ModelOper::OperManagerBase::Rename:
             break;
         }
-
-        propertyWidget->init();
-
         return true;
     }
 

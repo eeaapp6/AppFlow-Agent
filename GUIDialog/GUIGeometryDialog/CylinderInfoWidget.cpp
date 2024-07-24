@@ -2,6 +2,7 @@
 #include "ui_CylinderInfoWidget.h"
 
 #include "GUIFrame/MainWindow.h"
+#include "GUIFrame/PropertyWidget.h"
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
@@ -133,9 +134,12 @@ namespace GUI {
 
     void CylinderInfoWidget::on_pushButton_Cancel_clicked()
     {
-        if (_oper) {
-            _oper->execProfession();
-        }
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return;
+
+        propertyWidget->init();
     }
 
     void CylinderInfoWidget::on_pushButton_CreateOrEdit_clicked()
@@ -161,6 +165,15 @@ namespace GUI {
             _obj->setDataObjectName(name);
             _obj->update();
             geometryData->appendDataObj(_obj);
+
+            //切换为编辑模式
+            _ui->groupBox_FaceGroups->show();
+            _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
+            _ui->lineEdit_Name->setEnabled(false);
+            _isCreate = false;
+            Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
+            if (geometryData == nullptr) return;
+            _geoModel = geometryData->getDataByID(_obj->getDataObjectID());
         }
         else {
             if (_obj == nullptr)return;

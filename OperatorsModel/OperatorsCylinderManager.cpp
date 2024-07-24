@@ -107,8 +107,6 @@ namespace ModelOper
             break;
         }
 
-        propertyWidget->init();
-
         return true;
     }
 
