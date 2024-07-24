@@ -10,5 +10,6 @@ SUBDIRS += \
     $$PWD/FITKOCC2VTKGraphAdaptor \
     $$PWD/FITKOFDictWriter \
     $$PWD/FITKOFDriver \
+    $$PWD/FITKOFMeshIO \
 
 CONFIG += ordered
