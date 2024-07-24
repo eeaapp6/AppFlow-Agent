@@ -127,6 +127,25 @@ namespace ModelOper
             GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
             if (pickD == nullptr) return;
             connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectOriginPoint()));
+        }        
+        //面组选择
+        else if (index == 1) {
+            int objID = -1;
+            int curRow = -1;
+            this->argValue("objID", objID);
+            this->argValue("curRow", curRow);
+
+            //拾取信息设置
+            GUI::GUIPickInfoStru pinfo;
+            pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJFace;
+            pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMIndividually;
+            //保存参数
+            GUI::GUIPickInfo::SetPickInfo(pinfo, objID);
+
+            //拾取对象获取事件绑定
+            GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
+            if (pickD == nullptr) return;
+            connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotSelectFaceGroup()));;
         }
     }
 
@@ -158,6 +177,39 @@ namespace ModelOper
         GUI::CylinderInfoWidget* cudeWidget = dynamic_cast<GUI::CylinderInfoWidget*>(propertyWidget->getCurrentWidget());
         if (cudeWidget == nullptr)return;
         cudeWidget->setOriginPoint(point);
+
+        pickD->clearPickedData();
+    }
+
+    void OperatorsCylinderManager::slotSelectFaceGroup()
+    {
+        GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
+        if (pickD == nullptr) return;
+        disconnect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotSelectFaceGroup()));
+
+        //拾取信息设置
+        GUI::GUIPickInfoStru pinfo;
+        pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJNone;
+        pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMNone;
+        GUI::GUIPickInfo::SetPickInfo(pinfo);
+
+        QList<GraphData::PickedData*> pickData = pickD->getPickedList();
+        if (pickData.size() == 0)return;
+        if (!pickData[0])return;
+
+        int faceID = GUI::WidgetOCCEvent::getFace(pickData[0]);
+
+        //界面获取
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return;
+        GUI::CylinderInfoWidget* cudeWidget = dynamic_cast<GUI::CylinderInfoWidget*>(propertyWidget->getCurrentWidget());
+        if (cudeWidget == nullptr)return;
+
+        int curRow = -1;
+        this->argValue("curRow", curRow);
+        cudeWidget->setFaceGroupValue(curRow, faceID);
 
         pickD->clearPickedData();
     }

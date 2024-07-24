@@ -12,6 +12,9 @@
 
 #include <QMessageBox>
 
+#define CylNamePos Qt::UserRole
+#define CylFacePos Qt::UserRole+1
+
 namespace GUI {
 
     CylinderInfoWidget::CylinderInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :
@@ -21,12 +24,17 @@ namespace GUI {
         init();
 
         _ui->pushButton_CreateOrEdit->setText(tr("Create"));
+        _ui->groupBox_FaceGroups->hide();
     }
 
     CylinderInfoWidget::CylinderInfoWidget(Interface::FITKAbsGeoModelCylinder * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
         Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(false), _obj(obj), _oper(oper)
     {
+        Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
+        if (geometryData == nullptr) return;
+        _geoModel = geometryData->getDataByID(_obj->getDataObjectID());
+
         init();
 
         _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
@@ -46,6 +54,8 @@ namespace GUI {
         _ui = new Ui::CylinderInfoWidget();
         _ui->setupUi(this);
 
+        initTableWidget();
+
         QString name = "";
         if (_isCreate) {
             name = QString(tr("Cylinder-%1").arg(geometryData->getDataCount() + 1));
@@ -57,6 +67,10 @@ namespace GUI {
             _ui->lineEdit_Name->setText(name);
             setDataToWidget();
         }
+
+        QIcon icon1;
+        icon1.addFile(QString::fromUtf8(":/icons/icoR_selectBlue.png"), QSize(), QIcon::Normal, QIcon::Off);
+        _ui->pushButton_OriginPoint->setIcon(icon1);
     }
 
     void CylinderInfoWidget::setOriginPoint(double * point)
@@ -64,6 +78,50 @@ namespace GUI {
         _ui->lineEdit_OriginPoint1->setText(QString::number(point[0]));
         _ui->lineEdit_OriginPoint2->setText(QString::number(point[1]));
         _ui->lineEdit_OriginPoint3->setText(QString::number(point[2]));
+    }
+
+    void CylinderInfoWidget::setFaceGroupValue(int rowIndex, int faceId)
+    {
+        //当前id处理
+        {
+            QTableWidgetItem* item = _ui->tableWidget->item(rowIndex, 0);
+            if (item == nullptr)return;
+            QList<int> ids = item->data(CylFacePos).value<QList<int>>();
+
+            //如果已经包含该id不在添加
+            if (!ids.contains(faceId)) {
+                ids.append(faceId);
+            }
+
+            QString name = item->data(CylNamePos).toString();
+            item->setData(CylFacePos, QVariant::fromValue(ids));
+            name += tr("(%1 faces)").arg(ids.size());
+            item->setText(name);
+        }
+
+        //处理其他模块
+        {
+            for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+                if (i == rowIndex)continue;
+                QTableWidgetItem* item = _ui->tableWidget->item(i, 0);
+                if (item == nullptr)return;
+                QList<int> ids = item->data(CylFacePos).value<QList<int>>();
+                //如果已经包含该id不在添加
+                if (ids.contains(faceId)) {
+                    ids.removeOne(faceId);
+
+                    QString name = item->data(CylNamePos).toString();
+                    item->setData(CylFacePos, QVariant::fromValue(ids));
+                    if (ids.size() == 0) {
+                        name += tr("(empty)");
+                    }
+                    else {
+                        name += tr("(%1 faces)").arg(ids.size());
+                    }
+                    item->setText(name);
+                }
+            }
+        }
     }
 
     void CylinderInfoWidget::on_pushButton_OriginPoint_clicked()
@@ -116,6 +174,55 @@ namespace GUI {
         }
     }
 
+    void CylinderInfoWidget::on_pushButton_Clear_clicked()
+    {
+        _ui->tableWidget->clear();
+        initTableWidget();
+    }
+
+    void CylinderInfoWidget::on_pushButton_Add_clicked()
+    {
+        int rowNum = _ui->tableWidget->rowCount();
+        _ui->tableWidget->setRowCount(rowNum + 1);
+
+        QString group = tr("Group_%1").arg(rowNum + 1);
+        QString name = group + tr("(empty)");
+        QList<int> faceList = {};
+        QTableWidgetItem* item = new QTableWidgetItem(name);
+        item->setData(CylNamePos, group);
+        item->setData(CylFacePos, QVariant::fromValue(faceList));
+        _ui->tableWidget->setItem(rowNum, 0, item);
+
+        item = new QTableWidgetItem();
+        item->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+        _ui->tableWidget->setItem(rowNum, 1, item);
+    }
+
+    void CylinderInfoWidget::itemTableClickedSlot(QTableWidgetItem * item)
+    {
+        int curRow = _ui->tableWidget->currentRow();
+        int curCol = _ui->tableWidget->currentColumn();
+
+        if (curCol == 0) {
+            if (!_geoModel)return;
+            if (_oper) {
+                _oper->setArgs("objID", _geoModel->getDataObjectID());
+                _oper->setArgs("curRow", curRow);
+                _oper->moveToStep(1);
+            }
+        }
+        //删除操作
+        else if (curCol == 1) {
+            _ui->tableWidget->removeRow(curCol);
+        }
+    }
+
+    void CylinderInfoWidget::itemTableDoubleClickedSlot(QTableWidgetItem * item)
+    {
+        int curRow = _ui->tableWidget->currentRow();
+        int curCol = _ui->tableWidget->currentColumn();
+    }
+
     bool CylinderInfoWidget::checkValue()
     {
         return true;
@@ -141,6 +248,33 @@ namespace GUI {
 
         double length = _obj->getLength();
         _ui->lineEdit_Length->setText(QString::number(length));
+
+        if (_geoModel == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        if (commanger == nullptr)return;
+        _ui->tableWidget->setRowCount(commanger->getDataCount());
+        for (int i = 0; i < commanger->getDataCount(); i++) {
+            Interface::FITKGeoComponent* geoCom = dynamic_cast<Interface::FITKGeoComponent*>(commanger->getDataByIndex(i));
+            if (geoCom == nullptr)continue;
+            QList<int> ids = geoCom->getMember();
+            QString name = geoCom->getDataObjectName();
+
+            QTableWidgetItem* item = new QTableWidgetItem();
+            item->setData(CylNamePos, name);
+            item->setData(CylFacePos, QVariant::fromValue(ids));
+            _ui->tableWidget->setItem(i, 0, item);
+            if (ids.size() == 0) {
+                name += tr("(empty)");
+            }
+            else {
+                name += tr("(%1 faces)").arg(ids.size());
+            }
+            item->setText(name);
+
+            item = new QTableWidgetItem();
+            item->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+            _ui->tableWidget->setItem(i, 1, item);
+        }
     }
 
     void CylinderInfoWidget::getDataFormWidget()
@@ -164,5 +298,34 @@ namespace GUI {
 
         double length = _ui->lineEdit_Length->text().toDouble();
         _obj->setLength(length);
+
+        if (_geoModel == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        if (commanger == nullptr)return;
+        commanger->clear();
+        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+            QTableWidgetItem* item = _ui->tableWidget->item(i, 0);
+            if (item == nullptr)return;
+            QList<int> ids = item->data(CylFacePos).value<QList<int>>();
+            QString name = item->data(CylNamePos).toString();
+            Interface::FITKGeoComponent* geoCom = new Interface::FITKGeoComponent(Interface::FITKModelEnum::FITKModelSetType::FMSSurface);
+            geoCom->setMember(ids);
+            geoCom->setDataObjectName(name);
+            commanger->appendDataObj(geoCom);
+        }
+    }
+
+    void CylinderInfoWidget::initTableWidget()
+    {
+        _ui->tableWidget->setRowCount(0);
+        _ui->tableWidget->setColumnCount(2);
+        QStringList header;
+        header << tr("Default(3 faces)") << tr("");
+        _ui->tableWidget->setHorizontalHeaderLabels(header);
+        _ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        _ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+
+        connect(_ui->tableWidget, SIGNAL(itemClicked(QTableWidgetItem*)), this, SLOT(itemTableClickedSlot(QTableWidgetItem*)));
+        connect(_ui->tableWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(itemTableDoubleClickedSlot(QTableWidgetItem*)));
     }
 }

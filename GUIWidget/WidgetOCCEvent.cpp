@@ -9,8 +9,8 @@
 #include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
 #include "FITK_Component/FITKGeoCompOCC/FITKOCCModelSimpleShape.h"
 
-#include <TopoDs_Vertex.hxx>
-#include <TopoDs.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS.hxx>
 #include <BRep_Tool.hxx>
 
 namespace GUI
@@ -57,5 +57,12 @@ namespace GUI
         point[0] = pt.X();
         point[1] = pt.Y();
         point[2] = pt.Z();
+    }
+
+    int WidgetOCCEvent::getFace(GraphData::PickedData * data, bool isOk)
+    {
+        QList<int> ids = data->getPickedIds();
+        if (ids.isEmpty())return -1;
+        return ids[0];
     }
 }
