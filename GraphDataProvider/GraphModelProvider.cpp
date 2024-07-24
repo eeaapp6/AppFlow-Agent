@@ -114,6 +114,7 @@ namespace GraphData
 
     Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getCurrentGraphObjByDataId(int dataObjId)
     {
+        dataObjId--;
         // 查找模型。
         if (m_modelObjHash.contains(dataObjId))
         {

@@ -130,6 +130,13 @@ namespace GraphData
         PickedData* getCopy();
 
         /**
+         * @brief   排序。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-24
+         */
+        void sortIds();
+
+        /**
          * @brief   判断两份数据是否相同。
          * @param   data：待检测数据
          * @return  是否为相同模型
