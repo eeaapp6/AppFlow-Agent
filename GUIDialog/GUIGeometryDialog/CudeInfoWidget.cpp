@@ -223,6 +223,7 @@ namespace GUI {
             if (!_geoModel)return;
             if (_oper) {
                 _oper->setArgs("objID", _geoModel->getDataObjectID());
+                _oper->setArgs("faceIDs", item->data(CudeFacePos));
                 _oper->setArgs("curRow", curRow);
                 _oper->moveToStep(1);
             }

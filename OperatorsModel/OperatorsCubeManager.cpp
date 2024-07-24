@@ -130,8 +130,16 @@ namespace ModelOper
         else if (index == 1) {
             int objID = -1;
             int curRow = -1;
+            QList<int> faceIDs = {};
             this->argValue("objID", objID);
             this->argValue("curRow", curRow);
+            this->argValue("faceIDs", faceIDs);
+
+            //拾取对象获取事件绑定
+            GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
+            pickD->addDataManually(Interface::FITKModelEnum::FMSSurface, objID, faceIDs);
+            if (pickD == nullptr) return;
+            connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotSelectFaceGroup()));;
 
             //拾取信息设置
             GUI::GUIPickInfoStru pinfo;
@@ -139,11 +147,6 @@ namespace ModelOper
             pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMIndividually;
             //保存参数
             GUI::GUIPickInfo::SetPickInfo(pinfo, objID);
-
-            //拾取对象获取事件绑定
-            GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
-            if (pickD == nullptr) return;
-            connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotSelectFaceGroup()));;
         }
     }
 
