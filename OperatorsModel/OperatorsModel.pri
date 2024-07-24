@@ -6,7 +6,7 @@ HEADERS += \
     $$PWD/OperatorsCylinderManager.h \
     $$PWD/OperatorsSphereManager.h \
     $$PWD/OperatorsMeshBaseManager.h \
-    $$PWD/OperatorsMeshCalManager.h \
+    $$PWD/OperatorsMeshManager.h \
 
 
 SOURCES += \
@@ -16,6 +16,6 @@ SOURCES += \
     $$PWD/OperatorsCylinderManager.cpp \
     $$PWD/OperatorsSphereManager.cpp \
     $$PWD/OperatorsMeshBaseManager.cpp \
-    $$PWD/OperatorsMeshCalManager.cpp \
+    $$PWD/OperatorsMeshManager.cpp \
 
 FORMS += \
