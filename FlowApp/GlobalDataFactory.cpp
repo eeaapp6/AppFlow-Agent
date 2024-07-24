@@ -1,11 +1,11 @@
 ﻿#include "GlobalDataFactory.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFulidMeshVTK.h"
 
 
 Core::FITKAbstractDataObject *GlobalDataFactory::createMeshData()
 {
-    // 不创建网格数据
-    return nullptr;
+    return new Interface::FITKUnstructuredFluidMeshVTK;
 }
 
 Core::FITKAbstractDataObject* GlobalDataFactory::createGeoData()

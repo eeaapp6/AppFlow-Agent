@@ -28,6 +28,7 @@ win32{
         -lFITKRenderWindowVTK \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        -lFITKInterfaceMesh \
         -lFITKInterfaceGeometry \
         -lFITKGeoCompOCC \
         -lFITKMeshGenOF \
@@ -55,6 +56,7 @@ win32{
         -lFITKGeoCompOCC \
         -lFITKMeshGenOF \
         -lOperatorsModel \
+        -lFITKInterfaceMesh \
         -lOperatorsGUI \
         -lGUIFrame \
         -lGUIWidget \
@@ -90,6 +92,7 @@ unix{
         -lFITKRenderWindowVTK \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        -lFITKInterfaceMesh \
         -lFITKInterfaceGeometry \
         -lFITKGeoCompOCC \
         -lFITKMeshGenOF \

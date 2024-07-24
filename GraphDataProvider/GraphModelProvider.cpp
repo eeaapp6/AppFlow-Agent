@@ -65,7 +65,13 @@ namespace GraphData
         // 创建过则返回。
         if (m_modelObjHash.contains(dataObjId))
         {
-            return m_modelObjHash[dataObjId];
+            obj = m_modelObjHash[dataObjId];
+            if (obj)
+            {
+                obj->update();
+            }
+
+            return obj;
         }
 
         // 生成可视化对象。
