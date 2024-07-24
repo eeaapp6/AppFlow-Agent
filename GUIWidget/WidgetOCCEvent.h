@@ -18,6 +18,8 @@ namespace GUI
         ~WidgetOCCEvent();
 
         static void getPoint(GraphData::PickedData* data, double* point, bool isOk = true);
+
+        static int getFace(GraphData::PickedData* data, bool isOk = true);
     };
 }
 

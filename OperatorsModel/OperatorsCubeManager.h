@@ -20,6 +20,8 @@ namespace ModelOper
     private slots:
         ;
         void slotReselectBasePoint();
+
+        void slotSelectFaceGroup();
     };
 
     // 按钮注册相关操作
