@@ -94,6 +94,9 @@ namespace GraphData
         {
             delete data;
         }
+
+        // 生成拾取数据。
+        generatePickedDataSet();
     }
 
     void PickedDataProvider::clearPickedData()

@@ -159,6 +159,14 @@ namespace GraphData
         return data;
     }
 
+    void PickedData::sortIds()
+    {
+        if (!m_ids.isEmpty())
+        {
+            std::sort(m_ids.begin(), m_ids.end());
+        }
+    }
+
     bool PickedData::isSameAs(PickedData* data)
     {
         if (!data)
@@ -216,6 +224,9 @@ namespace GraphData
                 }
             }
         }
+
+        // 排序。
+        sortIds();
 
         // 合并后析构。
         delete data;
@@ -386,6 +397,9 @@ namespace GraphData
         // 判断数据是否可用。
         m_needToCal = false;
         m_isValid = m_graphObject != nullptr;
+
+        // 排序。
+        sortIds();
     }
 
     void PickedData::setPickedGraphObject(Exchange::FITKOCC2VTKGraphObject3D* obj)

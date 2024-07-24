@@ -70,6 +70,9 @@ namespace GraphData
 
         // 不管计算完成都将是否需要计算标识置为false。
         m_pickedData->calculateFinsish();
+
+        // 排序。
+        m_pickedData->sortIds();
     }
 
     void PickedDataCalculator::individually()

@@ -10,7 +10,7 @@
 
 // Graph widget and object
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
-#include "FITK_Component/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
 
 // Graph data manager
 #include "GraphDataProvider/GraphProviderManager.h"
@@ -20,7 +20,7 @@
 
 namespace GUIOper
 {
-    void OperGraphPreprocess::updateGraph(int dataObjId, bool fitView)
+    void OperGraphPreprocess::updateGraph(int dataObjId, bool forceUpdate)
     {
         // 获取可视化窗口。
         Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
@@ -43,14 +43,17 @@ namespace GUIOper
             return;
         }
 
+        obj->update(forceUpdate);
+
         // 添加至三维窗口。
-        addGraphObjectToWidget(obj, graphWidget, fitView);
+        addGraphObjectToWidget(obj, graphWidget, false);
     }
 
     Exchange::FITKOCC2VTKGraphObject3D* OperGraphPreprocess::getModelGraphObjectByDataId(int dataObjId)
     {
         // 可视化对象。
         Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+
         // 获取可视化窗口。
         Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
         if (!graphWidget)
@@ -67,5 +70,24 @@ namespace GUIOper
 
         obj = modelProvider->getCurrentGraphObjByDataId(dataObjId);
         return obj;
+    }
+
+    void OperGraphPreprocess::reRender(bool fitView)
+    {
+        // 获取可视化窗口。
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return;
+        }
+
+        if (fitView)
+        {
+            graphWidget->fitView();
+        }
+        else
+        {
+            graphWidget->reRender();
+        }
     }
 }  // namespace GUIOper
