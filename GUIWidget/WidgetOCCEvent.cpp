@@ -9,8 +9,8 @@
 #include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
 #include "FITK_Component/FITKGeoCompOCC/FITKOCCModelSimpleShape.h"
 
-#include <TopoDs_Vertex.hxx>
-#include <TopoDs.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS.hxx>
 #include <BRep_Tool.hxx>
 
 namespace GUI
