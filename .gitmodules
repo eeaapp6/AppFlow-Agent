@@ -61,3 +61,6 @@
 [submodule "FITK_Component/FITKOFDriver"]
 	path = FITK_Component/FITKOFDriver
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKOFDriver.git
+[submodule "FITK_Component/FITKOFMeshIO"]
+	path = FITK_Component/FITKOFMeshIO
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKOFMeshIO.git
