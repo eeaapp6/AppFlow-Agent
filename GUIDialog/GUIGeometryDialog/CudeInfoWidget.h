@@ -12,6 +12,7 @@ namespace Ui{
 
 namespace Interface {
     class FITKAbsGeoModelBox;
+    class FITKAbstractGeoModel;
 }
 
 namespace EventOper {
@@ -34,7 +35,7 @@ namespace GUI
         //重新设置基点
         void setBasicPoint(double* point);
 
-        void updateTableWidget();
+        void setFaceGroupValue(int rowIndex, int faceId);
     private slots:
         ;
         void on_pushButton_BasicPoint_clicked();
@@ -68,6 +69,7 @@ namespace GUI
     private:
         bool _isCreate = false;
         Interface::FITKAbsGeoModelBox* _obj = nullptr;
+        Interface::FITKAbstractGeoModel* _geoModel = nullptr;
         Ui::CudeInfoWidget* _ui = nullptr;
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
     };

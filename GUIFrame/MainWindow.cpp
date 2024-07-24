@@ -296,7 +296,7 @@ namespace GUI
 
         // 网格操作
         pannel = gategory->addPannel(tr("Oper Mesh"));
-        action = createAction(tr("Mesh"), "action", ":/icons/displayedge.png", tr("Mesh"));
+        action = createAction(tr("Mesh"), "actionMesh", ":/icons/displayedge.png", tr("Mesh"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
         action = createAction(tr("Extrude"), "action", ":/icons/displayedge.png", tr("Extrude"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);

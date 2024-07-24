@@ -1,4 +1,4 @@
-﻿#include "OperatorsMeshCalManager.h"
+﻿#include "OperatorsMeshManager.h"
 
 #include "FITK_Component/FITKOFDictWriter/FITKOFBlockMeshDictWriter.h"
 #include "FITK_Kernel/FITKCore/FITKDirFileTools.h"
@@ -7,15 +7,15 @@
 
 namespace ModelOper
 {
-    OperatorsMeshCalManager::OperatorsMeshCalManager()
+    OperatorsMeshManager::OperatorsMeshManager()
     {
     }
 
-    OperatorsMeshCalManager::~OperatorsMeshCalManager()
+    OperatorsMeshManager::~OperatorsMeshManager()
     {
     }
 
-    bool OperatorsMeshCalManager::execGUI()
+    bool OperatorsMeshManager::execGUI()
     {
         QString path = QApplication::applicationDirPath() + "/../WorkDir";
         Core::CreateDir(path);
@@ -26,7 +26,7 @@ namespace ModelOper
         return true;
     }
 
-    bool OperatorsMeshCalManager::execProfession()
+    bool OperatorsMeshManager::execProfession()
     {
         return true;
     }
