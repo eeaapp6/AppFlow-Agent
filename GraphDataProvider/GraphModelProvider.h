@@ -49,13 +49,31 @@ namespace GraphData
         QString getClassName() override;
 
         /**
-         * @brief   根据数据ID获取对应可视化对象。（没有则创建）
+         * @brief   根据数据ID获取模型（几何）可视化对象。（没有则创建）
          * @param   dataObjId：数据ID
          * @return  可视化对象
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
         Exchange::FITKOCC2VTKGraphObject3D* getModelGraphObject(int dataObjId);
+
+        /**
+         * @brief   根据数据ID获取边界网格可视化对象。（没有则创建）
+         * @param   dataObjId：数据ID
+         * @return  可视化对象（边界网格数据ID）
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-24
+         */
+        Exchange::FITKOCC2VTKGraphObject3D* getBoundMeshGraphObject(int dataObjId);
+
+        /**
+         * @brief   根据数据ID获取流体网格下的全部边界网格可视化对象。（没有则创建）
+         * @param   dataObjId：数据ID
+         * @return  可视化对象（流体网格数据ID）
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-24
+         */
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> getFuildBoundMeshGraphObjects(int dataObjId);
 
         /**
          * @brief   根据数据ID获取对应可视化对象。（没有则不创建）
@@ -139,6 +157,13 @@ namespace GraphData
          * @date    2024-06-12
          */
         QHash<int, Exchange::FITKOCC2VTKGraphObject3D*> m_modelObjHash;
+
+        /**
+         * @brief   边界网格数据字典。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-24
+         */
+        QHash<int, Exchange::FITKOCC2VTKGraphObject3D*> m_boundMeshObjHash;
 
     };
 }   // namespace GraphData

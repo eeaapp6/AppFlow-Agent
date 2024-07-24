@@ -18,6 +18,12 @@
 // Graph widget
 #include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
 
+// Adaptor
+#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKViewAdaptorBase.h"
+
+// Data 
+#include "FITK_Kernel/FITKCore/FITKAbstractDataObject.h"
+
 namespace GraphData
 {
     GraphProviderBase::GraphProviderBase(Comp::FITKGraph3DWindowVTK* graphWidget) :
@@ -93,6 +99,64 @@ namespace GraphData
         }
 
         hash.clear();
+    }
+
+    Exchange::FITKOCC2VTKGraphObject3D* GraphProviderBase::getGraphObject(QString adaptorKeyName, QHash<int, Exchange::FITKOCC2VTKGraphObject3D*>& objDict, Core::FITKAbstractDataObject* dataObj)
+    {
+        // 可视化对象。
+        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+
+        // 异常处理。
+        if (adaptorKeyName.isEmpty() || !dataObj)
+        {
+            return obj;
+        }
+
+        // 获取数据ID。
+        int dataId = dataObj->getDataObjectID();
+
+        // 创建过则返回已实例数据。
+        if (objDict.contains(dataId))
+        {
+            return objDict[dataId];
+        }
+
+        // 生成可视化对象。
+        Exchange::FITKOCC2VTKViewAdaptorBase* adaptor = FITKVIEWADAPTORFACTORY->createT<Exchange::FITKOCC2VTKViewAdaptorBase>(adaptorKeyName, dataObj);
+        if (!adaptor)
+        {
+            return obj;
+        }
+
+        // 设置输入数据并更新获取三维可视化对象。
+        adaptor->setDataObject(dataObj);
+        adaptor->update();
+
+        obj = adaptor->getOutputData();
+
+        // 适配器析构。
+        delete adaptor;
+
+        if (!obj)
+        {
+            return obj;
+        }
+
+        objDict.insert(dataId, obj);
+
+        // 检测数据析构对三维数据进行析构并移出数据管理。
+        //@{
+        connect(dataObj, &Core::FITKAbstractDataObject::dataObjectDestoried, this, [&](Core::FITKAbstractDataObject* objDelete)
+        {
+            Exchange::FITKOCC2VTKGraphObject3D* gObj = objDict.take(objDelete->getDataObjectID());
+            if (gObj)
+            {
+                delete gObj;
+            }
+        });
+        //@}
+
+        return obj;
     }
 
     bool GraphProviderBase::updateObjById(int dataId, QVariant info)

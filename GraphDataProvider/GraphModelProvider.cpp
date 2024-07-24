@@ -16,6 +16,7 @@
 
 // Data
 #include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFulidMeshVTK.h"
 
 // Graph widget
 #include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
@@ -32,6 +33,7 @@ namespace GraphData
     {
         // 析构三维可视化对象。
         deleteObjsHash(m_modelObjHash);
+        deleteObjsHash(m_boundMeshObjHash);
     }
 
     QString GraphModelProvider::getClassName()
@@ -47,12 +49,15 @@ namespace GraphData
         // 模型（几何）可视化对象。
         objs << m_modelObjHash.values();
 
+        // 边界网格可视化对象。
+        objs << m_boundMeshObjHash.values();
+
         return objs;
     }
 
     Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getModelGraphObject(int dataObjId)
     {
-        // 检查数据ID。
+        // 模型可视化对象。
         Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
 
         // 检查数据ID。
@@ -62,59 +67,73 @@ namespace GraphData
             return obj;
         }
 
-        // 创建过则返回。
-        if (m_modelObjHash.contains(dataObjId))
-        {
-            obj = m_modelObjHash[dataObjId];
-            if (obj)
-            {
-                obj->update();
-            }
-
-            return obj;
-        }
-
-        // 生成可视化对象。
-        Exchange::FITKOCC2VTKViewAdaptorBase* adaptor = FITKVIEWADAPTORFACTORY->createT<Exchange::FITKOCC2VTKViewAdaptorBase>("ModelOCC", model);
-        if (!adaptor)
-        {
-            return obj;
-        }
-
-        adaptor->setDataObject(model);
-        adaptor->update();
-
-        obj = adaptor->getOutputData();
-
-        // 适配器析构。
-        delete adaptor;
-
-        if (!obj)
-        {
-            return obj;
-        }
-
-        // 存储数据。
-        m_modelObjHash.insert(dataObjId, obj);
-
-        // 检测数据析构对三维数据进行析构并移出数据管理。
-        //@{
-        connect(model, &Interface::FITKAbstractModel::dataObjectDestoried, this, [=]
-        {
-            Core::FITKAbstractGraphObject* gObj = m_modelObjHash.take(dataObjId);
-            if (gObj)
-            {
-                delete gObj;
-            }
-        });
-        //@}
+        // 模型可视化对象。
+        obj = getGraphObject("ModelOCC", m_modelObjHash, model);
 
         return obj;
     }
 
+    Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getBoundMeshGraphObject(int dataObjId)
+    {
+        // 边界网格可视化对象。
+        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+
+        // 检查数据ID。
+        Interface::FITKBoundaryMeshVTK* boundMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKBoundaryMeshVTK>(dataObjId);
+        if (!boundMesh)
+        {
+            return obj;
+        }
+
+        // 模型可视化对象。
+        obj = getGraphObject("BoundMesh", m_boundMeshObjHash, boundMesh);
+
+        return obj;
+    }
+
+    QList<Exchange::FITKOCC2VTKGraphObject3D*> GraphModelProvider::getFuildBoundMeshGraphObjects(int dataObjId)
+    {
+        // 模型可视化对象。
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
+
+        // 检查数据ID。
+        Interface::FITKUnstructuredFluidMeshVTK* fluidMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKUnstructuredFluidMeshVTK>(dataObjId);
+        if (!fluidMesh)
+        {
+            return objs;
+        }
+
+        // 获取边界网格管理器。
+        Interface::FITKBoundaryMeshVTKManager* bdMeshMgr = fluidMesh->getBoundaryMeshManager();
+        if (!bdMeshMgr)
+        {
+            return objs;
+        }
+
+        // 生成可视化对象。
+        int nBdMesh = bdMeshMgr->getDataCount();
+
+        for (int i = 0; i < nBdMesh; i++)
+        {
+            Interface::FITKBoundaryMeshVTK* bdMesh = bdMeshMgr->getDataByIndex(i);
+            if (!bdMesh)
+            {
+                continue;
+            }
+
+            int bdMeshId = bdMesh->getDataObjectID();
+            Exchange::FITKOCC2VTKGraphObject3D* obj = getBoundMeshGraphObject(bdMeshId);
+            if (obj)
+            {
+                objs.push_back(obj);
+            }
+        }
+
+        return objs;
+    }
+
     Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getCurrentGraphObjByDataId(int dataObjId)
     {
-        dataObjId--;
         // 查找模型。
         if (m_modelObjHash.contains(dataObjId))
         {

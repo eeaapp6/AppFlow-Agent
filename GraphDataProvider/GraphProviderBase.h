@@ -16,6 +16,11 @@
 #include <QHash>
 
 // 前置声明
+namespace Core
+{
+    class FITKAbstractDataObject;
+}
+
 namespace Comp
 {
     class FITKGraph3DWindowVTK;
@@ -113,6 +118,17 @@ namespace GraphData
          * @date    2024-06-12
          */
         void deleteObjsHash(QHash<int, QHash<int, Exchange::FITKOCC2VTKGraphObject3D*>>& hash);
+
+        /**
+         * @brief   通过数据对象、适配器关键字与需要保存到的字典生成或获取可视化对象。
+         * @param   adaptorKeyName：适配器关键字
+         * @param   objDict：可视化对象字典[引用]
+         * @param   dataObj：数据对象
+         * @return  可视化对象
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-24
+         */
+        Exchange::FITKOCC2VTKGraphObject3D* getGraphObject(QString adaptorKeyName, QHash<int, Exchange::FITKOCC2VTKGraphObject3D*>& objDict, Core::FITKAbstractDataObject* dataObj);
 
     protected:
         /**
