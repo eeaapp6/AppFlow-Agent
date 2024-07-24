@@ -2,6 +2,7 @@
 #include "ui_SphereInfoWidget.h"
 
 #include "GUIFrame/MainWindow.h"
+#include "GUIFrame/PropertyWidget.h"
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
@@ -75,9 +76,12 @@ namespace GUI {
 
     void SphereInfoWidget::on_pushButton_Cancel_clicked()
     {
-        if (_oper) {
-            _oper->execProfession();
-        }
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return;
+
+        propertyWidget->init();
     }
 
     void SphereInfoWidget::on_pushButton_CreateOrEdit_clicked()
@@ -103,6 +107,11 @@ namespace GUI {
             _obj->setDataObjectName(name);
             _obj->update();
             geometryData->appendDataObj(_obj);
+
+            //模式切换
+            _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
+            _ui->lineEdit_Name->setEnabled(false);
+            _isCreate = false;
         }
         else {
             if (_obj == nullptr)return;

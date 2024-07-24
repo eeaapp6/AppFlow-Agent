@@ -53,6 +53,7 @@ namespace GUI {
     private:
         void updateGeometryItems();
         void updateMeshItems();
+        void updateLocalItems(QTreeWidgetItem* parentItem);
         //添加actions
         void addMenuActions(QMenu& menu, QString actions, QString objectName);
     };

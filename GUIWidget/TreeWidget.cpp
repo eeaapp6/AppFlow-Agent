@@ -13,6 +13,9 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKAbstractGeoModel.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractGeometryMeshSizeGenerator.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
 
 #include <QMenu>
 #include <QStandardItemModel>
@@ -199,41 +202,39 @@ namespace GUI{
         meshItem->addChild(meshBaseItem);
 
         //刷新local
-        QTreeWidgetItem* localBaseItem = new QTreeWidgetItem();
-        localBaseItem->setText(0, tr("Local"));
-        localBaseItem->setData(1, 0, -1);
-        localBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocal));
-        meshItem->addChild(localBaseItem);
-
-        //Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
-        //if (geometryData == nullptr) return;
-        //for (int i = 0; i < geometryData->getDataCount(); i++) {
-        //    auto geometryObj = dynamic_cast<Interface::FITKAbsGeoCommand*>(geometryData->getDataByIndex(i));
-        //    if (geometryObj == nullptr)continue;
-        //    QString geoName = geometryObj->getDataObjectName();
-        //    //FITKAbsGeoCommand无法直接获取到FITKGeoComponentManager，通过FITKAbstractGeoModel获取
-        //    auto geoModelData = dynamic_cast<Interface::FITKAbstractGeoModel*>(geometryData->getDataByID(geometryObj->getDataObjectID()));
-        //    if(geoModelData == nullptr)continue;
-        //    Interface::FITKGeoComponentManager* compManager = geoModelData->getGeoComponentManager();
-        //    if (compManager == nullptr)continue;
-        //    for (int j = 0; j < compManager->getDataCount(); j++) {
-        //        Interface::FITKGeoComponent* geoCom = compManager->getDataByIndex(j);
-        //        if(geoCom == nullptr)continue;
-        //        QString comName = geoCom->getDataObjectName();
-
-        //        QTreeWidgetItem* item = new QTreeWidgetItem();
-        //        item->setText(0, geoName + "." + comName);
-        //        item->setData(1, 0, geoCom->getDataObjectID());
-        //        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocalItem));
-        //        localBaseItem->addChild(item);
-        //    }
-        //}
+        updateLocalItems(meshItem);
 
         QTreeWidgetItem* pointBaseItem = new QTreeWidgetItem();
         pointBaseItem->setText(0, tr("Points"));
         pointBaseItem->setData(1, 0, -1);
         pointBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshPoint));
         meshItem->addChild(pointBaseItem);
+    }
+
+    void TreeWidget::updateLocalItems(QTreeWidgetItem* parentItem)
+    {
+        QTreeWidgetItem* localBaseItem = new QTreeWidgetItem();
+        localBaseItem->setText(0, tr("Local"));
+        localBaseItem->setData(1, 0, -1);
+        localBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocal));
+        parentItem->addChild(localBaseItem);
+
+        Interface::FITKMeshGenInterface* genInterface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKAbstractGeometryMeshSizeGenerator* generator = genInterface->getGeometryMeshSizeGenerator();
+        if (generator == nullptr)return;
+        Interface::FITKGeometryMeshSizeManager* manger = genInterface->getGeometryMeshSizeManager();
+        if (manger == nullptr)return;
+
+        for (int i = 0; i < manger->getDataCount(); i++) {
+            Interface::FITKGeometryMeshSize* geoMeshSize = manger->getDataByIndex(i);
+            if(geoMeshSize == nullptr)continue;
+
+            QTreeWidgetItem* item = new QTreeWidgetItem();
+            item->setText(0, geoMeshSize->getDataObjectName());
+            item->setData(1, 0, geoMeshSize->getDataObjectID());
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocalItem));
+            localBaseItem->addChild(item);
+        }
     }
 
     void TreeWidget::addMenuActions(QMenu & menu, QString actions, QString objectName)

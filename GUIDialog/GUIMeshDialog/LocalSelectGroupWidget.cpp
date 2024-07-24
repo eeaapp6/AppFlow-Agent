@@ -9,6 +9,12 @@
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoModelManager.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractGeometryMeshSizeGenerator.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
+
+#define LocalGeoId Qt::UserRole
+#define LocalGroId Qt::UserRole + 1
 
 namespace GUI
 {
@@ -62,8 +68,8 @@ namespace GUI
                 QString comName = geoCom->getDataObjectName();
 
                 QTableWidgetItem* item = new QTableWidgetItem(geoName + "." + comName);
-                item->setData(Qt::UserRole, geoCom->getDataObjectID());
-                item->setData(Qt::UserRole + 1, geoCom->getDataObjectID());
+                item->setData(LocalGeoId, geometryObj->getDataObjectID());
+                item->setData(LocalGroId, geoCom->getDataObjectID());
                 _ui->tableWidget->insertRow(currentRow);
                 _ui->tableWidget->setItem(currentRow, 0, item);
                 currentRow++;
@@ -82,10 +88,25 @@ namespace GUI
     {
         int currentRow = _ui->tableWidget->currentRow();
         QTableWidgetItem* item = _ui->tableWidget->item(currentRow, 0);
-        /*if
+        if (item == nullptr)return;
+
+        Interface::FITKMeshGenInterface* genInterface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKAbstractGeometryMeshSizeGenerator* generator = genInterface->getGeometryMeshSizeGenerator();
+        if (generator == nullptr)return;
+        Interface::FITKGeometryMeshSizeManager* manger = genInterface->getGeometryMeshSizeManager();
+        if (manger == nullptr)return;
+        
+        //创建几何划分网格尺寸类
+        Interface::FITKGeometryMeshSize* meshSize = generator->createGeometryMeshSize();
+        meshSize->setGeoGroupComponentId(item->data(LocalGroId).toInt());
+        meshSize->setDataObjectName(item->text());
+
+        //添加至管理器中
+        manger->appendDataObj(meshSize);
+
         if (_oper) {
             _oper->execProfession();
-        }*/
+        }
     }
 }
 

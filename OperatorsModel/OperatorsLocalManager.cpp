@@ -2,6 +2,9 @@
 
 #include "GUIFrame/PropertyWidget.h"
 #include "GUIDialog/GUIMeshDialog/LocalSelectGroupWidget.h"
+#include "OperatorsInterface/GraphEventOperator.h"
+#include "OperatorsInterface/TreeEventOperator.h"
+#include "OperatorsInterface/GraphInteractionOperator.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -50,7 +53,26 @@ namespace ModelOper
 
     bool OperatorsLocalManager::execProfession()
     {
-        return false;
+        // 获取模型树控制器
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return false;
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return false;
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return false;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return false;
+
+        if (_emitter == nullptr)return false;
+        QString sendName = _emitter->objectName();
+
+        if (sendName == "actionLocalSelectGroup") {
+            treeOper->updateTree();
+        }
+
+        propertyWidget->init();
+
+        return true;
     }
 
     void OperatorsLocalManager::moveToStep(int index, QVariant value)
