@@ -68,6 +68,8 @@ namespace GUIOper
                 continue;
             }
 
+            obj->update(forceUpdate);
+
             addGraphObjectToWidget(obj, graphWidget, false);
         }
     }

@@ -30,6 +30,7 @@ win32{
         -lOperatorsInterface \
         -lGUIGeometryDialog \
         -lGUIMeshDialog \
+        -lFITKOFDriver \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -47,7 +48,7 @@ win32{
         -lOperatorsInterface \
         -lGUIGeometryDialog \
         -lGUIMeshDialog \
-
+        -lFITKOFDriver \
 
     message("Windows OperatorsModel generated")
 }
@@ -75,6 +76,7 @@ unix{
         -lOperatorsInterface \
         -lGUIGeometryDialog \
         -lGUIMeshDialog \
+        -lFITKOFDriver \
         
     message("Linux OperatorsModel generated")
 }
