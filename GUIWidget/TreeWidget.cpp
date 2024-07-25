@@ -73,8 +73,8 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_GeometySphereItem:name = "actionEditSphere"; break;
         case GUI::MainTreeEnum::MainTree_Mesh: break;
         case GUI::MainTreeEnum::MainTree_MeshBase: name = "actionEditBase"; break;
-        case GUI::MainTreeEnum::MainTree_MeshLocal: break;
-        case GUI::MainTreeEnum::MainTree_MeshLocalItem: break;
+        case GUI::MainTreeEnum::MainTree_MeshLocal: name = "actionLocalSelectGroup"; break;
+        case GUI::MainTreeEnum::MainTree_MeshLocalItem:name = "actionLocalEdit"; break;
         }
 
         if (!name.isEmpty()) {
@@ -131,10 +131,12 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_Mesh: break;
         case GUI::MainTreeEnum::MainTree_MeshBase: break;
         case GUI::MainTreeEnum::MainTree_MeshLocal: {
-            addMenuActions(menu, "actionLocalSelectGroup", "Select face group");
             break;
         }
-        case GUI::MainTreeEnum::MainTree_MeshLocalItem: break;
+        case GUI::MainTreeEnum::MainTree_MeshLocalItem: {
+            addMenuActions(menu, "actionLocalDelete", "Delete face group");
+            break;
+        }
         }
 
         if (menu.actions().size() == 0) return;

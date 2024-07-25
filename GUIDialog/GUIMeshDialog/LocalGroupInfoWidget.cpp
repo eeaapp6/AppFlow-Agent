@@ -1,0 +1,90 @@
+﻿#include "LocalGroupInfoWidget.h"
+#include "ui_LocalGroupInfoWidget.h"
+
+#include "GUIFrame/MainWindow.h"
+#include "GUIFrame/PropertyWidget.h"
+#include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
+
+#include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
+#include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
+
+namespace GUI
+{
+    LocalGroupInfoWidget::LocalGroupInfoWidget(Interface::FITKGeometryMeshSize * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
+        GUIWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
+        _obj(obj), _oper(oper)
+    {
+        _ui = new Ui::LocalGroupInfoWidget();
+        _ui->setupUi(this);
+
+        init();
+    }
+
+    LocalGroupInfoWidget::~LocalGroupInfoWidget()
+    {
+        if (_ui)delete _ui;
+    }
+
+    void LocalGroupInfoWidget::init()
+    {
+        if (_obj) {
+            setDataToWidget();
+        }
+    }
+
+    Interface::FITKGeometryMeshSize * LocalGroupInfoWidget::getCurrentGeoMeshObj()
+    {
+        return _obj;
+    }
+
+    void LocalGroupInfoWidget::on_pushButton_Cancel_clicked()
+    {
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return;
+        propertyWidget->init();
+    }
+
+    void LocalGroupInfoWidget::on_pushButton_OK_clicked()
+    {
+        if (_obj && _oper) {
+            if (!checkValue())return;
+            getDataFromWidget();
+            _oper->execProfession();
+        }
+    }
+
+    bool LocalGroupInfoWidget::checkValue()
+    {
+        return true;
+    }
+
+    void LocalGroupInfoWidget::setDataToWidget()
+    {
+        if (_obj == nullptr)return;
+        int layer = _obj->getLayerNumber();
+        _ui->lineEdit_NoLayers->setText(QString::number(layer));
+
+        double exp = _obj->getExpansionRatio();
+        _ui->lineEdit_Expansion->setText(QString::number(exp));
+
+        double thick = _obj->getLayerThickness();
+        _ui->lineEdit_FirThickness->setText(QString::number(thick));
+    }
+
+    void LocalGroupInfoWidget::getDataFromWidget()
+    {
+        if (_obj == nullptr)return;
+        QString layer = _ui->lineEdit_NoLayers->text();
+        _obj->setLayerNumber(layer.toInt());
+
+        QString exp = _ui->lineEdit_Expansion->text();
+        _obj->setExpansionRatio(exp.toDouble());
+
+        QString thick = _ui->lineEdit_FirThickness->text();
+        _obj->setLayerThickness(thick.toDouble());
+    }
+}
+

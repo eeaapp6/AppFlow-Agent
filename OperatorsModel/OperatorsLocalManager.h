@@ -21,6 +21,8 @@ namespace ModelOper
 
     // 按钮注册相关操作
     Register2FITKOPeratorRepo(actionLocalSelectGroup, OperatorsLocalManager);
+    Register2FITKOPeratorRepo(actionLocalEdit, OperatorsLocalManager);
+    Register2FITKOPeratorRepo(actionLocalDelete, OperatorsLocalManager);
 }
 #endif
 

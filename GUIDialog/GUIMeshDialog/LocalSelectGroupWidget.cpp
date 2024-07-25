@@ -2,6 +2,7 @@
 #include "ui_LocalSelectGroupWidget.h"
 
 #include "GUIFrame/MainWindow.h"
+#include "GUIFrame/PropertyWidget.h"
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
@@ -48,11 +49,31 @@ namespace GUI
 
     void LocalSelectGroupWidget::init()
     {
+        updateTableWidget();
+    }
+
+    void LocalSelectGroupWidget::updateTableWidget()
+    {
+        Interface::FITKMeshGenInterface* genInterface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKGeometryMeshSizeManager* manger = genInterface->getGeometryMeshSizeManager();
+        if (manger == nullptr)return;
+        Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
+        if (geometryData == nullptr) return;
+
+        _ui->tableWidget->clear();
         _ui->tableWidget->setRowCount(0);
         int currentRow = 0;
 
-        Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
-        if (geometryData == nullptr) return;
+        //数据是否存在在管理器中局部函数
+        auto isInclude = [&](int id)->bool {
+            for (int i = 0; i < manger->getDataCount(); i++) {
+                auto obj = manger->getDataByIndex(i);
+                if (obj == nullptr)continue;
+                if (obj->getGeoGroupComponentId() == id)return true;
+            }
+            return false;
+        };
+
         for (int i = 0; i < geometryData->getDataCount(); i++) {
             auto geometryObj = dynamic_cast<Interface::FITKAbsGeoCommand*>(geometryData->getDataByIndex(i));
             if (geometryObj == nullptr)continue;
@@ -65,8 +86,10 @@ namespace GUI
             for (int j = 0; j < compManager->getDataCount(); j++) {
                 Interface::FITKGeoComponent* geoCom = compManager->getDataByIndex(j);
                 if (geoCom == nullptr)continue;
+                //判断数据是否在管理器中存在
+                if (isInclude(geoCom->getDataObjectID()))continue;
+                //不存在添加到选项列表中
                 QString comName = geoCom->getDataObjectName();
-
                 QTableWidgetItem* item = new QTableWidgetItem(geoName + "." + comName);
                 item->setData(LocalGeoId, geometryObj->getDataObjectID());
                 item->setData(LocalGroId, geoCom->getDataObjectID());
@@ -79,9 +102,11 @@ namespace GUI
 
     void LocalSelectGroupWidget::on_pushButton_Cancel_clicked()
     {
-        if (_oper) {
-            _oper->execProfession();
-        }
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return;
+        propertyWidget->init();
     }
 
     void LocalSelectGroupWidget::on_pushButton_OK_clicked()
@@ -106,6 +131,7 @@ namespace GUI
 
         if (_oper) {
             _oper->execProfession();
+            updateTableWidget();
         }
     }
 }

@@ -33,14 +33,12 @@ namespace ModelOper
         enum OperType
         {
             None,       ///< 未定义
-            Manage,     ///< 管理器
             Create,     ///< 创建操作
             Edit,       ///< 编辑操作
             Copy,       ///< 拷贝操作
             Delete,     ///< 删除操作
             Rename,     ///< 重命名操作
-            Show,       ///< 显示操作
-            Hide        ///< 隐藏操作
+            Select,     ///< 选择操作
         } _operType{ None };
         /**
          * @brief 主界面

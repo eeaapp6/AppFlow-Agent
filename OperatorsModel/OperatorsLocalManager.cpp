@@ -2,12 +2,15 @@
 
 #include "GUIFrame/PropertyWidget.h"
 #include "GUIDialog/GUIMeshDialog/LocalSelectGroupWidget.h"
+#include "GUIDialog/GUIMeshDialog/LocalGroupInfoWidget.h"
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "OperatorsInterface/TreeEventOperator.h"
 #include "OperatorsInterface/GraphInteractionOperator.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
 
 #include <QDialog>
 
@@ -32,23 +35,37 @@ namespace ModelOper
         if (mainWindow == nullptr)return false;
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return false;
+        Interface::FITKMeshGenInterface* genInterface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKGeometryMeshSizeManager* manger = genInterface->getGeometryMeshSizeManager();
+        if (manger == nullptr)return false;
 
-        if (_emitter == nullptr)return false;
-        QString sendName = _emitter->objectName();
+        QString sendName = "";
+        int objID = -1;
+        argValue("sender", sendName);
+        argValue("objID", objID);
 
-        if (sendName == "actionLocalSelectGroup") {
-            widget = new GUI::LocalSelectGroupWidget(this);
+        switch (_operType){
+        case ModelOper::OperManagerBase::Edit: {
+            widget = new GUI::LocalGroupInfoWidget(manger->getDataByID(objID), this);
+            break;
+        }
+        case ModelOper::OperManagerBase::Delete: {
+            manger->removeDataByID(objID);
+            break;
+        }
+        case ModelOper::OperManagerBase::Select:widget = new GUI::LocalSelectGroupWidget(this); break;
         }
         
         if (mainWindow->getPropertyWidget() && widget) {
             propertyWidget->setWidget(widget);
+            return false;
         }
-
         if (dialog) {
             dialog->show();
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     bool OperatorsLocalManager::execProfession()
@@ -63,14 +80,21 @@ namespace ModelOper
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return false;
 
-        if (_emitter == nullptr)return false;
-        QString sendName = _emitter->objectName();
-
-        if (sendName == "actionLocalSelectGroup") {
-            treeOper->updateTree();
+        switch (_operType){
+        case ModelOper::OperManagerBase::Edit: {
+            propertyWidget->init();
+            break;
         }
-
-        propertyWidget->init();
+        case ModelOper::OperManagerBase::Delete: {
+            GUI::LocalSelectGroupWidget* localSelectWidget = dynamic_cast<GUI::LocalSelectGroupWidget*>(propertyWidget->getCurrentWidget());
+            if (localSelectWidget) {
+                localSelectWidget->updateTableWidget();
+            }
+            treeOper->updateTree();
+            break;
+        }
+        case ModelOper::OperManagerBase::Select:treeOper->updateTree();break;
+        }
 
         return true;
     }

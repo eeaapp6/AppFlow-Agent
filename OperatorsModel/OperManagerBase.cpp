@@ -48,5 +48,8 @@ namespace ModelOper
         else if (name.contains("delete")){
             _operType = Delete;
         }
+        else if (name.contains("select")) {
+            _operType = Select;
+        }
     }
 } // namespace ModelOper

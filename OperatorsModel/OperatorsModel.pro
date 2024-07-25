@@ -34,6 +34,7 @@ win32{
         -lFITKInterfaceIO \
         -lFITKInterfaceMesh \
         -lFITKOFMeshIO \
+        -lFITKInterfaceMeshGen \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -55,6 +56,7 @@ win32{
         -lFITKInterfaceIO \
         -lFITKInterfaceMesh \
         -lFITKOFMeshIO \
+        -lFITKInterfaceMeshGen \
 
     message("Windows OperatorsModel generated")
 }
@@ -86,6 +88,7 @@ unix{
         -lFITKInterfaceIO \
         -lFITKInterfaceMesh \
         -lFITKOFMeshIO \
+        -lFITKInterfaceMeshGen \
         
     message("Linux OperatorsModel generated")
 }
