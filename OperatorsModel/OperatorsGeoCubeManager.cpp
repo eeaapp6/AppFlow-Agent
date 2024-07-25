@@ -1,4 +1,4 @@
-﻿#include "OperatorsCylinderManager.h"
+﻿#include "OperatorsGeoCubeManager.h"
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
@@ -8,28 +8,29 @@
 #include "GUIWidget/WidgetOCCEvent.h"
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "OperatorsInterface/TreeEventOperator.h"
-#include "GUIDialog/GUIGeometryDialog/CylinderInfoWidget.h"
+#include "OperatorsInterface/GraphInteractionOperator.h"
+#include "GUIDialog/GUIGeometryDialog/CudeInfoWidget.h"
 #include "GUIDialog/GUIGeometryDialog/GeometryDeleteDialog.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
-#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelCylinder.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelBox.h"
 
 namespace ModelOper
 {
-    OperatorsCylinderManager::OperatorsCylinderManager()
+    OperatorsGeoCubeManager::OperatorsGeoCubeManager()
     {
 
     }
 
-    OperatorsCylinderManager::~OperatorsCylinderManager()
+    OperatorsGeoCubeManager::~OperatorsGeoCubeManager()
     {
 
     }
 
-    bool OperatorsCylinderManager::execGUI()
+    bool OperatorsGeoCubeManager::execGUI()
     {
         QWidget* widget = nullptr;
         QDialog* dialog = nullptr;
@@ -44,13 +45,13 @@ namespace ModelOper
         int objID = -1;
         this->argValue("objID", objID);
 
-        switch (_operType) {
+        switch (_operType){
         case ModelOper::OperManagerBase::Create:
-            widget = new GUI::CylinderInfoWidget(this);
+            widget = new GUI::CudeInfoWidget(this);
             break;
         case ModelOper::OperManagerBase::Edit: {
-            Interface::FITKAbsGeoModelCylinder* obj = dynamic_cast<Interface::FITKAbsGeoModelCylinder*>(geometryData->getDataByID(objID));
-            widget = new GUI::CylinderInfoWidget(obj, this);
+            Interface::FITKAbsGeoModelBox* obj = dynamic_cast<Interface::FITKAbsGeoModelBox*>(geometryData->getDataByID(objID));
+            widget = new GUI::CudeInfoWidget(obj, this);
             break;
         }
         case ModelOper::OperManagerBase::Copy:
@@ -73,7 +74,7 @@ namespace ModelOper
         return false;
     }
 
-    bool OperatorsCylinderManager::execProfession()
+    bool OperatorsGeoCubeManager::execProfession()
     {
         // 获取模型树控制器
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
@@ -107,11 +108,10 @@ namespace ModelOper
         case ModelOper::OperManagerBase::Rename:
             break;
         }
-
         return true;
     }
 
-    void OperatorsCylinderManager::moveToStep(int index, QVariant value)
+    void OperatorsGeoCubeManager::moveToStep(int index, QVariant value)
     {
         //几何基点重选择事件
         if (index == 0) {
@@ -125,8 +125,8 @@ namespace ModelOper
             //拾取对象获取事件绑定
             GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
             if (pickD == nullptr) return;
-            connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectOriginPoint()));
-        }        
+            connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectBasePoint()));
+        }
         //面组选择
         else if (index == 1) {
             int objID = -1;
@@ -158,17 +158,16 @@ namespace ModelOper
         }
     }
 
-    void OperatorsCylinderManager::slotReselectOriginPoint()
+    void OperatorsGeoCubeManager::slotReselectBasePoint()
     {
         GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
         if (pickD == nullptr) return;
-        disconnect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectOriginPoint()));
+        disconnect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectBasePoint()));
 
         //拾取信息设置
         GUI::GUIPickInfoStru pinfo;
         pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJNone;
         pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMNone;
-        //保存参数
         GUI::GUIPickInfo::SetPickInfo(pinfo);
 
         QList<GraphData::PickedData*> pickData = pickD->getPickedList();
@@ -178,19 +177,24 @@ namespace ModelOper
         double point[3] = { 0,0,0 };
         GUI::WidgetOCCEvent::getPoint(pickData[0], point);
 
+        //界面获取
         GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
         if (mainWindow == nullptr)return;
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return;
-
-        GUI::CylinderInfoWidget* cudeWidget = dynamic_cast<GUI::CylinderInfoWidget*>(propertyWidget->getCurrentWidget());
+        GUI::CudeInfoWidget* cudeWidget = dynamic_cast<GUI::CudeInfoWidget*>(propertyWidget->getCurrentWidget());
         if (cudeWidget == nullptr)return;
-        cudeWidget->setOriginPoint(point);
+        cudeWidget->setBasicPoint(point);
 
         pickD->clearPickedData();
+
+        //刷新渲染窗口
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        graphOper->reRender();
     }
 
-    void OperatorsCylinderManager::slotSelectFaceGroup()
+    void OperatorsGeoCubeManager::slotSelectFaceGroup()
     {
         GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
         if (pickD == nullptr) return;
@@ -210,7 +214,7 @@ namespace ModelOper
         if (mainWindow == nullptr)return;
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return;
-        GUI::CylinderInfoWidget* cudeWidget = dynamic_cast<GUI::CylinderInfoWidget*>(propertyWidget->getCurrentWidget());
+        GUI::CudeInfoWidget* cudeWidget = dynamic_cast<GUI::CudeInfoWidget*>(propertyWidget->getCurrentWidget());
         if (cudeWidget == nullptr)return;
 
         int curRow = -1;

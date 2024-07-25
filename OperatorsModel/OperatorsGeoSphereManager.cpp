@@ -1,4 +1,4 @@
-﻿#include "OperatorsCubeManager.h"
+﻿#include "OperatorsGeoSphereManager.h"
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
@@ -8,29 +8,28 @@
 #include "GUIWidget/WidgetOCCEvent.h"
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "OperatorsInterface/TreeEventOperator.h"
-#include "OperatorsInterface/GraphInteractionOperator.h"
-#include "GUIDialog/GUIGeometryDialog/CudeInfoWidget.h"
+#include "GUIDialog/GUIGeometryDialog/SphereInfoWidget.h"
 #include "GUIDialog/GUIGeometryDialog/GeometryDeleteDialog.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
-#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelBox.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelSphere.h"
 
 namespace ModelOper
 {
-    OperatorsCubeManager::OperatorsCubeManager()
+    OperatorsGeoSphereManager::OperatorsGeoSphereManager()
     {
 
     }
 
-    OperatorsCubeManager::~OperatorsCubeManager()
+    OperatorsGeoSphereManager::~OperatorsGeoSphereManager()
     {
 
     }
 
-    bool OperatorsCubeManager::execGUI()
+    bool OperatorsGeoSphereManager::execGUI()
     {
         QWidget* widget = nullptr;
         QDialog* dialog = nullptr;
@@ -45,13 +44,13 @@ namespace ModelOper
         int objID = -1;
         this->argValue("objID", objID);
 
-        switch (_operType){
+        switch (_operType) {
         case ModelOper::OperManagerBase::Create:
-            widget = new GUI::CudeInfoWidget(this);
+            widget = new GUI::SphereInfoWidget(this);
             break;
         case ModelOper::OperManagerBase::Edit: {
-            Interface::FITKAbsGeoModelBox* obj = dynamic_cast<Interface::FITKAbsGeoModelBox*>(geometryData->getDataByID(objID));
-            widget = new GUI::CudeInfoWidget(obj, this);
+            Interface::FITKAbsGeoModelSphere* obj = dynamic_cast<Interface::FITKAbsGeoModelSphere*>(geometryData->getDataByID(objID));
+            widget = new GUI::SphereInfoWidget(obj, this);
             break;
         }
         case ModelOper::OperManagerBase::Copy:
@@ -74,7 +73,7 @@ namespace ModelOper
         return false;
     }
 
-    bool OperatorsCubeManager::execProfession()
+    bool OperatorsGeoSphereManager::execProfession()
     {
         // 获取模型树控制器
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
@@ -108,10 +107,11 @@ namespace ModelOper
         case ModelOper::OperManagerBase::Rename:
             break;
         }
+
         return true;
     }
 
-    void OperatorsCubeManager::moveToStep(int index, QVariant value)
+    void OperatorsGeoSphereManager::moveToStep(int index, QVariant value)
     {
         //几何基点重选择事件
         if (index == 0) {
@@ -125,49 +125,21 @@ namespace ModelOper
             //拾取对象获取事件绑定
             GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
             if (pickD == nullptr) return;
-            connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectBasePoint()));
-        }
-        //面组选择
-        else if (index == 1) {
-            int objID = -1;
-            int curRow = -1;
-            QList<int> faceIDs = {};
-            this->argValue("objID", objID);
-            this->argValue("curRow", curRow);
-            this->argValue("faceIDs", faceIDs);
-
-            //拾取对象获取事件绑定
-            GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
-            pickD->addDataManually(Interface::FITKModelEnum::FMSSurface, objID, faceIDs);
-            if (pickD == nullptr) return;
-
-            //拾取信息设置
-            GUI::GUIPickInfoStru pinfo;
-            pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJFace;
-            pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMIndividually;
-            //保存参数
-            GUI::GUIPickInfo::SetPickInfo(pinfo, objID);
-
-            EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-            if (graphOper == nullptr)return;
-            graphOper->reRender();
-        }
-        //选择面组结束事件
-        else if (index == 2) {
-            slotSelectFaceGroup();
+            connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectCurrentPoint()));
         }
     }
 
-    void OperatorsCubeManager::slotReselectBasePoint()
+    void OperatorsGeoSphereManager::slotReselectCurrentPoint()
     {
         GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
         if (pickD == nullptr) return;
-        disconnect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectBasePoint()));
+        disconnect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectCurrentPoint()));
 
         //拾取信息设置
         GUI::GUIPickInfoStru pinfo;
         pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJNone;
         pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMNone;
+        //保存参数
         GUI::GUIPickInfo::SetPickInfo(pinfo);
 
         QList<GraphData::PickedData*> pickData = pickD->getPickedList();
@@ -177,55 +149,15 @@ namespace ModelOper
         double point[3] = { 0,0,0 };
         GUI::WidgetOCCEvent::getPoint(pickData[0], point);
 
-        //界面获取
         GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
         if (mainWindow == nullptr)return;
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return;
-        GUI::CudeInfoWidget* cudeWidget = dynamic_cast<GUI::CudeInfoWidget*>(propertyWidget->getCurrentWidget());
+
+        GUI::SphereInfoWidget* cudeWidget = dynamic_cast<GUI::SphereInfoWidget*>(propertyWidget->getCurrentWidget());
         if (cudeWidget == nullptr)return;
-        cudeWidget->setBasicPoint(point);
+        cudeWidget->setCenterPoint(point);
 
         pickD->clearPickedData();
-
-        //刷新渲染窗口
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-        graphOper->reRender();
-    }
-
-    void OperatorsCubeManager::slotSelectFaceGroup()
-    {
-        GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
-        if (pickD == nullptr) return;
-
-        //拾取信息设置
-        GUI::GUIPickInfoStru pinfo;
-        pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJNone;
-        pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMNone;
-        GUI::GUIPickInfo::SetPickInfo(pinfo);
-
-        QList<GraphData::PickedData*> pickData = pickD->getPickedList();
-
-        QList<int> faceID = GUI::WidgetOCCEvent::getFaces(pickData);
-
-        //界面获取
-        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
-        if (mainWindow == nullptr)return;
-        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
-        if (propertyWidget == nullptr)return;
-        GUI::CudeInfoWidget* cudeWidget = dynamic_cast<GUI::CudeInfoWidget*>(propertyWidget->getCurrentWidget());
-        if (cudeWidget == nullptr)return;
-
-        int curRow = -1;
-        this->argValue("curRow", curRow);
-        cudeWidget->setFaceGroupValue(curRow, faceID);
-
-        pickD->clearPickedData();
-
-        //刷新渲染窗口
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-        graphOper->reRender();
     }
 }
