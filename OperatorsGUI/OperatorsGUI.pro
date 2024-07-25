@@ -36,6 +36,7 @@ win32{
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        -lFITKInterfaceMeshGen
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -57,6 +58,7 @@ win32{
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        -lFITKInterfaceMeshGen
 
     message("Windows OperatorsGUI generated")
 }
@@ -88,6 +90,7 @@ unix{
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        -lFITKInterfaceMeshGen
         
     message("Linux OperatorsGUI generated")
 }

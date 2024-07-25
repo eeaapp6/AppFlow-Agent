@@ -19,6 +19,7 @@
 // Data
 #include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFulidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSize.h"
 
 namespace GUIOper
 {
@@ -39,6 +40,7 @@ namespace GUIOper
         }
 
         // 获取或创建可视化对象。
+        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
         QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
         bool isValid = false;
 
@@ -46,11 +48,8 @@ namespace GUIOper
         Interface::FITKAbstractModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractModel>(dataObjId);
         if (model && !isValid)
         {
-            Exchange::FITKOCC2VTKGraphObject3D* obj = modelProvider->getModelGraphObject(dataObjId);
-            if (obj)
-            {
-                objs.push_back(obj);
-            }
+            obj = modelProvider->getModelGraphObject(dataObjId);
+            isValid = true;
         }
 
         // 检查数据ID是否为流体网格。
@@ -58,6 +57,20 @@ namespace GUIOper
         if (fluidMesh && !isValid)
         {
             objs = modelProvider->getFuildBoundMeshGraphObjects(dataObjId);
+            isValid = true;
+        }
+
+        // 检查数据ID是否为流体域形状数据。
+        Interface::FITKAbstractRegionMeshSize* regionMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractRegionMeshSize>(dataObjId);
+        if (regionMesh && !isValid)
+        {
+            obj = modelProvider->getRegionMeshGraphObject(dataObjId);
+            isValid = true;
+        }
+
+        if (obj)
+        {
+            objs.push_back(obj);
         }
 
         // 添加至三维窗口。
