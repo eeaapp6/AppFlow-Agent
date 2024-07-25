@@ -67,6 +67,11 @@ namespace GUI {
         _ui->lineEdit_CenterPoint3->setText(QString::number(point[2]));
     }
 
+    Interface::FITKAbsGeoCommand * SphereInfoWidget::getCurrentGeoCommand()
+    {
+        return _obj;
+    }
+
     void SphereInfoWidget::on_pushButton_CenterPoint_clicked()
     {
         if (_oper) {

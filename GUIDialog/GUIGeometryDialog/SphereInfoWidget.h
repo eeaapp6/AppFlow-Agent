@@ -10,6 +10,7 @@ namespace Ui {
 
 namespace Interface {
     class FITKAbsGeoModelSphere;
+    class FITKAbsGeoCommand;
 }
 
 namespace EventOper {
@@ -31,6 +32,8 @@ namespace GUI
         void init();
 
         void setCenterPoint(double* point);
+
+        Interface::FITKAbsGeoCommand* getCurrentGeoCommand();
     private slots:
         ;
         void on_pushButton_CenterPoint_clicked();

@@ -54,6 +54,7 @@ namespace GUI {
 
     CudeInfoWidget::~CudeInfoWidget()
     {
+        clearTableWidget();
         if (_ui)delete _ui;
     }
     
@@ -135,6 +136,11 @@ namespace GUI {
                 }
             }
         }
+    }
+
+    Interface::FITKAbsGeoCommand * CudeInfoWidget::getCurrentGeoCommand()
+    {
+        return _obj;
     }
 
     void CudeInfoWidget::on_pushButton_BasicPoint_clicked()
@@ -281,6 +287,11 @@ namespace GUI {
         clearGraphHight();
     }
 
+    void CudeInfoWidget::closeEvent(QCloseEvent * event)
+    {
+        clearGraphHight();
+    }
+
     bool CudeInfoWidget::checkValue()
     {
         return true;
@@ -414,5 +425,17 @@ namespace GUI {
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return;
         graphOper->reRender();
+    }
+
+    void CudeInfoWidget::clearTableWidget()
+    {
+        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+            QWidget* widget = _ui->tableWidget->cellWidget(i, 0);
+            if(widget == nullptr)continue;
+            delete widget;
+            widget = nullptr;
+        }
+
+        _ui->tableWidget->clear();
     }
 }

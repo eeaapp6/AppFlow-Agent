@@ -13,6 +13,7 @@ namespace Ui{
 namespace Interface {
     class FITKAbsGeoModelBox;
     class FITKAbstractGeoModel;
+    class FITKAbsGeoCommand;
 }
 
 namespace EventOper {
@@ -36,6 +37,8 @@ namespace GUI
         void setBasicPoint(double* point);
 
         void setFaceGroupValue(int rowIndex, QList<int> facesId);
+
+        Interface::FITKAbsGeoCommand* getCurrentGeoCommand();
     private slots:
         ;
         void on_pushButton_BasicPoint_clicked();
@@ -72,6 +75,12 @@ namespace GUI
          * @date 2024-07-16
          */
         void slotFaceWidgetDeleteClicked();
+        /**
+         * @brief 关闭事件重写
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void closeEvent(QCloseEvent *event);
     private:
         bool checkValue();
         void setDataToWidget();
@@ -92,6 +101,12 @@ namespace GUI
          * @date 2024-07-16
          */
         void clearGraphHight();
+        /**
+         * @brief 清除Table
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void clearTableWidget();
     private:
         bool _isCreate = false;
         Interface::FITKAbsGeoModelBox* _obj = nullptr;

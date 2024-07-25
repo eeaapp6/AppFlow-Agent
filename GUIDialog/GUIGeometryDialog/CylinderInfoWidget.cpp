@@ -50,6 +50,8 @@ namespace GUI {
 
     CylinderInfoWidget::~CylinderInfoWidget()
     {
+        clearTableWidget();
+
         if (_ui)delete _ui;
     }
 
@@ -131,6 +133,11 @@ namespace GUI {
                 }
             }
         }
+    }
+
+    Interface::FITKAbsGeoCommand * CylinderInfoWidget::getCurrentGeoCommand()
+    {
+        return _obj;
     }
 
     void CylinderInfoWidget::on_pushButton_OriginPoint_clicked()
@@ -277,6 +284,11 @@ namespace GUI {
         clearGraphHight();
     }
 
+    void CylinderInfoWidget::closeEvent(QCloseEvent * event)
+    {
+        clearGraphHight();
+    }
+
     bool CylinderInfoWidget::checkValue()
     {
         return true;
@@ -420,5 +432,17 @@ namespace GUI {
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return;
         graphOper->reRender();
+    }
+
+    void CylinderInfoWidget::clearTableWidget()
+    {
+        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+            QWidget* widget = _ui->tableWidget->cellWidget(i, 0);
+            if (widget == nullptr)continue;
+            delete widget;
+            widget = nullptr;
+        }
+
+        _ui->tableWidget->clear();
     }
 }
