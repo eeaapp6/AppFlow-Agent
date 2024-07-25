@@ -18,6 +18,7 @@
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelCylinder.h"
 
 #include <QMessageBox>
+#include <QtMath>
 
 #define CylNamePos Qt::UserRole
 #define CylFacePos Qt::UserRole+1
@@ -291,6 +292,25 @@ namespace GUI {
 
     bool CylinderInfoWidget::checkValue()
     {
+        auto outputMessage = [&](QString message) {
+            QMessageBox::critical(nullptr, tr("Error Information"), message);
+        };
+
+        double axisPoint1 = _ui->lineEdit_Axis1->text().toDouble();
+        double axisPoint2 = _ui->lineEdit_Axis2->text().toDouble();
+        double axisPoint3 = _ui->lineEdit_Axis3->text().toDouble();
+        if (axisPoint1 == 0 && axisPoint2 == 0 && axisPoint3 == 0) {
+            outputMessage(tr("AxisX = 0 , AxisY = 0 , AxisZ = 0"));
+            return false;
+        }
+        else
+        {
+            double mulRatio = qSqrt(axisPoint1*axisPoint1 + axisPoint2 * axisPoint2 + axisPoint3 * axisPoint3);
+            _ui->lineEdit_Axis1->setText(QString::number(axisPoint1 / mulRatio));
+            _ui->lineEdit_Axis2->setText(QString::number(axisPoint2 / mulRatio));
+            _ui->lineEdit_Axis3->setText(QString::number(axisPoint3 / mulRatio));
+        }
+
         return true;
     }
 
