@@ -27,8 +27,10 @@ namespace ModelOper
 
     bool OperatorsMeshManager::execGUI()
     {
+
         // 工作路径
         QString path = QApplication::applicationDirPath() + "/../WorkDir";
+#ifndef Q_OS_WIN
         Core::CreateDir(path);
         // 写出字典文件
         IO::FITKOFBlockMeshDictWriter meshDickWri;
@@ -46,11 +48,11 @@ namespace ModelOper
         proGramManager->startProgram(1, "FITKOFBlockMeshDriver", info);
         // 调用snappyHexMeshDriver
         //proGramManager->startProgram(1, "FITKOFSnappyHexMeshDriver", info);
-
+#endif
         // 读取网格
         Interface::FITKUnstructuredFluidMeshVTK* mesh = new Interface::FITKUnstructuredFluidMeshVTK;
         IO::FITKOpenFOAMMeshReader openFOAMMeshReader;
-        openFOAMMeshReader.setFileName(path);
+        openFOAMMeshReader.setFileName(path + "/constant/polyMesh/");
         openFOAMMeshReader.setDataObject(mesh);
         openFOAMMeshReader.run();
         // 渲染网格
