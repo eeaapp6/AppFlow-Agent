@@ -17,6 +17,7 @@
 // Data
 #include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFulidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSize.h"
 
 // Graph widget
 #include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
@@ -34,6 +35,7 @@ namespace GraphData
         // 析构三维可视化对象。
         deleteObjsHash(m_modelObjHash);
         deleteObjsHash(m_boundMeshObjHash);
+        deleteObjsHash(m_regionMeshObjHash); 
     }
 
     QString GraphModelProvider::getClassName()
@@ -51,6 +53,9 @@ namespace GraphData
 
         // 边界网格可视化对象。
         objs << m_boundMeshObjHash.values();
+
+        // 流体域形状可视化对象。
+        objs << m_regionMeshObjHash.values();
 
         return objs;
     }
@@ -130,6 +135,24 @@ namespace GraphData
         }
 
         return objs;
+    }
+
+    Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getRegionMeshGraphObject(int dataObjId)
+    {
+        // 流体域形状可视化对象。
+        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+
+        // 检查数据ID。
+        Interface::FITKAbstractRegionMeshSize* regionMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractRegionMeshSize>(dataObjId);
+        if (!regionMesh)
+        {
+            return obj;
+        }
+
+        // 形状可视化对象。
+        obj = getGraphObject("RegionMeshPreview", m_regionMeshObjHash, regionMesh);
+
+        return obj;
     }
 
     Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getCurrentGraphObjByDataId(int dataObjId)
