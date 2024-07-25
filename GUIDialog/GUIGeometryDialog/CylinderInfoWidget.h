@@ -35,7 +35,7 @@ namespace GUI
 
         void setOriginPoint(double* point);
 
-        void setFaceGroupValue(int rowIndex, int faceId);
+        void setFaceGroupValue(int rowIndex, QList<int> facesId);
     private slots:
         ;
         void on_pushButton_OriginPoint_clicked();
@@ -53,19 +53,45 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-07-16
          */
-        void itemTableClickedSlot(QTableWidgetItem* item);
+        void slotCellTableClicked(int row, int column);
         /**
-         * @brief 表格双击事件
-         * @param[i]  item           表格对象
+         * @brief 面组界面ok点击事件
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-07-16
          */
-        void itemTableDoubleClickedSlot(QTableWidgetItem* item);
+        void slotFaceWidgetOkClicked();
+        /**
+         * @brief 面组界面cancel点击事件
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void slotFaceWidgetCancelClicked();
+        /**
+         * @brief 面组界面delete点击事件
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void slotFaceWidgetDeleteClicked();
     private:
         bool checkValue();
         void setDataToWidget();
         void getDataFormWidget();
         void initTableWidget();
+
+        void setAllFaceGroupSelect(bool type);
+        /**
+         * @brief 刷新面组界面记录的位置
+         * （为解决点击界面控件时，QTableWidget未触发不知道当前界面所在的位置问题）
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void updateFaceWidgetCurrentPos();
+        /**
+         * @brief 清除所有高亮
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void clearGraphHight();
     private:
         bool _isCreate = false;
         Interface::FITKAbsGeoModelCylinder* _obj = nullptr;

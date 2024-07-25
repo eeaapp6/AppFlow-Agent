@@ -312,22 +312,25 @@ namespace GUI {
             QList<int> ids = geoCom->getMember();
             QString name = geoCom->getDataObjectName();
 
-            QTableWidgetItem* item = new QTableWidgetItem();
+            FaceGroupWidget* item = new FaceGroupWidget(_ui->tableWidget);
             item->setData(CudeNamePos, name);
             item->setData(CudeFacePos, QVariant::fromValue(ids));
-            _ui->tableWidget->setItem(i, 0, item);
+            _ui->tableWidget->setCellWidget(i, 0, item);
             if (ids.size() == 0) {
                 name += tr("(empty)");
             }
             else {
                 name += tr("(%1 faces)").arg(ids.size());
             }
-            item->setText(name);
+            item->setName(name);
+            item->setCurrentPos(i, 0);
 
-            item = new QTableWidgetItem();
-            item->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
-            _ui->tableWidget->setItem(i, 1, item);
+            connect(item, SIGNAL(sigOkClicked()), this, SLOT(slotFaceWidgetOkClicked()));
+            connect(item, SIGNAL(sigCancelClicked()), this, SLOT(slotFaceWidgetCancelClicked()));
+            connect(item, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
         }
+
+        updateFaceWidgetCurrentPos();
     }
 
     void CudeInfoWidget::getDataFormWidget()
@@ -352,7 +355,7 @@ namespace GUI {
         if (commanger == nullptr)return;
         commanger->clear();
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            QTableWidgetItem* item = _ui->tableWidget->item(i, 0);
+            FaceGroupWidget* item = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
             if (item == nullptr)return;
             QList<int> ids = item->data(CudeFacePos).value<QList<int>>();
             QString name = item->data(CudeNamePos).toString();
