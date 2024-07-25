@@ -31,6 +31,9 @@ win32{
         -lGUIGeometryDialog \
         -lGUIMeshDialog \
         -lFITKOFDriver \
+        -lFITKInterfaceIO \
+        -lFITKInterfaceMesh \
+        -lFITKOFMeshIO \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -49,6 +52,9 @@ win32{
         -lGUIGeometryDialog \
         -lGUIMeshDialog \
         -lFITKOFDriver \
+        -lFITKInterfaceIO \
+        -lFITKInterfaceMesh \
+        -lFITKOFMeshIO \
 
     message("Windows OperatorsModel generated")
 }
@@ -77,6 +83,9 @@ unix{
         -lGUIGeometryDialog \
         -lGUIMeshDialog \
         -lFITKOFDriver \
+        -lFITKInterfaceIO \
+        -lFITKInterfaceMesh \
+        -lFITKOFMeshIO \
         
     message("Linux OperatorsModel generated")
 }

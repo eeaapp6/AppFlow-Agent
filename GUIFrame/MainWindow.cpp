@@ -289,8 +289,6 @@ namespace GUI
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
         action = createAction(tr("Config B"), "actionConfigBMesh", ":/icons/displayedge.png", tr("Config B"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
-        action = createAction(tr("Calculate"), "actionMeshCalc", ":/icons/displayedge.png", tr("Calculate"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
         action = createAction(tr("Statistics"), "actionMeshStat", ":/icons/displayedge.png", tr("Statistics"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
