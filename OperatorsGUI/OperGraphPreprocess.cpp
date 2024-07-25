@@ -16,7 +16,9 @@
 #include "GraphDataProvider/GraphProviderManager.h"
 #include "GraphDataProvider/GraphModelProvider.h"
 
-// GUI
+// Data
+#include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFulidMeshVTK.h"
 
 namespace GUIOper
 {
@@ -37,16 +39,39 @@ namespace GUIOper
         }
 
         // 获取或创建可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj = modelProvider->getModelGraphObject(dataObjId);
-        if (!obj)
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
+        bool isValid = false;
+
+        // 检查数据ID是否为模型。
+        Interface::FITKAbstractModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractModel>(dataObjId);
+        if (model && !isValid)
         {
-            return;
+            Exchange::FITKOCC2VTKGraphObject3D* obj = modelProvider->getModelGraphObject(dataObjId);
+            if (obj)
+            {
+                objs.push_back(obj);
+            }
         }
 
-        obj->update(forceUpdate);
+        // 检查数据ID是否为流体网格。
+        Interface::FITKUnstructuredFluidMeshVTK* fluidMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKUnstructuredFluidMeshVTK>(dataObjId);
+        if (fluidMesh && !isValid)
+        {
+            objs = modelProvider->getFuildBoundMeshGraphObjects(dataObjId);
+        }
 
         // 添加至三维窗口。
-        addGraphObjectToWidget(obj, graphWidget, false);
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        {
+            if (!obj)
+            {
+                continue;
+            }
+
+            obj->update(forceUpdate);
+
+            addGraphObjectToWidget(obj, graphWidget, false);
+        }
     }
 
     Exchange::FITKOCC2VTKGraphObject3D* OperGraphPreprocess::getModelGraphObjectByDataId(int dataObjId)
