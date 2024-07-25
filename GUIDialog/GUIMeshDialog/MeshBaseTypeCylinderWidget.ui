@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>371</width>
-    <height>514</height>
+    <width>390</width>
+    <height>551</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,21 +28,21 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="lineEdit_AxisPoint1">
+       <widget class="QLineEdit" name="lineEdit_OriginPoint1">
         <property name="text">
          <string>0</string>
         </property>
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QLineEdit" name="lineEdit_AxisPoint2">
+       <widget class="QLineEdit" name="lineEdit_OriginPoint2">
         <property name="text">
          <string>0</string>
         </property>
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QLineEdit" name="lineEdit_AxisPoint3">
+       <widget class="QLineEdit" name="lineEdit_OriginPoint3">
         <property name="text">
          <string>0</string>
         </property>
@@ -56,21 +56,21 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="lineEdit_OriginPoint1">
+       <widget class="QLineEdit" name="lineEdit_AxisPoint1">
         <property name="text">
          <string>0</string>
         </property>
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QLineEdit" name="lineEdit_OriginPoint2">
+       <widget class="QLineEdit" name="lineEdit_AxisPoint2">
         <property name="text">
          <string>0</string>
         </property>
        </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QLineEdit" name="lineEdit_OriginPoint3">
+       <widget class="QLineEdit" name="lineEdit_AxisPoint3">
         <property name="text">
          <string>1</string>
         </property>

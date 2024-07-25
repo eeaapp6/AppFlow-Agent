@@ -9,6 +9,9 @@
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSizeCylinder.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSizeSphere.h"
 
+#include <QMessageBox>
+#include <QtMath>
+
 namespace GUI
 {
     MeshBaseTypeCylinderWidget::MeshBaseTypeCylinderWidget()
@@ -44,6 +47,24 @@ namespace GUI
 
     bool MeshBaseTypeCylinderWidget::checkValue()
     {
+        auto outputMessage = [&](QString message) {
+            QMessageBox::critical(nullptr, tr("Error Information"), message);
+        };
+
+        double axisPoint1 = _ui->lineEdit_AxisPoint1->text().toDouble();
+        double axisPoint2 = _ui->lineEdit_AxisPoint2->text().toDouble();
+        double axisPoint3 = _ui->lineEdit_AxisPoint3->text().toDouble();
+        if (axisPoint1 == 0 && axisPoint2 == 0 && axisPoint3 == 0) {
+            outputMessage(tr("AxisX = 0 , AxisY = 0 , AxisZ = 0"));
+            return false;
+        }
+        else
+        {
+            double mulRatio = qSqrt(axisPoint1*axisPoint1 + axisPoint2 * axisPoint2 + axisPoint3 * axisPoint3);
+            _ui->lineEdit_AxisPoint1->setText(QString::number(axisPoint1 / mulRatio));
+            _ui->lineEdit_AxisPoint2->setText(QString::number(axisPoint2 / mulRatio));
+            _ui->lineEdit_AxisPoint3->setText(QString::number(axisPoint3 / mulRatio));
+        }
         return true;
     }
 
