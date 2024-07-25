@@ -243,17 +243,17 @@ namespace GUI
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         pannel = gategory->addPannel(tr("3D model"));
-        action = createAction(tr("Create Cube"), "actionCreateCube", "", tr("Create Cube"));
+        action = createAction(tr("Create Cube"), "actionGeoCubeCreate", "", tr("Create Cube"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Sphere"), "actionCreateSphere", "", tr("Create Sphere"));
+        action = createAction(tr("Create Sphere"), "actionGeoSphereCreate", "", tr("Create Sphere"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Cone"), "actionCreateCone", "", tr("Create Cone"));
+        action = createAction(tr("Create Cone"), "actionGeoConeCreate", "", tr("Create Cone"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Cirque"), "actionCreateCirque", "", tr("Create Cirque"));
+        action = createAction(tr("Create Cirque"), "actionGeoCirqueCreate", "", tr("Create Cirque"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Cylinder"), "actionCreateCylinder", "", tr("Create Cylinder"));
+        action = createAction(tr("Create Cylinder"), "actionGeoCylinderCreate", "", tr("Create Cylinder"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Spiral"), "actionCreateSpiral", "", tr("Create Spiral"));
+        action = createAction(tr("Create Spiral"), "actionGeoSpiralCreate", "", tr("Create Spiral"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
     }
 

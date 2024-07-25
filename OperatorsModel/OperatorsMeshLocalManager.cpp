@@ -1,4 +1,4 @@
-﻿#include "OperatorsLocalManager.h"
+﻿#include "OperatorsMeshLocalManager.h"
 
 #include "GUIFrame/PropertyWidget.h"
 #include "GUIDialog/GUIMeshDialog/LocalSelectGroupWidget.h"
@@ -16,17 +16,17 @@
 
 namespace ModelOper 
 {
-    OperatorsLocalManager::OperatorsLocalManager()
+    OperatorsMeshLocalManager::OperatorsMeshLocalManager()
     {
 
     }
 
-    OperatorsLocalManager::~OperatorsLocalManager()
+    OperatorsMeshLocalManager::~OperatorsMeshLocalManager()
     {
 
     }
 
-    bool OperatorsLocalManager::execGUI()
+    bool OperatorsMeshLocalManager::execGUI()
     {
         QWidget* widget = nullptr;
         QDialog* dialog = nullptr;
@@ -68,7 +68,7 @@ namespace ModelOper
         return true;
     }
 
-    bool OperatorsLocalManager::execProfession()
+    bool OperatorsMeshLocalManager::execProfession()
     {
         // 获取模型树控制器
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
@@ -99,7 +99,7 @@ namespace ModelOper
         return true;
     }
 
-    void OperatorsLocalManager::moveToStep(int index, QVariant value)
+    void OperatorsMeshLocalManager::moveToStep(int index, QVariant value)
     {
 
     }

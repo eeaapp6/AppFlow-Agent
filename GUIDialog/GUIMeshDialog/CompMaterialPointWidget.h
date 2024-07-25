@@ -1,40 +1,35 @@
-﻿#ifndef FaceGroupWidget_H
-#define FaceGroupWidget_H
+﻿#ifndef CompMaterialPointWidget_H
+#define CompMaterialPointWidget_H
 
 #include <QWidget>
 
 namespace Ui {
-    class FaceGroupWidget;
+    class CompMaterialPointWidget;
 }
 
 namespace GUI
 {
-    class FaceGroupWidget :public QWidget
+    class CompMaterialPointWidget :public QWidget
     {
         Q_OBJECT;
     public:
-        FaceGroupWidget(QWidget* parent);
-        ~FaceGroupWidget();
+        CompMaterialPointWidget(QWidget* parent);
+        ~CompMaterialPointWidget();
 
         void init();
-
         void setName(QString name);
         QString getName();
 
         void setData(int pos, QVariant value);
         QVariant data(int pos);
-
-        void setSelect(bool type);
-
         void setCurrentPos(int row, int clo);
         QPair<int, int> getCurrentPos();
     signals:
         ;
-        void sigOkClicked();
-        void sigCancelClicked();
         void sigDeleteClicked();
+
     private:
-        Ui::FaceGroupWidget* _ui = nullptr;
+        Ui::CompMaterialPointWidget* _ui = nullptr;
         QHash<int, QVariant> _data;
         QPair<int, int> _currentPos;
     };

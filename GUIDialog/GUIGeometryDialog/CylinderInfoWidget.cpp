@@ -1,6 +1,6 @@
 ﻿#include "CylinderInfoWidget.h"
 #include "ui_CylinderInfoWidget.h"
-#include "FaceGroupWidget.h"
+#include "CompFaceGroupWidget.h"
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
@@ -39,9 +39,7 @@ namespace GUI {
         Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(false), _obj(obj), _oper(oper)
     {
-        Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
-        if (geometryData == nullptr) return;
-        _geoModel = geometryData->getDataByID(_obj->getDataObjectID());
+        _geoModel = dynamic_cast<Interface::FITKAbstractGeoModel*>(_obj);
 
         init();
 
@@ -95,7 +93,7 @@ namespace GUI {
         for (int faceId : facesId) {
             //当前id处理
             {
-                FaceGroupWidget* item = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(rowIndex, 0));
+                CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(rowIndex, 0));
                 if (item == nullptr)return;
                 QList<int> ids = item->data(CylFacePos).value<QList<int>>();
 
@@ -114,7 +112,7 @@ namespace GUI {
             {
                 for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
                     if (i == rowIndex)continue;
-                    FaceGroupWidget* item = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+                    CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
                     if (item == nullptr)return;
                     QList<int> ids = item->data(CylFacePos).value<QList<int>>();
                     //如果已经包含该id不在添加
@@ -187,9 +185,7 @@ namespace GUI {
             _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
             _ui->lineEdit_Name->setEnabled(false);
             _isCreate = false;
-            Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
-            if (geometryData == nullptr) return;
-            _geoModel = geometryData->getDataByID(_obj->getDataObjectID());
+            _geoModel = dynamic_cast<Interface::FITKAbstractGeoModel*>(_obj);
         }
         else {
             if (_obj == nullptr)return;
@@ -218,7 +214,7 @@ namespace GUI {
         QString name = group + tr("(empty)");
         QList<int> faceList = {};
 
-        FaceGroupWidget* widget = new FaceGroupWidget(_ui->tableWidget);
+        CompFaceGroupWidget* widget = new CompFaceGroupWidget(_ui->tableWidget);
         widget->setName(name);
         widget->setData(CylNamePos, group);
         widget->setData(CylFacePos, QVariant::fromValue(faceList));
@@ -235,7 +231,7 @@ namespace GUI {
     {
         if (!_geoModel)return;
 
-        FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(row, column));
+        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(row, column));
         if (widget == nullptr)return;
 
         if (_oper) {
@@ -253,7 +249,7 @@ namespace GUI {
 
     void CylinderInfoWidget::slotFaceWidgetOkClicked()
     {
-        FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(sender());
+        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
         if (widget == nullptr) return;
         //执行选择结束事件
         if (_oper) {
@@ -266,7 +262,7 @@ namespace GUI {
     void CylinderInfoWidget::slotFaceWidgetCancelClicked()
     {
         int currentRow = _ui->tableWidget->currentRow();
-        FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(currentRow, 0));
+        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(currentRow, 0));
         if (widget == nullptr) return;
 
         widget->setSelect(false);
@@ -276,7 +272,7 @@ namespace GUI {
 
     void CylinderInfoWidget::slotFaceWidgetDeleteClicked()
     {
-        FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(sender());
+        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
         if (widget == nullptr) return;
         _ui->tableWidget->removeRow(widget->getCurrentPos().first);
         //更新界面中存储的位置
@@ -345,7 +341,7 @@ namespace GUI {
             QList<int> ids = geoCom->getMember();
             QString name = geoCom->getDataObjectName();
 
-            FaceGroupWidget* item = new FaceGroupWidget(_ui->tableWidget);
+            CompFaceGroupWidget* item = new CompFaceGroupWidget(_ui->tableWidget);
             item->setData(CylNamePos, name);
             item->setData(CylFacePos, QVariant::fromValue(ids));
             _ui->tableWidget->setCellWidget(i, 0, item);
@@ -393,7 +389,7 @@ namespace GUI {
         commanger->clear();
 
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            FaceGroupWidget* item = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
             if (item == nullptr)return;
             QList<int> ids = item->data(CylFacePos).value<QList<int>>();
             QString name = item->data(CylNamePos).toString();
@@ -421,7 +417,7 @@ namespace GUI {
     void CylinderInfoWidget::setAllFaceGroupSelect(bool type)
     {
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
             if (widget == nullptr)return;
             widget->setSelect(false);
         }
@@ -430,7 +426,7 @@ namespace GUI {
     void CylinderInfoWidget::updateFaceWidgetCurrentPos()
     {
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
             if (widget == nullptr)return;
             widget->setCurrentPos(i, 0);
         }

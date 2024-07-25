@@ -25,10 +25,10 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionCreateCube, OperatorsCubeManager);
-    Register2FITKOPeratorRepo(actionEditCube, OperatorsCubeManager);
-    Register2FITKOPeratorRepo(actionDeleteCube, OperatorsCubeManager);
-    Register2FITKOPeratorRepo(actionRenameCube, OperatorsCubeManager);
+    Register2FITKOPeratorRepo(actionGeoCubeCreate, OperatorsCubeManager);
+    Register2FITKOPeratorRepo(actionGeoCubeEdit, OperatorsCubeManager);
+    Register2FITKOPeratorRepo(actionGeoCubeDelete, OperatorsCubeManager);
+    Register2FITKOPeratorRepo(actionGeoCubeRename, OperatorsCubeManager);
 }
 
 #endif

@@ -1,0 +1,62 @@
+﻿#include "CompMaterialPointWidget.h"
+#include "ui_CompMaterialPointWidget.h"
+
+#include <QApplication>
+#include <QStyle>
+
+namespace GUI
+{
+    CompMaterialPointWidget::CompMaterialPointWidget(QWidget * parent):
+        QWidget(parent)
+    {
+        _ui = new Ui::CompMaterialPointWidget();
+        _ui->setupUi(this);
+        init();
+        connect(_ui->pushButton_Delete, SIGNAL(clicked()), this, SIGNAL(sigDeleteClicked()));
+    }
+
+    CompMaterialPointWidget::~CompMaterialPointWidget()
+    {
+        if (_ui)delete _ui;
+    }
+
+    void CompMaterialPointWidget::init()
+    {
+        _currentPos.first = -1;
+        _currentPos.second = -1;
+
+        _ui->pushButton_Delete->setStyleSheet("background: transparent;");
+        _ui->pushButton_Delete->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+    }
+    void CompMaterialPointWidget::setName(QString name)
+    {
+        _ui->label_Name->setText(name);
+    }
+
+    QString CompMaterialPointWidget::getName()
+    {
+        return _ui->label_Name->text();
+    }
+
+    void CompMaterialPointWidget::setData(int pos, QVariant value)
+    {
+        _data.insert(pos, value);
+    }
+
+    QVariant CompMaterialPointWidget::data(int pos)
+    {
+        return _data.key(pos);
+    }
+
+    void CompMaterialPointWidget::setCurrentPos(int row, int clo)
+    {
+        _currentPos.first = row;
+        _currentPos.second = clo;
+    }
+
+    QPair<int, int> CompMaterialPointWidget::getCurrentPos()
+    {
+        return _currentPos;
+    }
+}
+

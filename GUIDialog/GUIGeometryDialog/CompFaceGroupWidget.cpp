@@ -1,15 +1,15 @@
-﻿#include "FaceGroupWidget.h"
-#include "ui_FaceGroupWidget.h"
+﻿#include "CompFaceGroupWidget.h"
+#include "ui_CompFaceGroupWidget.h"
 
 #include <QApplication>
 #include <QStyle>
 
 namespace GUI
 {
-    GUI::FaceGroupWidget::FaceGroupWidget(QWidget * parent):
+    GUI::CompFaceGroupWidget::CompFaceGroupWidget(QWidget * parent):
         QWidget(parent)
     {
-        _ui = new Ui::FaceGroupWidget();
+        _ui = new Ui::CompFaceGroupWidget();
         _ui->setupUi(this);
 
         init();
@@ -19,13 +19,13 @@ namespace GUI
         connect(_ui->pushButton_Delete, SIGNAL(clicked()), this, SIGNAL(sigDeleteClicked()));
     }
 
-    GUI::FaceGroupWidget::~FaceGroupWidget()
+    GUI::CompFaceGroupWidget::~CompFaceGroupWidget()
     {
         if (_ui)delete _ui;
         _data.clear();
     }
 
-    void FaceGroupWidget::init()
+    void CompFaceGroupWidget::init()
     {
         _currentPos.first = -1;
         _currentPos.second = -1;
@@ -42,26 +42,26 @@ namespace GUI
         _ui->pushButton_Delete->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
     }
 
-    void FaceGroupWidget::setName(QString name)
+    void CompFaceGroupWidget::setName(QString name)
     {
         _ui->label->setText(name);
     }
 
-    QString FaceGroupWidget::getName()
+    QString CompFaceGroupWidget::getName()
     {
         return _ui->label->text();
     }
 
-    void FaceGroupWidget::setData(int pos, QVariant value)
+    void CompFaceGroupWidget::setData(int pos, QVariant value)
     {
         _data.insert(pos, value);
     }
 
-    QVariant FaceGroupWidget::data(int pos)
+    QVariant CompFaceGroupWidget::data(int pos)
     {
         return _data.value(pos);
     }
-    void FaceGroupWidget::setSelect(bool type)
+    void CompFaceGroupWidget::setSelect(bool type)
     {
         if (type) {
             _ui->pushButton_OK->show();
@@ -73,12 +73,12 @@ namespace GUI
             _ui->pushButton_Cancel->hide();
         }
     }
-    void FaceGroupWidget::setCurrentPos(int row, int clo)
+    void CompFaceGroupWidget::setCurrentPos(int row, int clo)
     {
         _currentPos.first = row;
         _currentPos.second = clo;
     }
-    QPair<int, int> FaceGroupWidget::getCurrentPos()
+    QPair<int, int> CompFaceGroupWidget::getCurrentPos()
     {
         return _currentPos;
     }

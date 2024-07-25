@@ -103,6 +103,7 @@ namespace ModelOper
         case ModelOper::OperManagerBase::Delete:
             graphOper->updateGraph(objID);
             treeOper->updateTree();
+            graphOper->reRender();
             break;
         case ModelOper::OperManagerBase::Rename:
             break;

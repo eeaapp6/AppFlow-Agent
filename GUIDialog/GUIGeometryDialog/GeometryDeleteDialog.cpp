@@ -50,7 +50,7 @@ namespace GUI
         switch (type){
         case Interface::FITKGeoEnum::FGTBox: {
             GUI::CudeInfoWidget* cudeWidget = dynamic_cast<GUI::CudeInfoWidget*>(propertyWidget->getCurrentWidget());
-            if (cudeWidget == nullptr)return;
+            if (cudeWidget == nullptr)break;
             if (cudeWidget->getCurrentGeoCommand()) {
                 objID = cudeWidget->getCurrentGeoCommand()->getDataObjectID();
                 widget = cudeWidget;
@@ -59,7 +59,7 @@ namespace GUI
         }
         case Interface::FITKGeoEnum::FGTCylinder: {
             GUI::CylinderInfoWidget* cudeWidget = dynamic_cast<GUI::CylinderInfoWidget*>(propertyWidget->getCurrentWidget());
-            if (cudeWidget == nullptr)return;
+            if (cudeWidget == nullptr)break;
             if (cudeWidget->getCurrentGeoCommand()) {
                 objID = cudeWidget->getCurrentGeoCommand()->getDataObjectID();
                 widget = cudeWidget;
@@ -68,7 +68,7 @@ namespace GUI
         }
         case Interface::FITKGeoEnum::FGTSphere: {
             GUI::SphereInfoWidget* cudeWidget = dynamic_cast<GUI::SphereInfoWidget*>(propertyWidget->getCurrentWidget());
-            if (cudeWidget == nullptr)return;
+            if (cudeWidget == nullptr)break;
             if (cudeWidget->getCurrentGeoCommand()) {
                 objID = cudeWidget->getCurrentGeoCommand()->getDataObjectID();
                 widget = cudeWidget;

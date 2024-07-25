@@ -26,10 +26,10 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionCreateCylinder, OperatorsCylinderManager);
-    Register2FITKOPeratorRepo(actionEditCylinder, OperatorsCylinderManager);
-    Register2FITKOPeratorRepo(actionDeleteCylinder, OperatorsCylinderManager);
-    Register2FITKOPeratorRepo(actionRenameCylinder, OperatorsCylinderManager);
+    Register2FITKOPeratorRepo(actionGeoCylinderCreate, OperatorsCylinderManager);
+    Register2FITKOPeratorRepo(actionGeoCylinderEdit, OperatorsCylinderManager);
+    Register2FITKOPeratorRepo(actionGeoCylinderDelete, OperatorsCylinderManager);
+    Register2FITKOPeratorRepo(actionGeoCylinderRename, OperatorsCylinderManager);
 }
 
 #endif

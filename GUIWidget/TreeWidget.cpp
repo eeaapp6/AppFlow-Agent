@@ -68,13 +68,14 @@ namespace GUI{
 
         switch (treeType) {
         case GUI::MainTreeEnum::MainTree_Geomety: break;
-        case GUI::MainTreeEnum::MainTree_GeometyBoxItem:name = "actionEditCube"; break;
-        case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:name = "actionEditCylinder"; break;
-        case GUI::MainTreeEnum::MainTree_GeometySphereItem:name = "actionEditSphere"; break;
+        case GUI::MainTreeEnum::MainTree_GeometyBoxItem:name = "actionGeoCubeEdit"; break;
+        case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:name = "actionGeoCylinderEdit"; break;
+        case GUI::MainTreeEnum::MainTree_GeometySphereItem:name = "actionGeoSphereEdit"; break;
         case GUI::MainTreeEnum::MainTree_Mesh: break;
-        case GUI::MainTreeEnum::MainTree_MeshBase: name = "actionEditBase"; break;
-        case GUI::MainTreeEnum::MainTree_MeshLocal: name = "actionLocalSelectGroup"; break;
-        case GUI::MainTreeEnum::MainTree_MeshLocalItem:name = "actionLocalEdit"; break;
+        case GUI::MainTreeEnum::MainTree_MeshBase: name = "actionMeshBaseEdit"; break;
+        case GUI::MainTreeEnum::MainTree_MeshLocal: name = "actionMeshLocalSelectGroup"; break;
+        case GUI::MainTreeEnum::MainTree_MeshLocalItem:name = "actionMeshLocalEdit"; break;
+        case GUI::MainTreeEnum::MainTree_MeshPoint:name = "actionMeshPointEdit"; break;
         }
 
         if (!name.isEmpty()) {
@@ -115,17 +116,17 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_Geomety: break;
         case GUI::MainTreeEnum::MainTree_GeometyBoxItem: {
             //addMenuActions(menu, "actionRenameCube", "Cube rename"); 
-            addMenuActions(menu, "actionDeleteCube", "Cude delete"); 
+            addMenuActions(menu, "actionGeoCubeDelete", "Cude delete"); 
             break; 
         }
         case GUI::MainTreeEnum::MainTree_GeometyCylinderItem: {
             //addMenuActions(menu, "actionRenameCylinder", "Cylinder rename");
-            addMenuActions(menu, "actionDeleteCylinder", "Cylinder delete");
+            addMenuActions(menu, "actionGeoCylinderDelete", "Cylinder delete");
             break;
         }
         case GUI::MainTreeEnum::MainTree_GeometySphereItem: {
             //addMenuActions(menu, "actionRenameSphere", "Sphere rename");
-            addMenuActions(menu, "actionDeleteSphere", "Sphere delete");
+            addMenuActions(menu, "actionGeoSphereDelete", "Sphere delete");
             break;
         }
         case GUI::MainTreeEnum::MainTree_Mesh: break;
@@ -134,7 +135,7 @@ namespace GUI{
             break;
         }
         case GUI::MainTreeEnum::MainTree_MeshLocalItem: {
-            addMenuActions(menu, "actionLocalDelete", "Delete face group");
+            addMenuActions(menu, "actionMeshLocalDelete", "Delete face group");
             break;
         }
         }

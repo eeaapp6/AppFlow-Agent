@@ -6,6 +6,8 @@ HEADERS += \
     $$PWD/MeshBaseTypeCylinderWidget.h \
     $$PWD/LocalSelectGroupWidget.h \
     $$PWD/LocalGroupInfoWidget.h \
+    $$PWD/MaterialPointWidget.h \
+    $$PWD/CompMaterialPointWidget.h \
 
 SOURCES += \
     $$PWD/MeshBaseWidget.cpp \
@@ -14,6 +16,8 @@ SOURCES += \
     $$PWD/MeshBaseTypeCylinderWidget.cpp \
     $$PWD/LocalSelectGroupWidget.cpp \
     $$PWD/LocalGroupInfoWidget.cpp \
+    $$PWD/MaterialPointWidget.cpp \
+    $$PWD/CompMaterialPointWidget.cpp \
 
 FORMS += \
     $$PWD/MeshBaseWidget.ui \
@@ -21,5 +25,7 @@ FORMS += \
     $$PWD/MeshBaseTypeCylinderWidget.ui \
     $$PWD/LocalSelectGroupWidget.ui \
     $$PWD/LocalGroupInfoWidget.ui \
+    $$PWD/MaterialPointWidget.ui \
+    $$PWD/CompMaterialPointWidget.ui \
  
  

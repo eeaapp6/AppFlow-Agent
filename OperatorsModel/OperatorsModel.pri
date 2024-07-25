@@ -7,7 +7,8 @@ HEADERS += \
     $$PWD/OperatorsSphereManager.h \
     $$PWD/OperatorsMeshBaseManager.h \
     $$PWD/OperatorsMeshManager.h \
-    $$PWD/OperatorsLocalManager.h \
+    $$PWD/OperatorsMeshLocalManager.h \
+    $$PWD/OperatorsMeshPointManager.h \
 
 
 SOURCES += \
@@ -18,6 +19,7 @@ SOURCES += \
     $$PWD/OperatorsSphereManager.cpp \
     $$PWD/OperatorsMeshBaseManager.cpp \
     $$PWD/OperatorsMeshManager.cpp \
-    $$PWD/OperatorsLocalManager.cpp \
+    $$PWD/OperatorsMeshLocalManager.cpp \
+    $$PWD/OperatorsMeshPointManager.cpp \
 
 FORMS += \
