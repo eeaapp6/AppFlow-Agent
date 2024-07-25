@@ -1,12 +1,18 @@
 ﻿#include "CylinderInfoWidget.h"
 #include "ui_CylinderInfoWidget.h"
+#include "FaceGroupWidget.h"
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
+#include "GUIWidget/GUIPickInfo.h"
+#include "GUIWidget/PickedDataProvider.h"
+#include "GUIWidget/PickedData.h"
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
+#include "OperatorsInterface/GraphEventOperator.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelCylinder.h"
@@ -81,45 +87,47 @@ namespace GUI {
         _ui->lineEdit_OriginPoint3->setText(QString::number(point[2]));
     }
 
-    void CylinderInfoWidget::setFaceGroupValue(int rowIndex, int faceId)
+    void CylinderInfoWidget::setFaceGroupValue(int rowIndex, QList<int> facesId)
     {
-        //当前id处理
-        {
-            QTableWidgetItem* item = _ui->tableWidget->item(rowIndex, 0);
-            if (item == nullptr)return;
-            QList<int> ids = item->data(CylFacePos).value<QList<int>>();
-
-            //如果已经包含该id不在添加
-            if (!ids.contains(faceId)) {
-                ids.append(faceId);
-            }
-
-            QString name = item->data(CylNamePos).toString();
-            item->setData(CylFacePos, QVariant::fromValue(ids));
-            name += tr("(%1 faces)").arg(ids.size());
-            item->setText(name);
-        }
-
-        //处理其他模块
-        {
-            for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-                if (i == rowIndex)continue;
-                QTableWidgetItem* item = _ui->tableWidget->item(i, 0);
+        for (int faceId : facesId) {
+            //当前id处理
+            {
+                FaceGroupWidget* item = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(rowIndex, 0));
                 if (item == nullptr)return;
                 QList<int> ids = item->data(CylFacePos).value<QList<int>>();
-                //如果已经包含该id不在添加
-                if (ids.contains(faceId)) {
-                    ids.removeOne(faceId);
 
-                    QString name = item->data(CylNamePos).toString();
-                    item->setData(CylFacePos, QVariant::fromValue(ids));
-                    if (ids.size() == 0) {
-                        name += tr("(empty)");
+                //如果已经包含该id不在添加
+                if (!ids.contains(faceId)) {
+                    ids.append(faceId);
+                }
+
+                QString name = item->data(CylNamePos).toString();
+                item->setData(CylFacePos, QVariant::fromValue(ids));
+                name += tr("(%1 faces)").arg(ids.size());
+                item->setName(name);
+            }
+
+            //处理其他模块
+            {
+                for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+                    if (i == rowIndex)continue;
+                    FaceGroupWidget* item = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+                    if (item == nullptr)return;
+                    QList<int> ids = item->data(CylFacePos).value<QList<int>>();
+                    //如果已经包含该id不在添加
+                    if (ids.contains(faceId)) {
+                        ids.removeOne(faceId);
+
+                        QString name = item->data(CylNamePos).toString();
+                        item->setData(CylFacePos, QVariant::fromValue(ids));
+                        if (ids.size() == 0) {
+                            name += tr("(empty)");
+                        }
+                        else {
+                            name += tr("(%1 faces)").arg(ids.size());
+                        }
+                        item->setName(name);
                     }
-                    else {
-                        name += tr("(%1 faces)").arg(ids.size());
-                    }
-                    item->setText(name);
                 }
             }
         }
@@ -201,39 +209,72 @@ namespace GUI {
         QString group = tr("Group_%1").arg(rowNum + 1);
         QString name = group + tr("(empty)");
         QList<int> faceList = {};
-        QTableWidgetItem* item = new QTableWidgetItem(name);
-        item->setData(CylNamePos, group);
-        item->setData(CylFacePos, QVariant::fromValue(faceList));
-        _ui->tableWidget->setItem(rowNum, 0, item);
 
-        item = new QTableWidgetItem();
-        item->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
-        _ui->tableWidget->setItem(rowNum, 1, item);
+        FaceGroupWidget* widget = new FaceGroupWidget(_ui->tableWidget);
+        widget->setName(name);
+        widget->setData(CylNamePos, group);
+        widget->setData(CylFacePos, QVariant::fromValue(faceList));
+        _ui->tableWidget->setCellWidget(rowNum, 0, widget);
+
+        connect(widget, SIGNAL(sigOkClicked()), this, SLOT(slotFaceWidgetOkClicked()));
+        connect(widget, SIGNAL(sigCancelClicked()), this, SLOT(slotFaceWidgetCancelClicked()));
+        connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
+
+        updateFaceWidgetCurrentPos();
     }
 
-    void CylinderInfoWidget::itemTableClickedSlot(QTableWidgetItem * item)
+    void CylinderInfoWidget::slotCellTableClicked(int row, int column)
     {
-        int curRow = _ui->tableWidget->currentRow();
-        int curCol = _ui->tableWidget->currentColumn();
+        if (!_geoModel)return;
 
-        if (curCol == 0) {
-            if (!_geoModel)return;
-            if (_oper) {
-                _oper->setArgs("objID", _geoModel->getDataObjectID());
-                _oper->setArgs("curRow", curRow);
-                _oper->moveToStep(1);
-            }
-        }
-        //删除操作
-        else if (curCol == 1) {
-            _ui->tableWidget->removeRow(curCol);
+        FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(row, column));
+        if (widget == nullptr)return;
+
+        if (_oper) {
+            setAllFaceGroupSelect(false);
+            widget->setSelect(true);
+
+            clearGraphHight();
+
+            //执行操作器
+            _oper->setArgs("objID", _geoModel->getDataObjectID());
+            _oper->setArgs("faceIDs", widget->data(CylFacePos));
+            _oper->moveToStep(1);
         }
     }
 
-    void CylinderInfoWidget::itemTableDoubleClickedSlot(QTableWidgetItem * item)
+    void CylinderInfoWidget::slotFaceWidgetOkClicked()
     {
-        int curRow = _ui->tableWidget->currentRow();
-        int curCol = _ui->tableWidget->currentColumn();
+        FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(sender());
+        if (widget == nullptr) return;
+        //执行选择结束事件
+        if (_oper) {
+            _oper->setArgs("curRow", widget->getCurrentPos().first);
+            _oper->moveToStep(2);
+            widget->setSelect(false);
+        }
+    }
+
+    void CylinderInfoWidget::slotFaceWidgetCancelClicked()
+    {
+        int currentRow = _ui->tableWidget->currentRow();
+        FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(currentRow, 0));
+        if (widget == nullptr) return;
+
+        widget->setSelect(false);
+        //清除高亮
+        clearGraphHight();
+    }
+
+    void CylinderInfoWidget::slotFaceWidgetDeleteClicked()
+    {
+        FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(sender());
+        if (widget == nullptr) return;
+        _ui->tableWidget->removeRow(widget->getCurrentPos().first);
+        //更新界面中存储的位置
+        updateFaceWidgetCurrentPos();
+        //清除高亮
+        clearGraphHight();
     }
 
     bool CylinderInfoWidget::checkValue()
@@ -272,22 +313,24 @@ namespace GUI {
             QList<int> ids = geoCom->getMember();
             QString name = geoCom->getDataObjectName();
 
-            QTableWidgetItem* item = new QTableWidgetItem();
+            FaceGroupWidget* item = new FaceGroupWidget(_ui->tableWidget);
             item->setData(CylNamePos, name);
             item->setData(CylFacePos, QVariant::fromValue(ids));
-            _ui->tableWidget->setItem(i, 0, item);
+            _ui->tableWidget->setCellWidget(i, 0, item);
             if (ids.size() == 0) {
                 name += tr("(empty)");
             }
             else {
                 name += tr("(%1 faces)").arg(ids.size());
             }
-            item->setText(name);
+            item->setName(name);
+            item->setCurrentPos(i, 0);
 
-            item = new QTableWidgetItem();
-            item->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
-            _ui->tableWidget->setItem(i, 1, item);
+            connect(item, SIGNAL(sigOkClicked()), this, SLOT(slotFaceWidgetOkClicked()));
+            connect(item, SIGNAL(sigCancelClicked()), this, SLOT(slotFaceWidgetCancelClicked()));
+            connect(item, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
         }
+        updateFaceWidgetCurrentPos();
     }
 
     void CylinderInfoWidget::getDataFormWidget()
@@ -316,8 +359,9 @@ namespace GUI {
         Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
         if (commanger == nullptr)return;
         commanger->clear();
+
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            QTableWidgetItem* item = _ui->tableWidget->item(i, 0);
+            FaceGroupWidget* item = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
             if (item == nullptr)return;
             QList<int> ids = item->data(CylFacePos).value<QList<int>>();
             QString name = item->data(CylNamePos).toString();
@@ -331,14 +375,50 @@ namespace GUI {
     void CylinderInfoWidget::initTableWidget()
     {
         _ui->tableWidget->setRowCount(0);
-        _ui->tableWidget->setColumnCount(2);
+        _ui->tableWidget->setColumnCount(1);
         QStringList header;
-        header << tr("Default(3 faces)") << tr("");
+        header << tr("Default(3 faces)");
         _ui->tableWidget->setHorizontalHeaderLabels(header);
         _ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-        _ui->tableWidget->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+        //充满表格
+        _ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
 
-        connect(_ui->tableWidget, SIGNAL(itemClicked(QTableWidgetItem*)), this, SLOT(itemTableClickedSlot(QTableWidgetItem*)));
-        connect(_ui->tableWidget, SIGNAL(itemDoubleClicked(QTableWidgetItem*)), this, SLOT(itemTableDoubleClickedSlot(QTableWidgetItem*)));
+        connect(_ui->tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(slotCellTableClicked(int, int)));
+    }
+
+    void CylinderInfoWidget::setAllFaceGroupSelect(bool type)
+    {
+        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+            FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            if (widget == nullptr)return;
+            widget->setSelect(false);
+        }
+    }
+
+    void CylinderInfoWidget::updateFaceWidgetCurrentPos()
+    {
+        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+            FaceGroupWidget* widget = dynamic_cast<FaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            if (widget == nullptr)return;
+            widget->setCurrentPos(i, 0);
+        }
+    }
+
+    void CylinderInfoWidget::clearGraphHight()
+    {
+        //退出选择模式
+        GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
+        if (pickD == nullptr) return;
+        //拾取信息设置
+        GUI::GUIPickInfoStru pinfo;
+        pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJNone;
+        pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMNone;
+        GUI::GUIPickInfo::SetPickInfo(pinfo);
+        pickD->clearPickedData();
+
+        //刷新渲染窗口
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        graphOper->reRender();
     }
 }
