@@ -19,7 +19,7 @@ namespace GUI
 
         static void getPoint(GraphData::PickedData* data, double* point, bool isOk = true);
 
-        static int getFace(GraphData::PickedData* data, bool isOk = true);
+        static QList<int> getFaces(QList<GraphData::PickedData*> data, bool isOk = true);
     };
 }
 

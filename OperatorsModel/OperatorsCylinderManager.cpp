@@ -195,20 +195,20 @@ namespace ModelOper
         if (pickData.size() == 0)return;
         if (!pickData[0])return;
 
-        int faceID = GUI::WidgetOCCEvent::getFace(pickData[0]);
+        //int faceID = GUI::WidgetOCCEvent::getFace(pickData[0]);
 
-        //界面获取
-        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
-        if (mainWindow == nullptr)return;
-        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
-        if (propertyWidget == nullptr)return;
-        GUI::CylinderInfoWidget* cudeWidget = dynamic_cast<GUI::CylinderInfoWidget*>(propertyWidget->getCurrentWidget());
-        if (cudeWidget == nullptr)return;
+        ////界面获取
+        //GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        //if (mainWindow == nullptr)return;
+        //GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        //if (propertyWidget == nullptr)return;
+        //GUI::CylinderInfoWidget* cudeWidget = dynamic_cast<GUI::CylinderInfoWidget*>(propertyWidget->getCurrentWidget());
+        //if (cudeWidget == nullptr)return;
 
-        int curRow = -1;
-        this->argValue("curRow", curRow);
-        cudeWidget->setFaceGroupValue(curRow, faceID);
+        //int curRow = -1;
+        //this->argValue("curRow", curRow);
+        //cudeWidget->setFaceGroupValue(curRow, faceID);
 
-        pickD->clearPickedData();
+        //pickD->clearPickedData();
     }
 }

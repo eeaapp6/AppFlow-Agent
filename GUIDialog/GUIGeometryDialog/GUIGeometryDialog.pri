@@ -1,5 +1,6 @@
 HEADERS += \ 
     $$PWD/GUIGeometryDialogAPI.h \
+    $$PWD/FaceGroupWidget.h \
     $$PWD/CudeInfoWidget.h \
     $$PWD/CylinderInfoWidget.h \
     $$PWD/SphereInfoWidget.h \
@@ -7,12 +8,14 @@ HEADERS += \
 
 
 SOURCES += \
+    $$PWD/FaceGroupWidget.cpp \
     $$PWD/CudeInfoWidget.cpp \
     $$PWD/CylinderInfoWidget.cpp \
     $$PWD/SphereInfoWidget.cpp \
     $$PWD/GeometryDeleteDialog.cpp \
 
 FORMS += \
+    $$PWD/FaceGroupWidget.ui \
     $$PWD/CudeInfoWidget.ui \
     $$PWD/CylinderInfoWidget.ui \
     $$PWD/SphereInfoWidget.ui \

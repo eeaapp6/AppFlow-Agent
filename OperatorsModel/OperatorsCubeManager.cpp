@@ -139,7 +139,6 @@ namespace ModelOper
             GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
             pickD->addDataManually(Interface::FITKModelEnum::FMSSurface, objID, faceIDs);
             if (pickD == nullptr) return;
-            connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotSelectFaceGroup()));;
 
             //拾取信息设置
             GUI::GUIPickInfoStru pinfo;
@@ -147,6 +146,14 @@ namespace ModelOper
             pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMIndividually;
             //保存参数
             GUI::GUIPickInfo::SetPickInfo(pinfo, objID);
+
+            EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+            if (graphOper == nullptr)return;
+            graphOper->reRender();
+        }
+        //选择面组结束事件
+        else if (index == 2) {
+            slotSelectFaceGroup();
         }
     }
 
@@ -179,13 +186,17 @@ namespace ModelOper
         cudeWidget->setBasicPoint(point);
 
         pickD->clearPickedData();
+
+        //刷新渲染窗口
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        graphOper->reRender();
     }
 
     void OperatorsCubeManager::slotSelectFaceGroup()
     {
         GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
         if (pickD == nullptr) return;
-        disconnect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotSelectFaceGroup()));
 
         //拾取信息设置
         GUI::GUIPickInfoStru pinfo;
@@ -194,10 +205,8 @@ namespace ModelOper
         GUI::GUIPickInfo::SetPickInfo(pinfo);
 
         QList<GraphData::PickedData*> pickData = pickD->getPickedList();
-        if (pickData.size() == 0)return;
-        if (!pickData[0])return;
 
-        int faceID = GUI::WidgetOCCEvent::getFace(pickData[0]);
+        QList<int> faceID = GUI::WidgetOCCEvent::getFaces(pickData);
 
         //界面获取
         GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
@@ -212,5 +221,10 @@ namespace ModelOper
         cudeWidget->setFaceGroupValue(curRow, faceID);
 
         pickD->clearPickedData();
+
+        //刷新渲染窗口
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        graphOper->reRender();
     }
 }
