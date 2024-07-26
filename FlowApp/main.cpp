@@ -2,7 +2,8 @@
 #include "MainWindowGenerator.h"
 #include "GlobalDataFactory.h"
 #include "ComponentFactory.h"
-#include "CommandLineHandler.h"
+#include "CommandLineHandler.h".
+#include "SignalProcessor.h"
 
 #ifdef Q_OS_WIN
 #include <Windows.h>
@@ -48,6 +49,7 @@ int main(int argc, char *argv[])
     app.regGlobalDataFactory(new GlobalDataFactory);     // 注册全局数据工厂
     app.regComponentsFactory(new ComponentFactory);      // 注册组件工厂
     app.regCommandLineHandler(new CommandLineHandler);   // 注册命令行处理
+    app.addGolbalSignalProcesser(new SignalProcessor);
 
     /*
     app.regAppSettings(new StructuralSettings);          // 注册应用结构设置
