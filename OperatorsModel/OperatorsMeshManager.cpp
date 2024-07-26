@@ -1,6 +1,7 @@
 ﻿#include "OperatorsMeshManager.h"
 
 #include "FITK_Component/FITKOFDictWriter/FITKOFBlockMeshDictWriter.h"
+#include "FITK_Component/FITKOFDictWriter/FITKOFSnappyHexMeshDictWriter.h"
 #include "FITK_Kernel/FITKCore/FITKDirFileTools.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
@@ -27,15 +28,19 @@ namespace ModelOper
 
     bool OperatorsMeshManager::execGUI()
     {
-
         // 工作路径
         QString path = QApplication::applicationDirPath() + "/../WorkDir";
-#ifndef Q_OS_WIN
         Core::CreateDir(path);
         // 写出字典文件
-        IO::FITKOFBlockMeshDictWriter meshDickWri;
-        meshDickWri.setFilePath(path);
-        if (!meshDickWri.run()) return false;
+        IO::FITKOFBlockMeshDictWriter blockMeshDictWriter;
+        blockMeshDictWriter.setFilePath(path);
+        if (!blockMeshDictWriter.run()) return false;
+
+        IO::FITKOFSnappyHexMeshDictWriter snappyHexMeshDictWriter;
+        snappyHexMeshDictWriter.setFilePath(path);
+        if (!snappyHexMeshDictWriter.run()) return false;
+
+#ifndef Q_OS_WIN
         // 调用blockMesh
         auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
         if (!app) return false;
@@ -51,7 +56,7 @@ namespace ModelOper
         QStringList args1;
         args1 << "-overwrite -case" << path;
         info->setArgs(args1);
-        //proGramManager->startProgram(1, "FITKOFSnappyHexMeshDriver", info);
+        proGramManager->startProgram(1, "FITKOFSnappyHexMeshDriver", info);
 #endif
         // 读取网格
         Interface::FITKUnstructuredFluidMeshVTK* mesh = new Interface::FITKUnstructuredFluidMeshVTK;
