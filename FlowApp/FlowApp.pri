@@ -3,7 +3,8 @@ HEADERS += \
     $$PWD/GlobalDataFactory.h \
     $$PWD/ComponentFactory.h \ 
     $$PWD/CommandLineHandler.h \
-    $$PWD/PreWindowInitializer.h
+    $$PWD/PreWindowInitializer.h \
+    $$PWD/SignalProcessor.h \
 
 SOURCES += \
     $$PWD/main.cpp \
@@ -11,8 +12,8 @@ SOURCES += \
     $$PWD/GlobalDataFactory.cpp \
     $$PWD/ComponentFactory.cpp \ 
     $$PWD/CommandLineHandler.cpp \
-    $$PWD/PreWindowInitializer.cpp
-    
+    $$PWD/PreWindowInitializer.cpp \
+    $$PWD/SignalProcessor.cpp \
 
 FORMS += \
 #    $$PWD/PluginManageDialog.ui \
