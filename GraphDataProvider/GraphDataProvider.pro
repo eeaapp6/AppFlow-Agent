@@ -11,7 +11,6 @@ win32{
 
 unix:!mac{ QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN/\'" }
 
-include(./occ.pri)
 include(./vtk.pri)
 include(./GraphDataProvider.pri)
 

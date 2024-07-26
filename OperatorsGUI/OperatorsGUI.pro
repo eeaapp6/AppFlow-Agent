@@ -8,7 +8,6 @@ DEFINES     +=  OperatorsGUI_API
 unix:!mac{ QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN/\'" }
 
 include(./vtk.pri)
-include(./occ.pri)
 include(./OperatorsGUI.pri)
 
 win32{
