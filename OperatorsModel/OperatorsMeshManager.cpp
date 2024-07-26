@@ -43,10 +43,14 @@ namespace ModelOper
         if (!proGramManager) return false;
         AppFrame::FITKProgramInputInfo* info = new FoamDriver::FITKOFInputInfo();
         QStringList args;
-        args << "-overwrite -case" << path;
+        args << "-case" << path;
         info->setArgs(args);
         proGramManager->startProgram(1, "FITKOFBlockMeshDriver", info);
         // 调用snappyHexMeshDriver
+
+        QStringList args1;
+        args1 << "-overwrite -case" << path;
+        info->setArgs(args1);
         //proGramManager->startProgram(1, "FITKOFSnappyHexMeshDriver", info);
 #endif
         // 读取网格
