@@ -102,6 +102,7 @@ unix{
         -lGUIFrame \
         -lGUIWidget \
         -lFITKWidget \
+        -L$$PWD/../Tools/Linux64/SARibbon/lib/  \
         -lSARibbonBar \
        
 
