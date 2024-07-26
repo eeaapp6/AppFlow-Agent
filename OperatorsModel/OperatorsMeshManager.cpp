@@ -12,6 +12,7 @@
 #include "FITK_Component/FITKOFMeshIO/FITKOpenFOAMMeshReader.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFulidMeshVTK.h"
 #include "OperatorsInterface/GraphEventOperator.h"
+#include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include <QStringList>
 
 #include <QApplication>
@@ -36,14 +37,15 @@ namespace ModelOper
         blockMeshDictWriter.setFilePath(path);
         if (!blockMeshDictWriter.run()) return false;
 
-        IO::FITKOFSnappyHexMeshDictWriter snappyHexMeshDictWriter;
+        /*IO::FITKOFSnappyHexMeshDictWriter snappyHexMeshDictWriter;
         snappyHexMeshDictWriter.setFilePath(path);
-        if (!snappyHexMeshDictWriter.run()) return false;
+        if (!snappyHexMeshDictWriter.run()) return false;*/
 
-#ifndef Q_OS_WIN
+
         // 调用blockMesh
         auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
         if (!app) return false;
+#ifndef Q_OS_WIN
         auto proGramManager = app->getProgramTaskManager();
         if (!proGramManager) return false;
         AppFrame::FITKProgramInputInfo* info = new FoamDriver::FITKOFInputInfo();
@@ -52,13 +54,13 @@ namespace ModelOper
         info->setArgs(args);
         proGramManager->startProgram(1, "FITKOFBlockMeshDriver", info);
         // 调用snappyHexMeshDriver
-
-        QStringList args1;
+        /*QStringList args1;
         args1 << "-overwrite -case" << path;
         info->setArgs(args1);
-        proGramManager->startProgram(1, "FITKOFSnappyHexMeshDriver", info);
+        proGramManager->startProgram(1, "FITKOFSnappyHexMeshDriver", info);*/
 #endif
         // 读取网格
+        //Interface::FITKUnstructuredFluidMeshVTK* mesh = app->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
         Interface::FITKUnstructuredFluidMeshVTK* mesh = new Interface::FITKUnstructuredFluidMeshVTK;
         IO::FITKOpenFOAMMeshReader openFOAMMeshReader;
         openFOAMMeshReader.setFileName(path + "/constant/polyMesh/");
