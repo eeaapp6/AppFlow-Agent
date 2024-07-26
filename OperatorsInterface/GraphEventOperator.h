@@ -44,6 +44,9 @@ struct OperatorsInterfaceAPI GraphOperParam
     // 操作的数据ID。（不存在则传入-1）
     int DataId = -1;
 
+    // 隐藏与显示。
+    bool Visibility = true;
+
     // 强制刷新。
     bool ForceUpdate = false;
 

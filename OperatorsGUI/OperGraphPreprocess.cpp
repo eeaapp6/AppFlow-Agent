@@ -138,6 +138,9 @@ namespace GUIOper
         default:
             break;
         }
+        
+        // 隐藏或显示。
+        obj->setVisible(param.Visibility);
     }
 
     Exchange::FITKOCC2VTKGraphObject3D* OperGraphPreprocess::getModelGraphObjectByDataId(int dataObjId)
