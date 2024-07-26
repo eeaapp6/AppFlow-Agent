@@ -30,10 +30,12 @@ win32{
         -lFITKCore \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceMesh \
+        -lFITKInterfaceMeshGen \
         -lFITKAdaptor \
         -lFITKOCC2VTKGraphAdaptor \
         -lFITKRenderWindowVTK \
-        -lFITKVTKAlgorithm 
+        -lFITKVTKAlgorithm \
+        -lGUIFrame
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -47,10 +49,12 @@ win32{
         -lFITKCore \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceMesh \
+        -lFITKInterfaceMeshGen \
         -lFITKAdaptor \
         -lFITKOCC2VTKGraphAdaptor \
         -lFITKRenderWindowVTK \
-        -lFITKVTKAlgorithm 
+        -lFITKVTKAlgorithm \
+        -lGUIFrame
 
     message("Windows GraphDataProvider generated")
 }
@@ -73,10 +77,12 @@ unix{
         -lFITKCore \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceMesh \
+        -lFITKInterfaceMeshGen \
         -lFITKAdaptor \
         -lFITKOCC2VTKGraphAdaptor \
         -lFITKRenderWindowVTK \
-        -lFITKVTKAlgorithm 
+        -lFITKVTKAlgorithm \
+        -lGUIFrame
 
     message("Linux GraphDataProvider generated")
 }

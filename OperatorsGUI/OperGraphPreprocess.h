@@ -49,6 +49,16 @@ namespace GUIOper
         void updateGraph(int dataObjId, bool forceUpdate = false) override;
 
         /**
+         * @brief   根据提供的数据类型创建可视化对象并执行相关逻辑。（没有则创建）[重写]
+         *          （此接口用于非数据类可视化对象预览。）
+         * @param   type：数据类型
+         * @param   param：可视化对象执行操作参数（默认只进行可视化）[缺省]
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-26
+         */
+        void updateGraphByType(int type, GraphOperParam param = GraphOperParam()) override;
+
+        /**
          * @brief   根据数据对象ID获取模型可视化对象。（没有则不创建）[重写]
          * @param   dataObjId：数据对象ID
          * @return  可视化对象

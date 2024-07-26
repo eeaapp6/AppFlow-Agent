@@ -29,6 +29,7 @@ namespace GraphData
 {
     class GraphProviderBase;
     class GraphModelProvider;
+    class GraphMarkProvider;
 }
 
 namespace GraphData
@@ -58,13 +59,22 @@ namespace GraphData
         static void Delete();
 
         /**
-         * @brief   获取三维模型数据分装类，没有则初始化。
+         * @brief   获取三维模型可视化对象分装类，没有则初始化。
          * @param   graphWidget：可视化窗口
          * @return  三维模型数据分装类指针
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
         GraphModelProvider* getModelProvider(Comp::FITKGraph3DWindowVTK* graphWidget);
+
+        /**
+         * @brief   获取符号可视化对象分装类，没有则初始化。
+         * @param   graphWidget：可视化窗口
+         * @return  符号可视化对象分装类指针
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-26
+         */
+        GraphMarkProvider* getMarkProvider(Comp::FITKGraph3DWindowVTK* graphWidget);
 
         /**
          * @brief   在所有算例数据管理尝试寻找该数据ID对应的可视化对象并刷新，如果不存在则跳出。
@@ -153,11 +163,18 @@ namespace GraphData
         static QMutex m_mutex;
 
         /**
-         * @brief   三维窗口中算例的三维模型数据分装类。
+         * @brief   三维窗口中算例的三维模型可视化对象分装类。
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
         GraphModelProvider* m_modelProvider{ nullptr };
+
+        /**
+         * @brief   三维窗口中算例的符号可视化对象分装类。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-26
+         */
+        GraphMarkProvider* m_markProvider{ nullptr };
 
     };
 }   // namespace GraphData
