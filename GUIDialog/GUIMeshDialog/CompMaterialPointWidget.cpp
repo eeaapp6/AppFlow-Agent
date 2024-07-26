@@ -38,6 +38,20 @@ namespace GUI
         return _ui->label_Name->text();
     }
 
+    void CompMaterialPointWidget::getPoint(double* point)
+    {
+        point[0] = _ui->lineEdit_Point1->text().toDouble();
+        point[1] = _ui->lineEdit_Point2->text().toDouble();
+        point[2] = _ui->lineEdit_Point3->text().toDouble();
+    }
+
+    void CompMaterialPointWidget::setPoint(double* point)
+    {
+        _ui->lineEdit_Point1->setText(QString::number(point[0]));
+        _ui->lineEdit_Point2->setText(QString::number(point[1]));
+        _ui->lineEdit_Point3->setText(QString::number(point[2]));
+    }
+
     void CompMaterialPointWidget::setData(int pos, QVariant value)
     {
         _data.insert(pos, value);

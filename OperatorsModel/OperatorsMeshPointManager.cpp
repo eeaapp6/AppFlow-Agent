@@ -63,10 +63,11 @@ namespace ModelOper
         switch (_operType)
         {
         case ModelOper::OperManagerBase::Edit:
+            propertyWidget->init();
             break;
         }
 
-        return false;
+        return true;
     }
 
     void OperatorsMeshPointManager::moveToStep(int index, QVariant value)

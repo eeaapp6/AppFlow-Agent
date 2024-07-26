@@ -19,6 +19,8 @@ namespace GUI
         void init();
         void setName(QString name);
         QString getName();
+        void getPoint(double* point);
+        void setPoint(double* point);
 
         void setData(int pos, QVariant value);
         QVariant data(int pos);
