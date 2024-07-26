@@ -11,8 +11,11 @@
 #include "FITK_Component/FITKOFDriver/FITKOFInputInfo.h"
 #include "FITK_Component/FITKOFMeshIO/FITKOpenFOAMMeshReader.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFulidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+//#include "FITK_Interface/FITKInterfaceModel/FITKAbstractGeoModel.h"
+#include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
 #include <QStringList>
 
 #include <QApplication>
@@ -36,6 +39,27 @@ namespace ModelOper
         IO::FITKOFBlockMeshDictWriter blockMeshDictWriter;
         blockMeshDictWriter.setFilePath(path);
         if (!blockMeshDictWriter.run()) return false;
+
+        // 写出STL文件
+        //@{
+        QString stlFolder = path + "/constant/geometry";
+        Core::CreateDir(stlFolder);
+
+        Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
+        int nModel = geometryData->getDataCount();
+
+        for (int i = 0; i < nModel; i++)
+        {
+            // Interface::FITKAbstractGeoModel* model = geometryData->getDataByIndexT<Interface::FITKAbstractGeoModel>(i);
+            OCC::FITKAbstractOCCModel* model = geometryData->getDataByIndexT<OCC::FITKAbstractOCCModel>(i);
+            if (!model)
+            {
+                continue;
+            }
+
+            model->writeSTLFile(stlFolder);
+        }
+        //@}
 
         /*IO::FITKOFSnappyHexMeshDictWriter snappyHexMeshDictWriter;
         snappyHexMeshDictWriter.setFilePath(path);

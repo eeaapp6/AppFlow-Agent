@@ -191,7 +191,7 @@ namespace GraphData
     void GraphModelProvider::setVertPickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = m_modelObjHash.values();
         for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
             if (!obj)
@@ -213,7 +213,7 @@ namespace GraphData
     void GraphModelProvider::setEdgePickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = m_modelObjHash.values();
         for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
             if (!obj)
@@ -235,7 +235,7 @@ namespace GraphData
     void GraphModelProvider::setFacePickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = m_modelObjHash.values();
         for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
             if (!obj)
@@ -257,7 +257,7 @@ namespace GraphData
     void GraphModelProvider::setSolidPickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = m_modelObjHash.values();
         for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
             if (!obj)
@@ -279,7 +279,7 @@ namespace GraphData
     void GraphModelProvider::setNonePickable(int dataObjId)
     {
         // 关闭可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = m_modelObjHash.values();
         for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
         {
             if (!obj)
