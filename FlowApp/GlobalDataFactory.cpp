@@ -1,6 +1,6 @@
 ﻿#include "GlobalDataFactory.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
-#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFulidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 
 
 Core::FITKAbstractDataObject *GlobalDataFactory::createMeshData()
