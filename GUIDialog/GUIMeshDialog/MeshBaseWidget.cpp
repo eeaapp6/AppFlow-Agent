@@ -69,6 +69,10 @@ namespace GUI
             if (meshSizeList.size() != 0) {
                 _currentObj = meshSizeList[0];
             }
+            else
+            {
+                _currentObj = nullptr;
+            }
             //重新添加界面
             updateWidget(new MeshBaseTypeBoxWidget());
             break;
@@ -78,6 +82,10 @@ namespace GUI
             if (meshSizeList.size() != 0) {
                 _currentObj = meshSizeList[0];
             }
+            else
+            {
+                _currentObj = nullptr;
+            }
             //重新添加界面
             updateWidget(new MeshBaseTypeCylinderWidget());
             break;
@@ -86,6 +94,10 @@ namespace GUI
             QList<Interface::FITKAbstractRegionMeshSize*> meshSizeList = _meshSizeManager->getRigonByType(Interface::FITKAbstractRegionMeshSize::RegionType::RegionSphere);
             if (meshSizeList.size() != 0) {
                 _currentObj = meshSizeList[0];
+            }
+            else
+            {
+                _currentObj = nullptr;
             }
             break;
         }
