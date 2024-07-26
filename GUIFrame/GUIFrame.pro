@@ -80,6 +80,7 @@ unix{
         -lFITKWidget \
         -lFITKRenderWindowVTK \
         -lGUIWidget \
+        -L$$PWD/../Tools/Linux64/SARibbon/lib/  \
         -lSARibbonBar \
 
     message("Linux GUIFrame generated")

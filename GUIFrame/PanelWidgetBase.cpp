@@ -63,6 +63,7 @@ namespace GUI
 	{
 		if (m_Widget == nullptr) return;
 		m_Layout->removeWidget(m_Widget);
+        m_Widget->close();
 		delete m_Widget;
 		m_Widget = nullptr;
 	}
