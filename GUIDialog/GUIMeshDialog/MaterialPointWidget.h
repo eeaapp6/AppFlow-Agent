@@ -26,7 +26,18 @@ namespace GUI
         void initTableWidget();
     private slots:
         ;
+        /**
+         * @brief 添加事件点击
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
         void on_pushButton_Add_clicked();
+        /**
+         * @brief 确定事件点击
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void on_pushButton_OK_clicked();
         /**
          * @brief 表格点击事件
          * @param[i]  item           表格对象
@@ -34,7 +45,11 @@ namespace GUI
          * @date 2024-07-16
          */
         void slotCellTableClicked(int row, int column);
-
+        /**
+         * @brief 材料点组件界面删除事件
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
         void slotMatPointWidgetDeleteClicked();
     private:
         /**
@@ -56,6 +71,24 @@ namespace GUI
          * @date 2024-07-16
          */
         void clearTableWidget();
+        /**
+         * @brief 数据检查
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        bool checkValue();
+        /**
+         * @brief 设置数据至界面
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void setDataToWidget();
+        /**
+         * @brief 使用界面参数存储数据
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void getDataFromWidget();
     private:
         Ui::MaterialPointWidget* _ui = nullptr;
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;

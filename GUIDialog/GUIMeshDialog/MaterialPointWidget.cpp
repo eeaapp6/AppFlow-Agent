@@ -13,6 +13,8 @@
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKZonePoints.h"
 
 namespace GUI
 {
@@ -33,6 +35,8 @@ namespace GUI
     void MaterialPointWidget::init()
     {
         initTableWidget();
+        //数据填充
+        setDataToWidget();
     }
 
     void MaterialPointWidget::initTableWidget()
@@ -59,8 +63,13 @@ namespace GUI
     {
         int rowNum = _ui->tableWidget->rowCount();
         _ui->tableWidget->setRowCount(rowNum + 1);
-
-        QString name = tr("none");
+        QString name = "";
+        if (rowNum == 0) {
+             name = tr("none");
+        }
+        else {
+            name = tr("zone%1").arg(rowNum);
+        }
 
         CompMaterialPointWidget* widget = new CompMaterialPointWidget(_ui->tableWidget);
         widget->setName(name);
@@ -69,6 +78,18 @@ namespace GUI
         connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotMatPointWidgetDeleteClicked()));
 
         updateFaceWidgetCurrentPos();
+    }
+
+    void MaterialPointWidget::on_pushButton_OK_clicked()
+    {
+        if (!checkValue())return;
+
+        getDataFromWidget();
+        
+        if (_oper) {
+            clearTableWidget();
+            _oper->execProfession();
+        }
     }
 
     void MaterialPointWidget::slotCellTableClicked(int row, int column)
@@ -123,6 +144,58 @@ namespace GUI
         }
 
         _ui->tableWidget->clear();
+    }
+    bool MaterialPointWidget::checkValue()
+    {
+        return true;
+    }
+
+    void MaterialPointWidget::setDataToWidget()
+    {
+        Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKZonePointManager* manager = interface->getZonePointManager();
+        if (manager == nullptr)return;
+
+        _ui->tableWidget->setRowCount(manager->getDataCount());
+        for (int i = 0; i < manager->getDataCount(); i++) {
+            Interface::FITKZonePoint* zonePoint = manager->getDataByIndex(i);
+            if (zonePoint == nullptr)continue;
+
+            QString name = "";
+            if (i == 0) {
+                name = tr("none");
+            }
+            else {
+                name = tr("zone%1").arg(i);
+            }
+            double point[3] = { 0,0,0 };
+            point[0] = zonePoint->x();
+            point[1] = zonePoint->y();
+            point[2] = zonePoint->z();
+
+            CompMaterialPointWidget* widget = new CompMaterialPointWidget(_ui->tableWidget);
+            widget->setName(name);
+            widget->setPoint(point);
+            _ui->tableWidget->setCellWidget(i, 0, widget);
+            connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotMatPointWidgetDeleteClicked()));
+        }
+    }
+
+    void MaterialPointWidget::getDataFromWidget()
+    {
+        Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKZonePointManager* manager = interface->getZonePointManager();
+        if (manager == nullptr)return;
+
+        manager->clear();
+        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+            CompMaterialPointWidget* widget = dynamic_cast<CompMaterialPointWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            if(widget == nullptr)continue;
+            double point[3] = { 0,0,0 };
+            widget->getPoint(point);
+            Interface::FITKZonePoint* zonePoint = new Interface::FITKZonePoint(point[0], point[1], point[2]);
+            manager->appendDataObj(zonePoint);
+        }
     }
 }
 
