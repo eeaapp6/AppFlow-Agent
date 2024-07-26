@@ -87,6 +87,7 @@ namespace GUI
 
         _ui->lineEdit_Length->setText(QString::number(cylinderObj->getLength()));
         _ui->lineEdit_Radius->setText(QString::number(cylinderObj->getRadius()));
+        _ui->lineEdit_RadFraction->setText(QString::number(cylinderObj->getRadialFraction()));
 
         _ui->lineEdit_Division1->setText(QString::number(cylinderObj->getDivision(0)));
         _ui->lineEdit_Division2->setText(QString::number(cylinderObj->getDivision(1)));
@@ -120,6 +121,7 @@ namespace GUI
 
         cylinderObj->setLength(_ui->lineEdit_Length->text().toDouble());
         cylinderObj->setRadius(_ui->lineEdit_Radius->text().toDouble());
+        cylinderObj->setRadialFraction(_ui->lineEdit_RadFraction->text().toDouble());
 
         cylinderObj->setDivision(0, _ui->lineEdit_Division1->text().toInt());
         cylinderObj->setDivision(1, _ui->lineEdit_Division2->text().toInt());
