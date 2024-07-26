@@ -24,13 +24,14 @@ namespace GUI
         _ui = new Ui::MeshBaseWidget();
         _ui->setupUi(this);
         _meshSizeManager = Interface::FITKMeshGenInterface::getInstance()->getRegionMeshSizeMgr();
-
+        
         init();
     }
 
     MeshBaseWidget::~MeshBaseWidget()
     {
         if (_ui)delete _ui;
+        if (_subWidget)delete _subWidget;
     }
 
     void MeshBaseWidget::init()
@@ -39,13 +40,21 @@ namespace GUI
         _ui->comboBox_Type->addItem(tr("Box"), Interface::FITKAbstractRegionMeshSize::RegionType::RegionBox);
         _ui->comboBox_Type->addItem(tr("Cylinder"), Interface::FITKAbstractRegionMeshSize::RegionType::RegionCylinder);
 
-        //
-        QList<Interface::FITKAbstractRegionMeshSize*> meshSizeList = _meshSizeManager->getRigonByType(Interface::FITKAbstractRegionMeshSize::RegionType::RegionBox);
-        if (meshSizeList.size() != 0) {
-            _currentObj = meshSizeList[0];
+        //默认类型为box
+        Interface::FITKAbstractRegionMeshSize::RegionType type = Interface::FITKAbstractRegionMeshSize::RegionBox;
+        //获取第一位数据
+        _currentObj = _meshSizeManager->getDataByIndex(0);
+        if (_currentObj) {
+            type = _currentObj->getRegionType();
         }
 
-        _subWidget = new MeshBaseTypeBoxWidget();
+        switch (type) {
+        case Interface::FITKAbstractRegionMeshSize::RegionBox: _subWidget = new MeshBaseTypeBoxWidget(); break;
+        case Interface::FITKAbstractRegionMeshSize::RegionCylinder: _subWidget = new MeshBaseTypeCylinderWidget; break;
+        case Interface::FITKAbstractRegionMeshSize::RegionSphere: break;
+        }
+        _ui->comboBox_Type->setCurrentIndex(_ui->comboBox_Type->findData(type));
+
         _subWidget->setDataToWidget(_currentObj);
         _ui->gridLayout_SubWidget->addWidget(_subWidget);
     }

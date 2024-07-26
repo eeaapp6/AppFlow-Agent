@@ -118,9 +118,9 @@ namespace GUI
         boxObj->setDivision(1, _ui->lineEdit_Division2->text().toInt());
         boxObj->setDivision(2, _ui->lineEdit_Division3->text().toInt());
 
-        boxObj->setGrading(0, _ui->lineEdit_Grading1->text().toInt());
-        boxObj->setGrading(1, _ui->lineEdit_Grading2->text().toInt());
-        boxObj->setGrading(2, _ui->lineEdit_Grading3->text().toInt());
+        boxObj->setGrading(0, _ui->lineEdit_Grading1->text().toDouble());
+        boxObj->setGrading(1, _ui->lineEdit_Grading2->text().toDouble());
+        boxObj->setGrading(2, _ui->lineEdit_Grading3->text().toDouble());
 
         boxObj->insertBoundary(0, _ui->comboBox_X1->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
         boxObj->insertBoundary(1, _ui->comboBox_X0->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());

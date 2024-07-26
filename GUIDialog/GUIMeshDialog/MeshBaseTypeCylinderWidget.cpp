@@ -125,8 +125,8 @@ namespace GUI
         cylinderObj->setDivision(1, _ui->lineEdit_Division2->text().toInt());
         cylinderObj->setDivision(2, _ui->lineEdit_Division3->text().toInt());
 
-        cylinderObj->setGrading(0, _ui->lineEdit_Grading1->text().toInt());
-        cylinderObj->setGrading(1, _ui->lineEdit_Grading2->text().toInt());
+        cylinderObj->setGrading(0, _ui->lineEdit_Grading1->text().toDouble());
+        cylinderObj->setGrading(1, _ui->lineEdit_Grading2->text().toDouble());
 
         cylinderObj->insertBoundary(0, _ui->comboBox_FirstDisk->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
         cylinderObj->insertBoundary(1, _ui->comboBox_SecondDisk->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
