@@ -30,6 +30,7 @@ win32{
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        -lFITKInterfaceMeshGen \
    
 
 
@@ -50,6 +51,7 @@ win32{
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        -lFITKInterfaceMeshGen \
      
 
 
@@ -79,6 +81,7 @@ unix{
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
+        -lFITKInterfaceMeshGen \
        
 
     message("Linux GUIGeometryDialog generated")

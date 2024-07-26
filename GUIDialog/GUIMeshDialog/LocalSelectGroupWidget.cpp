@@ -37,8 +37,6 @@ namespace GUI
         //设置不可编辑
         _ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-        connect(_ui->tableWidget, SIGNAL(itemClicked(QTableWidgetItem*)), this, SLOT(itemTableClickedSlot(QTableWidgetItem*)));
-
         init();
     }
 

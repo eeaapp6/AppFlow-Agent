@@ -18,6 +18,8 @@
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelBox.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKAbstractModel.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKComponentManager.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
 
 #include <QMessageBox>
 #include <QTableWidgetItem>
@@ -193,6 +195,9 @@ namespace GUI {
             if (_obj == nullptr)return;
             getDataFormWidget();
             _obj->update();
+
+            //更新几何划分网格尺寸数据
+            updateMeshGeoMeshSize();
         }
 
         if (_oper && _obj) {
@@ -433,5 +438,20 @@ namespace GUI {
         }
 
         _ui->tableWidget->clear();
+    }
+
+    void CudeInfoWidget::updateMeshGeoMeshSize()
+    {
+        Interface::FITKGeometryMeshSizeManager* manger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
+        if (manger == nullptr)return;
+
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        if (commanger == nullptr)return;
+
+        for (int i = 0; i < commanger->getDataCount(); i++) {
+            for (int j = 0; j < manger->getDataCount(); j++) {
+
+            }
+        }
     }
 }
