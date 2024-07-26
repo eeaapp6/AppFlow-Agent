@@ -16,7 +16,7 @@
 
 // Data
 #include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
-#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFulidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSize.h"
 
 // Graph widget
