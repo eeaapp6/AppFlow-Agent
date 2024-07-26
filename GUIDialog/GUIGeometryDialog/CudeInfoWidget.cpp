@@ -29,7 +29,7 @@
 #define CudeFacePos Qt::UserRole+1
 
 namespace GUI {
-    
+
     CudeInfoWidget::CudeInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :
         Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(true), _oper(oper)
@@ -57,7 +57,7 @@ namespace GUI {
         clearTableWidget();
         if (_ui)delete _ui;
     }
-    
+
     void CudeInfoWidget::init()
     {
         Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
@@ -67,7 +67,7 @@ namespace GUI {
         _ui->setupUi(this);
 
         initTableWidget();
-  
+
         QString name = "";
         if (_isCreate) {
             name = QString(tr("Box-%1").arg(geometryData->getDataCount() + 1));
@@ -162,7 +162,7 @@ namespace GUI {
 
     void CudeInfoWidget::on_pushButton_CreateOrEdit_clicked()
     {
-        if(checkValue() == false)return;
+        if (checkValue() == false)return;
 
         Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
         if (geometryData == nullptr) return;
@@ -361,7 +361,7 @@ namespace GUI {
         dimensions[2] = _ui->lineEdit_Dimensions3->text().toDouble();
         _obj->setLength(dimensions);
 
-        
+
         if (_geoModel == nullptr)return;
         Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
         if (commanger == nullptr)return;
@@ -389,7 +389,7 @@ namespace GUI {
         //充满表格
         _ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
 
-        connect(_ui->tableWidget, SIGNAL(cellClicked(int, int )), this, SLOT(slotCellTableClicked(int, int)));
+        connect(_ui->tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(slotCellTableClicked(int, int)));
     }
 
     void CudeInfoWidget::setAllFaceGroupSelect(bool type)
@@ -432,7 +432,7 @@ namespace GUI {
     {
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
             QWidget* widget = _ui->tableWidget->cellWidget(i, 0);
-            if(widget == nullptr)continue;
+            if (widget == nullptr)continue;
             delete widget;
             widget = nullptr;
         }
@@ -442,15 +442,52 @@ namespace GUI {
 
     void CudeInfoWidget::updateMeshGeoMeshSize()
     {
+        //更新几何划分网格尺寸参数类面组id
+        updateMeshGeoMeshSizeID();
+
+        //更新面组id后，查看是否可通过id查找到模型
+        QList<Interface::FITKGeometryMeshSize*> deleteList = {};
+        Interface::FITKGeometryMeshSizeManager* manger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
+        if (manger == nullptr)return;
+        for (int i = 0; i < manger->getDataCount(); i++) {
+            auto geoMeshSize = manger->getDataByIndex(i);
+            if (geoMeshSize == nullptr)continue;
+            //如果查询不到，认为面组被删除，清除几何划分网格尺寸参数对象
+            if (!geoMeshSize->getGeoModel()) {
+                deleteList.append(geoMeshSize);
+            }
+        }
+
+        for (auto d : deleteList) {
+            manger->removeDataObj(d);
+        }
+    }
+
+    void CudeInfoWidget::updateMeshGeoMeshSizeID()
+    {
         Interface::FITKGeometryMeshSizeManager* manger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
         if (manger == nullptr)return;
 
         Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
         if (commanger == nullptr)return;
 
-        for (int i = 0; i < commanger->getDataCount(); i++) {
-            for (int j = 0; j < manger->getDataCount(); j++) {
+        //获取该模型相关的面组列表
+        QList<Interface::FITKGeometryMeshSize*> geoMeshSizeList = {};
+        for (int j = 0; j < manger->getDataCount(); j++) {
+            auto geoComp = manger->getDataByIndex(j);
+            if (geoComp == nullptr)continue;
+            if (geoComp->getDataObjectName().contains(_ui->lineEdit_Name->text())) geoMeshSizeList.append(geoComp);
+        }
 
+        //更新几何网格参数中的面组id
+        for (int i = 0; i < commanger->getDataCount(); i++) {
+            auto comp = commanger->getDataByIndex(i);
+            if (comp == nullptr)continue;
+            for (auto geoMesh : geoMeshSizeList) {
+                QString name1 = _ui->lineEdit_Name->text() + "." + comp->getDataObjectName();
+                QString name2 = geoMesh->getDataObjectName();
+                if (name1 != name2)continue;
+                geoMesh->setGeoGroupComponentId(comp->getDataObjectID());
             }
         }
     }
