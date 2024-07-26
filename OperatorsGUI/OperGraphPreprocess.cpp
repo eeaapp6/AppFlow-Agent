@@ -15,11 +15,15 @@
 // Graph data manager
 #include "GraphDataProvider/GraphProviderManager.h"
 #include "GraphDataProvider/GraphModelProvider.h"
+#include "GraphDataProvider/GraphMarkProvider.h"
 
 // Data
 #include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSize.h"
+
+// GUI
+#include "GUIFrame/MainTreeWidget.h"
 
 namespace GUIOper
 {
@@ -84,6 +88,55 @@ namespace GUIOper
             obj->update(forceUpdate);
 
             addGraphObjectToWidget(obj, graphWidget, false);
+        }
+    }
+
+    void OperGraphPreprocess::updateGraphByType(int type, GraphOperParam param)
+    {
+        // 获取可视化窗口。
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return;
+        }
+
+        // 获取符号可视化对象管理器。
+        GraphData::GraphMarkProvider* markProvider = GraphData::GraphProviderManager::getInstance()->getMarkProvider(graphWidget);
+        if (!markProvider)
+        {
+            return;
+        }
+
+        // 获取或创建可视化对象。（type数值与树形节点类型枚举对应。）
+        Exchange::FITKOCC2VTKGraphObject3D* obj = markProvider->getGraphObjectByType(type);
+        if (!obj)
+        {
+            return;
+        }
+
+        // 刷新数据。
+        obj->update(param.ForceUpdate);
+
+        // 高亮/取消高亮。
+        switch (param.HighlightMode)
+        {
+        case HighlightLevel::DisHighlight:
+        {
+            obj->disHighlight();
+            break;
+        }
+        case HighlightLevel::Highlight:
+        {
+            obj->highlight();
+            break;
+        }
+        case HighlightLevel::AdvHighlight:
+        {
+            obj->advanceHighlight(ShapeType::ShapeTypeNone, param.AdvHighlightIndice);
+            break;
+        }
+        default:
+            break;
         }
     }
 

@@ -9,6 +9,7 @@
 
 // Provider
 #include "GraphModelProvider.h"
+#include "GraphMarkProvider.h"
 
 namespace GraphData
 {
@@ -47,6 +48,7 @@ namespace GraphData
     {
         // 清除数据管理器。
         deleteProvider(m_modelProvider);
+        deleteProvider(m_markProvider); 
     }
 
     GraphModelProvider* GraphProviderManager::getModelProvider(Comp::FITKGraph3DWindowVTK* graphWidget)
@@ -63,6 +65,21 @@ namespace GraphData
         }
       
         return m_modelProvider;
+    }
+
+    GraphMarkProvider* GraphProviderManager::getMarkProvider(Comp::FITKGraph3DWindowVTK* graphWidget)
+    {
+        if (!m_markProvider)
+        {
+            if (!graphWidget)
+            {
+                return nullptr;
+            }
+
+            m_markProvider = new GraphMarkProvider(graphWidget);
+        }
+
+        return m_markProvider;
     }
 
     void GraphProviderManager::updateObjectById(int dataId)
