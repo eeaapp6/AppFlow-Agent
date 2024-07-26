@@ -6,12 +6,17 @@
 
 namespace GUI
 {
+    class MainWindow;
+
     class GUIWIDGETAPI GUIDialogBase : public Core::FITKDialog
     {
         Q_OBJECT;
     public:
         GUIDialogBase(QWidget* parent = nullptr);
         virtual ~GUIDialogBase();
+
+    protected:
+        MainWindow* _mainWin = nullptr;
     };
 }
 

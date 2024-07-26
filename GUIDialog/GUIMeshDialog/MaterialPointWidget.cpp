@@ -45,6 +45,12 @@ namespace GUI
         _ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
         //充满表格
         _ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+        //隐藏列表头
+        _ui->tableWidget->verticalHeader()->setVisible(false);
+        //隐藏行表头
+        _ui->tableWidget->horizontalHeader()->setVisible(false);
+        //设置不可编辑
+        _ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
         connect(_ui->tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(slotCellTableClicked(int, int)));
     }

@@ -6,12 +6,17 @@
 
 namespace GUI
 {
+    class MainWindow;
+
     class GUIWIDGETAPI GUIWidgetBase : public Core::FITKWidget
     {
         Q_OBJECT;
     public:
         GUIWidgetBase(QWidget* parent = nullptr);
-        virtual ~GUIWidgetBase();  
+        virtual ~GUIWidgetBase(); 
+
+    protected:
+        MainWindow* _mainWin = nullptr;
     };
 }
 #endif

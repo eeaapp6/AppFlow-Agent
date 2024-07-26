@@ -3,6 +3,7 @@
 #include "GUIFrame/PropertyWidget.h"
 #include "GUIDialog/GUIMeshDialog/LocalSelectGroupWidget.h"
 #include "GUIDialog/GUIMeshDialog/LocalGroupInfoWidget.h"
+#include "GUIDialog/GUIMeshDialog/LocalGroupDeleteDialog.h"
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "OperatorsInterface/TreeEventOperator.h"
 #include "OperatorsInterface/GraphInteractionOperator.h"
@@ -50,22 +51,21 @@ namespace ModelOper
             break;
         }
         case ModelOper::OperManagerBase::Delete: {
-            manger->removeDataByID(objID);
+            dialog = new GUI::LocalGroupDeleteDialog(manger->getDataByID(objID), this);
             break;
         }
         case ModelOper::OperManagerBase::Select:widget = new GUI::LocalSelectGroupWidget(this); break;
         }
         
         if (mainWindow->getPropertyWidget() && widget) {
-            propertyWidget->setWidget(widget);
-            return false;
-        }
-        if (dialog) {
-            dialog->show();
-            return false;
+            propertyWidget->setWidget(widget);    
         }
 
-        return true;
+        if (dialog) {
+            dialog->show();
+        }
+
+        return false;
     }
 
     bool OperatorsMeshLocalManager::execProfession()
@@ -86,10 +86,6 @@ namespace ModelOper
             break;
         }
         case ModelOper::OperManagerBase::Delete: {
-            GUI::LocalSelectGroupWidget* localSelectWidget = dynamic_cast<GUI::LocalSelectGroupWidget*>(propertyWidget->getCurrentWidget());
-            if (localSelectWidget) {
-                localSelectWidget->updateTableWidget();
-            }
             treeOper->updateTree();
             break;
         }
