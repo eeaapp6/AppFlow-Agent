@@ -10,7 +10,7 @@
 #include "FITK_Kernel/FITKAppFramework/FITKProgramTaskManager.h"
 #include "FITK_Component/FITKOFDriver/FITKOFInputInfo.h"
 #include "FITK_Component/FITKOFMeshIO/FITKOpenFOAMMeshReader.h"
-#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFulidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
