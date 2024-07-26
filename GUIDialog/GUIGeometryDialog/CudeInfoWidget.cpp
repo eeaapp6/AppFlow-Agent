@@ -94,45 +94,41 @@ namespace GUI {
 
     void CudeInfoWidget::setFaceGroupValue(int rowIndex, QList<int> facesId)
     {
+        CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(rowIndex, 0));
+        if (item == nullptr)return;
+
+        //重新设置面id
+        QString name = item->data(CudeNamePos).toString();
+        item->setData(CudeFacePos, QVariant::fromValue(facesId));
+        if (facesId.size() == 0) {
+            name += tr("(empty)");
+        }
+        else {
+            name += tr("(%1 faces)").arg(facesId.size());
+        }
+        item->setName(name);
+
+        //处理其他模块
         for (int faceId : facesId) {
-            //当前id处理
-            {
-                CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(rowIndex, 0));
-                if (item == nullptr)return;
-                QList<int> ids = item->data(CudeFacePos).value<QList<int>>();
+            for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+                if (i == rowIndex)continue;
+                CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+                if (otherItem == nullptr)return;
+                QList<int> ids = otherItem->data(CudeFacePos).value<QList<int>>();
+                
+                //如果已经包含该id,移除该id，并重新设置名称
+                if (ids.contains(faceId)) {
+                    ids.removeOne(faceId);
 
-                //如果已经包含该id不在添加
-                if (!ids.contains(faceId)) {
-                    ids.append(faceId);
-                }
-
-                QString name = item->data(CudeNamePos).toString();
-                item->setData(CudeFacePos, QVariant::fromValue(ids));
-                name += tr("(%1 faces)").arg(ids.size());
-                item->setName(name);
-            }
-
-            //处理其他模块
-            {
-                for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-                    if (i == rowIndex)continue;
-                    CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-                    if (item == nullptr)return;
-                    QList<int> ids = item->data(CudeFacePos).value<QList<int>>();
-                    //如果已经包含该id不在添加
-                    if (ids.contains(faceId)) {
-                        ids.removeOne(faceId);
-
-                        QString name = item->data(CudeNamePos).toString();
-                        item->setData(CudeFacePos, QVariant::fromValue(ids));
-                        if (ids.size() == 0) {
-                            name += tr("(empty)");
-                        }
-                        else {
-                            name += tr("(%1 faces)").arg(ids.size());
-                        }
-                        item->setName(name);
+                    QString otherName = otherItem->data(CudeNamePos).toString();
+                    otherItem->setData(CudeFacePos, QVariant::fromValue(ids));
+                    if (ids.size() == 0) {
+                        otherName += tr("(empty)");
                     }
+                    else {
+                        otherName += tr("(%1 faces)").arg(ids.size());
+                    }
+                    otherItem->setName(otherName);
                 }
             }
         }

@@ -84,8 +84,8 @@ namespace ModelOper
         proGramManager->startProgram(1, "FITKOFSnappyHexMeshDriver", info);*/
 #endif
         // 读取网格
-        //Interface::FITKUnstructuredFluidMeshVTK* mesh = app->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
-        Interface::FITKUnstructuredFluidMeshVTK* mesh = new Interface::FITKUnstructuredFluidMeshVTK;
+        Interface::FITKUnstructuredFluidMeshVTK* mesh = app->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
+        mesh->clearMesh();
         IO::FITKOpenFOAMMeshReader openFOAMMeshReader;
         openFOAMMeshReader.setFileName(path + "/constant/polyMesh/");
         openFOAMMeshReader.setDataObject(mesh);
