@@ -37,6 +37,7 @@ win32{
         -lGUIFrame \
         -lGUIWidget \
         -lFITKWidget \
+        -lFITKOFDictWriter \
     
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -61,6 +62,7 @@ win32{
         -lGUIFrame \
         -lGUIWidget \
         -lFITKWidget \
+        -lFITKOFDictWriter \
 
 Debug:LIBS +=  -L$$PWD/../Tools/Win64/SARibbon/libd/  \                                  
                -lSARibbonBard  \
@@ -104,6 +106,7 @@ unix{
         -lFITKWidget \
         -L$$PWD/../Tools/Linux64/SARibbon/lib/  \
         -lSARibbonBar \
+        -lFITKOFDictWriter \
        
 
     message("Linux FlowApp generated")

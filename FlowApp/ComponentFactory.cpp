@@ -11,6 +11,7 @@
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
 #include "FITK_Component/FITKGeoCompOCC/FITKGeoCompOCCInterface.h"
 #include "FITK_Component/FITKMeshGenOF/FITKMeshGenOFInterface.h"
+#include "FITK_Component/FITKOFDictWriter/FITKOFDictWriterIO.h"
 #include "OperatorsModel/OpersModelInterface.h"
 #include "OperatorsGUI/OpersGUIInterface.h"
 #include "PreWindowInitializer.h"
@@ -32,6 +33,8 @@ QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
 	componentList << new OperModel::OpersModelInterface;
 	// 界面控制器组件
 	componentList << new GUIOper::OperatorsGUIInterface;
+    // 字典文件写出组件
+    componentList << new IO::FITKOFDictWriterIO;
 
     // VTK窗口初始化器
     compVTKrender->addInitializer(1, new PreWindowInitializer);
