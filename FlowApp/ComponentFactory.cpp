@@ -12,32 +12,35 @@
 #include "FITK_Component/FITKGeoCompOCC/FITKGeoCompOCCInterface.h"
 #include "FITK_Component/FITKMeshGenOF/FITKMeshGenOFInterface.h"
 #include "FITK_Component/FITKOFDictWriter/FITKOFDictWriterIO.h"
+#include "FITK_Component/FITKOFMeshIO/FITKOFMeshReader.h"
 #include "OperatorsModel/OpersModelInterface.h"
 #include "OperatorsGUI/OpersGUIInterface.h"
 #include "PreWindowInitializer.h"
 
 QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
 {
-	// 自定义组件列表
-	QList<AppFrame::FITKComponentInterface *> componentList;
-	// 消息窗口组件
-	componentList << new Comp::ConsoleComponent(FITKAPP->getGlobalData()->getMainWindow());
-	// 3D图形窗口组件
-	auto compVTKrender = new Comp::FITKGraph3DWindowInterface;
-	componentList << compVTKrender;
+    // 自定义组件列表
+    QList<AppFrame::FITKComponentInterface *> componentList;
+    // 消息窗口组件
+    componentList << new Comp::ConsoleComponent(FITKAPP->getGlobalData()->getMainWindow());
+    // 3D图形窗口组件
+    auto compVTKrender = new Comp::FITKGraph3DWindowInterface;
+    componentList << compVTKrender;
     //occ 建模
     componentList << new OCC::FITKGeoCompOCCInterface;
     //OF网格划分
     componentList << new OF::FITKMeshGenOFInterface;
-	// 模型数据控制器组件
-	componentList << new OperModel::OpersModelInterface;
-	// 界面控制器组件
-	componentList << new GUIOper::OperatorsGUIInterface;
+    // 模型数据控制器组件
+    componentList << new OperModel::OpersModelInterface;
+    // 界面控制器组件
+    componentList << new GUIOper::OperatorsGUIInterface;
     // 字典文件写出组件
     componentList << new IO::FITKOFDictWriterIO;
+    // OpenFOAM网格读取组件
+    componentList << new IO::FITKOFMeshReader;
 
     // VTK窗口初始化器
     compVTKrender->addInitializer(1, new PreWindowInitializer);
 
-	return componentList;
+    return componentList;
 }

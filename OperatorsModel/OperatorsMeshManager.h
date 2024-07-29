@@ -9,12 +9,15 @@ namespace ModelOper
     {
         Q_OBJECT;
     public:
-        OperatorsMeshManager();
-        ~OperatorsMeshManager();
+        OperatorsMeshManager() = default;
+        ~OperatorsMeshManager() = default;
 
         virtual bool execGUI();
 
         virtual bool execProfession();
+
+    protected:
+        void readMesh();
     };
 
     // 按钮注册相关操作
