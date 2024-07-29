@@ -7,6 +7,10 @@ namespace Ui {
     class MeshBaseTypeBoxWidget;
 }
 
+namespace Interface {
+    class FITKRegionMeshSizeBox;
+}
+
 namespace GUI
 {
     class MeshBaseTypeBoxWidget :public MeshBaseTypeWidgetBase
@@ -23,9 +27,13 @@ namespace GUI
         bool setDataToWidget(Interface::FITKAbstractRegionMeshSize* obj);
 
         bool getDataFromWidget(Interface::FITKAbstractRegionMeshSize* obj);
+    private slots:
+        ;
+        void on_pushButton_AutoSize_clicked();
 
     private:
         Ui::MeshBaseTypeBoxWidget* _ui = nullptr;
+        Interface::FITKRegionMeshSizeBox* _graphObj = nullptr;
     };
 }
 

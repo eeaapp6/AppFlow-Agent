@@ -55,8 +55,6 @@ namespace ModelOper
         if (mainWindow == nullptr)return false;
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return false;
-
-        propertyWidget->init();
         return true;
     }
 }

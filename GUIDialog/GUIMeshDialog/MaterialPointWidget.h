@@ -39,6 +39,12 @@ namespace GUI
          */
         void on_pushButton_OK_clicked();
         /**
+         * @brief 取消事件点击
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void on_pushButton_Cancel_clicked();
+        /**
          * @brief 表格点击事件
          * @param[i]  item           表格对象
          * @author BaGuijun (baguijun@163.com)

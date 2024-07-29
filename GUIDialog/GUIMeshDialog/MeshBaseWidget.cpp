@@ -4,6 +4,7 @@
 #include "MeshBaseTypeCylinderWidget.h"
 
 #include "GUIFrame/MainWindow.h"
+#include "GUIFrame/PropertyWidget.h"
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
@@ -106,9 +107,11 @@ namespace GUI
 
     void MeshBaseWidget::on_pushButton_Cancel_clicked()
     {
-        if (_oper) {
-            _oper->execProfession();
-        }
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return;
+        propertyWidget->init();
     }
 
     void MeshBaseWidget::on_pushButton_OK_clicked()

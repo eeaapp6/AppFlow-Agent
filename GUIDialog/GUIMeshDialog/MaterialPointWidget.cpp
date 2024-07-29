@@ -29,6 +29,7 @@ namespace GUI
 
     MaterialPointWidget::~MaterialPointWidget()
     {
+        clearTableWidget();
         if (_ui)delete _ui;
     }
 
@@ -87,9 +88,17 @@ namespace GUI
         getDataFromWidget();
         
         if (_oper) {
-            clearTableWidget();
             _oper->execProfession();
         }
+    }
+
+    void MaterialPointWidget::on_pushButton_Cancel_clicked()
+    {
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return;
+        propertyWidget->init();
     }
 
     void MaterialPointWidget::slotCellTableClicked(int row, int column)

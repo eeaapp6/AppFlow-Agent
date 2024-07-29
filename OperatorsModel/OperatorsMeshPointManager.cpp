@@ -63,7 +63,6 @@ namespace ModelOper
         switch (_operType)
         {
         case ModelOper::OperManagerBase::Edit:
-            propertyWidget->init();
             break;
         }
 

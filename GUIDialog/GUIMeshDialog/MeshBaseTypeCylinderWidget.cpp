@@ -1,6 +1,9 @@
 ﻿#include "MeshBaseTypeCylinderWidget.h"
 #include "ui_MeshBaseTypeCylinderWidget.h"
 
+#include "OperatorsInterface/GraphEventOperator.h"
+
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
@@ -18,13 +21,25 @@ namespace GUI
     {
         _ui = new Ui::MeshBaseTypeCylinderWidget();
         _ui->setupUi(this);
-
+        _graphObj = new Interface::FITKRegionMeshSizeCylinder();
         init();
     }
 
     MeshBaseTypeCylinderWidget::~MeshBaseTypeCylinderWidget()
     {
-        if (_ui)delete _ui;
+        if (_ui) {
+            delete _ui;
+            _ui = nullptr;
+        }
+
+        if (_graphObj) {
+            delete _graphObj;
+            _graphObj = nullptr;
+        }
+
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        graphOper->reRender();
     }
 
     void MeshBaseTypeCylinderWidget::init()
@@ -134,5 +149,17 @@ namespace GUI
         cylinderObj->insertBoundary(1, _ui->comboBox_SecondDisk->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
         cylinderObj->insertBoundary(2, _ui->comboBox_Cylinder->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
         return true;
+    }
+
+    void MeshBaseTypeCylinderWidget::on_pushButton_AutoSize_clicked()
+    {
+        if (_graphObj == nullptr)return;
+        getDataFromWidget(_graphObj);
+
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+
+        graphOper->updateGraph(_graphObj->getDataObjectID());
+        graphOper->reRender();
     }
 }

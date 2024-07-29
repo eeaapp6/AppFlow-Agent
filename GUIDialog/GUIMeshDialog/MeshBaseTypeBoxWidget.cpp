@@ -1,6 +1,9 @@
 ﻿#include "MeshBaseTypeBoxWidget.h"
 #include "ui_MeshBaseTypeBoxWidget.h"
 
+#include "OperatorsInterface/GraphEventOperator.h"
+
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
@@ -15,13 +18,26 @@ namespace GUI
     {
         _ui = new Ui::MeshBaseTypeBoxWidget();
         _ui->setupUi(this);
-
+        //创建预览渲染对象
+        _graphObj = new Interface::FITKRegionMeshSizeBox();
         init();
     }
 
     MeshBaseTypeBoxWidget::~MeshBaseTypeBoxWidget()
     {
-        if (_ui)delete _ui;
+        if (_ui) {
+            delete _ui;
+            _ui = nullptr;
+        }
+
+        if (_graphObj) {
+            delete _graphObj;
+            _graphObj = nullptr;
+        }
+
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        graphOper->reRender();
     }
 
     void MeshBaseTypeBoxWidget::init()
@@ -130,5 +146,17 @@ namespace GUI
         boxObj->insertBoundary(5, _ui->comboBox_Z0->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
 
         return true;
+    }
+
+    void MeshBaseTypeBoxWidget::on_pushButton_AutoSize_clicked()
+    {
+        if (_graphObj == nullptr)return;
+        getDataFromWidget(_graphObj);
+
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return ;
+
+        graphOper->updateGraph(_graphObj->getDataObjectID());
+        graphOper->reRender();
     }
 }
