@@ -62,6 +62,7 @@ namespace GUIOper
         //@{
         obj->removeFromGraphWidget();
         graphWidget->addObject(obj->getRenderLayer(), obj, true);
+        obj->setFITKRender(graphWidget->getRenderer(obj->getRenderLayer()));
         //}
 
         // 添加附加可视化对象。
@@ -76,6 +77,7 @@ namespace GUIOper
 
             addinObj->removeFromGraphWidget();
             graphWidget->addObject(addinObj->getRenderLayer(), addinObj, true);
+            addinObj->setFITKRender(graphWidget->getRenderer(addinObj->getRenderLayer()));
         }
         //}
 

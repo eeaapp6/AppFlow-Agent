@@ -39,7 +39,7 @@ enum HighlightLevel
  * @author  ChengHaotian (yeguangbaozi@foxmail.com)
  * @date    2024-07-26
  */
-struct OperatorsInterfaceAPI GraphOperParam
+struct GraphOperParam
 {
     // 操作的数据ID。（不存在则传入-1）
     int DataId = -1;

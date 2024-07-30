@@ -141,6 +141,9 @@ namespace GUIOper
         
         // 隐藏或显示。
         obj->setVisible(param.Visibility);
+
+        // 添加至三维窗口。
+        addGraphObjectToWidget(obj, graphWidget, false);
     }
 
     Exchange::FITKOCC2VTKGraphObject3D* OperGraphPreprocess::getModelGraphObjectByDataId(int dataObjId)
