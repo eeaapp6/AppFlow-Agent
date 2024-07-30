@@ -6,6 +6,7 @@
 #include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKGeoCommandList.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSize.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSizeBox.h"
@@ -153,6 +154,33 @@ namespace GUI
 
     void MeshBaseTypeCylinderWidget::on_pushButton_AutoSize_clicked()
     {
+        Interface::FITKGeoCommandList* geoManager = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
+        if (geoManager == nullptr) return;
+
+        double minPoint[3] = { 0,0,0 };
+        double maxPoint[3] = { 0,0,0 };
+        geoManager->getBoundaryBox(minPoint, maxPoint);
+        double XExtent = maxPoint[0] - minPoint[0];
+        double YExtent = maxPoint[1] - minPoint[1];
+        double ZExtent = maxPoint[2] - minPoint[2];
+
+        double origin[3] = { 0,0,0 };
+        origin[0] = minPoint[0];
+        origin[1] = minPoint[1] + YExtent / 2;
+        origin[2] = minPoint[2] + ZExtent / 2;
+
+        double length = maxPoint[0] - minPoint[0];
+        double redius = qSqrt(YExtent*YExtent + ZExtent * ZExtent) / 2;
+
+        _ui->lineEdit_OriginPoint1->setText(QString::number(origin[0]));
+        _ui->lineEdit_OriginPoint2->setText(QString::number(origin[1]));
+        _ui->lineEdit_OriginPoint3->setText(QString::number(origin[2]));
+        _ui->lineEdit_AxisPoint1->setText("1");
+        _ui->lineEdit_AxisPoint2->setText("0");
+        _ui->lineEdit_AxisPoint3->setText("0");
+        _ui->lineEdit_Length->setText(QString::number(length));
+        _ui->lineEdit_Radius->setText(QString::number(redius));
+
         if (_graphObj == nullptr)return;
         getDataFromWidget(_graphObj);
 

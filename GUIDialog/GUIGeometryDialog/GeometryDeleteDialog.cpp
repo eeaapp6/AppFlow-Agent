@@ -35,7 +35,7 @@ namespace GUI
     void GeometryDeleteDialog::on_pushButton_OK_clicked()
     {
         if (_obj == nullptr)return;
-        Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
+        Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
         if (geometryData == nullptr) return;
 
         //判断删除的数据是否是当前界面

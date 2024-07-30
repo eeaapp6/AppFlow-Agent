@@ -114,22 +114,9 @@ namespace GUI
          * @date 2024-07-16
          */
         void clearTableWidget();
-        /**
-         * @brief 更新几何划分网格尺寸数据
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-07-16
-         */
-        void updateMeshGeoMeshSize();
-        /**
-         * @brief 更新几何划分网格尺寸数据中记录的面组id
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-07-16
-         */
-        void updateMeshGeoMeshSizeID();
     private:
         bool _isCreate = false;
         Interface::FITKAbsGeoModelBox* _obj = nullptr;
-        Interface::FITKAbsGeoCommand* _geoModel = nullptr;
         Ui::CudeInfoWidget* _ui = nullptr;
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
     };
