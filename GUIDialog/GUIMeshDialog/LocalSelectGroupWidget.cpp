@@ -9,6 +9,7 @@
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoModelManager.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoShapeAgent.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractGeometryMeshSizeGenerator.h"
@@ -55,7 +56,7 @@ namespace GUI
         Interface::FITKMeshGenInterface* genInterface = Interface::FITKMeshGenInterface::getInstance();
         Interface::FITKGeometryMeshSizeManager* manger = genInterface->getGeometryMeshSizeManager();
         if (manger == nullptr)return;
-        Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
+        Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
         if (geometryData == nullptr) return;
 
         _ui->tableWidget->clear();
@@ -73,14 +74,13 @@ namespace GUI
         };
 
         for (int i = 0; i < geometryData->getDataCount(); i++) {
-            auto geometryObj = dynamic_cast<Interface::FITKAbsGeoCommand*>(geometryData->getDataByIndex(i));
+            auto geometryObj = geometryData->getDataByIndex(i);
             if (geometryObj == nullptr)continue;
-            QString geoName = geometryObj->getDataObjectName();
-            //FITKAbsGeoCommand无法直接获取到FITKGeoComponentManager，通过FITKAbstractGeoModel获取
-            auto geoModelData = dynamic_cast<Interface::FITKAbstractGeoModel*>(geometryData->getDataByID(geometryObj->getDataObjectID()));
-            if (geoModelData == nullptr)continue;
-            Interface::FITKGeoComponentManager* compManager = geoModelData->getGeoComponentManager();
+            if (geometryObj->getShapeAgent() == nullptr)continue;
+
+            Interface::FITKGeoComponentManager* compManager = geometryObj->getShapeAgent()->getGeoComponentManager();
             if (compManager == nullptr)continue;
+            QString geoName = geometryObj->getDataObjectName();
             for (int j = 0; j < compManager->getDataCount(); j++) {
                 Interface::FITKGeoComponent* geoCom = compManager->getDataByIndex(j);
                 if (geoCom == nullptr)continue;
@@ -107,7 +107,7 @@ namespace GUI
         propertyWidget->init();
     }
 
-    void LocalSelectGroupWidget::on_pushButton_OK_clicked()
+    void LocalSelectGroupWidget::on_pushButton_Add_clicked()
     {
         int currentRow = _ui->tableWidget->currentRow();
         QTableWidgetItem* item = _ui->tableWidget->item(currentRow, 0);

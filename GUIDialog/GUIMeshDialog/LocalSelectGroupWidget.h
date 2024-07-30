@@ -28,7 +28,7 @@ namespace GUI
         ;
         void on_pushButton_Cancel_clicked();
 
-        void on_pushButton_OK_clicked();
+        void on_pushButton_Add_clicked();
     private:
         Ui::LocalSelectGroupWidget* _ui = nullptr;
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;

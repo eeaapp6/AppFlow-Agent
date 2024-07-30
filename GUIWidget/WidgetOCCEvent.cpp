@@ -36,10 +36,14 @@ namespace GUI
         }
 
         //数据仓库中获取数据
-        Interface::FITKAbstractModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractModel>(DataObjId);
-        TopoDS_Shape shape;
+        Interface::FITKAbsGeoCommand* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbsGeoCommand>(DataObjId);
+        if (model->getShapeAgent() == nullptr) {
+            isOk = false;
+            return;
+        }
 
-        OCC::FITKAbstractOCCModel* OCCModel = dynamic_cast<OCC::FITKAbstractOCCModel*>(model);
+        TopoDS_Shape shape;
+        OCC::FITKAbstractOCCModel* OCCModel = dynamic_cast<OCC::FITKAbstractOCCModel*>(model->getShapeAgent());
         if (OCCModel == nullptr) {
             isOk = false;
             return;

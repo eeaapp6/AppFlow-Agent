@@ -45,8 +45,6 @@ namespace GUI {
         Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(false), _obj(obj), _oper(oper)
     {
-        _geoModel = dynamic_cast<Interface::FITKAbsGeoCommand*>(_obj);
-
         init();
 
         _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
@@ -95,8 +93,8 @@ namespace GUI {
 
     void CudeInfoWidget::setFaceGroupValue(int rowIndex, QList<int> facesId)
     {
-        if (_geoModel == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getShapeAgent()->getGeoComponentManager();
+        if (_obj == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
 
         CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(rowIndex, 0));
@@ -169,7 +167,7 @@ namespace GUI {
     {
         if (checkValue() == false)return;
 
-        Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
+        Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
         if (geometryData == nullptr) return;
 
         if (_isCreate) {
@@ -194,15 +192,11 @@ namespace GUI {
             _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
             _ui->lineEdit_Name->setEnabled(false);
             _isCreate = false;
-            _geoModel = dynamic_cast<Interface::FITKAbsGeoCommand*>(_obj);
         }
         else {
             if (_obj == nullptr)return;
             getDataFormWidget();
             _obj->update();
-
-            //更新几何划分网格尺寸数据
-            updateMeshGeoMeshSize();
         }
 
         if (_oper && _obj) {
@@ -219,8 +213,8 @@ namespace GUI {
 
     void CudeInfoWidget::on_pushButton_Add_clicked()
     {
-        if (_geoModel == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getShapeAgent()->getGeoComponentManager();
+        if (_obj == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
 
         int rowNum = _ui->tableWidget->rowCount();
@@ -252,8 +246,8 @@ namespace GUI {
 
     void CudeInfoWidget::slotCellTableClicked(int row, int column)
     {
-        if (_geoModel == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getShapeAgent()->getGeoComponentManager();
+        if (_obj == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
 
         CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(row, column));
@@ -266,7 +260,7 @@ namespace GUI {
             widget->setSelect(true);
             clearGraphHight();
             //执行操作器
-            _oper->setArgs("objID", _geoModel->getDataObjectID());
+            _oper->setArgs("objID", _obj->getDataObjectID());
             _oper->setArgs("faceIDs", QVariant::fromValue(obj->getMember()));
             _oper->moveToStep(1);
         }
@@ -274,8 +268,8 @@ namespace GUI {
 
     void CudeInfoWidget::slotEditNameStart()
     {
-        if (_geoModel == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getShapeAgent()->getGeoComponentManager();
+        if (_obj == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
         CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
         if (widget == nullptr) return;
@@ -287,8 +281,8 @@ namespace GUI {
 
     void CudeInfoWidget::slotEditNameFinish()
     {
-        if (_geoModel == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getShapeAgent()->getGeoComponentManager();
+        if (_obj == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
         CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
         if (widget == nullptr) return;
@@ -355,8 +349,8 @@ namespace GUI {
 
     void CudeInfoWidget::slotFaceWidgetDeleteClicked()
     {
-        if (_geoModel == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getShapeAgent()->getGeoComponentManager();
+        if (_obj == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
         CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
         if (widget == nullptr) return;
@@ -433,8 +427,8 @@ namespace GUI {
         _ui->lineEdit_Dimensions2->setText(QString::number(dimensions[1]));
         _ui->lineEdit_Dimensions3->setText(QString::number(dimensions[2]));
 
-        if (_geoModel == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getShapeAgent()->getGeoComponentManager();
+        if (_obj == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
         _ui->tableWidget->setRowCount(commanger->getDataCount());
         for (int i = 0; i < commanger->getDataCount(); i++) {
@@ -493,6 +487,8 @@ namespace GUI {
         _ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
         //充满表格
         _ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
+        //设置只能单选
+        _ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
 
         connect(_ui->tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(slotCellTableClicked(int, int)));
     }
@@ -543,57 +539,5 @@ namespace GUI {
         }
 
         _ui->tableWidget->clear();
-    }
-
-    void CudeInfoWidget::updateMeshGeoMeshSize()
-    {
-        //更新几何划分网格尺寸参数类面组id
-        updateMeshGeoMeshSizeID();
-
-        //更新面组id后，查看是否可通过id查找到模型
-        QList<Interface::FITKGeometryMeshSize*> deleteList = {};
-        Interface::FITKGeometryMeshSizeManager* manger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
-        if (manger == nullptr)return;
-        for (int i = 0; i < manger->getDataCount(); i++) {
-            auto geoMeshSize = manger->getDataByIndex(i);
-            if (geoMeshSize == nullptr)continue;
-            //如果查询不到，认为面组被删除，清除几何划分网格尺寸参数对象
-            if (!geoMeshSize->getGeoModel()) {
-                deleteList.append(geoMeshSize);
-            }
-        }
-
-        for (auto d : deleteList) {
-            manger->removeDataObj(d);
-        }
-    }
-
-    void CudeInfoWidget::updateMeshGeoMeshSizeID()
-    {
-        Interface::FITKGeometryMeshSizeManager* manger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
-        if (manger == nullptr)return;
-
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-
-        //获取该模型相关的面组列表
-        QList<Interface::FITKGeometryMeshSize*> geoMeshSizeList = {};
-        for (int j = 0; j < manger->getDataCount(); j++) {
-            auto geoComp = manger->getDataByIndex(j);
-            if (geoComp == nullptr)continue;
-            if (geoComp->getDataObjectName().contains(_ui->lineEdit_Name->text())) geoMeshSizeList.append(geoComp);
-        }
-
-        //更新几何网格参数中的面组id
-        for (int i = 0; i < commanger->getDataCount(); i++) {
-            auto comp = commanger->getDataByIndex(i);
-            if (comp == nullptr)continue;
-            for (auto geoMesh : geoMeshSizeList) {
-                QString name1 = _ui->lineEdit_Name->text() + "." + comp->getDataObjectName();
-                QString name2 = geoMesh->getDataObjectName();
-                if (name1 != name2)continue;
-                geoMesh->setGeoGroupComponentId(comp->getDataObjectID());
-            }
-        }
     }
 }

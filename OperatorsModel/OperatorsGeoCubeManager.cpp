@@ -39,7 +39,7 @@ namespace ModelOper
         if (mainWindow == nullptr)return false;
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return false;
-        Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
+        Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
         if (geometryData == nullptr) return false;
 
         int objID = -1;
