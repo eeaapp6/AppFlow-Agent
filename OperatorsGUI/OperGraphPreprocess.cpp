@@ -18,7 +18,7 @@
 #include "GraphDataProvider/GraphMarkProvider.h"
 
 // Data
-#include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSize.h"
 
@@ -49,7 +49,7 @@ namespace GUIOper
         bool isValid = false;
 
         // 检查数据ID是否为模型。
-        Interface::FITKAbstractModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractModel>(dataObjId);
+        Interface::FITKAbsGeoCommand* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbsGeoCommand>(dataObjId);
         if (model && !isValid)
         {
             obj = modelProvider->getModelGraphObject(dataObjId);

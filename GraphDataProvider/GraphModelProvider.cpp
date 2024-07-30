@@ -15,7 +15,7 @@
 #include "FITK_Kernel/FITKCore/FITKDataRepo.h"
 
 // Data
-#include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSize.h"
 
@@ -66,14 +66,14 @@ namespace GraphData
         Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
 
         // 检查数据ID。
-        Interface::FITKAbstractModel* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractModel>(dataObjId);
+        Interface::FITKAbsGeoCommand* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbsGeoCommand>(dataObjId);
         if (!model)
         {
             return obj;
         }
 
         // 模型可视化对象。
-        obj = getGraphObject("ModelOCC", m_modelObjHash, model);
+        obj = getGraphObject("GeoModel", m_modelObjHash, model);
 
         return obj;
     }

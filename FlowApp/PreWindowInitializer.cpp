@@ -90,11 +90,11 @@ void PreWindowInteractionStyle::OnLeftButtonDown()
     // TEST2.
     //@{
     // GUI::MainTreeEnum::MainTree_MeshPoint = 9
-    //GraphOperParam param;
-    //param.HighlightMode = HighlightLevel::AdvHighlight;
-    //param.AdvHighlightIndice = QVector<int>{ 1 };
-    //param.Visibility = true;
-    //m_operGraph->updateGraphByType(9, param);
+    GraphOperParam param;
+    param.HighlightMode = HighlightLevel::AdvHighlight;
+    param.AdvHighlightIndice = QVector<int>{ 1 };
+    param.Visibility = true;
+    m_operGraph->updateGraphByType(9, param);
     //@}
 
     this->Interactor->GetEventPosition(m_leftButtonDowmPos);
