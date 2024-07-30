@@ -57,6 +57,15 @@ namespace GraphData
          */
         Exchange::FITKOCC2VTKGraphObject3D* getGraphObjectByType(int type);
 
+        /**
+         * @brief   根据数据ID获取全部材料点可视化对象。（没有则创建）
+         * @param   dataObjId：数据ID
+         * @return  可视化对象
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        Exchange::FITKOCC2VTKGraphObject3D* getMaterialPointsGraphObject();
+
     private:
         /**
          * @brief   构造函数。

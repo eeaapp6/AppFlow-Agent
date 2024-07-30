@@ -127,7 +127,32 @@ namespace EventOper
 
         // 高亮功能接口。
         //@{
-        
+        /**
+         * @brief   高亮可视化对象。[虚函数]
+         * @param   dataObjId：数据对象ID
+         * @param   info：附加信息[缺省]
+         * @param   color：高亮颜色[缺省]
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        virtual void highlight(int dataObjId, QVariant info = QVariant(), QColor color = QColor());
+
+        /**
+         * @brief   根据附加信息高级高亮指定的数据。[虚函数]
+         * @param   dataObjId：数据对象ID
+         * @param   indice：附加信息（索引或数据ID）[引用]
+         * @param   color：高亮颜色[缺省]
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        virtual void advHighlight(int dataObjId, QVector<int> & indice, QColor color = QColor());
+
+        /**
+         * @brief   取消全部高亮、高级高亮数据的高亮效果。[虚函数]
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        virtual void clearHighlight();
         //@}
 
         // 渲染专用接口。

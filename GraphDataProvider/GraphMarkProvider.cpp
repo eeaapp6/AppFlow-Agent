@@ -86,4 +86,23 @@ namespace GraphData
 
         return obj;
     }
+
+    Exchange::FITKOCC2VTKGraphObject3D* GraphMarkProvider::getMaterialPointsGraphObject()
+    {
+        // 全部材料点可视化对象。
+        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+
+        // 获取材料点管理器。
+        Interface::FITKMeshGenInterface* interMeshGen = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKZonePointManager* mPtsMgr = interMeshGen->getZonePointManager();
+        if (!mPtsMgr)
+        {
+            return obj;
+        }
+
+        // 材料点可视化对象。
+        obj = getGraphObject("MaterialPoints", m_tempTypeObjHash, mPtsMgr);
+
+        return obj;
+    }
 }   // namespace GraphData

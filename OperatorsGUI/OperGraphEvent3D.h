@@ -66,6 +66,15 @@ namespace GUIOper
          */
         void addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget, bool fitView = false);
 
+        /**
+         * @brief   通过数据对象ID获取可视化对象。（没有则创建）
+         * @param   dataObjId：数据对象ID
+         * @return  可视化对象列表
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> getGraphObjectsByDataId(int dataObjId);
+
     };
 
 }  // namespace GUIOper

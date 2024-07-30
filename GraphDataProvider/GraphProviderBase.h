@@ -87,6 +87,13 @@ namespace GraphData
          */
         void updateVisibility();
 
+        /**
+         * @brief   清除全部管理中的可视化对象高亮与高级高亮效果。
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        void clearHighlight();
+
     protected:
         /**
          * @brief   构造函数。

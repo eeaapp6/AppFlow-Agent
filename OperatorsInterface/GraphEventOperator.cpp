@@ -29,6 +29,27 @@ namespace EventOper
         Q_UNUSED(isOn);
     }
 
+    void GraphEventOperator::highlight(int dataObjId, QVariant info, QColor color)
+    {
+        // 根据不同子类重写。
+        Q_UNUSED(dataObjId);
+        Q_UNUSED(info);
+        Q_UNUSED(color);
+    }
+
+    void GraphEventOperator::advHighlight(int dataObjId, QVector<int> & indice, QColor color)
+    {
+        // 根据不同子类重写。
+        Q_UNUSED(dataObjId);
+        Q_UNUSED(indice);
+        Q_UNUSED(color);
+    }
+
+    void GraphEventOperator::clearHighlight()
+    {
+        // 根据不同子类重写。
+    }
+
     void GraphEventOperator::reRender(bool fitView)
     {
         // 根据不同子类重写。

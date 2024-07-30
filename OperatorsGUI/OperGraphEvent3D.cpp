@@ -4,6 +4,8 @@
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 
+// Global data
+#include "FITK_Kernel/FITKCore/FITKDataRepo.h"
 // Graph
 #include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
 
@@ -12,8 +14,16 @@
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraphRender.h"
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
 
-// Render OCC
-//#include "FITK_Component/FITKRenderWindowOCC/FITKGraph3DWindowOCC.h"
+// Graph data manager
+#include "GraphDataProvider/GraphProviderManager.h"
+#include "GraphDataProvider/GraphModelProvider.h"
+#include "GraphDataProvider/GraphMarkProvider.h"
+
+// Data
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSize.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKZonePoints.h"
 
 // GUI
 #include "GUIFrame/MainWindow.h"
@@ -92,5 +102,68 @@ namespace GUIOper
             graphWidget->reRender();
         }
         //@}
+    }
+
+    QList<Exchange::FITKOCC2VTKGraphObject3D*> OperGraphEvent3D::getGraphObjectsByDataId(int dataObjId)
+    {
+        // 获取或创建可视化对象。
+        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
+        bool isValid = false;
+
+        // 获取可视化窗口。
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return objs;
+        }
+
+        // 获取模型与符号可视化对象管理器。
+        GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
+        GraphData::GraphMarkProvider* markProvider = GraphData::GraphProviderManager::getInstance()->getMarkProvider(graphWidget);
+        if (!modelProvider || !markProvider)
+        {
+            return objs;
+        }
+
+        // 检查数据ID是否为模型。
+        Interface::FITKAbsGeoCommand* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbsGeoCommand>(dataObjId);
+        if (model && !isValid)
+        {
+            obj = modelProvider->getModelGraphObject(dataObjId);
+            isValid = true;
+        }
+
+        // 检查数据ID是否为流体网格。
+        Interface::FITKUnstructuredFluidMeshVTK* fluidMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKUnstructuredFluidMeshVTK>(dataObjId);
+        if (fluidMesh && !isValid)
+        {
+            objs = modelProvider->getFuildBoundMeshGraphObjects(dataObjId);
+            isValid = true;
+        }
+
+        // 检查数据ID是否为流体域形状数据。
+        Interface::FITKAbstractRegionMeshSize* regionMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractRegionMeshSize>(dataObjId);
+        if (regionMesh && !isValid)
+        {
+            obj = modelProvider->getRegionMeshGraphObject(dataObjId);
+            isValid = true;
+        }
+
+        // 检查数据ID是否为材料点数据。
+        Interface::FITKZonePointManager* matPtsMgr = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKZonePointManager>(dataObjId);
+        Interface::FITKZonePoint* matPt = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKZonePoint>(dataObjId);
+        if ((matPtsMgr || matPt) && !isValid)
+        {
+            obj = markProvider->getMaterialPointsGraphObject();
+            isValid = true;
+        }
+
+        if (obj)
+        {
+            objs.push_back(obj);
+        }
+
+        return objs;
     }
 }  // namespace GUIOper

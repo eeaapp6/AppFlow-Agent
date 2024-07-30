@@ -17,11 +17,6 @@
 #include "GraphDataProvider/GraphModelProvider.h"
 #include "GraphDataProvider/GraphMarkProvider.h"
 
-// Data
-#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
-#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
-#include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSize.h"
-
 // GUI
 #include "GUIFrame/MainTreeWidget.h"
 
@@ -36,46 +31,8 @@ namespace GUIOper
             return;
         }
 
-        // 获取模型可视化对象管理器。
-        GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
-        if (!modelProvider)
-        {
-            return;
-        }
-
         // 获取或创建可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
-        bool isValid = false;
-
-        // 检查数据ID是否为模型。
-        Interface::FITKAbsGeoCommand* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbsGeoCommand>(dataObjId);
-        if (model && !isValid)
-        {
-            obj = modelProvider->getModelGraphObject(dataObjId);
-            isValid = true;
-        }
-
-        // 检查数据ID是否为流体网格。
-        Interface::FITKUnstructuredFluidMeshVTK* fluidMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKUnstructuredFluidMeshVTK>(dataObjId);
-        if (fluidMesh && !isValid)
-        {
-            objs = modelProvider->getFuildBoundMeshGraphObjects(dataObjId);
-            isValid = true;
-        }
-
-        // 检查数据ID是否为流体域形状数据。
-        Interface::FITKAbstractRegionMeshSize* regionMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractRegionMeshSize>(dataObjId);
-        if (regionMesh && !isValid)
-        {
-            obj = modelProvider->getRegionMeshGraphObject(dataObjId);
-            isValid = true;
-        }
-
-        if (obj)
-        {
-            objs.push_back(obj);
-        }
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getGraphObjectsByDataId(dataObjId);
 
         // 添加至三维窗口。
         for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
@@ -193,6 +150,73 @@ namespace GUIOper
             {
                 obj->setTransparent(flag);
             }
+        }
+    }
+
+    void OperGraphPreprocess::highlight(int dataObjId, QVariant info, QColor color)
+    {
+        // 获取可视化窗口。
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return;
+        }
+
+        // 全部高亮。
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getGraphObjectsByDataId(dataObjId);
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        {
+            if (!obj)
+            {
+                continue;
+            }
+
+            obj->highlight();
+        }
+    }
+
+    void OperGraphPreprocess::advHighlight(int dataObjId, QVector<int> & indice, QColor color)
+    {
+        // 获取可视化窗口。
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return;
+        }
+
+        // 全部高级高亮。
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getGraphObjectsByDataId(dataObjId);
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        {
+            if (!obj)
+            {
+                continue;
+            }
+
+            obj->advanceHighlight(ShapeType::ShapeTypeNone, indice, color);
+        }
+    }
+
+    void OperGraphPreprocess::clearHighlight()
+    {
+        // 获取可视化窗口。
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return;
+        }
+
+        // 获取模型与符号可视化对象管理器，并清除高亮。
+        GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
+        if (modelProvider)
+        {
+            modelProvider->clearHighlight();
+        }
+
+        GraphData::GraphMarkProvider* markProvider = GraphData::GraphProviderManager::getInstance()->getMarkProvider(graphWidget);
+        if (markProvider)
+        {
+            markProvider->clearHighlight();
         }
     }
 

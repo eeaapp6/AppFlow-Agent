@@ -39,6 +39,8 @@ namespace GUIOper
          */
         ~OperGraphPreprocess() = default;
 
+        // 前处理渲染与窗口功能。
+        //@{
         /**
          * @brief   根据提供的数据对象ID更新对应可视化对象。（没有则创建）[重写]
          * @param   dataObjId：数据对象ID
@@ -74,7 +76,40 @@ namespace GUIOper
          * @date    2024-07-30
          */
         void setEnableModelTransparent(bool flag) override;
+        //@}
 
+        // 高亮功能接口。
+        //@{
+        /**
+         * @brief   高亮可视化对象。[重写]
+         * @param   dataObjId：数据对象ID
+         * @param   info：附加信息[缺省]
+         * @param   color：高亮颜色[缺省]
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        void highlight(int dataObjId, QVariant info = QVariant(), QColor color = QColor()) override;
+
+        /**
+         * @brief   根据附加信息高级高亮指定的数据。[重写]
+         * @param   dataObjId：数据对象ID
+         * @param   indice：附加信息（索引或数据ID）[引用]
+         * @param   color：高亮颜色[缺省]
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        void advHighlight(int dataObjId, QVector<int> & indice, QColor color = QColor()) override;
+
+        /**
+         * @brief   取消全部高亮、高级高亮数据的高亮效果。[重写]
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        void clearHighlight() override;
+        //@}
+
+        // 渲染专用接口。
+        //@{
         /**
          * @brief   刷新渲染窗口。[重写]
          * @param   fitView：是否重置相机
@@ -82,6 +117,7 @@ namespace GUIOper
          * @date    2024-07-24
          */
         void reRender(bool fitView = false) override;
+        //@}
 
     };
 

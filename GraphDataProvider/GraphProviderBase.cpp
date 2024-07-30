@@ -170,4 +170,19 @@ namespace GraphData
     {
 
     }
+
+    void GraphProviderBase::clearHighlight()
+    {
+        // 仅获取当前已实例化可视化对象。
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+
+        // 全部尝试取消高亮。
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        {
+            if (obj)
+            {
+                obj->disHighlight();
+            }
+        }
+    }
 }   // namespace GraphData
