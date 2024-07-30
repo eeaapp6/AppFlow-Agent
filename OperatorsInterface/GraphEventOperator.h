@@ -115,6 +115,14 @@ namespace EventOper
          * @date    2024-07-23
          */
         virtual Exchange::FITKOCC2VTKGraphObject3D* getModelGraphObjectByDataId(int dataObjId);
+
+        /**
+         * @brief   将现有模型全部开启或关闭半透明显示。[虚函数]
+         * @param   flag：是否开启
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        virtual void setEnableModelTransparent(bool flag);
         //@}
 
         // 高亮功能接口。
