@@ -68,6 +68,14 @@ namespace GUIOper
         Exchange::FITKOCC2VTKGraphObject3D* getModelGraphObjectByDataId(int dataObjId) override;
 
         /**
+         * @brief   将现有模型全部开启或关闭半透明显示。[重写]
+         * @param   flag：是否开启
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        void setEnableModelTransparent(bool flag) override;
+
+        /**
          * @brief   刷新渲染窗口。[重写]
          * @param   fitView：是否重置相机
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)

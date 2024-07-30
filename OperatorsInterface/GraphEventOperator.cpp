@@ -23,6 +23,12 @@ namespace EventOper
         return nullptr;
     }
 
+    void GraphEventOperator::setEnableModelTransparent(bool isOn)
+    {
+        // 根据不同子类重写。
+        Q_UNUSED(isOn);
+    }
+
     void GraphEventOperator::reRender(bool fitView)
     {
         // 根据不同子类重写。
