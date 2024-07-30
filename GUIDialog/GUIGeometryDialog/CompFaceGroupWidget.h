@@ -2,6 +2,7 @@
 #define CompFaceGroupWidget_H
 
 #include <QWidget>
+#include <QLineEdit>
 
 namespace Ui {
     class CompFaceGroupWidget;
@@ -30,6 +31,8 @@ namespace GUI
         QPair<int, int> getCurrentPos();
     signals:
         ;
+        void sigEditNameStart();
+        void sigEditNameFinish();
         void sigOkClicked();
         void sigCancelClicked();
         void sigDeleteClicked();

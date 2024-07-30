@@ -11,6 +11,7 @@ HEADERS += \
     $$PWD/WidgetOCCEvent.h \
     $$PWD/GUIDialogBase.h \
     $$PWD/GUIWidgetBase.h \
+    $$PWD/CompLineEdit.h \
 
 SOURCES += \
     $$PWD/MainMenuBase.cpp \
@@ -24,6 +25,7 @@ SOURCES += \
     $$PWD/WidgetOCCEvent.cpp \
     $$PWD/GUIDialogBase.cpp \
     $$PWD/GUIWidgetBase.cpp \
+    $$PWD/CompLineEdit.cpp \
 
 FORMS += \
     $$PWD/PropertyEmptyWidget.ui \

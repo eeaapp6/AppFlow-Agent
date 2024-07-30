@@ -14,6 +14,8 @@ namespace GUI
 
         init();
 
+        connect(_ui->lineEdit_Name, SIGNAL(sigEditStart()), this, SIGNAL(sigEditNameStart()));
+        connect(_ui->lineEdit_Name, SIGNAL(sigEditFinish()), this, SIGNAL(sigEditNameFinish()));
         connect(_ui->pushButton_OK, SIGNAL(clicked()), this, SIGNAL(sigOkClicked()));
         connect(_ui->pushButton_Cancel, SIGNAL(clicked()), this, SIGNAL(sigCancelClicked()));
         connect(_ui->pushButton_Delete, SIGNAL(clicked()), this, SIGNAL(sigDeleteClicked()));
@@ -44,12 +46,12 @@ namespace GUI
 
     void CompFaceGroupWidget::setName(QString name)
     {
-        _ui->label->setText(name);
+        _ui->lineEdit_Name->setText(name);
     }
 
     QString CompFaceGroupWidget::getName()
     {
-        return _ui->label->text();
+        return _ui->lineEdit_Name->text();
     }
 
     void CompFaceGroupWidget::setData(int pos, QVariant value)

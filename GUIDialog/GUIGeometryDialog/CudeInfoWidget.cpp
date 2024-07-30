@@ -8,6 +8,7 @@
 #include "GUIWidget/PickedDataProvider.h"
 #include "GUIWidget/PickedData.h"
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
+#include "OperatorsInterface/TreeEventOperator.h"
 #include "OperatorsInterface/GraphEventOperator.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
@@ -25,8 +26,7 @@
 #include <QTableWidgetItem>
 #include <QSpacerItem>
 
-#define CudeNamePos Qt::UserRole
-#define CudeFacePos Qt::UserRole+1
+#define CudeObjID Qt::UserRole
 
 namespace GUI {
 
@@ -94,12 +94,18 @@ namespace GUI {
 
     void CudeInfoWidget::setFaceGroupValue(int rowIndex, QList<int> facesId)
     {
+        if (_geoModel == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        if (commanger == nullptr)return;
+
         CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(rowIndex, 0));
         if (item == nullptr)return;
+        auto obj = commanger->getDataByID(item->data(CudeObjID).toInt());
+        if (obj == nullptr)return;
 
         //重新设置面id
-        QString name = item->data(CudeNamePos).toString();
-        item->setData(CudeFacePos, QVariant::fromValue(facesId));
+        QString name = obj->getDataObjectName();
+        obj->setMember(facesId);
         if (facesId.size() == 0) {
             name += tr("(empty)");
         }
@@ -113,15 +119,17 @@ namespace GUI {
             for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
                 if (i == rowIndex)continue;
                 CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-                if (otherItem == nullptr)return;
-                QList<int> ids = otherItem->data(CudeFacePos).value<QList<int>>();
+                if (otherItem == nullptr)continue;
+                auto otherObj = commanger->getDataByID(otherItem->data(CudeObjID).toInt());
+                if (otherObj == nullptr)continue;
+                QList<int> ids = otherObj->getMember();
                 
                 //如果已经包含该id,移除该id，并重新设置名称
                 if (ids.contains(faceId)) {
                     ids.removeOne(faceId);
 
-                    QString otherName = otherItem->data(CudeNamePos).toString();
-                    otherItem->setData(CudeFacePos, QVariant::fromValue(ids));
+                    QString otherName = otherObj->getDataObjectName();
+                    otherObj->setMember(ids);
                     if (ids.size() == 0) {
                         otherName += tr("(empty)");
                     }
@@ -210,6 +218,10 @@ namespace GUI {
 
     void CudeInfoWidget::on_pushButton_Add_clicked()
     {
+        if (_geoModel == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        if (commanger == nullptr)return;
+
         int rowNum = _ui->tableWidget->rowCount();
         _ui->tableWidget->setRowCount(rowNum + 1);
 
@@ -217,36 +229,103 @@ namespace GUI {
         QString name = group + tr("(empty)");
         QList<int> faceList = {};
 
+        //创建面组对象
+        Interface::FITKGeoComponent* geoCom = new Interface::FITKGeoComponent(Interface::FITKModelEnum::FITKModelSetType::FMSSurface);
+        geoCom->setDataObjectName(group);
+        commanger->appendDataObj(geoCom);
+
         CompFaceGroupWidget* widget = new CompFaceGroupWidget(_ui->tableWidget);
         widget->setName(name);
-        widget->setData(CudeNamePos, group);
-        widget->setData(CudeFacePos, QVariant::fromValue(faceList));
+        widget->setData(CudeObjID, geoCom->getDataObjectID());
         _ui->tableWidget->setCellWidget(rowNum, 0, widget);
 
+        connect(widget, SIGNAL(sigEditNameStart()), this, SLOT(slotEditNameStart()));
+        connect(widget, SIGNAL(sigEditNameFinish()), this, SLOT(slotEditNameFinish()));
         connect(widget, SIGNAL(sigOkClicked()), this, SLOT(slotFaceWidgetOkClicked()));
         connect(widget, SIGNAL(sigCancelClicked()), this, SLOT(slotFaceWidgetCancelClicked()));
         connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
 
+        //更新位置
         updateFaceWidgetCurrentPos();
     }
 
     void CudeInfoWidget::slotCellTableClicked(int row, int column)
     {
-        if (!_geoModel)return;
+        if (_geoModel == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        if (commanger == nullptr)return;
 
         CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(row, column));
         if (widget == nullptr)return;
+        auto obj = commanger->getDataByID(widget->data(CudeObjID).toInt());
+        if (obj == nullptr)return;
 
         if (_oper) {
             setAllFaceGroupSelect(false);
             widget->setSelect(true);
-
             clearGraphHight();
-
             //执行操作器
             _oper->setArgs("objID", _geoModel->getDataObjectID());
-            _oper->setArgs("faceIDs", widget->data(CudeFacePos));
+            _oper->setArgs("faceIDs", QVariant::fromValue(obj->getMember()));
             _oper->moveToStep(1);
+        }
+    }
+
+    void CudeInfoWidget::slotEditNameStart()
+    {
+        if (_geoModel == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        if (commanger == nullptr)return;
+        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
+        if (widget == nullptr) return;
+
+        auto obj = commanger->getDataByID(widget->data(CudeObjID).toInt());
+        if (obj == nullptr)return;
+        widget->setName(obj->getDataObjectName());
+    }
+
+    void CudeInfoWidget::slotEditNameFinish()
+    {
+        if (_geoModel == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        if (commanger == nullptr)return;
+        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
+        if (widget == nullptr) return;
+        auto obj = commanger->getDataByID(widget->data(CudeObjID).toInt());
+        if (obj == nullptr)return;
+        int objID = obj->getDataObjectID();
+        QString name = "";
+        //判断新名称是否存在
+        if (commanger->getDataByName(widget->getName())) {
+            name = obj->getDataObjectName();
+        }
+        else {
+            name = widget->getName();
+        }
+
+        //设置控件名称
+        obj->setDataObjectName(name);
+        if (obj->getMember().size() == 0) {
+            name += tr("(empty)");
+        }
+        else {
+            name += tr("(%1 faces)").arg(obj->getMember().size());
+        }
+        widget->setName(name);
+
+        //更新网格边界对象对应的名称
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return;
+        auto meshSizeManger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
+        for (int i = 0; i < meshSizeManger->getDataCount(); i++) {
+            auto meshSizeObj = meshSizeManger->getDataByIndex(i);
+            if (meshSizeObj == nullptr)continue;
+            if (meshSizeObj->getGeoGroupComponentId() == objID) {
+                QString meshSizeNewName = _obj->getDataObjectName() + "." + obj->getDataObjectName();
+                meshSizeObj->setDataObjectName(meshSizeNewName);
+                treeOper->updateTree();
+                break;
+            }
         }
     }
 
@@ -275,13 +354,34 @@ namespace GUI {
 
     void CudeInfoWidget::slotFaceWidgetDeleteClicked()
     {
+        if (_geoModel == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        if (commanger == nullptr)return;
         CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
         if (widget == nullptr) return;
+
+        int objID = widget->data(CudeObjID).toInt();
+        commanger->removeDataByID(objID);
         _ui->tableWidget->removeRow(widget->getCurrentPos().first);
+
         //更新界面中存储的位置
         updateFaceWidgetCurrentPos();
         //清除高亮
         clearGraphHight();
+
+        //判断当前面组是否被网格边界参数所使用，被使用移除对应的网格边界参数对象
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return;
+        auto meshSizeManger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
+        for (int i = 0; i < meshSizeManger->getDataCount(); i++) {
+            auto meshSizeObj = meshSizeManger->getDataByIndex(i);
+            if (meshSizeObj == nullptr)continue;
+            if (meshSizeObj->getGeoGroupComponentId() == objID) {
+                meshSizeManger->removeDataByID(meshSizeObj->getDataObjectID());
+                treeOper->updateTree();
+                break;
+            }
+        }
     }
 
     void CudeInfoWidget::closeEvent(QCloseEvent * event)
@@ -343,8 +443,6 @@ namespace GUI {
             QString name = geoCom->getDataObjectName();
 
             CompFaceGroupWidget* item = new CompFaceGroupWidget(_ui->tableWidget);
-            item->setData(CudeNamePos, name);
-            item->setData(CudeFacePos, QVariant::fromValue(ids));
             _ui->tableWidget->setCellWidget(i, 0, item);
             if (ids.size() == 0) {
                 name += tr("(empty)");
@@ -353,13 +451,15 @@ namespace GUI {
                 name += tr("(%1 faces)").arg(ids.size());
             }
             item->setName(name);
+            item->setData(CudeObjID, geoCom->getDataObjectID());
             item->setCurrentPos(i, 0);
 
+            connect(item, SIGNAL(sigEditNameStart()), this, SLOT(slotEditNameStart()));
+            connect(item, SIGNAL(sigEditNameFinish()), this, SLOT(slotEditNameFinish()));
             connect(item, SIGNAL(sigOkClicked()), this, SLOT(slotFaceWidgetOkClicked()));
             connect(item, SIGNAL(sigCancelClicked()), this, SLOT(slotFaceWidgetCancelClicked()));
             connect(item, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
         }
-
         updateFaceWidgetCurrentPos();
     }
 
@@ -378,22 +478,6 @@ namespace GUI {
         dimensions[1] = _ui->lineEdit_Dimensions2->text().toDouble();
         dimensions[2] = _ui->lineEdit_Dimensions3->text().toDouble();
         _obj->setLength(dimensions);
-
-
-        if (_geoModel == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
-        if (commanger == nullptr)return;
-        commanger->clear();
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-            if (item == nullptr)return;
-            QList<int> ids = item->data(CudeFacePos).value<QList<int>>();
-            QString name = item->data(CudeNamePos).toString();
-            Interface::FITKGeoComponent* geoCom = new Interface::FITKGeoComponent(Interface::FITKModelEnum::FITKModelSetType::FMSSurface);
-            geoCom->setMember(ids);
-            geoCom->setDataObjectName(name);
-            commanger->appendDataObj(geoCom);
-        }
     }
 
     void CudeInfoWidget::initTableWidget()

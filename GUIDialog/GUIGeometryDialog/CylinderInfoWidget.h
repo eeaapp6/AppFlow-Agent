@@ -58,6 +58,13 @@ namespace GUI
          */
         void slotCellTableClicked(int row, int column);
         /**
+         * @brief 面组名称修改事件
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void slotEditNameStart();
+        void slotEditNameFinish();
+        /**
          * @brief 面组界面ok点击事件
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-07-16
