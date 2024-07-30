@@ -168,7 +168,17 @@ namespace GraphData
 
     void GraphProviderBase::updateVisibility()
     {
+        // 仅获取当前已实例化可视化对象。
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
 
+        // 全部更新可见性。
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        {
+            if (obj)
+            {
+                obj->updateVisibility();
+            }
+        }
     }
 
     void GraphProviderBase::clearHighlight()

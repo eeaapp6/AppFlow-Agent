@@ -71,14 +71,14 @@ namespace GraphData
         virtual QString getClassName();
 
         /**
-         * @brief   根据数据ID更新可视化对象，没有则跳出。
+         * @brief   根据数据ID更新可视化对象，没有则跳出。[虚函数]
          * @param   dataId：数据ID
          * @param   info：附加信息[缺省]
          * @return  是否存在该数据ID所对应可视化对象。
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        bool updateObjById(int dataId, QVariant info = QVariant());
+        virtual bool updateObjById(int dataId, QVariant info = QVariant());
 
         /**
          * @brief   更新全部当前可见可视化对象显示状态。
