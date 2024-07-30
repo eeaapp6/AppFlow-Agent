@@ -78,6 +78,14 @@ namespace GraphData
         return obj;
     }
 
+    QList<Exchange::FITKOCC2VTKGraphObject3D*> GraphModelProvider::getAllModelGraphObjects()
+    {
+        // 模型可视化对象列表。
+        // QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
+
+        return m_modelObjHash.values();
+    }
+
     Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getBoundMeshGraphObject(int dataObjId)
     {
         // 边界网格可视化对象。

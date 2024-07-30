@@ -291,6 +291,28 @@ namespace GUI {
 
     bool CudeInfoWidget::checkValue()
     {
+        auto outputMessage = [&](QString name,double value) {
+            QMessageBox::critical(this, "", tr("%1 value : %2 error!").arg(name).arg(value), QMessageBox::Ok);
+        };
+
+        double value = _ui->lineEdit_Dimensions1->text().toDouble();
+        if (value == 0) {
+            outputMessage(tr("Dimensions X"), value);
+            return false;
+        }
+
+        value = _ui->lineEdit_Dimensions2->text().toDouble();
+        if (value == 0) {
+            outputMessage(tr("Dimensions Y"), value);
+            return false;
+        }
+
+        value = _ui->lineEdit_Dimensions3->text().toDouble();
+        if (value == 0) {
+            outputMessage(tr("Dimensions Z"), value);
+            return false;
+        }
+
         return true;
     }
 

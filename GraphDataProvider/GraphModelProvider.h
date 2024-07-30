@@ -58,6 +58,14 @@ namespace GraphData
         Exchange::FITKOCC2VTKGraphObject3D* getModelGraphObject(int dataObjId);
 
         /**
+         * @brief   获取全部模型（几何）可视化对象。（没有则不创建）
+         * @return  可视化对象列表
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-07-30
+         */
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> getAllModelGraphObjects();
+
+        /**
          * @brief   根据数据ID获取边界网格可视化对象。（没有则创建）
          * @param   dataObjId：数据ID
          * @return  可视化对象（边界网格数据ID）

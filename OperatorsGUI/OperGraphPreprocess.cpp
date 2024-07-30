@@ -114,6 +114,9 @@ namespace GUIOper
             return;
         }
 
+        // 首先添加至三维窗口。
+        addGraphObjectToWidget(obj, graphWidget, false);
+
         // 刷新数据。
         obj->update(param.ForceUpdate);
 
@@ -141,9 +144,6 @@ namespace GUIOper
         
         // 隐藏或显示。
         obj->setVisible(param.Visibility);
-
-        // 添加至三维窗口。
-        addGraphObjectToWidget(obj, graphWidget, false);
     }
 
     Exchange::FITKOCC2VTKGraphObject3D* OperGraphPreprocess::getModelGraphObjectByDataId(int dataObjId)
@@ -167,6 +167,33 @@ namespace GUIOper
 
         obj = modelProvider->getCurrentGraphObjByDataId(dataObjId);
         return obj;
+    }
+
+    void OperGraphPreprocess::setEnableModelTransparent(bool flag)
+    {
+        // 获取可视化窗口。
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return;
+        }
+
+        // 获取模型可视化对象管理器。
+        GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
+        if (!modelProvider)
+        {
+            return;
+        }
+
+        // 启用或关闭半透明。
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = modelProvider->getAllModelGraphObjects();
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        {
+            if (obj)
+            {
+                obj->setTransparent(flag);
+            }
+        }
     }
 
     void OperGraphPreprocess::reRender(bool fitView)
