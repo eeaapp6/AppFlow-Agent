@@ -123,7 +123,7 @@ namespace GUI
     private:
         bool _isCreate = false;
         Interface::FITKAbsGeoModelCylinder* _obj = nullptr;
-        Interface::FITKAbstractGeoModel* _geoModel = nullptr;
+        Interface::FITKAbsGeoCommand* _geoModel = nullptr;
         Ui::CylinderInfoWidget* _ui = nullptr;
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
     };

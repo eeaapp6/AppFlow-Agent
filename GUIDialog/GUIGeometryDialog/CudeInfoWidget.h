@@ -122,7 +122,7 @@ namespace GUI
     private:
         bool _isCreate = false;
         Interface::FITKAbsGeoModelBox* _obj = nullptr;
-        Interface::FITKAbstractGeoModel* _geoModel = nullptr;
+        Interface::FITKAbsGeoCommand* _geoModel = nullptr;
         Ui::CudeInfoWidget* _ui = nullptr;
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
     };

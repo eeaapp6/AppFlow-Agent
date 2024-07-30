@@ -16,6 +16,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelCylinder.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoShapeAgent.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKComponentManager.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
@@ -42,7 +43,7 @@ namespace GUI {
         Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(false), _obj(obj), _oper(oper)
     {
-        _geoModel = dynamic_cast<Interface::FITKAbstractGeoModel*>(_obj);
+        _geoModel = dynamic_cast<Interface::FITKAbsGeoCommand*>(_obj);
 
         init();
 
@@ -184,7 +185,7 @@ namespace GUI {
             _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
             _ui->lineEdit_Name->setEnabled(false);
             _isCreate = false;
-            _geoModel = dynamic_cast<Interface::FITKAbstractGeoModel*>(_obj);
+            _geoModel = dynamic_cast<Interface::FITKAbsGeoCommand*>(_obj);
         }
         else {
             if (_obj == nullptr)return;
@@ -334,7 +335,7 @@ namespace GUI {
         _ui->lineEdit_Length->setText(QString::number(length));
 
         if (_geoModel == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getShapeAgent()-> getGeoComponentManager();
         if (commanger == nullptr)return;
         _ui->tableWidget->setRowCount(commanger->getDataCount());
         for (int i = 0; i < commanger->getDataCount(); i++) {
@@ -386,7 +387,7 @@ namespace GUI {
         _obj->setLength(length);
 
         if (_geoModel == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
         commanger->clear();
 
@@ -492,7 +493,7 @@ namespace GUI {
         Interface::FITKGeometryMeshSizeManager* manger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
         if (manger == nullptr)return;
 
-        Interface::FITKGeoComponentManager* commanger = _geoModel->getGeoComponentManager();
+        Interface::FITKGeoComponentManager* commanger = _geoModel->getShapeAgent()-> getGeoComponentManager();
         if (commanger == nullptr)return;
 
         //获取该模型相关的面组列表
