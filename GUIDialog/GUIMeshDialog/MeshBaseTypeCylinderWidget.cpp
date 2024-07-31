@@ -162,7 +162,7 @@ namespace GUI
         geoManager->getBoundaryBox(minPoint, maxPoint);
 
         double rate = qSqrt((maxPoint[0] * maxPoint[0] + maxPoint[1] * maxPoint[1] + maxPoint[2] * maxPoint[2])
-            - (minPoint[0] * minPoint[0] + minPoint[1] * minPoint[1] + minPoint[1] * minPoint[1]))*0.01;
+            - (minPoint[0] * minPoint[0] + minPoint[1] * minPoint[1] + minPoint[1] * minPoint[1]))*0.005;
 
         double resultMinPoint[3] = { 0,0,0 };
         resultMinPoint[0] = minPoint[0] - rate;
