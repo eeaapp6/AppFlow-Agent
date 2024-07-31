@@ -138,6 +138,8 @@ namespace GUI {
                 }
             }
         }
+
+        updateTableTitle();
     }
 
     Interface::FITKAbsGeoCommand * CylinderInfoWidget::getCurrentGeoCommand()
@@ -391,6 +393,8 @@ namespace GUI {
         //清除高亮
         clearGraphHight();
 
+        updateTableTitle();
+
         //判断当前面组是否被网格边界参数所使用，被使用移除对应的网格边界参数对象
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
         if (treeOper == nullptr) return;
@@ -485,6 +489,7 @@ namespace GUI {
             connect(item, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
         }
         updateFaceWidgetCurrentPos();
+        updateTableTitle();
     }
 
     void CylinderInfoWidget::getDataFormWidget()
@@ -508,6 +513,27 @@ namespace GUI {
 
         double length = _ui->lineEdit_Length->text().toDouble();
         _obj->setLength(length);
+    }
+
+    void CylinderInfoWidget::updateTableTitle()
+    {
+        if (_obj == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
+        if (commanger == nullptr)return;
+
+        //计算剩余面
+        QList<int> allPoint = {};
+        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+            CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            if (otherItem == nullptr)continue;
+            auto otherObj = commanger->getDataByID(otherItem->data(CylObjID).toInt());
+            if (otherObj == nullptr)continue;
+            QList<int> ids = otherObj->getMember();
+            allPoint.append(ids);
+        }
+        QStringList header;
+        header << tr("Default(%1 faces)").arg(3 - allPoint.size());
+        _ui->tableWidget->setHorizontalHeaderLabels(header);
     }
 
     void CylinderInfoWidget::initTableWidget()

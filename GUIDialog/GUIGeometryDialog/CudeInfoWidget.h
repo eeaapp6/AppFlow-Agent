@@ -92,6 +92,9 @@ namespace GUI
         bool checkValue();
         void setDataToWidget();
         void getDataFormWidget();
+        //更新表格标题
+        void updateTableTitle();
+        //初始化表格
         void initTableWidget();
 
         void setAllFaceGroupSelect(bool type);
