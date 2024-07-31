@@ -219,9 +219,14 @@ namespace GUI {
         int rowNum = _ui->tableWidget->rowCount();
         _ui->tableWidget->setRowCount(rowNum + 1);
 
-        QString group = tr("Group_%1").arg(rowNum + 1);
+        int index = 1;
+        QString group = tr("Group_%1").arg(index);
+        while (commanger->getDataByName(group)) {
+            index++;
+            group = tr("Group_%1").arg(index);
+        }
+
         QString name = group + tr("(empty)");
-        QList<int> faceList = {};
 
         //创建面组对象
         Interface::FITKGeoComponent* geoCom = new Interface::FITKGeoComponent(Interface::FITKModelEnum::FITKModelSetType::FMSSurface);
@@ -371,13 +376,34 @@ namespace GUI {
 
     void CylinderInfoWidget::slotFaceWidgetDeleteClicked()
     {
+        if (_obj == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
+        if (commanger == nullptr)return;
         CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
         if (widget == nullptr) return;
+
+        int objID = widget->data(CylObjID).toInt();
+        commanger->removeDataByID(objID);
         _ui->tableWidget->removeRow(widget->getCurrentPos().first);
+
         //更新界面中存储的位置
         updateFaceWidgetCurrentPos();
         //清除高亮
         clearGraphHight();
+
+        //判断当前面组是否被网格边界参数所使用，被使用移除对应的网格边界参数对象
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return;
+        auto meshSizeManger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
+        for (int i = 0; i < meshSizeManger->getDataCount(); i++) {
+            auto meshSizeObj = meshSizeManger->getDataByIndex(i);
+            if (meshSizeObj == nullptr)continue;
+            if (meshSizeObj->getGeoGroupComponentId() == objID) {
+                meshSizeManger->removeDataByID(meshSizeObj->getDataObjectID());
+                treeOper->updateTree();
+                break;
+            }
+        }
     }
 
     void CylinderInfoWidget::closeEvent(QCloseEvent * event)

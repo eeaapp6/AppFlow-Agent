@@ -157,8 +157,8 @@ namespace GUI
         Interface::FITKGeoCommandList* geoManager = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
         if (geoManager == nullptr) return;
 
-        double minPoint[3] = { 0,0,0 };
-        double maxPoint[3] = { 0,0,0 };
+        double minPoint[3] = { 9e66,9e66,9e66 };
+        double maxPoint[3] = { -9e66, -9e66, -9e66 };
         geoManager->getBoundaryBox(minPoint, maxPoint);
         double XExtent = maxPoint[0] - minPoint[0];
         double YExtent = maxPoint[1] - minPoint[1];

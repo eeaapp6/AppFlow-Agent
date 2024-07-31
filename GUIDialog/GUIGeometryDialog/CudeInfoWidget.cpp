@@ -220,9 +220,14 @@ namespace GUI {
         int rowNum = _ui->tableWidget->rowCount();
         _ui->tableWidget->setRowCount(rowNum + 1);
 
-        QString group = tr("Group_%1").arg(rowNum + 1);
+        int index = 1;
+        QString group = tr("Group_%1").arg(index);
+        while (commanger->getDataByName(group)){
+            index++;
+            group = tr("Group_%1").arg(index);
+        }
+        
         QString name = group + tr("(empty)");
-        QList<int> faceList = {};
 
         //创建面组对象
         Interface::FITKGeoComponent* geoCom = new Interface::FITKGeoComponent(Interface::FITKModelEnum::FITKModelSetType::FMSSurface);
