@@ -160,16 +160,30 @@ namespace GUI
         double minPoint[3] = { 9e66,9e66,9e66 };
         double maxPoint[3] = { -9e66, -9e66, -9e66 };
         geoManager->getBoundaryBox(minPoint, maxPoint);
-        double XExtent = maxPoint[0] - minPoint[0];
-        double YExtent = maxPoint[1] - minPoint[1];
-        double ZExtent = maxPoint[2] - minPoint[2];
+
+        double rate = qSqrt((maxPoint[0] * maxPoint[0] + maxPoint[1] * maxPoint[1] + maxPoint[2] * maxPoint[2])
+            - (minPoint[0] * minPoint[0] + minPoint[1] * minPoint[1] + minPoint[1] * minPoint[1]))*0.01;
+
+        double resultMinPoint[3] = { 0,0,0 };
+        resultMinPoint[0] = minPoint[0] - rate;
+        resultMinPoint[1] = minPoint[1] - rate;
+        resultMinPoint[2] = minPoint[2] - rate;
+
+        double resultMaxPoint[3] = { 0,0,0 };
+        resultMaxPoint[0] = maxPoint[0] + rate;
+        resultMaxPoint[1] = maxPoint[1] + rate;
+        resultMaxPoint[2] = maxPoint[2] + rate;
+
+        double XExtent = resultMaxPoint[0] - resultMinPoint[0];
+        double YExtent = resultMaxPoint[1] - resultMinPoint[1];
+        double ZExtent = resultMaxPoint[2] - resultMinPoint[2];
 
         double origin[3] = { 0,0,0 };
-        origin[0] = minPoint[0];
-        origin[1] = minPoint[1] + YExtent / 2;
-        origin[2] = minPoint[2] + ZExtent / 2;
+        origin[0] = resultMinPoint[0];
+        origin[1] = resultMinPoint[1] + YExtent / 2;
+        origin[2] = resultMinPoint[2] + ZExtent / 2;
 
-        double length = maxPoint[0] - minPoint[0];
+        double length = resultMaxPoint[0] - resultMinPoint[0];
         double redius = qSqrt(YExtent*YExtent + ZExtent * ZExtent) / 2;
 
         _ui->lineEdit_OriginPoint1->setText(QString::number(origin[0]));
