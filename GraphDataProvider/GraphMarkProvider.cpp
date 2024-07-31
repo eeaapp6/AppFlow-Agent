@@ -59,25 +59,14 @@ namespace GraphData
         // 符号可视化对象。
         Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
 
-        if (m_tempTypeObjHash.contains(type))
-        {
-            return m_tempTypeObjHash[type];
-        }
-
         // type数值与树形节点类型枚举对应。
         switch (type)
         {
         // 材料点。
         case int(GUI::MainTreeEnum::MainTree_MeshPoint):
         {
-            // 获取材料点管理器。
-            Interface::FITKMeshGenInterface* interMeshGen = Interface::FITKMeshGenInterface::getInstance();
-            Interface::FITKZonePointManager* mPtsMgr = interMeshGen->getZonePointManager();
-            if (mPtsMgr)
-            {
-                obj = new Exchange::FITKOCC2VTKGraphObjectMaterialPoints(mPtsMgr);
-            }
-
+            // 获取材料点可视化对象。
+            obj = getMaterialPointsGraphObject();
             break;
         }
         default:
