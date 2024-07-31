@@ -139,6 +139,8 @@ namespace GUI {
                 }
             }
         }
+
+        updateTableTitle();
     }
 
     Interface::FITKAbsGeoCommand * CudeInfoWidget::getCurrentGeoCommand()
@@ -220,9 +222,14 @@ namespace GUI {
         int rowNum = _ui->tableWidget->rowCount();
         _ui->tableWidget->setRowCount(rowNum + 1);
 
-        QString group = tr("Group_%1").arg(rowNum + 1);
+        int index = 1;
+        QString group = tr("Group_%1").arg(index);
+        while (commanger->getDataByName(group)){
+            index++;
+            group = tr("Group_%1").arg(index);
+        }
+        
         QString name = group + tr("(empty)");
-        QList<int> faceList = {};
 
         //创建面组对象
         Interface::FITKGeoComponent* geoCom = new Interface::FITKGeoComponent(Interface::FITKModelEnum::FITKModelSetType::FMSSurface);
@@ -364,6 +371,8 @@ namespace GUI {
         //清除高亮
         clearGraphHight();
 
+        updateTableTitle();
+
         //判断当前面组是否被网格边界参数所使用，被使用移除对应的网格边界参数对象
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
         if (treeOper == nullptr) return;
@@ -456,6 +465,7 @@ namespace GUI {
             connect(item, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
         }
         updateFaceWidgetCurrentPos();
+        updateTableTitle();
     }
 
     void CudeInfoWidget::getDataFormWidget()
@@ -475,6 +485,27 @@ namespace GUI {
         _obj->setLength(dimensions);
 
 
+    }
+
+    void CudeInfoWidget::updateTableTitle()
+    {
+        if (_obj == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
+        if (commanger == nullptr)return;
+
+        //计算剩余面
+        QList<int> allPoint = {};
+        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+            CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            if (otherItem == nullptr)continue;
+            auto otherObj = commanger->getDataByID(otherItem->data(CudeObjID).toInt());
+            if (otherObj == nullptr)continue;
+            QList<int> ids = otherObj->getMember();
+            allPoint.append(ids);
+        }
+        QStringList header;
+        header << tr("Default(%1 faces)").arg(6 - allPoint.size());
+        _ui->tableWidget->setHorizontalHeaderLabels(header);
     }
 
     void CudeInfoWidget::initTableWidget()

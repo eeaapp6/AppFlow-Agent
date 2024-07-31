@@ -109,23 +109,24 @@ namespace GUI
 
     void LocalSelectGroupWidget::on_pushButton_Add_clicked()
     {
-        int currentRow = _ui->tableWidget->currentRow();
-        QTableWidgetItem* item = _ui->tableWidget->item(currentRow, 0);
-        if (item == nullptr)return;
+        QList<QTableWidgetItem*> items = _ui->tableWidget->selectedItems();
+        for (QTableWidgetItem* item : items) {
+            if (item == nullptr)return;
 
-        Interface::FITKMeshGenInterface* genInterface = Interface::FITKMeshGenInterface::getInstance();
-        Interface::FITKAbstractGeometryMeshSizeGenerator* generator = genInterface->getGeometryMeshSizeGenerator();
-        if (generator == nullptr)return;
-        Interface::FITKGeometryMeshSizeManager* manger = genInterface->getGeometryMeshSizeManager();
-        if (manger == nullptr)return;
-        
-        //创建几何划分网格尺寸类
-        Interface::FITKGeometryMeshSize* meshSize = generator->createGeometryMeshSize();
-        meshSize->setGeoGroupComponentId(item->data(LocalGroId).toInt());
-        meshSize->setDataObjectName(item->text());
+            Interface::FITKMeshGenInterface* genInterface = Interface::FITKMeshGenInterface::getInstance();
+            Interface::FITKAbstractGeometryMeshSizeGenerator* generator = genInterface->getGeometryMeshSizeGenerator();
+            if (generator == nullptr)return;
+            Interface::FITKGeometryMeshSizeManager* manger = genInterface->getGeometryMeshSizeManager();
+            if (manger == nullptr)return;
 
-        //添加至管理器中
-        manger->appendDataObj(meshSize);
+            //创建几何划分网格尺寸类
+            Interface::FITKGeometryMeshSize* meshSize = generator->createGeometryMeshSize();
+            meshSize->setGeoGroupComponentId(item->data(LocalGroId).toInt());
+            meshSize->setDataObjectName(item->text());
+
+            //添加至管理器中
+            manger->appendDataObj(meshSize);
+        }
 
         if (_oper) {
             _oper->execProfession();

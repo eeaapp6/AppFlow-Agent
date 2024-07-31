@@ -13,6 +13,8 @@
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSizeCylinder.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSizeSphere.h"
 
+#include <QtMath>
+
 namespace GUI
 {
     MeshBaseTypeBoxWidget::MeshBaseTypeBoxWidget()
@@ -154,17 +156,30 @@ namespace GUI
         Interface::FITKGeoCommandList* geoManager = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
         if (geoManager == nullptr) return;
 
-        double minPoint[3] = { 0,0,0 };
-        double maxPoint[3] = { 0,0,0 };
+        double minPoint[3] = { 9e66,9e66,9e66 };
+        double maxPoint[3] = { -9e66, -9e66, -9e66 };
         geoManager->getBoundaryBox(minPoint, maxPoint);
-        
-        double XExtent = maxPoint[0] - minPoint[0];
-        double YExtent = maxPoint[1] - minPoint[1];
-        double ZExtent = maxPoint[2] - minPoint[2];
 
-        _ui->lineEdit_BasePoint1->setText(QString::number(minPoint[0]));
-        _ui->lineEdit_BasePoint2->setText(QString::number(minPoint[1]));
-        _ui->lineEdit_BasePoint3->setText(QString::number(minPoint[2]));
+        double rate =  qSqrt((maxPoint[0] * maxPoint[0] + maxPoint[1] * maxPoint[1] + maxPoint[2] * maxPoint[2])
+            - (minPoint[0] * minPoint[0] + minPoint[1] * minPoint[1] + minPoint[1] * minPoint[1]))*0.005;
+
+        double resultMinPoint[3] = { 0,0,0 };
+        resultMinPoint[0] = minPoint[0] - rate;
+        resultMinPoint[1] = minPoint[1] - rate;
+        resultMinPoint[2] = minPoint[2] - rate;
+
+        double resultMaxPoint[3] = { 0,0,0 };
+        resultMaxPoint[0] = maxPoint[0] + rate;
+        resultMaxPoint[1] = maxPoint[1] + rate;
+        resultMaxPoint[2] = maxPoint[2] + rate;
+
+        double XExtent = resultMaxPoint[0] - resultMinPoint[0];
+        double YExtent = resultMaxPoint[1] - resultMinPoint[1];
+        double ZExtent = resultMaxPoint[2] - resultMinPoint[2];
+
+        _ui->lineEdit_BasePoint1->setText(QString::number(resultMinPoint[0]));
+        _ui->lineEdit_BasePoint2->setText(QString::number(resultMinPoint[1]));
+        _ui->lineEdit_BasePoint3->setText(QString::number(resultMinPoint[2]));
 
         _ui->lineEdit_Dimensions1->setText(QString::number(XExtent));
         _ui->lineEdit_Dimensions2->setText(QString::number(YExtent));
