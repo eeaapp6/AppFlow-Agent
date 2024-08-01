@@ -9,9 +9,9 @@ HEADERS += \
     $$PWD/OperatorsMeshManager.h \
     $$PWD/OperatorsMeshLocalManager.h \
     $$PWD/OperatorsMeshPointManager.h \
-    $$PWD/OperatorsNewManager.h \
-    $$PWD/OperatorsOpenManager.h \
-    $$PWD/OperatorsSaveManager.h \
+    $$PWD/OperatorsNew.h \
+    $$PWD/OperatorsOpen.h \
+    $$PWD/OperatorsSave.h \
 
 
 SOURCES += \
@@ -24,8 +24,8 @@ SOURCES += \
     $$PWD/OperatorsMeshManager.cpp \
     $$PWD/OperatorsMeshLocalManager.cpp \
     $$PWD/OperatorsMeshPointManager.cpp \
-    $$PWD/OperatorsNewManager.cpp \
-    $$PWD/OperatorsOpenManager.cpp \
-    $$PWD/OperatorsSaveManager.cpp \
+    $$PWD/OperatorsNew.cpp \
+    $$PWD/OperatorsOpen.cpp \
+    $$PWD/OperatorsSave.cpp \
 
 FORMS += \
