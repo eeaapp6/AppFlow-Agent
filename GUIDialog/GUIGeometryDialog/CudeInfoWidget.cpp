@@ -139,8 +139,6 @@ namespace GUI {
                 }
             }
         }
-
-        updateTableTitle();
     }
 
     Interface::FITKAbsGeoCommand * CudeInfoWidget::getCurrentGeoCommand()
@@ -209,8 +207,18 @@ namespace GUI {
 
     void CudeInfoWidget::on_pushButton_Clear_clicked()
     {
-        _ui->tableWidget->clear();
-        initTableWidget();
+        if (_obj == nullptr)return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
+        if (commanger == nullptr)return;
+
+        for (int i = 0; i < _ui->tableWidget->rowCount(); i++){
+            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            if (widget == nullptr)return;
+            commanger->removeDataByID(widget->data(CudeObjID).toInt());
+        }
+
+        clearTableWidget();
+        clearGraphHight();
     }
 
     void CudeInfoWidget::on_pushButton_Add_clicked()
@@ -341,6 +349,8 @@ namespace GUI {
             _oper->eventProcess(2);
             widget->setSelect(false);
         }
+
+        _ui->tableWidget->setCurrentCell(-1, -1);
     }
 
     void CudeInfoWidget::slotFaceWidgetCancelClicked()
@@ -352,6 +362,8 @@ namespace GUI {
         widget->setSelect(false);
         //清除高亮
         clearGraphHight();
+
+        _ui->tableWidget->setCurrentCell(-1, -1);
     }
 
     void CudeInfoWidget::slotFaceWidgetDeleteClicked()
@@ -371,8 +383,6 @@ namespace GUI {
         //清除高亮
         clearGraphHight();
 
-        updateTableTitle();
-
         //判断当前面组是否被网格边界参数所使用，被使用移除对应的网格边界参数对象
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
         if (treeOper == nullptr) return;
@@ -386,6 +396,8 @@ namespace GUI {
                 break;
             }
         }
+
+        _ui->tableWidget->setCurrentCell(-1, -1);
     }
 
     void CudeInfoWidget::closeEvent(QCloseEvent * event)
@@ -465,7 +477,6 @@ namespace GUI {
             connect(item, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
         }
         updateFaceWidgetCurrentPos();
-        updateTableTitle();
     }
 
     void CudeInfoWidget::getDataFormWidget()
@@ -487,39 +498,41 @@ namespace GUI {
 
     }
 
-    void CudeInfoWidget::updateTableTitle()
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
+    //void CudeInfoWidget::updateTableTitle()
+    //{
+    //    if (_obj == nullptr)return;
+    //    Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
+    //    if (commanger == nullptr)return;
 
-        //计算剩余面
-        QList<int> allPoint = {};
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-            if (otherItem == nullptr)continue;
-            auto otherObj = commanger->getDataByID(otherItem->data(CudeObjID).toInt());
-            if (otherObj == nullptr)continue;
-            QList<int> ids = otherObj->getMember();
-            allPoint.append(ids);
-        }
-        QStringList header;
-        header << tr("Default(%1 faces)").arg(6 - allPoint.size());
-        _ui->tableWidget->setHorizontalHeaderLabels(header);
-    }
+    //    //计算剩余面
+    //    QList<int> allPoint = {};
+    //    for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+    //        CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+    //        if (otherItem == nullptr)continue;
+    //        auto otherObj = commanger->getDataByID(otherItem->data(CudeObjID).toInt());
+    //        if (otherObj == nullptr)continue;
+    //        QList<int> ids = otherObj->getMember();
+    //        allPoint.append(ids);
+    //    }
+    //    QStringList header;
+    //    header << tr("Default(%1 faces)").arg(6 - allPoint.size());
+    //    _ui->tableWidget->setHorizontalHeaderLabels(header);
+    //}
 
     void CudeInfoWidget::initTableWidget()
     {
         _ui->tableWidget->setRowCount(0);
         _ui->tableWidget->setColumnCount(1);
-        QStringList header;
-        header << tr("Default(6 faces)");
-        _ui->tableWidget->setHorizontalHeaderLabels(header);
+
         _ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
         //充满表格
         _ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
         //设置只能单选
         _ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
+        //隐藏行表头
+        _ui->tableWidget->verticalHeader()->setVisible(false);
+        //隐藏列表头
+        _ui->tableWidget->horizontalHeader()->setVisible(false);
 
         connect(_ui->tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(slotCellTableClicked(int, int)));
     }
@@ -570,5 +583,6 @@ namespace GUI {
         }
 
         _ui->tableWidget->clear();
+        _ui->tableWidget->setRowCount(0);
     }
 }
