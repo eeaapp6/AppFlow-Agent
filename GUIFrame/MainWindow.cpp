@@ -124,7 +124,7 @@ namespace GUI
         verLayout->addWidget(_tabWidgete);
 
         spliterLayout->addWidget(verLayout);
-        spliterLayout->addWidget(m_GroupPropertyWidget);
+        //spliterLayout->addWidget(m_GroupPropertyWidget);
         // 设置大小
         spliterLayout->setSizes({ 200, 300, 1000, 200 });
 
