@@ -209,11 +209,11 @@ namespace GraphData
 
             if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
-                obj->setPickMode(ShapePickMode::PickNone);
+                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickNone);
             }
             else
             {
-                obj->setPickMode(ShapePickMode::PickVertex);
+                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickVertex);
             }
         }
     }
@@ -231,11 +231,11 @@ namespace GraphData
 
             if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
-                obj->setPickMode(ShapePickMode::PickNone);
+                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickNone);
             }
             else
             {
-                obj->setPickMode(ShapePickMode::PickEdge);
+                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickEdge);
             }
         }
     }
@@ -253,11 +253,11 @@ namespace GraphData
 
             if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
-                obj->setPickMode(ShapePickMode::PickNone);
+                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickNone);
             }
             else
             {
-                obj->setPickMode(ShapePickMode::PickFace);
+                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickFace);
             }
         }
     }
@@ -275,11 +275,11 @@ namespace GraphData
 
             if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
-                obj->setPickMode(ShapePickMode::PickNone);
+                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickNone);
             }
             else
             {
-                obj->setPickMode(ShapePickMode::PickSolid);
+                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickSolid);
             }
         }
     }
@@ -302,7 +302,7 @@ namespace GraphData
             }
             else
             {
-                obj->setPickMode(ShapePickMode::PickNone);
+                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickNone);
             }
         }
     }

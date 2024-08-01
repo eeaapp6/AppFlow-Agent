@@ -298,7 +298,7 @@ namespace GraphData
         m_graphObject = obj;
         m_dataObjId = obj->getDataId();
 
-        ShapeInfo sInfo = obj->getShapeInfo();
+        Exchange::FITKOCC2VTKCommons::ShapeInfo sInfo = obj->getShapeInfo();
 
         switch (m_pickedInfo._pickObjType)
         {
@@ -350,7 +350,7 @@ namespace GraphData
         m_graphObject = obj;
         m_dataObjId = obj->getDataId();
 
-        ShapeInfo sInfo = obj->getShapeInfo();
+        Exchange::FITKOCC2VTKCommons::ShapeInfo sInfo = obj->getShapeInfo();
 
         switch (m_pickedInfo._pickObjType)
         {
@@ -528,16 +528,16 @@ namespace GraphData
         switch (m_pickedInfo._pickObjType)
         {
         case GUI::GUIPickInfo::PickObjType::POBJVert:
-            id = m_graphObject->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_VERTEX);
+            id = m_graphObject->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJEdge:
-            id = m_graphObject->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_EDGE);
+            id = m_graphObject->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJFace:
-            id = m_graphObject->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_FACE);
+            id = m_graphObject->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJSolid:
-            id = m_graphObject->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_SOLID);
+            id = m_graphObject->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID);
             break;
         {
             return false;
@@ -619,33 +619,33 @@ namespace GraphData
         }
 
         vtkDataSet* dataSet{ nullptr };
-        ShapeAbsEnum shapeEnum;
+        Exchange::FITKOCC2VTKCommons::ShapeAbsEnum shapeEnum;
 
         // 根据拾取模型数据类型获取数据集。
         switch (m_type)
         {
         case PickedDataType::ModelVertPick:
         {
-            dataSet = m_graphObject->getMesh(ShapeType::ModelVertex);
-            shapeEnum = ShapeAbsEnum::STA_VERTEX;
+            dataSet = m_graphObject->getMesh(Exchange::FITKOCC2VTKCommons::ShapeType::ModelVertex);
+            shapeEnum = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX;
             break;
         }
         case PickedDataType::ModelEdgePick:
         {
-            dataSet = m_graphObject->getMesh(ShapeType::ModelEdge);
-            shapeEnum = ShapeAbsEnum::STA_EDGE;
+            dataSet = m_graphObject->getMesh(Exchange::FITKOCC2VTKCommons::ShapeType::ModelEdge);
+            shapeEnum = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE;
             break;
         }
         case PickedDataType::ModelFacePick:
         {
-            dataSet = m_graphObject->getMesh(ShapeType::ModelFace);
-            shapeEnum = ShapeAbsEnum::STA_FACE;
+            dataSet = m_graphObject->getMesh(Exchange::FITKOCC2VTKCommons::ShapeType::ModelFace);
+            shapeEnum = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE;
             break;
         }
         case PickedDataType::ModelSolidPick:
         {
-            dataSet = m_graphObject->getMesh(ShapeType::ModelSolid);
-            shapeEnum = ShapeAbsEnum::STA_SOLID;
+            dataSet = m_graphObject->getMesh(Exchange::FITKOCC2VTKCommons::ShapeType::ModelSolid);
+            shapeEnum = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID;
             break;
         }
         default:
