@@ -92,7 +92,7 @@ namespace GUIOper
         }
         case HighlightLevel::AdvHighlight:
         {
-            obj->advanceHighlight(ShapeType::ShapeTypeNone, param.AdvHighlightIndice);
+            obj->advanceHighlight(Exchange::FITKOCC2VTKCommons::ShapeType::ShapeTypeNone, param.AdvHighlightIndice);
             break;
         }
         default:
@@ -193,7 +193,7 @@ namespace GUIOper
                 continue;
             }
 
-            obj->advanceHighlight(ShapeType::ShapeTypeNone, indice, color);
+            obj->advanceHighlight(Exchange::FITKOCC2VTKCommons::ShapeType::ShapeTypeNone, indice, color);
         }
     }
 

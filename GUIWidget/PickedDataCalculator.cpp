@@ -91,19 +91,19 @@ namespace GraphData
         {
         case PickedDataType::ModelVertPick:
             // 查找点。
-            id = gobj->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_VERTEX);
+            id = gobj->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX);
             break;
         case PickedDataType::ModelEdgePick:
             // 查找线。
-            id = gobj->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_EDGE);
+            id = gobj->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE);
             break;
         case PickedDataType::ModelFacePick:
             // 查找面。
-            id = gobj->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_FACE);
+            id = gobj->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE);
             break;
         case PickedDataType::ModelSolidPick:
             // 查找体。
-            id = gobj->getOCCIdByVTKCellId(index, ShapeAbsEnum::STA_SOLID);
+            id = gobj->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID);
             break;
         default:
             return;
@@ -149,26 +149,26 @@ namespace GraphData
         // 拾取状态数组。（加速数据判断包含）
         QVector<int> flags;
         int len = 0;        
-        ShapeAbsEnum sType;
+        Exchange::FITKOCC2VTKCommons::ShapeAbsEnum sType;
 
         // 根据拾取数据类型进行不同数据获取。
         switch (m_pickedData->getPickedDataType())
         {
         case PickedDataType::ModelVertPick:
-            len = gobj->getNumberOf(ShapeType::ModelVertex);
-            sType = ShapeAbsEnum::STA_VERTEX;
+            len = gobj->getNumberOf(Exchange::FITKOCC2VTKCommons::ShapeType::ModelVertex);
+            sType = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX;
             break;
         case PickedDataType::ModelEdgePick:
-            len = gobj->getNumberOf(ShapeType::ModelEdge);
-            sType = ShapeAbsEnum::STA_EDGE;
+            len = gobj->getNumberOf(Exchange::FITKOCC2VTKCommons::ShapeType::ModelEdge);
+            sType = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE;
             break;
         case PickedDataType::ModelFacePick:
-            len = gobj->getNumberOf(ShapeType::ModelFace);
-            sType = ShapeAbsEnum::STA_FACE;
+            len = gobj->getNumberOf(Exchange::FITKOCC2VTKCommons::ShapeType::ModelFace);
+            sType = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE;
             break;
         case PickedDataType::ModelSolidPick:
-            len = gobj->getNumberOf(ShapeType::ModelSolid);
-            sType = ShapeAbsEnum::STA_SOLID;
+            len = gobj->getNumberOf(Exchange::FITKOCC2VTKCommons::ShapeType::ModelSolid);
+            sType = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID;
             break;
         default:
             return;
