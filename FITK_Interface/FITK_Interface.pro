@@ -9,5 +9,6 @@ SUBDIRS += \
     $$PWD/FITKInterfaceMeshGen \
     $$PWD/FITKInterfaceGeometry \
     $$PWD/FITKVTKAlgorithm \
+    $$PWD/FITKInterfaceIOHDF5 \
 
 CONFIG += ordered
