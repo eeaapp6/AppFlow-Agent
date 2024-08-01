@@ -152,6 +152,18 @@ namespace GUI
         return true;
     }
 
+    void MeshBaseTypeCylinderWidget::updateGeometryGraph()
+    {
+        if (_graphObj == nullptr)return;
+        getDataFromWidget(_graphObj);
+
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+
+        graphOper->updateGraph(_graphObj->getDataObjectID());
+        graphOper->reRender();
+    }
+
     void MeshBaseTypeCylinderWidget::on_pushButton_AutoSize_clicked()
     {
         Interface::FITKGeoCommandList* geoManager = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
@@ -195,13 +207,46 @@ namespace GUI
         _ui->lineEdit_Length->setText(QString::number(length));
         _ui->lineEdit_Radius->setText(QString::number(redius));
 
-        if (_graphObj == nullptr)return;
-        getDataFromWidget(_graphObj);
+        updateGeometryGraph();
+    }
 
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
+    void MeshBaseTypeCylinderWidget::on_lineEdit_OriginPoint1_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
+    }
 
-        graphOper->updateGraph(_graphObj->getDataObjectID());
-        graphOper->reRender();
+    void MeshBaseTypeCylinderWidget::on_lineEdit_OriginPoint2_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
+    }
+
+    void MeshBaseTypeCylinderWidget::on_lineEdit_OriginPoint3_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
+    }
+
+    void MeshBaseTypeCylinderWidget::on_lineEdit_AxisPoint1_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
+    }
+
+    void MeshBaseTypeCylinderWidget::on_lineEdit_AxisPoint2_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
+    }
+
+    void MeshBaseTypeCylinderWidget::on_lineEdit_AxisPoint3_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
+    }
+
+    void MeshBaseTypeCylinderWidget::on_lineEdit_Length_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
+    }
+
+    void MeshBaseTypeCylinderWidget::on_lineEdit_Radius_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
     }
 }

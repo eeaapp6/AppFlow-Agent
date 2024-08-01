@@ -21,6 +21,8 @@ namespace GUI
         virtual bool setDataToWidget(Interface::FITKAbstractRegionMeshSize* obj) = 0;
 
         virtual bool getDataFromWidget(Interface::FITKAbstractRegionMeshSize* obj) = 0;
+
+        virtual void updateGeometryGraph() = 0;
     };
 }
 

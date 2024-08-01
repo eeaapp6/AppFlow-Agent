@@ -57,6 +57,7 @@ namespace GUI
         _ui->comboBox_Type->setCurrentIndex(_ui->comboBox_Type->findData(type));
 
         _subWidget->setDataToWidget(_currentObj);
+        _subWidget->updateGeometryGraph();
         _ui->gridLayout_SubWidget->addWidget(_subWidget);
     }
 
@@ -161,6 +162,7 @@ namespace GUI
         }
         _subWidget = newWidget;
         _subWidget->setDataToWidget(_currentObj);
+        _subWidget->updateGeometryGraph();
         _ui->gridLayout_SubWidget->addWidget(_subWidget);
     }
 }
