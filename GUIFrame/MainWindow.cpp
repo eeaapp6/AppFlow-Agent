@@ -173,19 +173,17 @@ namespace GUI
 
         //项目
         SARibbonPannel* pannel = gategory->addPannel(tr("Object"));
-        menu = new QMenu(tr("New"), this);
+
         action = createAction(tr("New"), "actionNew");
-        action->setMenu(menu);
+        changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
-        menu = new QMenu(tr("Open"), this);
         action = createAction(tr("Open"), "actionOpen");
-        action->setMenu(menu);
+        changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
-        menu = new QMenu(tr("Save"), this);
         action = createAction(tr("Save"), "actionSave");
-        action->setMenu(menu);
+        changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         //模型结构
