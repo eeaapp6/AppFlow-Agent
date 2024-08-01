@@ -64,3 +64,6 @@
 [submodule "FITK_Component/FITKOFMeshIO"]
 	path = FITK_Component/FITKOFMeshIO
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKOFMeshIO.git
+[submodule "FITK_Interface/FITKInterfaceIOHDF5"]
+	path = FITK_Interface/FITKInterfaceIOHDF5
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceIOHDF5.git
