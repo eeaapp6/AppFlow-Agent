@@ -69,7 +69,7 @@ namespace ModelOper
         return true;
     }
 
-    void OperatorsMeshPointManager::moveToStep(int index, QVariant value)
+    void OperatorsMeshPointManager::eventProcess(int index, QVariant value)
     {
 
     }

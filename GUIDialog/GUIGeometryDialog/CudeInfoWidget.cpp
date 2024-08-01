@@ -151,7 +151,7 @@ namespace GUI {
     void CudeInfoWidget::on_pushButton_BasicPoint_clicked()
     {
         if (_oper) {
-            _oper->moveToStep(0);
+            _oper->eventProcess(0);
         }
     }
 
@@ -269,7 +269,7 @@ namespace GUI {
             //执行操作器
             _oper->setArgs("objID", _obj->getDataObjectID());
             _oper->setArgs("faceIDs", QVariant::fromValue(obj->getMember()));
-            _oper->moveToStep(1);
+            _oper->eventProcess(1);
         }
     }
 
@@ -338,7 +338,7 @@ namespace GUI {
         //执行选择结束事件
         if (_oper) {
             _oper->setArgs("curRow", widget->getCurrentPos().first);
-            _oper->moveToStep(2);
+            _oper->eventProcess(2);
             widget->setSelect(false);
         }
     }

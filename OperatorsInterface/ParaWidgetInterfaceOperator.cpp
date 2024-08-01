@@ -12,7 +12,7 @@ namespace EventOper
 
     }
 
-    void ParaWidgetInterfaceOperator::moveToStep(int index, QVariant value)
+    void ParaWidgetInterfaceOperator::eventProcess(int index, QVariant value)
     {
 
     }
