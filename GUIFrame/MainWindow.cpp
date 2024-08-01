@@ -110,7 +110,7 @@ namespace GUI
         m_PropertyWidget = new PropertyWidget(this);
         m_RenderWidget = new RenderWidget(this);
         _tabWidgete = new TabWidget(this);
-        m_GroupPropertyWidget = new GroupPropertyWidget(this);
+        //m_GroupPropertyWidget = new GroupPropertyWidget(this);
 
         //添加树界面
         spliterLayout->addWidget(_treeWidget);
