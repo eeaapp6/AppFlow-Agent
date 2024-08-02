@@ -175,8 +175,6 @@ namespace GraphData
         }
 
         if (data->m_type == m_type &&
-            data->getPickedActor() == m_pickedActor &&
-            // data->CaseId == this->CaseId &&
             data->m_dataObjId == m_dataObjId)
         {
             return true;
