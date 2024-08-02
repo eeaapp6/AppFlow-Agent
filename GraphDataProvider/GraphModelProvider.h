@@ -84,6 +84,14 @@ namespace GraphData
         QList<Exchange::FITKOCC2VTKGraphObject3D*> getFuildBoundMeshGraphObjects(int dataObjId);
 
         /**
+         * @brief   获取全部（边界）网格可视化对象。（没有则不创建）
+         * @return  可视化对象列表
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-08-02
+         */
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> getAllMeshGraphObjects();
+
+        /**
          * @brief   根据数据ID获取流体域形状可视化对象。（没有则创建）
          * @param   dataObjId：数据ID
          * @return  可视化对象（流体域形状数据ID）
