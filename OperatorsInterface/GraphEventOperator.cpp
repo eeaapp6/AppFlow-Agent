@@ -23,10 +23,30 @@ namespace EventOper
         return nullptr;
     }
 
-    void GraphEventOperator::setEnableModelTransparent(bool isOn)
+    void GraphEventOperator::setEnableModelTransparent(bool flag)
     {
         // 根据不同子类重写。
-        Q_UNUSED(isOn);
+        Q_UNUSED(flag);
+    }
+
+    void GraphEventOperator::setEnableMeshTransparent(bool flag)
+    {
+        // 根据不同子类重写。
+        Q_UNUSED(flag);
+    }
+
+    void GraphEventOperator::setModelVisible(int dataObjId, bool visibility)
+    {
+        // 根据不同子类重写。
+        Q_UNUSED(dataObjId);
+        Q_UNUSED(visibility);
+    }
+
+    void GraphEventOperator::setMeshVisible(int dataObjId, bool visibility)
+    {
+        // 根据不同子类重写。
+        Q_UNUSED(dataObjId);
+        Q_UNUSED(visibility);
     }
 
     void GraphEventOperator::highlight(int dataObjId, QVariant info, QColor color)

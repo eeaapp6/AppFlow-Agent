@@ -76,6 +76,32 @@ namespace GUIOper
          * @date    2024-07-30
          */
         void setEnableModelTransparent(bool flag) override;
+
+        /**
+         * @brief   将现有（边界）网格全部开启或关闭半透明显示。[重写]
+         * @param   flag：是否开启
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-08-02
+         */
+        void setEnableMeshTransparent(bool flag) override;
+
+        /**
+         * @brief   隐藏或显示模型。[重写]
+         * @param   dataObjId：数据对象ID
+         * @param   visibility：是否可见
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-08-02
+         */
+        void setModelVisible(int dataObjId, bool visibility) override;
+
+        /**
+         * @brief   隐藏或显示（边界）网格。[重写]
+         * @param   dataObjId：数据对象ID
+         * @param   visibility：是否可见
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-08-02
+         */
+        void setMeshVisible(int dataObjId, bool visibility) override;
         //@}
 
         // 高亮功能接口。

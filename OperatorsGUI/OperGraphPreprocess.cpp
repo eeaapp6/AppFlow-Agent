@@ -115,7 +115,7 @@ namespace GUIOper
             return obj;
         }
 
-        // 获取模型可视化对象管理器。
+        // 获取模型/网格可视化对象管理器。
         GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
         if (!modelProvider)
         {
@@ -135,7 +135,7 @@ namespace GUIOper
             return;
         }
 
-        // 获取模型可视化对象管理器。
+        // 获取模型/网格可视化对象管理器。
         GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
         if (!modelProvider)
         {
@@ -150,6 +150,79 @@ namespace GUIOper
             {
                 obj->setTransparent(flag);
             }
+        }
+    }
+
+    void OperGraphPreprocess::setEnableMeshTransparent(bool flag)
+    {
+        // 获取可视化窗口。
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return;
+        }
+
+        // 获取模型/网格可视化对象管理器。
+        GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
+        if (!modelProvider)
+        {
+            return;
+        }
+
+        // 启用或关闭半透明。
+        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = modelProvider->getAllMeshGraphObjects();
+        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        {
+            if (obj)
+            {
+                obj->setTransparent(flag);
+            }
+        }
+    }
+
+    void OperGraphPreprocess::setModelVisible(int dataObjId, bool visibility)
+    {
+        // 获取可视化窗口。
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return;
+        }
+
+        // 获取模型/网格可视化对象管理器。
+        GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
+        if (!modelProvider)
+        {
+            return;
+        }
+
+        Exchange::FITKOCC2VTKGraphObject3D* obj = modelProvider->getModelGraphObject(dataObjId);
+        if (obj)
+        {
+            obj->setVisible(visibility);
+        }
+    }
+
+    void OperGraphPreprocess::setMeshVisible(int dataObjId, bool visibility)
+    {
+        // 获取可视化窗口。
+        Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
+        if (!graphWidget)
+        {
+            return;
+        }
+
+        // 获取模型/网格可视化对象管理器。
+        GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
+        if (!modelProvider)
+        {
+            return;
+        }
+
+        Exchange::FITKOCC2VTKGraphObject3D* obj = modelProvider->getBoundMeshGraphObject(dataObjId);
+        if (obj)
+        {
+            obj->setVisible(visibility);
         }
     }
 
@@ -206,7 +279,7 @@ namespace GUIOper
             return;
         }
 
-        // 获取模型与符号可视化对象管理器，并清除高亮。
+        // 获取模型/网格与符号可视化对象管理器，并清除高亮。
         GraphData::GraphModelProvider* modelProvider = GraphData::GraphProviderManager::getInstance()->getModelProvider(graphWidget);
         if (modelProvider)
         {
