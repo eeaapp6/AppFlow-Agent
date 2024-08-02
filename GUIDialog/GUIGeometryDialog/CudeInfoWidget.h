@@ -2,7 +2,7 @@
 #define _CudeInfoWidget_H
 
 #include "GUIGeometryDialogAPI.h"
-#include "FITK_Kernel/FITKCore/FITKAbstractGUI.h"
+#include "GeometryWidgetBase.h"
 
 class QTableWidgetItem;
 
@@ -22,7 +22,7 @@ namespace EventOper {
 
 namespace GUI
 {
-    class GUIGeometryDialogAPI CudeInfoWidget :public Core::FITKWidget
+    class GUIGeometryDialogAPI CudeInfoWidget :public GeometryWidgetBase
     {
         Q_OBJECT;
     public:
@@ -39,6 +39,13 @@ namespace GUI
         void setFaceGroupValue(int rowIndex, QList<int> facesId);
 
         Interface::FITKAbsGeoCommand* getCurrentGeoCommand();
+    protected:
+        /**
+         * @brief 关闭事件重写
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void closeEvent(QCloseEvent *event) override;
     private slots:
         ;
         void on_pushButton_BasicPoint_clicked();
@@ -82,12 +89,6 @@ namespace GUI
          * @date 2024-07-16
          */
         void slotFaceWidgetDeleteClicked();
-        /**
-         * @brief 关闭事件重写
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-07-16
-         */
-        void closeEvent(QCloseEvent *event);
     private:
         bool checkValue();
         void setDataToWidget();

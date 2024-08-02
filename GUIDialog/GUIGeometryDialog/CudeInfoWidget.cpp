@@ -32,7 +32,7 @@
 namespace GUI {
 
     CudeInfoWidget::CudeInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :
-        Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
+        GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(true), _oper(oper)
     {
         init();
@@ -42,7 +42,7 @@ namespace GUI {
     }
 
     CudeInfoWidget::CudeInfoWidget(Interface::FITKAbsGeoModelBox * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
-        Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
+        GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(false), _obj(obj), _oper(oper)
     {
         init();
@@ -59,10 +59,6 @@ namespace GUI {
 
     void CudeInfoWidget::init()
     {
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-        graphOper->setEnableMeshTransparent(true);
-
         Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
         if (geometryData == nullptr) return;
 
@@ -148,6 +144,12 @@ namespace GUI {
     Interface::FITKAbsGeoCommand * CudeInfoWidget::getCurrentGeoCommand()
     {
         return _obj;
+    }
+
+    void CudeInfoWidget::closeEvent(QCloseEvent * event)
+    {
+        GeometryWidgetBase::closeEvent(event);
+        clearGraphHight();
     }
 
     void CudeInfoWidget::on_pushButton_BasicPoint_clicked()
@@ -402,15 +404,6 @@ namespace GUI {
         }
 
         _ui->tableWidget->setCurrentCell(-1, -1);
-    }
-
-    void CudeInfoWidget::closeEvent(QCloseEvent * event)
-    {
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-        graphOper->setEnableMeshTransparent(false);
-
-        clearGraphHight();
     }
 
     bool CudeInfoWidget::checkValue()

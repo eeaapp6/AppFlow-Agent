@@ -1,5 +1,6 @@
 HEADERS += \ 
     $$PWD/GUIGeometryDialogAPI.h \
+    $$PWD/GeometryWidgetBase.h \
     $$PWD/CompFaceGroupWidget.h \
     $$PWD/CudeInfoWidget.h \
     $$PWD/CylinderInfoWidget.h \
@@ -8,6 +9,7 @@ HEADERS += \
 
 
 SOURCES += \
+    $$PWD/GeometryWidgetBase.cpp \
     $$PWD/CompFaceGroupWidget.cpp \
     $$PWD/CudeInfoWidget.cpp \
     $$PWD/CylinderInfoWidget.cpp \

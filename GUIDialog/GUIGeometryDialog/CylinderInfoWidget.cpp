@@ -30,7 +30,7 @@
 namespace GUI {
 
     CylinderInfoWidget::CylinderInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :
-        Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
+        GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(true), _oper(oper)
     {
         init();
@@ -40,7 +40,7 @@ namespace GUI {
     }
 
     CylinderInfoWidget::CylinderInfoWidget(Interface::FITKAbsGeoModelCylinder * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
-        Core::FITKWidget(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
+        GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(false), _obj(obj), _oper(oper)
     {
         init();
@@ -58,10 +58,6 @@ namespace GUI {
 
     void CylinderInfoWidget::init()
     {
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-        graphOper->setEnableMeshTransparent(true);
-
         Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
         if (geometryData == nullptr) return;
 
@@ -147,6 +143,12 @@ namespace GUI {
     Interface::FITKAbsGeoCommand * CylinderInfoWidget::getCurrentGeoCommand()
     {
         return _obj;
+    }
+
+    void CylinderInfoWidget::closeEvent(QCloseEvent * event)
+    {
+        GeometryWidgetBase::closeEvent(event);
+        clearGraphHight();
     }
 
     void CylinderInfoWidget::on_pushButton_OriginPoint_clicked()
@@ -403,15 +405,6 @@ namespace GUI {
         }
 
         _ui->tableWidget->setCurrentCell(-1, -1);
-    }
-
-    void CylinderInfoWidget::closeEvent(QCloseEvent * event)
-    {
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-        graphOper->setEnableMeshTransparent(false);
-
-        clearGraphHight();
     }
 
     bool CylinderInfoWidget::checkValue()
