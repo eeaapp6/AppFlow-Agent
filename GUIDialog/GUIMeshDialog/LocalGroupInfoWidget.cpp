@@ -38,24 +38,6 @@ namespace GUI
         return _obj;
     }
 
-    void LocalGroupInfoWidget::on_pushButton_Cancel_clicked()
-    {
-        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
-        if (mainWindow == nullptr)return;
-        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
-        if (propertyWidget == nullptr)return;
-        propertyWidget->init();
-    }
-
-    void LocalGroupInfoWidget::on_pushButton_OK_clicked()
-    {
-        if (_obj && _oper) {
-            if (!checkValue())return;
-            getDataFromWidget();
-            _oper->execProfession();
-        }
-    }
-
     bool LocalGroupInfoWidget::checkValue()
     {
         return true;
@@ -76,15 +58,27 @@ namespace GUI
 
     void LocalGroupInfoWidget::getDataFromWidget()
     {
+
+    }
+
+    void LocalGroupInfoWidget::on_lineEdit_NoLayers_editingFinished()
+    {
         if (_obj == nullptr)return;
         QString layer = _ui->lineEdit_NoLayers->text();
         _obj->setLayerNumber(layer.toInt());
+    }
 
+    void LocalGroupInfoWidget::on_lineEdit_Expansion_editingFinished()
+    {
+        if (_obj == nullptr)return;
         QString exp = _ui->lineEdit_Expansion->text();
         _obj->setExpansionRatio(exp.toDouble());
+    }
 
+    void LocalGroupInfoWidget::on_lineEdit_FirThickness_editingFinished()
+    {
+        if (_obj == nullptr)return;
         QString thick = _ui->lineEdit_FirThickness->text();
         _obj->setLayerThickness(thick.toDouble());
     }
 }
-

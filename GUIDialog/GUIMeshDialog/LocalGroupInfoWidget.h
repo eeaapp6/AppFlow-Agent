@@ -30,9 +30,11 @@ namespace GUI
         Interface::FITKGeometryMeshSize* getCurrentGeoMeshObj();
     private slots:
         ;
-        void on_pushButton_Cancel_clicked();
-
-        void on_pushButton_OK_clicked();
+        void on_lineEdit_NoLayers_editingFinished();
+        
+        void on_lineEdit_Expansion_editingFinished();
+        
+        void on_lineEdit_FirThickness_editingFinished();
     private:
         bool checkValue();
         void setDataToWidget();
