@@ -13,6 +13,9 @@ namespace GUI
         _ui->setupUi(this);
         init();
         connect(_ui->pushButton_Delete, SIGNAL(clicked()), this, SIGNAL(sigDeleteClicked()));
+        connect(_ui->lineEdit_Point1, SIGNAL(editingFinished()), this, SIGNAL(sigPointChange()));
+        connect(_ui->lineEdit_Point2, SIGNAL(editingFinished()), this, SIGNAL(sigPointChange()));
+        connect(_ui->lineEdit_Point3, SIGNAL(editingFinished()), this, SIGNAL(sigPointChange()));
     }
 
     CompMaterialPointWidget::~CompMaterialPointWidget()
@@ -59,7 +62,7 @@ namespace GUI
 
     QVariant CompMaterialPointWidget::data(int pos)
     {
-        return _data.key(pos);
+        return _data.value(pos);
     }
 
     void CompMaterialPointWidget::setCurrentPos(int row, int clo)

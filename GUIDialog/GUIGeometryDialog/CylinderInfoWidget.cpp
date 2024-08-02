@@ -58,6 +58,10 @@ namespace GUI {
 
     void CylinderInfoWidget::init()
     {
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        graphOper->setEnableMeshTransparent(true);
+
         Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
         if (geometryData == nullptr) return;
 
@@ -403,6 +407,10 @@ namespace GUI {
 
     void CylinderInfoWidget::closeEvent(QCloseEvent * event)
     {
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        graphOper->setEnableMeshTransparent(false);
+
         clearGraphHight();
     }
 

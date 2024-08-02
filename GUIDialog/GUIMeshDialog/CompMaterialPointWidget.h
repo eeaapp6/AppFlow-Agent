@@ -29,6 +29,7 @@ namespace GUI
     signals:
         ;
         void sigDeleteClicked();
+        void sigPointChange();
 
     private:
         Ui::CompMaterialPointWidget* _ui = nullptr;
