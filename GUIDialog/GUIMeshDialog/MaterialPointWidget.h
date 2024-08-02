@@ -27,23 +27,17 @@ namespace GUI
     private slots:
         ;
         /**
+         * @brief 清除事件
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void on_pushButton_Clear_clicked();
+        /**
          * @brief 添加事件点击
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-07-16
          */
         void on_pushButton_Add_clicked();
-        /**
-         * @brief 确定事件点击
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-07-16
-         */
-        void on_pushButton_OK_clicked();
-        /**
-         * @brief 取消事件点击
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-07-16
-         */
-        void on_pushButton_Cancel_clicked();
         /**
          * @brief 表格点击事件
          * @param[i]  item           表格对象
@@ -57,6 +51,12 @@ namespace GUI
          * @date 2024-07-16
          */
         void slotMatPointWidgetDeleteClicked();
+        /**
+         * @brief 材料点组件点位数据更新时间
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void slotMatPointWidgetPointChange();
     private:
         /**
          * @brief 刷新面组界面记录的位置
@@ -95,6 +95,19 @@ namespace GUI
          * @date 2024-07-16
          */
         void getDataFromWidget();
+    private:
+        /**
+         * @brief 检查名称是否存在
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        bool checkName(const QString& name);
+        /**
+         * @brief 更新渲染窗口
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void updateGraph();
     private:
         Ui::MaterialPointWidget* _ui = nullptr;
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
