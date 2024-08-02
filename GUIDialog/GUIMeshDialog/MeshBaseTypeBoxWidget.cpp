@@ -151,6 +151,18 @@ namespace GUI
         return true;
     }
 
+    void MeshBaseTypeBoxWidget::updateGeometryGraph()
+    {
+        if (_graphObj == nullptr)return;
+        getDataFromWidget(_graphObj);
+
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+
+        graphOper->updateGraph(_graphObj->getDataObjectID());
+        graphOper->reRender();
+    }
+
     void MeshBaseTypeBoxWidget::on_pushButton_AutoSize_clicked()
     {
         Interface::FITKGeoCommandList* geoManager = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
@@ -185,13 +197,38 @@ namespace GUI
         _ui->lineEdit_Dimensions2->setText(QString::number(YExtent));
         _ui->lineEdit_Dimensions3->setText(QString::number(ZExtent));
 
-        if (_graphObj == nullptr)return;
-        getDataFromWidget(_graphObj);
+        updateGeometryGraph();
+    }
 
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return ;
+    void MeshBaseTypeBoxWidget::on_lineEdit_BasePoint1_textEdited(const QString &value)
+    {
+        updateGeometryGraph();
+    }
 
-        graphOper->updateGraph(_graphObj->getDataObjectID());
-        graphOper->reRender();
+    void MeshBaseTypeBoxWidget::on_lineEdit_BasePoint2_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
+    }
+
+    void MeshBaseTypeBoxWidget::on_lineEdit_BasePoint3_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
+    }
+
+    void MeshBaseTypeBoxWidget::on_lineEdit_Dimensions1_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
+    }
+
+    void MeshBaseTypeBoxWidget::on_lineEdit_Dimensions2_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
+    }
+
+    void MeshBaseTypeBoxWidget::on_lineEdit_Dimensions3_textEdited(const QString & value)
+    {
+        updateGeometryGraph();
     }
 }
+
+

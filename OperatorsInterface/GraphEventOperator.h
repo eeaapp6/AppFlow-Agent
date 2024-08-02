@@ -123,6 +123,32 @@ namespace EventOper
          * @date    2024-07-30
          */
         virtual void setEnableModelTransparent(bool flag);
+
+        /**
+         * @brief   将现有（边界）网格全部开启或关闭半透明显示。[虚函数]
+         * @param   flag：是否开启
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-08-02
+         */
+        virtual void setEnableMeshTransparent(bool flag);
+
+        /**
+         * @brief   隐藏或显示模型。[虚函数]
+         * @param   dataObjId：数据对象ID
+         * @param   visibility：是否可见
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-08-02
+         */
+        virtual void setModelVisible(int dataObjId, bool visibility);
+
+        /**
+         * @brief   隐藏或显示（边界）网格。[虚函数]
+         * @param   dataObjId：数据对象ID
+         * @param   visibility：是否可见
+         * @author  ChengHaotian (yeguangbaozi@foxmail.com)
+         * @date    2024-08-02
+         */
+        virtual void setMeshVisible(int dataObjId, bool visibility);
         //@}
 
         // 高亮功能接口。

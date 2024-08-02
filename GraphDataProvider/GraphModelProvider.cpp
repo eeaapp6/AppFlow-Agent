@@ -145,6 +145,11 @@ namespace GraphData
         return objs;
     }
 
+    QList<Exchange::FITKOCC2VTKGraphObject3D*> GraphModelProvider::getAllMeshGraphObjects()
+    {
+        return m_boundMeshObjHash.values();
+    }
+
     Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getRegionMeshGraphObject(int dataObjId)
     {
         // 流体域形状可视化对象。

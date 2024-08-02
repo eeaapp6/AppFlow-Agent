@@ -91,7 +91,7 @@ namespace GUI
         void setDataToWidget();
         void getDataFormWidget();
         //更新表格标题
-        void updateTableTitle();
+        //void updateTableTitle();
         //初始化表格
         void initTableWidget();
 

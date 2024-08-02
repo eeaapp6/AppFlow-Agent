@@ -129,7 +129,10 @@ namespace GUI{
             addMenuActions(menu, "actionGeoSphereDelete", "Sphere delete");
             break;
         }
-        case GUI::MainTreeEnum::MainTree_Mesh: break;
+        case GUI::MainTreeEnum::MainTree_Mesh: {
+            addMenuActions(menu, "actionClearMesh", "Clear mesh");
+            break;
+        }
         case GUI::MainTreeEnum::MainTree_MeshBase: break;
         case GUI::MainTreeEnum::MainTree_MeshLocal: {
             break;
@@ -196,6 +199,8 @@ namespace GUI{
     {
         QTreeWidgetItem* meshItem = new QTreeWidgetItem();
         meshItem->setText(0, tr("mesh"));
+        meshItem->setData(1, 0, -1);
+        meshItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Mesh));
         this->addTopLevelItem(meshItem);
 
         QTreeWidgetItem* meshBaseItem = new QTreeWidgetItem();

@@ -4,6 +4,7 @@
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
+#include "GUIFrame/MainTreeWidget.h"
 #include "GUIWidget/PickedData.h"
 #include "GUIWidget/PickedDataProvider.h"
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
@@ -15,6 +16,8 @@
 #include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKZonePoints.h"
+
+#define MatPointID Qt::UserRole + 1
 
 namespace GUI
 {
@@ -60,8 +63,33 @@ namespace GUI
         connect(_ui->tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(slotCellTableClicked(int, int)));
     }
 
+    void MaterialPointWidget::hideEvent(QHideEvent * event)
+    {
+        updateGraph(false);
+        clearGraphHight();
+    }
+
+    void MaterialPointWidget::on_pushButton_Clear_clicked()
+    {
+        Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKZonePointManager* manager = interface->getZonePointManager();
+        if (manager == nullptr)return;
+
+        for (int i = 1; i < _ui->tableWidget->rowCount(); i++) {
+            auto widget = dynamic_cast<CompMaterialPointWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            if(widget == nullptr)continue;
+            manager->removeDataByID(widget->data(MatPointID).toInt());
+        }
+
+        _ui->tableWidget->setRowCount(1);
+    }
+
     void MaterialPointWidget::on_pushButton_Add_clicked()
     {
+        Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKZonePointManager* manager = interface->getZonePointManager();
+        if (manager == nullptr)return;
+
         int rowNum = _ui->tableWidget->rowCount();
         _ui->tableWidget->setRowCount(rowNum + 1);
         QString name = "";
@@ -69,51 +97,85 @@ namespace GUI
              name = tr("none");
         }
         else {
-            name = tr("zone%1").arg(rowNum);
+            int index = 1;
+            name = tr("zone%1").arg(index);
+            while (checkName(name)) {
+                index++;
+                name = tr("zone%1").arg(index);
+            }
         }
+
+        double point[3] = { 0,0,0 };
+        Interface::FITKZonePoint* zonePoint = new Interface::FITKZonePoint(point[0], point[1], point[2]);
+        manager->appendDataObj(zonePoint);
 
         CompMaterialPointWidget* widget = new CompMaterialPointWidget(_ui->tableWidget);
         widget->setName(name);
+        widget->getPoint(point);
         _ui->tableWidget->setCellWidget(rowNum, 0, widget);
-
+        widget->setData(MatPointID, zonePoint->getDataObjectID());
+ 
         connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotMatPointWidgetDeleteClicked()));
+        connect(widget, SIGNAL(sigPointChange()), this, SLOT(slotMatPointWidgetPointChange()));
 
         updateFaceWidgetCurrentPos();
-    }
 
-    void MaterialPointWidget::on_pushButton_OK_clicked()
-    {
-        if (!checkValue())return;
-
-        getDataFromWidget();
-        
-        if (_oper) {
-            _oper->execProfession();
-        }
-    }
-
-    void MaterialPointWidget::on_pushButton_Cancel_clicked()
-    {
-        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
-        if (mainWindow == nullptr)return;
-        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
-        if (propertyWidget == nullptr)return;
-        propertyWidget->init();
+        updateGraph();
     }
 
     void MaterialPointWidget::slotCellTableClicked(int row, int column)
     {
+        CompMaterialPointWidget* widget = dynamic_cast<CompMaterialPointWidget*>(_ui->tableWidget->cellWidget(row, 0));
+        if (widget == nullptr) return;
+
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+
+        GraphOperParam param;
+        param.AdvHighlightIndice.append(widget->data(MatPointID).toInt());
+        param.HighlightMode = HighlightLevel::AdvHighlight;
+        graphOper->updateGraphByType(static_cast<int>(GUI::MainTreeEnum::MainTree_MeshPoint), param);
+        graphOper->reRender();
     }
 
     void MaterialPointWidget::slotMatPointWidgetDeleteClicked()
     {
+        Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKZonePointManager* manager = interface->getZonePointManager();
+        if (manager == nullptr)return;
+
+        //如果只剩一个点，无法删除
+        if (manager->getDataCount() == 1)return;
+
         CompMaterialPointWidget* widget = dynamic_cast<CompMaterialPointWidget*>(sender());
         if (widget == nullptr) return;
+        int objId = widget->data(MatPointID).toInt();
+        auto pointObj = manager->getDataByID(objId);
+        if (pointObj == nullptr)return;
+
+        manager->removeDataByID(objId);
         _ui->tableWidget->removeRow(widget->getCurrentPos().first);
         //更新界面中存储的位置
         updateFaceWidgetCurrentPos();
-        //清除高亮
-        clearGraphHight();
+        
+        updateGraph();
+    }
+
+    void MaterialPointWidget::slotMatPointWidgetPointChange()
+    {
+        Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKZonePointManager* manager = interface->getZonePointManager();
+        if (manager == nullptr)return;
+        CompMaterialPointWidget* widget = dynamic_cast<CompMaterialPointWidget*>(sender());
+        if (widget == nullptr) return;
+        auto pointObj = manager->getDataByID(widget->data(MatPointID).toInt());
+        if (pointObj == nullptr)return;
+        
+        double point[3] = { 0,0,0 };
+        widget->getPoint(point);
+        pointObj->setCoor(point[0], point[1], point[2]);
+
+        updateGraph();
     }
 
     void MaterialPointWidget::updateFaceWidgetCurrentPos()
@@ -186,25 +248,40 @@ namespace GUI
             widget->setName(name);
             widget->setPoint(point);
             _ui->tableWidget->setCellWidget(i, 0, widget);
+            widget->setData(MatPointID, zonePoint->getDataObjectID());
+
             connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotMatPointWidgetDeleteClicked()));
+            connect(widget, SIGNAL(sigPointChange()), this, SLOT(slotMatPointWidgetPointChange()));
         }
+
+        updateGraph();
     }
 
     void MaterialPointWidget::getDataFromWidget()
     {
-        Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
-        Interface::FITKZonePointManager* manager = interface->getZonePointManager();
-        if (manager == nullptr)return;
 
-        manager->clear();
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompMaterialPointWidget* widget = dynamic_cast<CompMaterialPointWidget*>(_ui->tableWidget->cellWidget(i, 0));
-            if(widget == nullptr)continue;
-            double point[3] = { 0,0,0 };
-            widget->getPoint(point);
-            Interface::FITKZonePoint* zonePoint = new Interface::FITKZonePoint(point[0], point[1], point[2]);
-            manager->appendDataObj(zonePoint);
+    }
+
+    bool MaterialPointWidget::checkName(const QString & name)
+    {
+        for (int i = 0; i < _ui->tableWidget->rowCount(); i++)
+        {
+            auto widget = dynamic_cast<CompMaterialPointWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            if (widget == nullptr)continue;
+            if (widget->getName() == name)return true;
         }
+
+        return false;
+    }
+
+    void MaterialPointWidget::updateGraph(bool isShow)
+    {
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        GraphOperParam param;
+        param.Visibility = isShow;
+        graphOper->updateGraphByType(static_cast<int>(GUI::MainTreeEnum::MainTree_MeshPoint), param);
+        graphOper->reRender();
     }
 }
 

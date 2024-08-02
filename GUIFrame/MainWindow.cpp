@@ -110,7 +110,7 @@ namespace GUI
         m_PropertyWidget = new PropertyWidget(this);
         m_RenderWidget = new RenderWidget(this);
         _tabWidgete = new TabWidget(this);
-        m_GroupPropertyWidget = new GroupPropertyWidget(this);
+        //m_GroupPropertyWidget = new GroupPropertyWidget(this);
 
         //添加树界面
         spliterLayout->addWidget(_treeWidget);
@@ -124,7 +124,7 @@ namespace GUI
         verLayout->addWidget(_tabWidgete);
 
         spliterLayout->addWidget(verLayout);
-        spliterLayout->addWidget(m_GroupPropertyWidget);
+        //spliterLayout->addWidget(m_GroupPropertyWidget);
         // 设置大小
         spliterLayout->setSizes({ 200, 300, 1000, 200 });
 

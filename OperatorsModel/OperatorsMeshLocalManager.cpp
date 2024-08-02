@@ -95,7 +95,7 @@ namespace ModelOper
         return true;
     }
 
-    void OperatorsMeshLocalManager::moveToStep(int index, QVariant value)
+    void OperatorsMeshLocalManager::eventProcess(int index, QVariant value)
     {
 
     }

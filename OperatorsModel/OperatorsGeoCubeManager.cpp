@@ -111,7 +111,7 @@ namespace ModelOper
         return true;
     }
 
-    void OperatorsGeoCubeManager::moveToStep(int index, QVariant value)
+    void OperatorsGeoCubeManager::eventProcess(int index, QVariant value)
     {
         //几何基点重选择事件
         if (index == 0) {
