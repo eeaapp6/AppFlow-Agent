@@ -41,7 +41,7 @@
 PreWindowInitializer::PreWindowInitializer()
 {
     // 初始化渲染层数。
-    this->setLayerCount(2);
+    this->setLayerCount(3);
 
     //背景颜色
     //QColor top = QColor::fromRgb(27, 45, 70);
