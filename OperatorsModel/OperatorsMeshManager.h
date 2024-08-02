@@ -21,6 +21,7 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
+    Register2FITKOPeratorRepo(actionClearMesh, OperatorsMeshManager);
     Register2FITKOPeratorRepo(actionMesh, OperatorsMeshManager);
 }
 
