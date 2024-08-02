@@ -17,6 +17,7 @@ namespace GUI
     protected:
         void showEvent(QShowEvent *event) override;
         void closeEvent(QCloseEvent* event) override;
+        void transparency(bool geo = true, bool mesh = true);
     private:
         MainWindow* _mainWin = nullptr;
     };

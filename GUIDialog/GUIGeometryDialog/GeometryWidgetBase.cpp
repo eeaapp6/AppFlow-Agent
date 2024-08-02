@@ -23,20 +23,21 @@ namespace GUI
 
     void GeometryWidgetBase::showEvent(QShowEvent * event)
     {
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-        graphOper->setEnableModelTransparent(true);
-        graphOper->setEnableMeshTransparent(true);
-        graphOper->reRender();
+        transparency();
     }
 
     void GeometryWidgetBase::closeEvent(QCloseEvent * event)
     {
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-        graphOper->setEnableModelTransparent(false);
-        graphOper->setEnableMeshTransparent(false);
-        graphOper->reRender();
+        transparency(false, false);
+    }
+
+    void GeometryWidgetBase::transparency(bool geo, bool mesh)
+    {
+        //EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        //if (graphOper == nullptr)return;
+        //graphOper->setEnableModelTransparent(geo);
+        //graphOper->setEnableMeshTransparent(mesh);
+        //graphOper->reRender();
     }
 }
 
