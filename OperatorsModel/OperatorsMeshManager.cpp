@@ -39,8 +39,7 @@ namespace ModelOper
             if (globalData == nullptr)return false;
             Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
             if (meshData == nullptr)return false;
-            delete meshData;
-            meshData = nullptr;
+            meshData->clearMesh();
             graphOper->reRender();
         }
         return true;
