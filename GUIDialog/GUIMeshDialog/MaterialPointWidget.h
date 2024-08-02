@@ -24,6 +24,14 @@ namespace GUI
         void init();
 
         void initTableWidget();
+    protected:
+        /**
+         * @brief 隐藏事件
+         * @param[i]  event           事件
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void hideEvent(QHideEvent* event);
     private slots:
         ;
         /**
@@ -95,7 +103,6 @@ namespace GUI
          * @date 2024-07-16
          */
         void getDataFromWidget();
-    private:
         /**
          * @brief 检查名称是否存在
          * @author BaGuijun (baguijun@163.com)
@@ -107,7 +114,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-07-16
          */
-        void updateGraph();
+        void updateGraph(bool isShow = true);
     private:
         Ui::MaterialPointWidget* _ui = nullptr;
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;

@@ -4,6 +4,7 @@
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
+#include "GUIFrame/MainTreeWidget.h"
 #include "GUIWidget/PickedData.h"
 #include "GUIWidget/PickedDataProvider.h"
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
@@ -62,6 +63,12 @@ namespace GUI
         connect(_ui->tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(slotCellTableClicked(int, int)));
     }
 
+    void MaterialPointWidget::hideEvent(QHideEvent * event)
+    {
+        updateGraph(false);
+        clearGraphHight();
+    }
+
     void MaterialPointWidget::on_pushButton_Clear_clicked()
     {
         Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
@@ -112,21 +119,34 @@ namespace GUI
         connect(widget, SIGNAL(sigPointChange()), this, SLOT(slotMatPointWidgetPointChange()));
 
         updateFaceWidgetCurrentPos();
+
+        updateGraph();
     }
 
     void MaterialPointWidget::slotCellTableClicked(int row, int column)
     {
+        CompMaterialPointWidget* widget = dynamic_cast<CompMaterialPointWidget*>(_ui->tableWidget->cellWidget(row, 0));
+        if (widget == nullptr) return;
 
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+
+        GraphOperParam param;
+        param.AdvHighlightIndice.append(widget->data(MatPointID).toInt());
+        param.HighlightMode = HighlightLevel::AdvHighlight;
+        graphOper->updateGraphByType(static_cast<int>(GUI::MainTreeEnum::MainTree_MeshPoint), param);
+        graphOper->reRender();
     }
 
     void MaterialPointWidget::slotMatPointWidgetDeleteClicked()
     {
-        //如果只剩一个点，无法删除
-        if (_ui->tableWidget->rowCount() == 1)return;
-
         Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
         Interface::FITKZonePointManager* manager = interface->getZonePointManager();
         if (manager == nullptr)return;
+
+        //如果只剩一个点，无法删除
+        if (manager->getDataCount() == 1)return;
+
         CompMaterialPointWidget* widget = dynamic_cast<CompMaterialPointWidget*>(sender());
         if (widget == nullptr) return;
         int objId = widget->data(MatPointID).toInt();
@@ -137,8 +157,8 @@ namespace GUI
         _ui->tableWidget->removeRow(widget->getCurrentPos().first);
         //更新界面中存储的位置
         updateFaceWidgetCurrentPos();
-        //清除高亮
-        clearGraphHight();
+        
+        updateGraph();
     }
 
     void MaterialPointWidget::slotMatPointWidgetPointChange()
@@ -233,6 +253,8 @@ namespace GUI
             connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotMatPointWidgetDeleteClicked()));
             connect(widget, SIGNAL(sigPointChange()), this, SLOT(slotMatPointWidgetPointChange()));
         }
+
+        updateGraph();
     }
 
     void MaterialPointWidget::getDataFromWidget()
@@ -252,9 +274,14 @@ namespace GUI
         return false;
     }
 
-    void MaterialPointWidget::updateGraph()
+    void MaterialPointWidget::updateGraph(bool isShow)
     {
-
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        GraphOperParam param;
+        param.Visibility = isShow;
+        graphOper->updateGraphByType(static_cast<int>(GUI::MainTreeEnum::MainTree_MeshPoint), param);
+        graphOper->reRender();
     }
 }
 
