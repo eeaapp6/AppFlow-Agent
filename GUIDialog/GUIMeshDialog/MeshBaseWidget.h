@@ -32,15 +32,11 @@ namespace GUI
         ~MeshBaseWidget();
 
         void init();
+
+		void saveValue();
     private slots:
         ;
-
         void on_comboBox_Type_activated(int index);
-
-        void on_pushButton_Cancel_clicked();
-
-        void on_pushButton_OK_clicked();
-
     private:
         void updateWidget(MeshBaseTypeWidgetBase* newWidget);
     private:

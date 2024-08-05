@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>356</width>
-    <height>454</height>
+    <width>386</width>
+    <height>459</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -166,7 +166,7 @@
      <property name="title">
       <string>Mesh</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="gridLayout_5">
       <item row="0" column="0">
        <widget class="QLabel" name="label_Division">
         <property name="text">
@@ -174,26 +174,40 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
+      <item row="0" column="1" rowspan="2" colspan="2">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
          <widget class="QLineEdit" name="lineEdit_Division1">
           <property name="text">
            <string>10</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="0" column="1">
          <widget class="QLineEdit" name="lineEdit_Division2">
           <property name="text">
            <string>10</string>
           </property>
          </widget>
         </item>
-        <item>
+        <item row="0" column="2">
          <widget class="QLineEdit" name="lineEdit_Division3">
           <property name="text">
            <string>10</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLineEdit" name="lineEdit_Grading1">
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="lineEdit_Grading2">
+          <property name="text">
+           <string>1</string>
           </property>
          </widget>
         </item>
@@ -205,37 +219,6 @@
          <string>Grading:</string>
         </property>
        </widget>
-      </item>
-      <item row="1" column="1" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_4">
-        <item>
-         <widget class="QLineEdit" name="lineEdit_Grading1">
-          <property name="text">
-           <string>1</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_Grading2">
-          <property name="text">
-           <string>1</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>84</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
       </item>
       <item row="2" column="0" colspan="2">
        <spacer name="horizontalSpacer_3">
@@ -251,7 +234,7 @@
        </spacer>
       </item>
       <item row="2" column="2">
-       <widget class="QPushButton" name="pushButton_Autosize_2">
+       <widget class="QPushButton" name="pushButton_2">
         <property name="minimumSize">
          <size>
           <width>100</width>

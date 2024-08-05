@@ -1,5 +1,6 @@
 ﻿#include "MeshBaseTypeBoxWidget.h"
 #include "ui_MeshBaseTypeBoxWidget.h"
+#include "MeshBaseWidget.h"
 
 #include "OperatorsInterface/GraphEventOperator.h"
 
@@ -17,13 +18,16 @@
 
 namespace GUI
 {
-    MeshBaseTypeBoxWidget::MeshBaseTypeBoxWidget()
+	MeshBaseTypeBoxWidget::MeshBaseTypeBoxWidget(QWidget* parent) :
+		MeshBaseTypeWidgetBase(parent)
     {
         _ui = new Ui::MeshBaseTypeBoxWidget();
         _ui->setupUi(this);
         //创建预览渲染对象
         _graphObj = new Interface::FITKRegionMeshSizeBox();
         init();
+
+		_ui->pushButton_2->hide();
     }
 
     MeshBaseTypeBoxWidget::~MeshBaseTypeBoxWidget()
@@ -74,6 +78,25 @@ namespace GUI
         _ui->comboBox_Z0->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
         _ui->comboBox_Z0->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
         _ui->comboBox_Z0->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
+
+		connect(_ui->lineEdit_BasePoint1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->lineEdit_BasePoint2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->lineEdit_BasePoint3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->lineEdit_Dimensions1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->lineEdit_Dimensions2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->lineEdit_Dimensions3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->lineEdit_Division1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->lineEdit_Division2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->lineEdit_Division3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->lineEdit_Grading1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->lineEdit_Grading2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->lineEdit_Grading3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+		connect(_ui->comboBox_X0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+		connect(_ui->comboBox_X1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+		connect(_ui->comboBox_Y0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+		connect(_ui->comboBox_Y1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+		connect(_ui->comboBox_Z0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+		connect(_ui->comboBox_Z1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
     }
 
     bool MeshBaseTypeBoxWidget::checkValue()
@@ -85,6 +108,8 @@ namespace GUI
     {
         Interface::FITKRegionMeshSizeBox* boxObj = dynamic_cast<Interface::FITKRegionMeshSizeBox*>(obj);
         if (boxObj == nullptr)return false;
+
+		this->blockSignals(true);
 
         double basicPoint[3] = { 0,0,0 };
         boxObj->getPoint1(basicPoint);
@@ -113,6 +138,8 @@ namespace GUI
         _ui->comboBox_Y0->setCurrentIndex(_ui->comboBox_Y0->findData(boxObj->getBoundary(3)));
         _ui->comboBox_Z1->setCurrentIndex(_ui->comboBox_Z1->findData(boxObj->getBoundary(4)));
         _ui->comboBox_Z0->setCurrentIndex(_ui->comboBox_Z0->findData(boxObj->getBoundary(5)));
+
+		this->blockSignals(false);
         return true;
     }
 
@@ -160,7 +187,7 @@ namespace GUI
         if (graphOper == nullptr)return;
 
         graphOper->updateGraph(_graphObj->getDataObjectID());
-        graphOper->reRender();
+		graphOper->reRender(true);
     }
 
     void MeshBaseTypeBoxWidget::on_pushButton_AutoSize_clicked()
@@ -197,38 +224,15 @@ namespace GUI
         _ui->lineEdit_Dimensions2->setText(QString::number(YExtent));
         _ui->lineEdit_Dimensions3->setText(QString::number(ZExtent));
 
+		if (_meshBaseWidget)_meshBaseWidget->saveValue();
         updateGeometryGraph();
     }
 
-    void MeshBaseTypeBoxWidget::on_lineEdit_BasePoint1_textEdited(const QString &value)
-    {
-        updateGeometryGraph();
-    }
-
-    void MeshBaseTypeBoxWidget::on_lineEdit_BasePoint2_textEdited(const QString & value)
-    {
-        updateGeometryGraph();
-    }
-
-    void MeshBaseTypeBoxWidget::on_lineEdit_BasePoint3_textEdited(const QString & value)
-    {
-        updateGeometryGraph();
-    }
-
-    void MeshBaseTypeBoxWidget::on_lineEdit_Dimensions1_textEdited(const QString & value)
-    {
-        updateGeometryGraph();
-    }
-
-    void MeshBaseTypeBoxWidget::on_lineEdit_Dimensions2_textEdited(const QString & value)
-    {
-        updateGeometryGraph();
-    }
-
-    void MeshBaseTypeBoxWidget::on_lineEdit_Dimensions3_textEdited(const QString & value)
-    {
-        updateGeometryGraph();
-    }
+	void MeshBaseTypeBoxWidget::slotSaveValue()
+	{
+		_meshBaseWidget->saveValue();
+		updateGeometryGraph();
+	}
 }
 
 

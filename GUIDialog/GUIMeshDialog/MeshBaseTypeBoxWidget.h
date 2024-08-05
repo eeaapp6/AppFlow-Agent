@@ -17,7 +17,7 @@ namespace GUI
     {
         Q_OBJECT;
     public:
-        MeshBaseTypeBoxWidget();
+        MeshBaseTypeBoxWidget(QWidget* parent);
         ~MeshBaseTypeBoxWidget();
 
         void init();
@@ -33,17 +33,7 @@ namespace GUI
         ;
         void on_pushButton_AutoSize_clicked();
 
-        void on_lineEdit_BasePoint1_textEdited(const QString &value);
-
-        void on_lineEdit_BasePoint2_textEdited(const QString &value);
-        
-        void on_lineEdit_BasePoint3_textEdited(const QString &value);
-        
-        void on_lineEdit_Dimensions1_textEdited(const QString &value);
-        
-        void on_lineEdit_Dimensions2_textEdited(const QString &value);
-        
-        void on_lineEdit_Dimensions3_textEdited(const QString &value);
+		void slotSaveValue();
     private:
         Ui::MeshBaseTypeBoxWidget* _ui = nullptr;
         Interface::FITKRegionMeshSizeBox* _graphObj = nullptr;

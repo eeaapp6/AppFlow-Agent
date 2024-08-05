@@ -9,12 +9,15 @@ namespace Interface {
 
 namespace GUI 
 {
+	class MeshBaseWidget;
+	class MainWindow;
+
     class MeshBaseTypeWidgetBase :public Core::FITKWidget
     {
         Q_OBJECT;
     public:
-        MeshBaseTypeWidgetBase();
-        ~MeshBaseTypeWidgetBase();
+		MeshBaseTypeWidgetBase(QWidget* parent);
+        virtual ~MeshBaseTypeWidgetBase();
 
         virtual bool checkValue() = 0;
 
@@ -23,6 +26,9 @@ namespace GUI
         virtual bool getDataFromWidget(Interface::FITKAbstractRegionMeshSize* obj) = 0;
 
         virtual void updateGeometryGraph() = 0;
+	protected:
+		MainWindow* _mainWin = nullptr;
+		MeshBaseWidget* _meshBaseWidget = nullptr;
     };
 }
 

@@ -45,13 +45,16 @@ namespace GUI
         Interface::FITKAbstractRegionMeshSize::RegionType type = Interface::FITKAbstractRegionMeshSize::RegionBox;
         //获取第一位数据
         _currentObj = _meshSizeManager->getDataByIndex(0);
-        if (_currentObj) {
-            type = _currentObj->getRegionType();
-        }
+        if (!_currentObj) {
+			auto meshGenerator = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
+			_currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionBox);
+			_meshSizeManager->appendDataObj(_currentObj);
+		}
+		type = _currentObj->getRegionType();
 
         switch (type) {
-        case Interface::FITKAbstractRegionMeshSize::RegionBox: _subWidget = new MeshBaseTypeBoxWidget(); break;
-        case Interface::FITKAbstractRegionMeshSize::RegionCylinder: _subWidget = new MeshBaseTypeCylinderWidget; break;
+        case Interface::FITKAbstractRegionMeshSize::RegionBox: _subWidget = new MeshBaseTypeBoxWidget(this); break;
+        case Interface::FITKAbstractRegionMeshSize::RegionCylinder: _subWidget = new MeshBaseTypeCylinderWidget(this); break;
         case Interface::FITKAbstractRegionMeshSize::RegionSphere: break;
         }
         _ui->comboBox_Type->setCurrentIndex(_ui->comboBox_Type->findData(type));
@@ -61,93 +64,65 @@ namespace GUI
         _ui->gridLayout_SubWidget->addWidget(_subWidget);
     }
 
+	void MeshBaseWidget::saveValue()
+	{
+		if (_subWidget == nullptr)return;
+		_subWidget->getDataFromWidget(_currentObj);
+	}
+
     void MeshBaseWidget::on_comboBox_Type_activated(int index)
     {
         Interface::FITKAbstractRegionMeshSize::RegionType type = _ui->comboBox_Type->currentData().value<Interface::FITKAbstractRegionMeshSize::RegionType>();
+		auto meshGenerator = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
 
         switch (type){
         case Interface::FITKAbstractRegionMeshSize::RegionBox: {
             QList<Interface::FITKAbstractRegionMeshSize*> meshSizeList = _meshSizeManager->getRigonByType(Interface::FITKAbstractRegionMeshSize::RegionType::RegionBox);
             if (meshSizeList.size() != 0) {
                 _currentObj = meshSizeList[0];
+				//移除对象但不释放内存
+				_meshSizeManager->removeDataObjWithoutRelease(_currentObj);
             }
             else
             {
-                _currentObj = nullptr;
+				_currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionBox);
             }
+			//插入到首位
+			_meshSizeManager->insertDataObj(0, _currentObj);
             //重新添加界面
-            updateWidget(new MeshBaseTypeBoxWidget());
+            updateWidget(new MeshBaseTypeBoxWidget(this));
             break;
         }
         case Interface::FITKAbstractRegionMeshSize::RegionCylinder: {
             QList<Interface::FITKAbstractRegionMeshSize*> meshSizeList = _meshSizeManager->getRigonByType(Interface::FITKAbstractRegionMeshSize::RegionType::RegionCylinder);
             if (meshSizeList.size() != 0) {
                 _currentObj = meshSizeList[0];
+				//移除对象但不释放内存
+				_meshSizeManager->removeDataObjWithoutRelease(_currentObj);
             }
             else
             {
-                _currentObj = nullptr;
+                _currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionCylinder);
             }
+			//插入到首位
+			_meshSizeManager->insertDataObj(0, _currentObj);
             //重新添加界面
-            updateWidget(new MeshBaseTypeCylinderWidget());
+			updateWidget(new MeshBaseTypeCylinderWidget(this));
             break;
         }
         case Interface::FITKAbstractRegionMeshSize::RegionSphere: {
             QList<Interface::FITKAbstractRegionMeshSize*> meshSizeList = _meshSizeManager->getRigonByType(Interface::FITKAbstractRegionMeshSize::RegionType::RegionSphere);
             if (meshSizeList.size() != 0) {
                 _currentObj = meshSizeList[0];
+				//移除对象但不释放内存
+				_meshSizeManager->removeDataObjWithoutRelease(_currentObj);
             }
             else
             {
-                _currentObj = nullptr;
+                _currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionSphere);
             }
             break;
         }
-        }
-    }
-
-    void MeshBaseWidget::on_pushButton_Cancel_clicked()
-    {
-        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
-        if (mainWindow == nullptr)return;
-        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
-        if (propertyWidget == nullptr)return;
-        propertyWidget->init();
-    }
-
-    void MeshBaseWidget::on_pushButton_OK_clicked()
-    {
-        if (_subWidget->checkValue() == false)return;
-
-        if (!_currentObj) {
-            auto meshGenerator = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
-
-            Interface::FITKAbstractRegionMeshSize::RegionType type = 
-                _ui->comboBox_Type->currentData().value<Interface::FITKAbstractRegionMeshSize::RegionType>();
-            switch (type){
-            case Interface::FITKAbstractRegionMeshSize::RegionBox:
-                _currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionBox); 
-                break;
-            case Interface::FITKAbstractRegionMeshSize::RegionCylinder:
-                _currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionCylinder);
-                break;
-            case Interface::FITKAbstractRegionMeshSize::RegionSphere:
-                break;
-            }
-            _subWidget->getDataFromWidget(_currentObj);
-
-            _meshSizeManager->insertDataObj(0, _currentObj);
-        }
-        else{
-            _subWidget->getDataFromWidget(_currentObj);
-            //移除对象但不释放内存
-            _meshSizeManager->removeDataObjWithoutRelease(_currentObj);
-            //插入到首位
-            _meshSizeManager->insertDataObj(0, _currentObj);
-        }
-
-        if (_oper) {
-            _oper->execProfession();
         }
     }
 

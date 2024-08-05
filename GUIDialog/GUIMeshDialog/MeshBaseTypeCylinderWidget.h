@@ -17,7 +17,7 @@ namespace GUI
     {
         Q_OBJECT;
     public:
-        MeshBaseTypeCylinderWidget();
+        MeshBaseTypeCylinderWidget(QWidget* parent);
         ~MeshBaseTypeCylinderWidget();
 
         void init();
@@ -33,22 +33,7 @@ namespace GUI
         ;
         void on_pushButton_AutoSize_clicked();
 
-        void on_lineEdit_OriginPoint1_textEdited(const QString &value);
-
-        void on_lineEdit_OriginPoint2_textEdited(const QString &value);
-
-        void on_lineEdit_OriginPoint3_textEdited(const QString &value);
-
-        void on_lineEdit_AxisPoint1_textEdited(const QString &value);
-
-        void on_lineEdit_AxisPoint2_textEdited(const QString &value);
-
-        void on_lineEdit_AxisPoint3_textEdited(const QString &value);
-
-        void on_lineEdit_Length_textEdited(const QString &value);
-
-        void on_lineEdit_Radius_textEdited(const QString &value);
-
+		void slotSaveValue();
     private:
         Ui::MeshBaseTypeCylinderWidget* _ui = nullptr;
         Interface::FITKRegionMeshSizeCylinder* _graphObj = nullptr;
