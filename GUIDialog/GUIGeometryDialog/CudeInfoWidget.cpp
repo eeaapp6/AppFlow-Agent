@@ -69,7 +69,7 @@ namespace GUI {
 
         QString name = "";
         if (_isCreate) {
-            name = QString(tr("Box-%1").arg(geometryData->getDataCount() + 1));
+            name = geometryData->checkName(tr("Box-1"));
             _ui->lineEdit_Name->setText(name);
         }
         else
@@ -236,13 +236,7 @@ namespace GUI {
         int rowNum = _ui->tableWidget->rowCount();
         _ui->tableWidget->setRowCount(rowNum + 1);
 
-        int index = 1;
-        QString group = tr("Group_%1").arg(index);
-        while (commanger->getDataByName(group)){
-            index++;
-            group = tr("Group_%1").arg(index);
-        }
-        
+        QString group = commanger->checkName(tr("Group-1"));
         QString name = group + tr("(empty)");
 
         //创建面组对象
