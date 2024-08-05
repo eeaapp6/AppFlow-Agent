@@ -66,6 +66,13 @@ namespace GUI
          */
         void slotMatPointWidgetPointChange();
     private:
+        QString getPointNewName();
+        /**
+         * @brief 更新表格
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-07-16
+         */
+        void updateTableWidget();
         /**
          * @brief 刷新面组界面记录的位置
          * （为解决点击界面控件时，QTableWidget未触发不知道当前界面所在的位置问题）
@@ -103,12 +110,6 @@ namespace GUI
          * @date 2024-07-16
          */
         void getDataFromWidget();
-        /**
-         * @brief 检查名称是否存在
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-07-16
-         */
-        bool checkName(const QString& name);
         /**
          * @brief 更新渲染窗口
          * @author BaGuijun (baguijun@163.com)

@@ -17,7 +17,10 @@
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKZonePoints.h"
 
+#include <QDebug>
+
 #define MatPointID Qt::UserRole + 1
+#define MatPointName Qt::UserRole + 1875
 
 namespace GUI
 {
@@ -38,6 +41,14 @@ namespace GUI
 
     void MaterialPointWidget::init()
     {
+        Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKZonePointManager* manager = interface->getZonePointManager();
+        if (manager == nullptr)return;
+        auto pointObj = manager->getDataByIndex(0);
+        if (pointObj) {
+            pointObj->setUserData(MatPointName, tr("none"));
+        }
+
         initTableWidget();
         //数据填充
         setDataToWidget();
@@ -80,8 +91,8 @@ namespace GUI
             if(widget == nullptr)continue;
             manager->removeDataByID(widget->data(MatPointID).toInt());
         }
-
-        _ui->tableWidget->setRowCount(1);
+        updateTableWidget();
+        updateGraph();
     }
 
     void MaterialPointWidget::on_pushButton_Add_clicked()
@@ -90,36 +101,14 @@ namespace GUI
         Interface::FITKZonePointManager* manager = interface->getZonePointManager();
         if (manager == nullptr)return;
 
-        int rowNum = _ui->tableWidget->rowCount();
-        _ui->tableWidget->setRowCount(rowNum + 1);
-        QString name = "";
-        if (rowNum == 0) {
-             name = tr("none");
-        }
-        else {
-            int index = 1;
-            name = tr("zone%1").arg(index);
-            while (checkName(name)) {
-                index++;
-                name = tr("zone%1").arg(index);
-            }
-        }
-
         double point[3] = { 0,0,0 };
         Interface::FITKZonePoint* zonePoint = new Interface::FITKZonePoint(point[0], point[1], point[2]);
         manager->appendDataObj(zonePoint);
+        int i = 1;
+        QString name = getPointNewName();
+        zonePoint->setUserData(MatPointName, name);
 
-        CompMaterialPointWidget* widget = new CompMaterialPointWidget(_ui->tableWidget);
-        widget->setName(name);
-        widget->getPoint(point);
-        _ui->tableWidget->setCellWidget(rowNum, 0, widget);
-        widget->setData(MatPointID, zonePoint->getDataObjectID());
- 
-        connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotMatPointWidgetDeleteClicked()));
-        connect(widget, SIGNAL(sigPointChange()), this, SLOT(slotMatPointWidgetPointChange()));
-
-        updateFaceWidgetCurrentPos();
-
+        updateTableWidget();
         updateGraph();
     }
 
@@ -152,12 +141,9 @@ namespace GUI
         int objId = widget->data(MatPointID).toInt();
         auto pointObj = manager->getDataByID(objId);
         if (pointObj == nullptr)return;
-
         manager->removeDataByID(objId);
-        _ui->tableWidget->removeRow(widget->getCurrentPos().first);
-        //更新界面中存储的位置
-        updateFaceWidgetCurrentPos();
-        
+
+        updateTableWidget();
         updateGraph();
     }
 
@@ -176,6 +162,61 @@ namespace GUI
         pointObj->setCoor(point[0], point[1], point[2]);
 
         updateGraph();
+    }
+
+    QString MaterialPointWidget::getPointNewName()
+    {
+        int maxIndex = 0;
+        QString name = QString(tr("zone1"));
+        Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKZonePointManager* manager = interface->getZonePointManager();
+        if (manager == nullptr)return name;
+        
+        for (int i = 1; i < manager->getDataCount(); i++)
+        {
+            auto obj = manager->getDataByIndex(i);
+            if (obj == nullptr)continue;
+            QString objName = obj->getUserData(MatPointName).toString();
+            int index = objName.mid(4, objName.size()).toInt();
+            if (maxIndex < index) maxIndex = index;
+        }
+
+        maxIndex++;
+        name = QString(tr("zone%1")).arg(maxIndex);
+        qDebug() << name;
+        return name;
+    }
+
+    void MaterialPointWidget::updateTableWidget()
+    {
+        Interface::FITKMeshGenInterface* interface = Interface::FITKMeshGenInterface::getInstance();
+        Interface::FITKZonePointManager* manager = interface->getZonePointManager();
+        if (manager == nullptr)return;
+
+        //清楚旧数据
+        _ui->tableWidget->clear();
+        _ui->tableWidget->setRowCount(0);
+
+        //添加新数据
+        _ui->tableWidget->setRowCount(manager->getDataCount());
+        for (int i = 0; i < manager->getDataCount(); i++) {
+            auto pointObj = manager->getDataByIndex(i);
+            if (pointObj == nullptr)continue;
+
+            QString name = pointObj->getUserData(MatPointName).toString();
+            double point[3] = { 0,0,0 };
+            pointObj->getCoor(point);
+            CompMaterialPointWidget* widget = new CompMaterialPointWidget(_ui->tableWidget);
+            widget->setName(name);
+            widget->setPoint(point);
+            _ui->tableWidget->setCellWidget(i, 0, widget);
+            widget->setData(MatPointID, pointObj->getDataObjectID());
+
+            connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotMatPointWidgetDeleteClicked()));
+            connect(widget, SIGNAL(sigPointChange()), this, SLOT(slotMatPointWidgetPointChange()));
+        }
+
+        updateFaceWidgetCurrentPos();
     }
 
     void MaterialPointWidget::updateFaceWidgetCurrentPos()
@@ -227,51 +268,13 @@ namespace GUI
         Interface::FITKZonePointManager* manager = interface->getZonePointManager();
         if (manager == nullptr)return;
 
-        _ui->tableWidget->setRowCount(manager->getDataCount());
-        for (int i = 0; i < manager->getDataCount(); i++) {
-            Interface::FITKZonePoint* zonePoint = manager->getDataByIndex(i);
-            if (zonePoint == nullptr)continue;
-
-            QString name = "";
-            if (i == 0) {
-                name = tr("none");
-            }
-            else {
-                name = tr("zone%1").arg(i);
-            }
-            double point[3] = { 0,0,0 };
-            point[0] = zonePoint->x();
-            point[1] = zonePoint->y();
-            point[2] = zonePoint->z();
-
-            CompMaterialPointWidget* widget = new CompMaterialPointWidget(_ui->tableWidget);
-            widget->setName(name);
-            widget->setPoint(point);
-            _ui->tableWidget->setCellWidget(i, 0, widget);
-            widget->setData(MatPointID, zonePoint->getDataObjectID());
-
-            connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotMatPointWidgetDeleteClicked()));
-            connect(widget, SIGNAL(sigPointChange()), this, SLOT(slotMatPointWidgetPointChange()));
-        }
-
+        updateTableWidget();
         updateGraph();
     }
 
     void MaterialPointWidget::getDataFromWidget()
     {
 
-    }
-
-    bool MaterialPointWidget::checkName(const QString & name)
-    {
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++)
-        {
-            auto widget = dynamic_cast<CompMaterialPointWidget*>(_ui->tableWidget->cellWidget(i, 0));
-            if (widget == nullptr)continue;
-            if (widget->getName() == name)return true;
-        }
-
-        return false;
     }
 
     void MaterialPointWidget::updateGraph(bool isShow)
