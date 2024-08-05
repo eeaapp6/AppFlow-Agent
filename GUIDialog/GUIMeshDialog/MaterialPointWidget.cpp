@@ -183,7 +183,6 @@ namespace GUI
 
         maxIndex++;
         name = QString(tr("zone%1")).arg(maxIndex);
-        qDebug() << name;
         return name;
     }
 
