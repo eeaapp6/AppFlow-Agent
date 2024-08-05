@@ -92,17 +92,19 @@ namespace ModelOper
         case ModelOper::OperManagerBase::Create:
             graphOper->updateGraph(objID);
             treeOper->updateTree();
+			graphOper->reRender(true);
             break;
         case ModelOper::OperManagerBase::Edit:
             graphOper->updateGraph(objID);
             treeOper->updateTree();
+			graphOper->reRender(true);
             break;
         case ModelOper::OperManagerBase::Copy:
             break;
         case ModelOper::OperManagerBase::Delete:
             graphOper->updateGraph(objID);
             treeOper->updateTree();
-            graphOper->reRender();
+			graphOper->reRender(true);
             break;
         case ModelOper::OperManagerBase::Rename:
             break;

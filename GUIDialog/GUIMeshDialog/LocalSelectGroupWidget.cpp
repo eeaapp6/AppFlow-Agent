@@ -98,15 +98,6 @@ namespace GUI
         }
     }
 
-    void LocalSelectGroupWidget::on_pushButton_Cancel_clicked()
-    {
-        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
-        if (mainWindow == nullptr)return;
-        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
-        if (propertyWidget == nullptr)return;
-        propertyWidget->init();
-    }
-
     void LocalSelectGroupWidget::on_pushButton_Add_clicked()
     {
         QList<QTableWidgetItem*> items = _ui->tableWidget->selectedItems();

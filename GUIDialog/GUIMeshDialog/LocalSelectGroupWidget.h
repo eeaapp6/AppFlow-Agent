@@ -26,8 +26,6 @@ namespace GUI
         void updateTableWidget();
     private slots:
         ;
-        void on_pushButton_Cancel_clicked();
-
         void on_pushButton_Add_clicked();
     private:
         Ui::LocalSelectGroupWidget* _ui = nullptr;
