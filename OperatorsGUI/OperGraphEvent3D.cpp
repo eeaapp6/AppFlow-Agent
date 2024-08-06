@@ -144,7 +144,7 @@ namespace GUIOper
 
         // 检查数据ID是否为边界网格。
         Interface::FITKBoundaryMeshVTK* boundMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKBoundaryMeshVTK>(dataObjId);
-        if (fluidMesh && !isValid)
+        if (boundMesh && !isValid)
         {
             obj = modelProvider->getBoundMeshGraphObject(dataObjId);
             isValid = true;
