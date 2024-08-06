@@ -68,6 +68,11 @@ namespace GUI{
 
     void TreeWidget::onItemClicked(QTreeWidgetItem * item, int column)
     {
+        EventOper::TreeEventOperator* treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return;
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+
         if (item == nullptr)return;
         int objID = item->data(1, 0).toInt();
         GUI::MainTreeEnum treeType = item->data(2, 0).value<GUI::MainTreeEnum>();
@@ -85,6 +90,11 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_MeshLocal: name = "actionMeshLocalSelectGroup"; break;
         case GUI::MainTreeEnum::MainTree_MeshLocalItem:name = "actionMeshLocalEdit"; break;
         case GUI::MainTreeEnum::MainTree_MeshPoint:name = "actionMeshPointEdit"; break;
+        case GUI::MainTreeEnum::MainTree_MeshBoundary:break;
+        case GUI::MainTreeEnum::MainTree_MeshBoundaryItem: {
+            graphOper->highlight(objID);
+            break;
+        }
         }
 
         if (!name.isEmpty()) {
@@ -97,8 +107,6 @@ namespace GUI{
             acOper->actionTriggered();
         }
         else {
-            auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
-            if (treeOper == nullptr) return;
             treeOper->moveProcessToStep(0);
         }
     }
@@ -177,7 +185,6 @@ namespace GUI{
     {
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return;
-        graphOper->reRender();
 
         CompTreeItem* senderWidget = dynamic_cast<CompTreeItem*>(this->sender());
         if (senderWidget == nullptr)return;
@@ -204,8 +211,6 @@ namespace GUI{
                 geoObj->enable(true);
                 senderWidget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
             }
-            graphOper->updateGraph(objID);
-            graphOper->reRender(true);
             break;
         }
         case GUI::MainTreeEnum::MainTree_MeshBoundaryItem:
@@ -227,11 +232,12 @@ namespace GUI{
                 boundMesh->FITKAbstractNDataObject::enable(true);
                 senderWidget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
             }
-            graphOper->updateGraph(objID);
-            graphOper->reRender(true);
             break;
         }
         }
+
+        graphOper->updateGraph(objID);
+        graphOper->reRender(true);
     }
 
     void TreeWidget::updateGeometryItems()
