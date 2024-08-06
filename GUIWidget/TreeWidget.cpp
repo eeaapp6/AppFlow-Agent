@@ -72,6 +72,7 @@ namespace GUI{
         if (treeOper == nullptr) return;
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return;
+		graphOper->clearHighlight();
 
         if (item == nullptr)return;
         int objID = item->data(1, 0).toInt();
