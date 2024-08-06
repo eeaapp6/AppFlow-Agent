@@ -12,6 +12,7 @@ HEADERS += \
     $$PWD/OperatorsNew.h \
     $$PWD/OperatorsOpen.h \
     $$PWD/OperatorsSave.h \
+    $$PWD/OperatorsImportManager.h \
 
 
 SOURCES += \
@@ -27,5 +28,6 @@ SOURCES += \
     $$PWD/OperatorsNew.cpp \
     $$PWD/OperatorsOpen.cpp \
     $$PWD/OperatorsSave.cpp \
+    $$PWD/OperatorsImportManager.cpp \
 
 FORMS += \

@@ -43,7 +43,9 @@ namespace ModelOper
         /**
          * @brief 主界面
          */
-        GUI::MainWindow *_mainWindow{};
+        GUI::MainWindow* _mainWindow = nullptr;
+
+        QString _senderName = "";
     };
 } // namespace ModelOper
 #endif //!__OPERMANAGERBASE_H__
