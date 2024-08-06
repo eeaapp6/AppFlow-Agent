@@ -37,8 +37,8 @@ namespace GUI
         _ui->pushButton_OK->hide();
 
         _ui->pushButton_Cancel->setStyleSheet("background: transparent;");
-        //_ui->pushButton_Cancel->setIcon(QApplication::style()->standardIcon(QStyle::SP_FileDialogBack));
-        _ui->pushButton_Cancel->setIcon(QIcon(":/icons/back.png"));
+        _ui->pushButton_Cancel->setIcon(QApplication::style()->standardIcon(QStyle::SP_FileDialogBack));
+        //_ui->pushButton_Cancel->setIcon(QIcon(":/icons/back.png"));
         _ui->pushButton_Cancel->hide();
 
         _ui->pushButton_Delete->setStyleSheet("background: transparent;");
