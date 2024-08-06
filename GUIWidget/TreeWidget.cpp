@@ -1,4 +1,5 @@
 ﻿#include "TreeWidget.h"
+#include "CompTreeItem.h"
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
@@ -55,6 +56,12 @@ namespace GUI{
         //展开全部子集
         setItemsExpandable(true);		
         expandAll();
+
+        QList<CompTreeItem*> compWidgets = this->findChildren<CompTreeItem*>();
+        for (auto widget : compWidgets) {
+            if (widget == nullptr)continue;
+            connect(widget, SIGNAL(sigIconButtonClicked()), this, SLOT(soltIconButtonClicked()));
+        }
     }
 
     void TreeWidget::onItemClicked(QTreeWidgetItem * item, int column)
@@ -164,6 +171,52 @@ namespace GUI{
         acOper->actionTriggered();
     }
 
+    void TreeWidget::soltIconButtonClicked()
+    {
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        graphOper->reRender();
+
+        CompTreeItem* senderWidget = dynamic_cast<CompTreeItem*>(this->sender());
+        if (senderWidget == nullptr)return;
+        QTreeWidgetItem* item = senderWidget->getTreeItem();
+        if (item == nullptr)return;
+        int objID = item->data(1, 0).toInt();
+        GUI::MainTreeEnum type = item->data(2, 0).value<GUI::MainTreeEnum>();
+
+        switch (type){
+        case GUI::MainTreeEnum::MainTree_Geomety:
+        case GUI::MainTreeEnum::MainTree_GeometyBoxItem:
+        case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:
+        case GUI::MainTreeEnum::MainTree_GeometySphereItem:
+        {
+            Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
+            if (geometryData == nullptr) break;
+            auto geoObj = geometryData->getDataByID(objID);
+            if(geoObj == nullptr)break;
+            if (geoObj->isEnable()){
+                geoObj->enable(false);
+                senderWidget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+            }
+            else {
+                geoObj->enable(true);
+                senderWidget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
+            }
+            graphOper->updateGraph(objID);
+            graphOper->reRender(true);
+            break;
+        }
+        case GUI::MainTreeEnum::MainTree_Mesh:
+        case GUI::MainTreeEnum::MainTree_MeshBase:
+        case GUI::MainTreeEnum::MainTree_MeshLocal:
+        case GUI::MainTreeEnum::MainTree_MeshLocalItem:
+        case GUI::MainTreeEnum::MainTree_MeshPoint:
+        {
+            break;
+        }
+        }
+    }
+
     void TreeWidget::updateGeometryItems()
     {
         Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
@@ -178,7 +231,7 @@ namespace GUI{
             if (geometryObj == nullptr)continue;
 
             QTreeWidgetItem* item = new QTreeWidgetItem();
-            item->setText(0, geometryObj->getDataObjectName());
+            //item->setText(0, geometryObj->getDataObjectName());
             item->setData(1, 0, geometryObj->getDataObjectID());
 
             GUI::MainTreeEnum treeType = GUI::MainTreeEnum::MainTree_None;
@@ -190,8 +243,17 @@ namespace GUI{
             case Interface::FITKGeoEnum::FGTSphere:treeType = GUI::MainTreeEnum::MainTree_GeometySphereItem;  break;
             }
             item->setData(2, 0, QVariant::fromValue(treeType));
-
             geometryItem->addChild(item);
+
+            CompTreeItem* widget = new CompTreeItem(item, this);
+            if (geometryObj->isEnable()) {
+                widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
+            }
+            else {
+                widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+            }
+            widget->setText(geometryObj->getDataObjectName());
+            this->setItemWidget(item, 0, widget);
         }
     }
 

@@ -48,8 +48,11 @@ namespace GUI {
          */
         void onDoubleClicked(QTreeWidgetItem *item, int column);
 
-
         void acitonClicked();
+        /**
+         * @brief 图标按钮点击事件
+         */
+        void soltIconButtonClicked();
     private:
         void updateGeometryItems();
         void updateMeshItems();

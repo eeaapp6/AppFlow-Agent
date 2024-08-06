@@ -12,6 +12,7 @@ HEADERS += \
     $$PWD/GUIDialogBase.h \
     $$PWD/GUIWidgetBase.h \
     $$PWD/CompLineEdit.h \
+    $$PWD/CompTreeItem.h \
 
 SOURCES += \
     $$PWD/MainMenuBase.cpp \
@@ -26,9 +27,11 @@ SOURCES += \
     $$PWD/GUIDialogBase.cpp \
     $$PWD/GUIWidgetBase.cpp \
     $$PWD/CompLineEdit.cpp \
+    $$PWD/CompTreeItem.cpp \
 
 FORMS += \
     $$PWD/PropertyEmptyWidget.ui \
+    $$PWD/CompTreeItem.ui \
 
  
  
