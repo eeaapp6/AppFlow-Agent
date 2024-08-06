@@ -17,6 +17,8 @@
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractGeometryMeshSizeGenerator.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredMeshVTK.h"
 
 #include <QMenu>
 #include <QStandardItemModel>
@@ -185,11 +187,11 @@ namespace GUI{
         GUI::MainTreeEnum type = item->data(2, 0).value<GUI::MainTreeEnum>();
 
         switch (type){
-        case GUI::MainTreeEnum::MainTree_Geomety:
         case GUI::MainTreeEnum::MainTree_GeometyBoxItem:
         case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:
         case GUI::MainTreeEnum::MainTree_GeometySphereItem:
         {
+            //几何显示隐藏控制
             Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
             if (geometryData == nullptr) break;
             auto geoObj = geometryData->getDataByID(objID);
@@ -206,12 +208,27 @@ namespace GUI{
             graphOper->reRender(true);
             break;
         }
-        case GUI::MainTreeEnum::MainTree_Mesh:
-        case GUI::MainTreeEnum::MainTree_MeshBase:
-        case GUI::MainTreeEnum::MainTree_MeshLocal:
-        case GUI::MainTreeEnum::MainTree_MeshLocalItem:
-        case GUI::MainTreeEnum::MainTree_MeshPoint:
+        case GUI::MainTreeEnum::MainTree_MeshBoundaryItem:
         {
+            //边界显示隐藏控制
+            auto globalData = FITKAPP->getGlobalData();
+            if (globalData == nullptr)break;
+            Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
+            if (meshData == nullptr)break;
+            Interface::FITKBoundaryMeshVTKManager* boundMeshManager = meshData->getBoundaryMeshManager();
+            if (boundMeshManager == nullptr)break;
+            Interface::FITKBoundaryMeshVTK* boundMesh = boundMeshManager->getDataByID(objID);
+            if (boundMesh == nullptr)break;
+            if (boundMesh->FITKAbstractNDataObject::isEnable()) {
+                boundMesh->FITKAbstractNDataObject::enable(false);
+                senderWidget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+            }
+            else {
+                boundMesh->FITKAbstractNDataObject::enable(true);
+                senderWidget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
+            }
+            graphOper->updateGraph(objID);
+            graphOper->reRender(true);
             break;
         }
         }
@@ -271,17 +288,24 @@ namespace GUI{
         meshBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshBase));
         meshItem->addChild(meshBaseItem);
 
-        //刷新local
-        updateLocalItems(meshItem);
-
         QTreeWidgetItem* pointBaseItem = new QTreeWidgetItem();
         pointBaseItem->setText(0, tr("Points"));
         pointBaseItem->setData(1, 0, -1);
         pointBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshPoint));
         meshItem->addChild(pointBaseItem);
+
+        QTreeWidgetItem* meshBoundItem = new QTreeWidgetItem();
+        meshBoundItem->setText(0, tr("Boundary"));
+        meshBoundItem->setData(1, 0, -1);
+        meshBoundItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshBoundary));
+        meshItem->addChild(meshBoundItem);
+
+        //update sub item
+        updateMeshLocalItems(meshItem);
+        updateMeshBoundaryItems(meshBoundItem);
     }
 
-    void TreeWidget::updateLocalItems(QTreeWidgetItem* parentItem)
+    void TreeWidget::updateMeshLocalItems(QTreeWidgetItem* parentItem)
     {
         QTreeWidgetItem* localBaseItem = new QTreeWidgetItem();
         localBaseItem->setText(0, tr("Local"));
@@ -297,13 +321,44 @@ namespace GUI{
 
         for (int i = 0; i < manger->getDataCount(); i++) {
             Interface::FITKGeometryMeshSize* geoMeshSize = manger->getDataByIndex(i);
-            if(geoMeshSize == nullptr)continue;
+            if (geoMeshSize == nullptr)continue;
 
             QTreeWidgetItem* item = new QTreeWidgetItem();
             item->setText(0, geoMeshSize->getDataObjectName());
             item->setData(1, 0, geoMeshSize->getDataObjectID());
             item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocalItem));
             localBaseItem->addChild(item);
+        }
+    }
+
+    void TreeWidget::updateMeshBoundaryItems(QTreeWidgetItem * parentItem)
+    {
+        auto globalData = FITKAPP->getGlobalData();
+        if (globalData == nullptr)return;
+        Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
+        if (meshData == nullptr)return;
+        Interface::FITKBoundaryMeshVTKManager* boundMeshManager = meshData->getBoundaryMeshManager();
+        if (boundMeshManager == nullptr)return;
+
+        for (int i = 0; i < boundMeshManager->getDataCount(); i++) {
+            Interface::FITKBoundaryMeshVTK* boundMesh = boundMeshManager->getDataByIndex(i);
+            if (boundMesh == nullptr)continue;
+
+            QTreeWidgetItem* item = new QTreeWidgetItem();
+            item->setData(1, 0, boundMesh->getDataObjectID());
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshBoundaryItem));
+            parentItem->addChild(item);
+
+            CompTreeItem* widget = new CompTreeItem(item, this);
+            if (boundMesh->FITKAbstractNDataObject::isEnable()) {
+                widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
+            }
+            else {
+                widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+            }
+
+            widget->setText(boundMesh->getDataObjectName());
+            this->setItemWidget(item, 0, widget);
         }
     }
 

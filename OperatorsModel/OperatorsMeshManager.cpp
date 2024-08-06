@@ -11,13 +11,18 @@
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 
 #include "OperatorsInterface/GraphEventOperator.h"
+#include "OperatorsInterface/TreeEventOperator.h"
+
 namespace ModelOper
 {
     bool OperatorsMeshManager::execGUI()
     {
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return false;
-
+        // 获取模型树控制器
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return false;
+        
         if (_emitter == nullptr)return false;
         QString actionName = _emitter->objectName();
         if (actionName == "actionMesh") {
@@ -40,6 +45,7 @@ namespace ModelOper
             Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
             if (meshData == nullptr)return false;
             meshData->clearMesh();
+            treeOper->updateTree();
             graphOper->reRender();
         }
         return true;
@@ -47,7 +53,6 @@ namespace ModelOper
 
     bool OperatorsMeshManager::execProfession()
     {
-
         return true;
     }
     void OperatorsMeshManager::readMesh()
@@ -65,5 +70,10 @@ namespace ModelOper
         // 网格对象
         auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
         graphOper->updateGraph(mesh->getDataObjectID());
+
+        // 获取模型树控制器
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return;
+        treeOper->updateTree();
     }
 }
