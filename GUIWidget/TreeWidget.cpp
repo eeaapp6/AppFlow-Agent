@@ -294,6 +294,12 @@ namespace GUI{
         meshBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshBase));
         meshItem->addChild(meshBaseItem);
 
+        QTreeWidgetItem* localBaseItem = new QTreeWidgetItem();
+        localBaseItem->setText(0, tr("Local"));
+        localBaseItem->setData(1, 0, -1);
+        localBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocal));
+        meshItem->addChild(localBaseItem);
+
         QTreeWidgetItem* pointBaseItem = new QTreeWidgetItem();
         pointBaseItem->setText(0, tr("Points"));
         pointBaseItem->setData(1, 0, -1);
@@ -307,18 +313,12 @@ namespace GUI{
         meshItem->addChild(meshBoundItem);
 
         //update sub item
-        updateMeshLocalItems(meshItem);
+        updateMeshLocalItems(localBaseItem);
         updateMeshBoundaryItems(meshBoundItem);
     }
 
     void TreeWidget::updateMeshLocalItems(QTreeWidgetItem* parentItem)
     {
-        QTreeWidgetItem* localBaseItem = new QTreeWidgetItem();
-        localBaseItem->setText(0, tr("Local"));
-        localBaseItem->setData(1, 0, -1);
-        localBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocal));
-        parentItem->addChild(localBaseItem);
-
         Interface::FITKMeshGenInterface* genInterface = Interface::FITKMeshGenInterface::getInstance();
         Interface::FITKAbstractGeometryMeshSizeGenerator* generator = genInterface->getGeometryMeshSizeGenerator();
         if (generator == nullptr)return;
@@ -333,7 +333,7 @@ namespace GUI{
             item->setText(0, geoMeshSize->getDataObjectName());
             item->setData(1, 0, geoMeshSize->getDataObjectID());
             item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocalItem));
-            localBaseItem->addChild(item);
+            parentItem->addChild(item);
         }
     }
 
