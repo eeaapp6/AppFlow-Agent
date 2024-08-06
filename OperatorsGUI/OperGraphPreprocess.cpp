@@ -101,6 +101,9 @@ namespace GUIOper
         
         // 隐藏或显示。
         obj->setVisible(param.Visibility);
+
+        // 刷新窗口。
+        graphWidget->reRender();
     }
 
     Exchange::FITKOCC2VTKGraphObject3D* OperGraphPreprocess::getModelGraphObjectByDataId(int dataObjId)
@@ -151,6 +154,9 @@ namespace GUIOper
                 obj->setTransparent(flag);
             }
         }
+
+        // 刷新窗口。
+        graphWidget->reRender();
     }
 
     void OperGraphPreprocess::setEnableMeshTransparent(bool flag)
@@ -178,6 +184,9 @@ namespace GUIOper
                 obj->setTransparent(flag);
             }
         }
+
+        // 刷新窗口。
+        graphWidget->reRender();
     }
 
     void OperGraphPreprocess::setModelVisible(int dataObjId, bool visibility)
@@ -201,6 +210,9 @@ namespace GUIOper
         {
             obj->setVisible(visibility);
         }
+
+        // 刷新窗口。
+        graphWidget->reRender();
     }
 
     void OperGraphPreprocess::setMeshVisible(int dataObjId, bool visibility)
@@ -224,6 +236,9 @@ namespace GUIOper
         {
             obj->setVisible(visibility);
         }
+
+        // 刷新窗口。
+        graphWidget->reRender();
     }
 
     void OperGraphPreprocess::highlight(int dataObjId, QVariant info, QColor color)
@@ -246,6 +261,9 @@ namespace GUIOper
 
             obj->highlight();
         }
+
+        // 刷新窗口。
+        graphWidget->reRender();
     }
 
     void OperGraphPreprocess::advHighlight(int dataObjId, QVector<int> & indice, QColor color)
@@ -268,6 +286,9 @@ namespace GUIOper
 
             obj->advanceHighlight(Exchange::FITKOCC2VTKCommons::ShapeType::ShapeTypeNone, indice, color);
         }
+
+        // 刷新窗口。
+        graphWidget->reRender();
     }
 
     void OperGraphPreprocess::clearHighlight()
@@ -291,6 +312,9 @@ namespace GUIOper
         {
             markProvider->clearHighlight();
         }
+
+        // 刷新窗口。
+        graphWidget->reRender();
     }
 
     void OperGraphPreprocess::reRender(bool fitView)
