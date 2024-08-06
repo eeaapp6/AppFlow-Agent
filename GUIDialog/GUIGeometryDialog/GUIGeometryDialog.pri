@@ -23,4 +23,7 @@ FORMS += \
     $$PWD/SphereInfoWidget.ui \
     $$PWD/GeometryDeleteDialog.ui \
  
+
+ RESOURCES += \
+    $$PWD/../../Resources/Resources.qrc
  

@@ -174,15 +174,15 @@ namespace GUI
         //项目
         SARibbonPannel* pannel = gategory->addPannel(tr("Object"));
 
-        action = createAction(tr("New"), "actionNew");
+        action = createAction(tr("New"), "actionNew", ":/icons/createNew.png");
         changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
-        action = createAction(tr("Open"), "actionOpen");
+        action = createAction(tr("Open"), "actionOpen", ":/icons/open.png");
         changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
-        action = createAction(tr("Save"), "actionSave");
+        action = createAction(tr("Save"), "actionSave", ":/icons/save.png");
         changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
@@ -201,7 +201,7 @@ namespace GUI
         //三维交互
         pannel = gategory->addPannel(tr("View"));
         action = createAction(tr("Auto"), "actionViewPan");
-        changeAction(action, ":FITKIcons/icoR_viewPan.svg");
+        changeAction(action, ":FITKIcons/icoR_autofit.png");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         action = createAction(tr("X forward"), "actionViewLeft");
@@ -241,15 +241,15 @@ namespace GUI
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         pannel = gategory->addPannel(tr("3D model"));
-        action = createAction(tr("Create Cube"), "actionGeoCubeCreate", "", tr("Create Cube"));
+        action = createAction(tr("Create Cube"), "actionGeoCubeCreate", ":/icons/createbox.png", tr("Create Cube"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Sphere"), "actionGeoSphereCreate", "", tr("Create Sphere"));
+        action = createAction(tr("Create Sphere"), "actionGeoSphereCreate", ":/icons/createsphere.png", tr("Create Sphere"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         action = createAction(tr("Create Cone"), "actionGeoConeCreate", "", tr("Create Cone"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         action = createAction(tr("Create Cirque"), "actionGeoCirqueCreate", "", tr("Create Cirque"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Cylinder"), "actionGeoCylinderCreate", "", tr("Create Cylinder"));
+        action = createAction(tr("Create Cylinder"), "actionGeoCylinderCreate", ":/icons/createcylinder.png", tr("Create Cylinder"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         action = createAction(tr("Create Spiral"), "actionGeoSpiralCreate", "", tr("Create Spiral"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
@@ -292,7 +292,7 @@ namespace GUI
 
         // 网格操作
         pannel = gategory->addPannel(tr("Oper Mesh"));
-        action = createAction(tr("Mesh"), "actionMesh", ":/icons/displayedge.png", tr("Mesh"));
+        action = createAction(tr("Mesh"), "actionMesh", ":/icons/mesh.png", tr("Mesh"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
         action = createAction(tr("Extrude"), "action", ":/icons/displayedge.png", tr("Extrude"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);

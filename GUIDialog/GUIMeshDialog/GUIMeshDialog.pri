@@ -31,4 +31,6 @@ FORMS += \
     $$PWD/CompMaterialPointWidget.ui \
     $$PWD/MeshDeleteDialog.ui \
  
+ RESOURCES += \
+    $$PWD/../../Resources/Resources.qrc
  
