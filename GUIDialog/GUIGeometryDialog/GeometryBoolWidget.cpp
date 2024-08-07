@@ -34,6 +34,12 @@ namespace GUI
         case GUI::BoolType::GeoBoolCommon:typeName = tr("Common"); break;
         }
         _ui->groupBox_Type->setTitle(typeName);
+
+
+        Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
+        if (geometryData == nullptr) return;
+        QString name = geometryData->checkName(tr("Bool-1"));
+        _ui->lineEdit_Name->setText(name);
     }
 
     GeometryBoolWidget::~GeometryBoolWidget()
@@ -110,8 +116,8 @@ namespace GUI
 
         auto geoBoolOper = geoFactory->createCommandT<Interface::FITKAbsGeoOperBool>(Interface::FITKGeoEnum::FITKGeometryComType::FGTBool);
         if (geoBoolOper == nullptr)return;
-        QString name = geometryData->checkName(tr("Bool-1"));
-        geoBoolOper->setDataObjectName(name);
+        
+        geoBoolOper->setDataObjectName(_ui->lineEdit_Name->text());
         switch (_type) {
         case GUI::BoolType::GeoBoolFause:
             geoBoolOper->setBoolOperType(Interface::FITKAbsGeoOperBool::GBTAdd);
@@ -140,20 +146,26 @@ namespace GUI
         int box1Id = _ui->comboBox_Body1->currentData().toInt();
         int box2Id = _ui->comboBox_Body2->currentData().toInt();
 
-        auto outputMessage = [&]() {
-            QMessageBox::warning(this, tr("Warring"), tr("Input Wrong!"), QMessageBox::Ok);
+        auto outputMessage = [&](QString message) {
+            QMessageBox::warning(this, tr("Warring"), message, QMessageBox::Ok);
         };
 
         if (box1Id == -1 || box2Id == -1) {
-            outputMessage();
+            outputMessage(tr("Input Wrong!"));
             return false;
         }
 
         if (box1Id == box2Id) {
-            outputMessage();
+            outputMessage(tr("Input Wrong!"));
             return false;
         }
 
+        QString name = _ui->lineEdit_Name->text();
+        Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
+        if (geometryData->getDataByName(name)) {
+            outputMessage(tr("%1 exist!").arg(name));
+            return false;
+        }
         return true;
     }
 }
