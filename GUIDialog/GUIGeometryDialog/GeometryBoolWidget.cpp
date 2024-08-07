@@ -6,6 +6,7 @@
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoCommandList.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoOperBool.h"
@@ -138,6 +139,15 @@ namespace GUI
         if (_oper) {
             _oper->setArgs("objID", geoBoolOper->getDataObjectID());
             _oper->execProfession();
+
+            QString actionName = "actionGeoBoolEdit";
+            QObject sender;
+            sender.setObjectName(actionName);
+            auto acOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<Core::FITKActionOperator>(actionName);
+            if (acOper == nullptr)return;
+            acOper->setEmitter(&sender);
+            acOper->setArgs("objID", geoBoolOper->getDataObjectID());
+            acOper->actionTriggered();
         }
     }
 
