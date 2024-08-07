@@ -16,6 +16,7 @@ namespace GUI
         MainTree_GeometyBoxItem,
         MainTree_GeometyCylinderItem,
         MainTree_GeometySphereItem,
+        MainTree_GeometyBoolItem,
         MainTree_Mesh,
         MainTree_MeshBase,
         MainTree_MeshLocal,

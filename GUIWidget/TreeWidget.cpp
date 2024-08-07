@@ -86,6 +86,7 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_GeometyBoxItem:name = "actionGeoCubeEdit"; break;
         case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:name = "actionGeoCylinderEdit"; break;
         case GUI::MainTreeEnum::MainTree_GeometySphereItem:name = "actionGeoSphereEdit"; break;
+        case GUI::MainTreeEnum::MainTree_GeometyBoolItem:break;
         case GUI::MainTreeEnum::MainTree_Mesh: break;
         case GUI::MainTreeEnum::MainTree_MeshBase: name = "actionMeshBaseEdit"; break;
         case GUI::MainTreeEnum::MainTree_MeshLocal: name = "actionMeshLocalSelectGroup"; break;
@@ -147,6 +148,11 @@ namespace GUI{
             addMenuActions(menu, "actionGeoSphereDelete", "Sphere delete");
             break;
         }
+        case GUI::MainTreeEnum::MainTree_GeometyBoolItem: {
+            //addMenuActions(menu, "actionRenameSphere", "Sphere rename");
+            addMenuActions(menu, "actionGeoBoolDelete", "Bool delete");
+            break;
+        }
         case GUI::MainTreeEnum::MainTree_Mesh: {
             addMenuActions(menu, "actionClearMesh", "Clear mesh");
             break;
@@ -198,6 +204,7 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_GeometyBoxItem:
         case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:
         case GUI::MainTreeEnum::MainTree_GeometySphereItem:
+        case GUI::MainTreeEnum::MainTree_GeometyBoolItem:
         {
             //几何显示隐藏控制
             Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
@@ -265,6 +272,7 @@ namespace GUI{
             case Interface::FITKGeoEnum::FGTBox:  treeType = GUI::MainTreeEnum::MainTree_GeometyBoxItem; break;
             case Interface::FITKGeoEnum::FGTCylinder:treeType = GUI::MainTreeEnum::MainTree_GeometyCylinderItem; break;
             case Interface::FITKGeoEnum::FGTSphere:treeType = GUI::MainTreeEnum::MainTree_GeometySphereItem;  break;
+            case Interface::FITKGeoEnum::FGTBool:treeType = GUI::MainTreeEnum::MainTree_GeometyBoolItem;  break;
             }
             item->setData(2, 0, QVariant::fromValue(treeType));
             geometryItem->addChild(item);

@@ -234,6 +234,9 @@
         <file>./icons/zMinus.png</file>
         <file>./icons/Zoom.png</file>
         <file>./icons/zPlus.png</file>
+        <file>./icons/BoolFause.png</file>
+        <file>./icons/BoolCut.png</file>
+        <file>./icons/BoolCommon.png</file>
     </qresource>
 </RCC>
 

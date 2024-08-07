@@ -249,6 +249,14 @@ namespace GUI
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         action = createAction(tr("Create Spiral"), "actionGeoSpiralCreate", "", tr("Create Spiral"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+
+        pannel = gategory->addPannel(tr("calculate"));
+        action = createAction(tr("BoolFause"), "actionGeoBoolFause", ":/icons/BoolFause.png", tr("Bool fause"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = createAction(tr("BoolCut"), "actionGeoBoolCut", ":/icons/BoolCut.png", tr("Bool cut"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = createAction(tr("BoolCommon"), "actionGeoBoolCommon", ":/icons/BoolCommon.png", tr("Bool common"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
     }
 
     void MainWindow::initMesh()

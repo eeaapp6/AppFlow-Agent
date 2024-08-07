@@ -75,6 +75,9 @@ namespace GUI
             }
             break;
         }
+        case Interface::FITKGeoEnum::FGTBool: {
+            break;
+        }
         }
 
         //如果删除的数据是当前界面,删除当前界面
