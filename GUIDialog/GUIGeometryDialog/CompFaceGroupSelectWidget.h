@@ -1,21 +1,21 @@
-﻿#ifndef CompFaceGroupWidget_H
-#define CompFaceGroupWidget_H
+﻿#ifndef CompFaceGroupSelectWidget_H
+#define CompFaceGroupSelectWidget_H
 
 #include <QWidget>
 #include <QLineEdit>
 
 namespace Ui {
-    class CompFaceGroupWidget;
+    class CompFaceGroupSelectWidget;
 }
 
 namespace GUI
 {
-    class CompFaceGroupWidget :public QWidget
+    class CompFaceGroupSelectWidget :public QWidget
     {
         Q_OBJECT;
     public:
-        CompFaceGroupWidget(QWidget* parent);
-        ~CompFaceGroupWidget();
+        CompFaceGroupSelectWidget(QWidget* parent);
+        ~CompFaceGroupSelectWidget();
 
         void init();
 
@@ -37,7 +37,7 @@ namespace GUI
         void sigCancelClicked();
         void sigDeleteClicked();
     private:
-        Ui::CompFaceGroupWidget* _ui = nullptr;
+        Ui::CompFaceGroupSelectWidget* _ui = nullptr;
         QHash<int, QVariant> _data;
         QPair<int, int> _currentPos;
     };

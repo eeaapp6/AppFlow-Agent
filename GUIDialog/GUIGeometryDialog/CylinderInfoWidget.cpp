@@ -1,6 +1,6 @@
 ﻿#include "CylinderInfoWidget.h"
 #include "ui_CylinderInfoWidget.h"
-#include "CompFaceGroupWidget.h"
+#include "CompFaceGroupSelectWidget.h"
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
@@ -96,7 +96,7 @@ namespace GUI {
         Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
 
-        CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(rowIndex, 0));
+        CompFaceGroupSelectWidget* item = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(rowIndex, 0));
         if (item == nullptr)return;
         auto obj = commanger->getDataByID(item->data(CylObjID).toInt());
         if (obj == nullptr)return;
@@ -116,7 +116,7 @@ namespace GUI {
         for (int faceId : facesId) {
             for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
                 if (i == rowIndex)continue;
-                CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+                CompFaceGroupSelectWidget* otherItem = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(i, 0));
                 if (otherItem == nullptr)continue;
                 auto otherObj = commanger->getDataByID(otherItem->data(CylObjID).toInt());
                 if (otherObj == nullptr)continue;
@@ -217,7 +217,7 @@ namespace GUI {
         if (commanger == nullptr)return;
 
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            CompFaceGroupSelectWidget* widget = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(i, 0));
             if (widget == nullptr)return;
             commanger->removeDataByID(widget->data(CylObjID).toInt());
         }
@@ -243,7 +243,7 @@ namespace GUI {
         geoCom->setDataObjectName(group);
         commanger->appendDataObj(geoCom);
 
-        CompFaceGroupWidget* widget = new CompFaceGroupWidget(_ui->tableWidget);
+        CompFaceGroupSelectWidget* widget = new CompFaceGroupSelectWidget(_ui->tableWidget);
         widget->setName(name);
         widget->setData(CylObjID, geoCom->getDataObjectID());
         _ui->tableWidget->setCellWidget(rowNum, 0, widget);
@@ -264,7 +264,7 @@ namespace GUI {
         Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
 
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(row, column));
+        CompFaceGroupSelectWidget* widget = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(row, column));
         if (widget == nullptr)return;
         auto obj = commanger->getDataByID(widget->data(CylObjID).toInt());
         if (obj == nullptr)return;
@@ -287,7 +287,7 @@ namespace GUI {
         if (_obj == nullptr)return;
         Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
+        CompFaceGroupSelectWidget* widget = dynamic_cast<CompFaceGroupSelectWidget*>(sender());
         if (widget == nullptr) return;
 
         auto obj = commanger->getDataByID(widget->data(CylObjID).toInt());
@@ -300,7 +300,7 @@ namespace GUI {
         if (_obj == nullptr)return;
         Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
+        CompFaceGroupSelectWidget* widget = dynamic_cast<CompFaceGroupSelectWidget*>(sender());
         if (widget == nullptr) return;
         auto obj = commanger->getDataByID(widget->data(CylObjID).toInt());
         if (obj == nullptr)return;
@@ -342,7 +342,7 @@ namespace GUI {
 
     void CylinderInfoWidget::slotFaceWidgetOkClicked()
     {
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
+        CompFaceGroupSelectWidget* widget = dynamic_cast<CompFaceGroupSelectWidget*>(sender());
         if (widget == nullptr) return;
         //执行选择结束事件
         if (_oper) {
@@ -357,7 +357,7 @@ namespace GUI {
     void CylinderInfoWidget::slotFaceWidgetCancelClicked()
     {
         int currentRow = _ui->tableWidget->currentRow();
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(currentRow, 0));
+        CompFaceGroupSelectWidget* widget = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(currentRow, 0));
         if (widget == nullptr) return;
 
         widget->setSelect(false);
@@ -372,7 +372,7 @@ namespace GUI {
         if (_obj == nullptr)return;
         Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
+        CompFaceGroupSelectWidget* widget = dynamic_cast<CompFaceGroupSelectWidget*>(sender());
         if (widget == nullptr) return;
 
         int objID = widget->data(CylObjID).toInt();
@@ -456,7 +456,7 @@ namespace GUI {
             QList<int> ids = geoCom->getMember();
             QString name = geoCom->getDataObjectName();
 
-            CompFaceGroupWidget* item = new CompFaceGroupWidget(_ui->tableWidget);
+            CompFaceGroupSelectWidget* item = new CompFaceGroupSelectWidget(_ui->tableWidget);
             _ui->tableWidget->setCellWidget(i, 0, item);
             if (ids.size() == 0) {
                 name += tr("(empty)");
@@ -509,7 +509,7 @@ namespace GUI {
     //    //计算剩余面
     //    QList<int> allPoint = {};
     //    for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-    //        CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+    //        CompFaceGroupSelectWidget* otherItem = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(i, 0));
     //        if (otherItem == nullptr)continue;
     //        auto otherObj = commanger->getDataByID(otherItem->data(CylObjID).toInt());
     //        if (otherObj == nullptr)continue;
@@ -542,7 +542,7 @@ namespace GUI {
     void CylinderInfoWidget::setAllFaceGroupSelect(bool type)
     {
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            CompFaceGroupSelectWidget* widget = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(i, 0));
             if (widget == nullptr)return;
             widget->setSelect(false);
         }
@@ -551,7 +551,7 @@ namespace GUI {
     void CylinderInfoWidget::updateFaceWidgetCurrentPos()
     {
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            CompFaceGroupSelectWidget* widget = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(i, 0));
             if (widget == nullptr)return;
             widget->setCurrentPos(i, 0);
         }

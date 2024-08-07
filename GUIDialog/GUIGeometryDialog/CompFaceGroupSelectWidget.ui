@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CompFaceGroupWidget</class>
- <widget class="QWidget" name="CompFaceGroupWidget">
+ <class>CompFaceGroupSelectWidget</class>
+ <widget class="QWidget" name="CompFaceGroupSelectWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

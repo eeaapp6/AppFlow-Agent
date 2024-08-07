@@ -1,15 +1,15 @@
-﻿#include "CompFaceGroupWidget.h"
-#include "ui_CompFaceGroupWidget.h"
+﻿#include "CompFaceGroupSelectWidget.h"
+#include "ui_CompFaceGroupSelectWidget.h"
 
 #include <QApplication>
 #include <QStyle>
 
 namespace GUI
 {
-    GUI::CompFaceGroupWidget::CompFaceGroupWidget(QWidget * parent):
+    GUI::CompFaceGroupSelectWidget::CompFaceGroupSelectWidget(QWidget * parent):
         QWidget(parent)
     {
-        _ui = new Ui::CompFaceGroupWidget();
+        _ui = new Ui::CompFaceGroupSelectWidget();
         _ui->setupUi(this);
 
         init();
@@ -21,13 +21,13 @@ namespace GUI
         connect(_ui->pushButton_Delete, SIGNAL(clicked()), this, SIGNAL(sigDeleteClicked()));
     }
 
-    GUI::CompFaceGroupWidget::~CompFaceGroupWidget()
+    GUI::CompFaceGroupSelectWidget::~CompFaceGroupSelectWidget()
     {
         if (_ui)delete _ui;
         _data.clear();
     }
 
-    void CompFaceGroupWidget::init()
+    void CompFaceGroupSelectWidget::init()
     {
         _currentPos.first = -1;
         _currentPos.second = -1;
@@ -45,26 +45,26 @@ namespace GUI
         _ui->pushButton_Delete->setIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
     }
 
-    void CompFaceGroupWidget::setName(QString name)
+    void CompFaceGroupSelectWidget::setName(QString name)
     {
         _ui->lineEdit_Name->setText(name);
     }
 
-    QString CompFaceGroupWidget::getName()
+    QString CompFaceGroupSelectWidget::getName()
     {
         return _ui->lineEdit_Name->text();
     }
 
-    void CompFaceGroupWidget::setData(int pos, QVariant value)
+    void CompFaceGroupSelectWidget::setData(int pos, QVariant value)
     {
         _data.insert(pos, value);
     }
 
-    QVariant CompFaceGroupWidget::data(int pos)
+    QVariant CompFaceGroupSelectWidget::data(int pos)
     {
         return _data.value(pos);
     }
-    void CompFaceGroupWidget::setSelect(bool type)
+    void CompFaceGroupSelectWidget::setSelect(bool type)
     {
         if (type) {
             _ui->pushButton_OK->show();
@@ -76,12 +76,12 @@ namespace GUI
             _ui->pushButton_Cancel->hide();
         }
     }
-    void CompFaceGroupWidget::setCurrentPos(int row, int clo)
+    void CompFaceGroupSelectWidget::setCurrentPos(int row, int clo)
     {
         _currentPos.first = row;
         _currentPos.second = clo;
     }
-    QPair<int, int> CompFaceGroupWidget::getCurrentPos()
+    QPair<int, int> CompFaceGroupSelectWidget::getCurrentPos()
     {
         return _currentPos;
     }
