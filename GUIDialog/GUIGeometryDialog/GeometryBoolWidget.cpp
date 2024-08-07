@@ -26,6 +26,14 @@ namespace GUI
 
         _ui->pushButton_Body1->hide();
         _ui->pushButton_Body2->hide();
+
+        QString typeName = "";
+        switch (_type) {
+        case GUI::BoolType::GeoBoolFause: typeName = tr("Fause"); break;
+        case GUI::BoolType::GeoBoolCut:typeName = tr("Cut"); break;
+        case GUI::BoolType::GeoBoolCommon:typeName = tr("Common"); break;
+        }
+        _ui->groupBox_Type->setTitle(typeName);
     }
 
     GeometryBoolWidget::~GeometryBoolWidget()
@@ -94,7 +102,7 @@ namespace GUI
 
         if (_oper == nullptr)return;
         if (!checkValue())return;
-        
+
         Interface::FITKAbsGeoCommand* geo1 = geometryData->getDataByID(_ui->comboBox_Body1->currentData().toInt());
         Interface::FITKAbsGeoCommand* geo2 = geometryData->getDataByID(_ui->comboBox_Body2->currentData().toInt());
         if (geo1 == nullptr)return;
@@ -104,7 +112,7 @@ namespace GUI
         if (geoBoolOper == nullptr)return;
         QString name = geometryData->checkName(tr("Bool-1"));
         geoBoolOper->setDataObjectName(name);
-        switch (_type){
+        switch (_type) {
         case GUI::BoolType::GeoBoolFause:
             geoBoolOper->setBoolOperType(Interface::FITKAbsGeoOperBool::GBTAdd);
             break;
