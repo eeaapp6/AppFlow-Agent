@@ -7,6 +7,7 @@ HEADERS += \
     $$PWD/SphereInfoWidget.h \
     $$PWD/GeometryDeleteDialog.h \
     $$PWD/GeometryBoolWidget.h \
+    $$PWD/BoolInfoWidget.h \
 
 
 SOURCES += \
@@ -17,6 +18,7 @@ SOURCES += \
     $$PWD/SphereInfoWidget.cpp \
     $$PWD/GeometryDeleteDialog.cpp \
     $$PWD/GeometryBoolWidget.cpp \
+    $$PWD/BoolInfoWidget.cpp \
 
 FORMS += \
     $$PWD/CompFaceGroupWidget.ui \
@@ -25,6 +27,7 @@ FORMS += \
     $$PWD/SphereInfoWidget.ui \
     $$PWD/GeometryDeleteDialog.ui \
     $$PWD/GeometryBoolWidget.ui \
+    $$PWD/BoolInfoWidget.ui \
  
 
  RESOURCES += \

@@ -86,7 +86,7 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_GeometyBoxItem:name = "actionGeoCubeEdit"; break;
         case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:name = "actionGeoCylinderEdit"; break;
         case GUI::MainTreeEnum::MainTree_GeometySphereItem:name = "actionGeoSphereEdit"; break;
-        case GUI::MainTreeEnum::MainTree_GeometyBoolItem:break;
+        case GUI::MainTreeEnum::MainTree_GeometyBoolItem:name = "actionGeoBoolEdit"; break;
         case GUI::MainTreeEnum::MainTree_Mesh: break;
         case GUI::MainTreeEnum::MainTree_MeshBase: name = "actionMeshBaseEdit"; break;
         case GUI::MainTreeEnum::MainTree_MeshLocal: name = "actionMeshLocalSelectGroup"; break;
