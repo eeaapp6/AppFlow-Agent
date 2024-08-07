@@ -21,9 +21,9 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_WIN
     //这个是Windows平台用来获取屏幕宽度的代码，必须在QApplication实例化之前使用
     //因为在qApplication实例初始化之前，QGuiApplication::screens();无法使用。
-    qreal  cx = GetSystemMetrics(SM_CXSCREEN);
-    qreal scale = cx / 1920;
-    qputenv("QT_SCALE_FACTOR", QString::number(scale).toLatin1());
+    //qreal  cx = GetSystemMetrics(SM_CXSCREEN);
+    //qreal scale = cx / 1920;
+    //qputenv("QT_SCALE_FACTOR", QString::number(scale).toLatin1());
 #endif // Q_WIN
     //控制图片缩放质量
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
