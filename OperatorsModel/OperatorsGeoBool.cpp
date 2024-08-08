@@ -55,11 +55,11 @@ namespace ModelOper {
             type = GUI::BoolType::GeoBoolCommon;
             widget = new GUI::GeometryBoolWidget(type, this);
         }
-        else if (_senderName == "actionGeoBoolEdit") {
-            Interface::FITKAbsGeoOperBool* obj = dynamic_cast<Interface::FITKAbsGeoOperBool*>(geometryData->getDataByID(objID));
+        else if (_senderName == "actionGeoBoolOrImportEdit") {
+            Interface::FITKAbsGeoCommand* obj = geometryData->getDataByID(objID);
             widget = new GUI::BoolInfoWidget(obj, this);
         }
-        else if (_senderName == "actionGeoBoolDelete") {
+        else if (_senderName == "actionGeoBoolOrImportDelete") {
             dialog = new GUI::GeometryDeleteDialog(dynamic_cast<Interface::FITKAbsGeoCommand*>(geometryData->getDataByID(objID)), this);
         }
 

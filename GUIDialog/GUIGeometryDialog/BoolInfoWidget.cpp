@@ -17,7 +17,7 @@
 #include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
-#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoOperBool.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoShapeAgent.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKAbstractModel.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKComponentManager.h"
@@ -30,7 +30,7 @@
 
 namespace GUI 
 {
-    BoolInfoWidget::BoolInfoWidget(Interface::FITKAbsGeoOperBool * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
+    BoolInfoWidget::BoolInfoWidget(Interface::FITKAbsGeoCommand * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
         GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(false), _obj(obj), _oper(oper)
     {

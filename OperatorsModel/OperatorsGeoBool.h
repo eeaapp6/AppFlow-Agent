@@ -32,8 +32,8 @@ namespace ModelOper
     Register2FITKOPeratorRepo(actionGeoBoolFause, OperatorsGeoBool);
     Register2FITKOPeratorRepo(actionGeoBoolCut, OperatorsGeoBool);
     Register2FITKOPeratorRepo(actionGeoBoolCommon, OperatorsGeoBool);
-    Register2FITKOPeratorRepo(actionGeoBoolEdit, OperatorsGeoBool);
-    Register2FITKOPeratorRepo(actionGeoBoolDelete, OperatorsGeoBool);
+    Register2FITKOPeratorRepo(actionGeoBoolOrImportEdit, OperatorsGeoBool);
+    Register2FITKOPeratorRepo(actionGeoBoolOrImportDelete, OperatorsGeoBool);
 }
 
 #endif

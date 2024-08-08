@@ -11,7 +11,6 @@ namespace Ui {
 }
 
 namespace Interface {
-    class FITKAbsGeoOperBool;
     class FITKAbstractGeoModel;
     class FITKAbsGeoCommand;
 }
@@ -29,7 +28,7 @@ namespace GUI
         Q_OBJECT;
     public:
         //编辑构造函数
-        BoolInfoWidget(Interface::FITKAbsGeoOperBool* obj, EventOper::ParaWidgetInterfaceOperator* oper);
+        BoolInfoWidget(Interface::FITKAbsGeoCommand* obj, EventOper::ParaWidgetInterfaceOperator* oper);
         ~BoolInfoWidget();
 
         void init();
@@ -49,7 +48,7 @@ namespace GUI
         void setDataToWidget();
     private:
         bool _isCreate = false;
-        Interface::FITKAbsGeoOperBool* _obj = nullptr;
+        Interface::FITKAbsGeoCommand* _obj = nullptr;
         Ui::BoolInfoWidget* _ui = nullptr;
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
         CompFaceGroupWidget* _faceGroupWidget = nullptr;
