@@ -5,6 +5,7 @@
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKCore/FITKThreadPool.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelImport.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoCommandList.h"
@@ -20,40 +21,31 @@ namespace ModelOper {
 
     OperatorsImportManager::~OperatorsImportManager()
     {
+
     }
 
     bool OperatorsImportManager::execGUI()
     {
-        // 获取模型树控制器
-        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
-        if (treeOper == nullptr) return false;
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return false;
         GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
         if (mainWindow == nullptr)return false;
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return false;
 
+        //获取线程池
+        Core::FITKThreadPool* pool = Core::FITKThreadPool::getInstance();
+        if (pool == nullptr)return false;
+
         QString workDir = QApplication::applicationDirPath();
         QFileDialog fileDialog;
         if (_senderName == "actionImportGeometry") {
-            Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
-            if (geometryData == nullptr) return false;
-
             QString fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Geometry"), workDir, tr("File(*.stp ; *.igs ; *.stl)"));
             if (fileName.isEmpty())return false;
 
-            Interface::FITKInterfaceGeometryFactory* geoFactory = Interface::FITKInterfaceGeometryFactory::getInstance();
-            if (geoFactory == nullptr)return false;
-            auto GeoImport = geoFactory->createCommandT<Interface::FITKAbsGeoModelImport>(Interface::FITKGeoEnum::FITKGeometryComType::FGTImport);
-            if (GeoImport == nullptr)return false;
-            GeoImport->setFileName(fileName);
-            GeoImport->update();
-            geometryData->appendDataObj(GeoImport);
-
-            graphOper->updateGraph(GeoImport->getDataObjectID(), true);
-            treeOper->updateTree();
-            graphOper->reRender(true);
+            ImportReadThread* importThread = new ImportReadThread();
+            importThread->_type = ImportType::ImportGeo;
+            importThread->_fileName = fileName;
+            pool->execTask(importThread);
+            connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotGeoImportFinish(bool, int)));
         }
         else  if (_senderName == "actionImportMesh") {
             fileDialog.getOpenFileName(_mainWindow, tr("Import Mesh"), workDir);
@@ -64,6 +56,45 @@ namespace ModelOper {
     bool OperatorsImportManager::execProfession()
     {
         return true;
+    }
+
+    void OperatorsImportManager::slotGeoImportFinish(bool result, int objID)
+    {
+        if (result == false)return;
+        if (objID < 0)return;
+
+        // 获取模型树控制器
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return;
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+
+        graphOper->updateGraph(objID, true);
+        treeOper->updateTree();
+        graphOper->reRender(true);
+    }
+
+    void ImportReadThread::run()
+    {
+        switch (_type){
+        case ModelOper::ImportType::ImportGeo: {
+            Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
+            if (geometryData == nullptr) return;
+
+            Interface::FITKInterfaceGeometryFactory* geoFactory = Interface::FITKInterfaceGeometryFactory::getInstance();
+            if (geoFactory == nullptr)return;
+            auto geoObj = geoFactory->createCommandT<Interface::FITKAbsGeoModelImport>(Interface::FITKGeoEnum::FITKGeometryComType::FGTImport);
+            if (geoObj == nullptr)return;
+            geoObj->setFileName(_fileName);
+            bool result = geoObj->update();
+            geometryData->appendDataObj(geoObj);
+
+            emit sigImportFinish(result, geoObj->getDataObjectID());
+            break;
+        }
+        case ModelOper::ImportType::ImportMesh:
+            break;
+        }
     }
 
 }
