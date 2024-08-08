@@ -4,6 +4,7 @@
 #include "ComponentFactory.h"
 #include "CommandLineHandler.h".
 #include "SignalProcessor.h"
+#include "FlowAPPSettings.h"
 
 #ifdef Q_OS_WIN
 #include <Windows.h>
@@ -48,6 +49,7 @@ int main(int argc, char *argv[])
     app.regMainWindowGenerator(new MainWindowGenerator); // 注册主窗口生成器
     app.regGlobalDataFactory(new GlobalDataFactory);     // 注册全局数据工厂
     app.regComponentsFactory(new ComponentFactory);      // 注册组件工厂
+    app.regAppSettings(new FlowAPPSettings);             // 注册应用结构设置
     app.regCommandLineHandler(new CommandLineHandler);   // 注册命令行处理
     app.addGolbalSignalProcesser(new SignalProcessor);
 
