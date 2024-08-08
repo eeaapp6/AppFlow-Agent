@@ -41,6 +41,8 @@ namespace ModelOper {
             if (geometryData == nullptr) return false;
 
             QString fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Geometry"), workDir, tr("File(*.stp ; *.igs ; *.stl)"));
+            if (fileName.isEmpty())return false;
+
             Interface::FITKInterfaceGeometryFactory* geoFactory = Interface::FITKInterfaceGeometryFactory::getInstance();
             if (geoFactory == nullptr)return false;
             auto GeoImport = geoFactory->createCommandT<Interface::FITKAbsGeoModelImport>(Interface::FITKGeoEnum::FITKGeometryComType::FGTImport);
