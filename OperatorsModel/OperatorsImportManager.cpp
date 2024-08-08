@@ -38,7 +38,7 @@ namespace ModelOper {
         QString workDir = QApplication::applicationDirPath();
         QFileDialog fileDialog;
         if (_senderName == "actionImportGeometry") {
-            QString fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Geometry"), workDir, tr("File(*.stp ; *.igs ; *.stl)"));
+            QString fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Geometry"), workDir, tr("File(*.stp; *.step; *.igs; *.stl)"));
             if (fileName.isEmpty())return false;
 
             ImportReadThread* importThread = new ImportReadThread();
