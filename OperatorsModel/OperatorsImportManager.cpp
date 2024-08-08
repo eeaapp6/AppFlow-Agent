@@ -5,6 +5,7 @@
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
 #include "FITK_Kernel/FITKCore/FITKThreadPool.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelImport.h"
@@ -35,7 +36,12 @@ namespace ModelOper {
         Core::FITKThreadPool* pool = Core::FITKThreadPool::getInstance();
         if (pool == nullptr)return false;
 
-        QString workDir = QApplication::applicationDirPath();
+        QString workDir = "";
+        if (FITKAPP->getAppSettings()) {
+            workDir = FITKAPP->getAppSettings()->getWorkingDir();
+        }
+        if (workDir.isEmpty()) workDir = QApplication::applicationDirPath();
+
         QFileDialog fileDialog;
         if (_senderName == "actionImportGeometry") {
             QString fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Geometry"), workDir, tr("File(*.stp ; *.step ; *.igs ; *.stl)"));

@@ -2,6 +2,7 @@
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractMesherDriver.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractMeshProcessor.h"
@@ -32,7 +33,15 @@ namespace ModelOper
             // 网格划分
             auto meshDriver = meshGen->getMesherDriver();
             if (meshDriver == nullptr) return false;
-            meshDriver->setValue("WorkDir", QApplication::applicationDirPath() + "/../WorkDir");
+
+            //工作路径获取
+            QString workDir = "";
+            if (FITKAPP->getAppSettings()) {
+                workDir = FITKAPP->getAppSettings()->getWorkingDir();
+            }
+            if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
+
+            meshDriver->setValue("WorkDir", workDir);
             meshDriver->setValue("HasGeoMeshSize", manager->getDataCount() > 0);
             meshDriver->startMesher();
             connect(meshDriver, &Interface::FITKAbstractMesherDriver::mesherFinished, [this] {
