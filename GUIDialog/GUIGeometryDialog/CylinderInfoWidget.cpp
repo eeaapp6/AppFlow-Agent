@@ -25,8 +25,6 @@
 #include <QMessageBox>
 #include <QtMath>
 
-#define CylObjID Qt::UserRole
-
 namespace GUI {
 
     CylinderInfoWidget::CylinderInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :

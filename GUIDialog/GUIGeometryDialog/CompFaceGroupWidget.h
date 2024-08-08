@@ -102,7 +102,6 @@ namespace GUI
          */
         void clearTableWidget();
     private:
-        bool _isCreate = false;
         Interface::FITKAbsGeoCommand* _obj = nullptr;
         Ui::CompFaceGroupWidget* _ui = nullptr;
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;

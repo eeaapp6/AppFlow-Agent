@@ -27,8 +27,6 @@
 #include <QTableWidgetItem>
 #include <QSpacerItem>
 
-#define CudeObjID Qt::UserRole
-
 namespace GUI {
 
     CudeInfoWidget::CudeInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :

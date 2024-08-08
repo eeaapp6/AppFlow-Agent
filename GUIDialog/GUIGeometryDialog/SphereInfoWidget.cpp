@@ -25,8 +25,6 @@
 
 #include <QMessageBox>
 
-#define SphereObjID Qt::UserRole
-
 namespace GUI {
 
     SphereInfoWidget::SphereInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :

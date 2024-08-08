@@ -28,8 +28,6 @@
 #include <QTableWidgetItem>
 #include <QSpacerItem>
 
-#define CudeObjID Qt::UserRole
-
 namespace GUI 
 {
     BoolInfoWidget::BoolInfoWidget(Interface::FITKAbsGeoOperBool * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
