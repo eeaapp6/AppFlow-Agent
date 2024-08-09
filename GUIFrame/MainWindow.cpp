@@ -148,12 +148,12 @@ namespace GUI
         QAction* action = nullptr;
 
         //导入几何文件
-        action = createAction(tr("import geometry"), "actionImportGeometry");
+        action = createAction(tr("import geometry"), "actionImportGeometry", ":/icons/importGeometry.png");
         action->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+G", nullptr));
         fileAppButton->addAction(action);
 
         //导入网格文件
-        action = createAction(tr("import mesh"), "actionImportMesh");
+        action = createAction(tr("import mesh"), "actionImportMesh", ":/icons/importMesh.png");
         action->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+M", nullptr));
         fileAppButton->addAction(action);
 
@@ -174,34 +174,30 @@ namespace GUI
         //项目
         SARibbonPannel* pannel = gategory->addPannel(tr("Object"));
 
-        action = createAction(tr("New"), "actionNew");
+        action = createAction(tr("New"), "actionNew", ":/icons/createNew.png");
         changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
-        action = createAction(tr("Open"), "actionOpen");
+        action = createAction(tr("Open"), "actionOpen", ":/icons/open.png");
         changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
-        action = createAction(tr("Save"), "actionSave");
+        action = createAction(tr("Save"), "actionSave", ":/icons/save.png");
         changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         //模型结构
         pannel = gategory->addPannel(tr("Model"));
-        menu = new QMenu(tr("Geometry import"), this);
-        action = createAction(tr("Geometry import"), "actionImportGeometry");
-        action->setMenu(menu);
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = getAction("actionImportGeometry");
+        if (action) pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
-        menu = new QMenu(tr("Mesh import"), this);
-        action = createAction(tr("Mesh import"), "actionImportMesh");
-        action->setMenu(menu);
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = getAction("actionImportMesh");
+        if (action) pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         //三维交互
         pannel = gategory->addPannel(tr("View"));
         action = createAction(tr("Auto"), "actionViewPan");
-        changeAction(action, ":FITKIcons/icoR_viewPan.svg");
+        changeAction(action, ":FITKIcons/icoR_autofit.png");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         action = createAction(tr("X forward"), "actionViewLeft");
@@ -237,21 +233,29 @@ namespace GUI
 
         QAction* action = nullptr;
         SARibbonPannel* pannel = gategory->addPannel(tr("Geometry"));
-        action = createAction(tr("Import Geometry"), "actionImportGeometry", "", tr("import geometry"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = getAction("actionImportGeometry");
+        if (action) pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         pannel = gategory->addPannel(tr("3D model"));
-        action = createAction(tr("Create Cube"), "actionGeoCubeCreate", "", tr("Create Cube"));
+        action = createAction(tr("Create Cube"), "actionGeoCubeCreate", ":/icons/createbox.png", tr("Create Cube"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Sphere"), "actionGeoSphereCreate", "", tr("Create Sphere"));
+        action = createAction(tr("Create Sphere"), "actionGeoSphereCreate", ":/icons/createsphere.png", tr("Create Sphere"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         action = createAction(tr("Create Cone"), "actionGeoConeCreate", "", tr("Create Cone"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         action = createAction(tr("Create Cirque"), "actionGeoCirqueCreate", "", tr("Create Cirque"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Cylinder"), "actionGeoCylinderCreate", "", tr("Create Cylinder"));
+        action = createAction(tr("Create Cylinder"), "actionGeoCylinderCreate", ":/icons/createcylinder.png", tr("Create Cylinder"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         action = createAction(tr("Create Spiral"), "actionGeoSpiralCreate", "", tr("Create Spiral"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+
+        pannel = gategory->addPannel(tr("calculate"));
+        action = createAction(tr("BoolFause"), "actionGeoBoolFause", ":/icons/BoolFause.png", tr("Bool fause"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = createAction(tr("BoolCut"), "actionGeoBoolCut", ":/icons/BoolCut.png", tr("Bool cut"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = createAction(tr("BoolCommon"), "actionGeoBoolCommon", ":/icons/BoolCommon.png", tr("Bool common"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
     }
 
@@ -266,11 +270,8 @@ namespace GUI
 
         // 网格导入
         auto pannel = gategory->addPannel(tr("Import Mesh"));
-        auto menu = new QMenu(tr("Import Mesh"), this);
-        action = createAction(tr("Import Mesh"), "actionImportMesh");
-        action->setIcon(QIcon(":/icons/displayedge.png"));
-        action->setMenu(menu);
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = getAction("actionImportMesh");
+        if (action) pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         action = createAction(tr("Tet"), "actionTetMesh", ":/icons/displayedge.png", tr("Cube"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
@@ -292,7 +293,7 @@ namespace GUI
 
         // 网格操作
         pannel = gategory->addPannel(tr("Oper Mesh"));
-        action = createAction(tr("Mesh"), "actionMesh", ":/icons/displayedge.png", tr("Mesh"));
+        action = createAction(tr("Mesh"), "actionMesh", ":/icons/mesh.png", tr("Mesh"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
         action = createAction(tr("Extrude"), "action", ":/icons/displayedge.png", tr("Extrude"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
@@ -355,6 +356,14 @@ namespace GUI
         //pannel中添加action
         if (pannel == nullptr || action == nullptr)return;
         pannel->addAction(action, actionType);
+    }
+
+    QAction* MainWindow::getAction(const QString actionName)
+    {
+        //获取Action
+        if (actionName.isEmpty())return nullptr;
+        QAction* action = this->findChild< QAction* >(actionName);
+        return action;
     }
 
     MainTreeWidget* MainWindow::getTreeWidget() const

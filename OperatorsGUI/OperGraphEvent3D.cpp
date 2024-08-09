@@ -142,6 +142,14 @@ namespace GUIOper
             isValid = true;
         }
 
+        // 检查数据ID是否为边界网格。
+        Interface::FITKBoundaryMeshVTK* boundMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKBoundaryMeshVTK>(dataObjId);
+        if (boundMesh && !isValid)
+        {
+            obj = modelProvider->getBoundMeshGraphObject(dataObjId);
+            isValid = true;
+        }     
+
         // 检查数据ID是否为流体域形状数据。
         Interface::FITKAbstractRegionMeshSize* regionMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractRegionMeshSize>(dataObjId);
         if (regionMesh && !isValid)

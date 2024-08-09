@@ -16,11 +16,14 @@ namespace GUI
         MainTree_GeometyBoxItem,
         MainTree_GeometyCylinderItem,
         MainTree_GeometySphereItem,
+        MainTree_GeometyBoolOrImportItem,
         MainTree_Mesh,
         MainTree_MeshBase,
         MainTree_MeshLocal,
         MainTree_MeshLocalItem,
         MainTree_MeshPoint,
+        MainTree_MeshBoundary,
+        MainTree_MeshBoundaryItem,
     };
 
     class GUIFRAMEAPI MainTreeWidget : public PanelWidgetBase

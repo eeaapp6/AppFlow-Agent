@@ -18,8 +18,8 @@
 
 namespace GUI
 {
-	MeshBaseTypeBoxWidget::MeshBaseTypeBoxWidget(QWidget* parent) :
-		MeshBaseTypeWidgetBase(parent)
+    MeshBaseTypeBoxWidget::MeshBaseTypeBoxWidget(QWidget* parent) :
+        MeshBaseTypeWidgetBase(parent)
     {
         _ui = new Ui::MeshBaseTypeBoxWidget();
         _ui->setupUi(this);
@@ -27,7 +27,7 @@ namespace GUI
         _graphObj = new Interface::FITKRegionMeshSizeBox();
         init();
 
-		_ui->pushButton_2->hide();
+        _ui->pushButton_2->hide();
     }
 
     MeshBaseTypeBoxWidget::~MeshBaseTypeBoxWidget()
@@ -79,24 +79,24 @@ namespace GUI
         _ui->comboBox_Z0->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
         _ui->comboBox_Z0->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
 
-		connect(_ui->lineEdit_BasePoint1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_BasePoint2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_BasePoint3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Dimensions1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Dimensions2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Dimensions3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Division1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Division2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Division3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Grading1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Grading2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Grading3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->comboBox_X0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
-		connect(_ui->comboBox_X1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
-		connect(_ui->comboBox_Y0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
-		connect(_ui->comboBox_Y1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
-		connect(_ui->comboBox_Z0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
-		connect(_ui->comboBox_Z1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_BasePoint1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_BasePoint2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_BasePoint3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Dimensions1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Dimensions2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Dimensions3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Division1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Division2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Division3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Grading1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Grading2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Grading3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->comboBox_X0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+        connect(_ui->comboBox_X1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+        connect(_ui->comboBox_Y0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+        connect(_ui->comboBox_Y1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+        connect(_ui->comboBox_Z0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+        connect(_ui->comboBox_Z1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
     }
 
     bool MeshBaseTypeBoxWidget::checkValue()
@@ -109,7 +109,7 @@ namespace GUI
         Interface::FITKRegionMeshSizeBox* boxObj = dynamic_cast<Interface::FITKRegionMeshSizeBox*>(obj);
         if (boxObj == nullptr)return false;
 
-		this->blockSignals(true);
+        this->blockSignals(true);
 
         double basicPoint[3] = { 0,0,0 };
         boxObj->getPoint1(basicPoint);
@@ -122,8 +122,7 @@ namespace GUI
         _ui->lineEdit_Dimensions1->setText(QString::number(length[0]));
         _ui->lineEdit_Dimensions2->setText(QString::number(length[1]));
         _ui->lineEdit_Dimensions3->setText(QString::number(length[2]));
-        
-        
+
         _ui->lineEdit_Division1->setText(QString::number(boxObj->getDivision(0)));
         _ui->lineEdit_Division2->setText(QString::number(boxObj->getDivision(1)));
         _ui->lineEdit_Division3->setText(QString::number(boxObj->getDivision(2)));
@@ -132,14 +131,14 @@ namespace GUI
         _ui->lineEdit_Grading2->setText(QString::number(boxObj->getGrading(1)));
         _ui->lineEdit_Grading3->setText(QString::number(boxObj->getGrading(2)));
 
-        _ui->comboBox_X1->setCurrentIndex(_ui->comboBox_X1->findData(boxObj->getBoundary(0)));
-        _ui->comboBox_X0->setCurrentIndex(_ui->comboBox_X0->findData(boxObj->getBoundary(1)));
-        _ui->comboBox_Y1->setCurrentIndex(_ui->comboBox_Y1->findData(boxObj->getBoundary(2)));
-        _ui->comboBox_Y0->setCurrentIndex(_ui->comboBox_Y0->findData(boxObj->getBoundary(3)));
-        _ui->comboBox_Z1->setCurrentIndex(_ui->comboBox_Z1->findData(boxObj->getBoundary(4)));
-        _ui->comboBox_Z0->setCurrentIndex(_ui->comboBox_Z0->findData(boxObj->getBoundary(5)));
+        _ui->comboBox_X0->setCurrentIndex(_ui->comboBox_X0->findData(boxObj->getBoundary(0)));
+        _ui->comboBox_X1->setCurrentIndex(_ui->comboBox_X1->findData(boxObj->getBoundary(1)));
+        _ui->comboBox_Y0->setCurrentIndex(_ui->comboBox_Y0->findData(boxObj->getBoundary(2)));
+        _ui->comboBox_Y1->setCurrentIndex(_ui->comboBox_Y1->findData(boxObj->getBoundary(3)));
+        _ui->comboBox_Z0->setCurrentIndex(_ui->comboBox_Z0->findData(boxObj->getBoundary(4)));
+        _ui->comboBox_Z1->setCurrentIndex(_ui->comboBox_Z1->findData(boxObj->getBoundary(5)));
 
-		this->blockSignals(false);
+        this->blockSignals(false);
         return true;
     }
 
@@ -149,9 +148,9 @@ namespace GUI
         if (boxObj == nullptr)return false;
 
         double basicPoint[3] = { 0,0,0 };
-        basicPoint[0]= _ui->lineEdit_BasePoint1->text().toDouble();
-        basicPoint[1]= _ui->lineEdit_BasePoint2->text().toDouble();
-        basicPoint[2]= _ui->lineEdit_BasePoint3->text().toDouble();
+        basicPoint[0] = _ui->lineEdit_BasePoint1->text().toDouble();
+        basicPoint[1] = _ui->lineEdit_BasePoint2->text().toDouble();
+        basicPoint[2] = _ui->lineEdit_BasePoint3->text().toDouble();
         boxObj->setPoint1(basicPoint);
 
         double length[3] = { 0,0,0 };
@@ -168,12 +167,12 @@ namespace GUI
         boxObj->setGrading(1, _ui->lineEdit_Grading2->text().toDouble());
         boxObj->setGrading(2, _ui->lineEdit_Grading3->text().toDouble());
 
-        boxObj->insertBoundary(0, _ui->comboBox_X1->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
-        boxObj->insertBoundary(1, _ui->comboBox_X0->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
-        boxObj->insertBoundary(2, _ui->comboBox_Y1->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
-        boxObj->insertBoundary(3, _ui->comboBox_Y0->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
-        boxObj->insertBoundary(4, _ui->comboBox_Z1->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
-        boxObj->insertBoundary(5, _ui->comboBox_Z0->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        boxObj->insertBoundary(0, _ui->comboBox_X0->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        boxObj->insertBoundary(1, _ui->comboBox_X1->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        boxObj->insertBoundary(2, _ui->comboBox_Y0->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        boxObj->insertBoundary(3, _ui->comboBox_Y1->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        boxObj->insertBoundary(4, _ui->comboBox_Z0->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
+        boxObj->insertBoundary(5, _ui->comboBox_Z1->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>());
 
         return true;
     }
@@ -187,7 +186,7 @@ namespace GUI
         if (graphOper == nullptr)return;
 
         graphOper->updateGraph(_graphObj->getDataObjectID());
-		graphOper->reRender(true);
+        graphOper->reRender(true);
     }
 
     void MeshBaseTypeBoxWidget::on_pushButton_AutoSize_clicked()
@@ -199,8 +198,10 @@ namespace GUI
         double maxPoint[3] = { -9e66, -9e66, -9e66 };
         geoManager->getBoundaryBox(minPoint, maxPoint);
 
-        double rate =  qSqrt((maxPoint[0] * maxPoint[0] + maxPoint[1] * maxPoint[1] + maxPoint[2] * maxPoint[2])
-            - (minPoint[0] * minPoint[0] + minPoint[1] * minPoint[1] + minPoint[1] * minPoint[1]))*0.005;
+        double xCount = maxPoint[0] - minPoint[0];
+        double yCount = maxPoint[1] - minPoint[1];
+        double zCount = maxPoint[2] - minPoint[2];
+        double rate = qSqrt(xCount*xCount + yCount * yCount + zCount * zCount)*0.005;
 
         double resultMinPoint[3] = { 0,0,0 };
         resultMinPoint[0] = minPoint[0] - rate;
@@ -224,15 +225,15 @@ namespace GUI
         _ui->lineEdit_Dimensions2->setText(QString::number(YExtent));
         _ui->lineEdit_Dimensions3->setText(QString::number(ZExtent));
 
-		if (_meshBaseWidget)_meshBaseWidget->saveValue();
+        if (_meshBaseWidget)_meshBaseWidget->saveValue();
         updateGeometryGraph();
     }
 
-	void MeshBaseTypeBoxWidget::slotSaveValue()
-	{
-		_meshBaseWidget->saveValue();
-		updateGeometryGraph();
-	}
+    void MeshBaseTypeBoxWidget::slotSaveValue()
+    {
+        _meshBaseWidget->saveValue();
+        updateGeometryGraph();
+    }
 }
 
 

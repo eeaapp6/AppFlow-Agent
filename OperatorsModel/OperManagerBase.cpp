@@ -30,8 +30,11 @@ namespace ModelOper
 
     void OperManagerBase::preArgs()
     {
+        if (_emitter == nullptr)return;
+
         auto current = _emitter;
-        QString name = current->objectName().toLower();
+        _senderName = current->objectName();
+        QString name = _senderName.toLower();
         // 根据对象名称后缀确定操作类型
         if (name.contains("create")) {
             _operType = Create;

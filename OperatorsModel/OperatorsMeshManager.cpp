@@ -2,6 +2,7 @@
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractMesherDriver.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractMeshProcessor.h"
@@ -11,13 +12,18 @@
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 
 #include "OperatorsInterface/GraphEventOperator.h"
+#include "OperatorsInterface/TreeEventOperator.h"
+
 namespace ModelOper
 {
     bool OperatorsMeshManager::execGUI()
     {
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return false;
-
+        // 获取模型树控制器
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return false;
+        
         if (_emitter == nullptr)return false;
         QString actionName = _emitter->objectName();
         if (actionName == "actionMesh") {
@@ -27,7 +33,15 @@ namespace ModelOper
             // 网格划分
             auto meshDriver = meshGen->getMesherDriver();
             if (meshDriver == nullptr) return false;
-            meshDriver->setValue("WorkDir", QApplication::applicationDirPath() + "/../WorkDir");
+
+            //工作路径获取
+            QString workDir = "";
+            if (FITKAPP->getAppSettings()) {
+                workDir = FITKAPP->getAppSettings()->getWorkingDir();
+            }
+            if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
+
+            meshDriver->setValue("WorkDir", workDir);
             meshDriver->setValue("HasGeoMeshSize", manager->getDataCount() > 0);
             meshDriver->startMesher();
             connect(meshDriver, &Interface::FITKAbstractMesherDriver::mesherFinished, [this] {
@@ -40,6 +54,7 @@ namespace ModelOper
             Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
             if (meshData == nullptr)return false;
             meshData->clearMesh();
+            treeOper->updateTree();
             graphOper->reRender();
         }
         return true;
@@ -47,7 +62,6 @@ namespace ModelOper
 
     bool OperatorsMeshManager::execProfession()
     {
-
         return true;
     }
     void OperatorsMeshManager::readMesh()
@@ -65,5 +79,10 @@ namespace ModelOper
         // 网格对象
         auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
         graphOper->updateGraph(mesh->getDataObjectID());
+
+        // 获取模型树控制器
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return;
+        treeOper->updateTree();
     }
 }

@@ -4,6 +4,7 @@
 #include "ComponentFactory.h"
 #include "CommandLineHandler.h".
 #include "SignalProcessor.h"
+#include "FlowAPPSettings.h"
 
 #ifdef Q_OS_WIN
 #include <Windows.h>
@@ -21,9 +22,9 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_WIN
     //这个是Windows平台用来获取屏幕宽度的代码，必须在QApplication实例化之前使用
     //因为在qApplication实例初始化之前，QGuiApplication::screens();无法使用。
-    qreal  cx = GetSystemMetrics(SM_CXSCREEN);
-    qreal scale = cx / 1920;
-    qputenv("QT_SCALE_FACTOR", QString::number(scale).toLatin1());
+    //qreal  cx = GetSystemMetrics(SM_CXSCREEN);
+    //qreal scale = cx / 1920;
+    //qputenv("QT_SCALE_FACTOR", QString::number(scale).toLatin1());
 #endif // Q_WIN
     //控制图片缩放质量
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -48,6 +49,7 @@ int main(int argc, char *argv[])
     app.regMainWindowGenerator(new MainWindowGenerator); // 注册主窗口生成器
     app.regGlobalDataFactory(new GlobalDataFactory);     // 注册全局数据工厂
     app.regComponentsFactory(new ComponentFactory);      // 注册组件工厂
+    app.regAppSettings(new FlowAPPSettings);             // 注册应用结构设置
     app.regCommandLineHandler(new CommandLineHandler);   // 注册命令行处理
     app.addGolbalSignalProcesser(new SignalProcessor);
 

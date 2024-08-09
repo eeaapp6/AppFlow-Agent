@@ -5,6 +5,7 @@ HEADERS += \
     $$PWD/CommandLineHandler.h \
     $$PWD/PreWindowInitializer.h \
     $$PWD/SignalProcessor.h \
+    $$PWD/FlowAPPSettings.h \
 
 SOURCES += \
     $$PWD/main.cpp \
@@ -14,6 +15,7 @@ SOURCES += \
     $$PWD/CommandLineHandler.cpp \
     $$PWD/PreWindowInitializer.cpp \
     $$PWD/SignalProcessor.cpp \
+    $$PWD/FlowAPPSettings.cpp \
 
 FORMS += \
 #    $$PWD/PluginManageDialog.ui \

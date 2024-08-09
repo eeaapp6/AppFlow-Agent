@@ -3,6 +3,7 @@
 #include "CudeInfoWidget.h"
 #include "CylinderInfoWidget.h"
 #include "SphereInfoWidget.h"
+#include "BoolInfoWidget.h"
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
@@ -12,6 +13,8 @@
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
 
 namespace GUI
 {
@@ -25,6 +28,8 @@ namespace GUI
             QString text = tr("Delete %1").arg(_obj->getDataObjectName());
             _ui->label_Name->setText(text);
         }
+
+        setWindowTitle(tr("Geometry Delete"));
     }
 
     GeometryDeleteDialog::~GeometryDeleteDialog()
@@ -37,6 +42,8 @@ namespace GUI
         if (_obj == nullptr)return;
         Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
         if (geometryData == nullptr) return;
+        auto meshSizeManager = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
+        if (meshSizeManager == nullptr)return;
 
         //判断删除的数据是否是当前界面
         GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
@@ -75,6 +82,16 @@ namespace GUI
             }
             break;
         }
+        case Interface::FITKGeoEnum::FGTBool:
+        case Interface::FITKGeoEnum::FGTImport:{
+            GUI::BoolInfoWidget* cudeWidget = dynamic_cast<GUI::BoolInfoWidget*>(propertyWidget->getCurrentWidget());
+            if (cudeWidget == nullptr)break;
+            if (cudeWidget->getCurrentGeoCommand()) {
+                objID = cudeWidget->getCurrentGeoCommand()->getDataObjectID();
+                widget = cudeWidget;
+            }
+            break;
+        }
         }
 
         //如果删除的数据是当前界面,删除当前界面
@@ -82,6 +99,20 @@ namespace GUI
             propertyWidget->init();
         }
 
+        //清除与当前几何相关的网格边界参数类
+        QList<int> meshSizeIds = {};
+        for (int i = 0; i < meshSizeManager->getDataCount(); i++) {
+            auto meshSize = meshSizeManager->getDataByIndex(i);
+            if(meshSize == nullptr)continue;
+            if (meshSize->getGeoModel() == _obj) {
+                meshSizeIds.append(meshSize->getDataObjectID());
+            }
+        }
+        for (int id : meshSizeIds) {
+            meshSizeManager->removeDataByID(id);
+        }
+
+        //清除几何对象
         geometryData->removeDataByID(_obj->getDataObjectID());
         _oper->execProfession();
         this->accept();

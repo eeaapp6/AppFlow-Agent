@@ -143,6 +143,14 @@ namespace GUI
          * @date 2024-05-30
          */
         void pannelAddAction(SARibbonPannel* pannel, QAction* action, SARibbonPannelItem::RowProportion actionType = SARibbonPannelItem::Large);
+        /**
+         * @brief 查找action
+         * @param[i]  actionName     action名称
+         * @return QAction* action对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-05-30
+         */
+        QAction* getAction(const QString actionName);
 	private:
         QWidget* _currentWidget = nullptr;
         /**

@@ -25,46 +25,45 @@
 #include <QMessageBox>
 #include <QtMath>
 
-#define CylObjID Qt::UserRole
-
 namespace GUI {
 
     CylinderInfoWidget::CylinderInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :
         GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(true), _oper(oper)
     {
+        _ui = new Ui::CylinderInfoWidget();
+        _ui->setupUi(this);
+        switchCreateModel(true);
         init();
-
-        _ui->pushButton_CreateOrEdit->setText(tr("Create"));
-        _ui->groupBox_FaceGroups->hide();
     }
 
     CylinderInfoWidget::CylinderInfoWidget(Interface::FITKAbsGeoModelCylinder * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
         GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(false), _obj(obj), _oper(oper)
     {
+        _ui = new Ui::CylinderInfoWidget();
+        _ui->setupUi(this);
+        switchCreateModel(false);
         init();
-
-        _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
-        _ui->lineEdit_Name->setEnabled(false);
     }
 
     CylinderInfoWidget::~CylinderInfoWidget()
     {
-        clearTableWidget();
+        if (_faceGroupWidget) {
+            delete _faceGroupWidget;
+            _faceGroupWidget = nullptr;
+        }
 
-        if (_ui)delete _ui;
+        if (_ui) {
+            delete _ui;
+            _ui = nullptr;
+        }
     }
 
     void CylinderInfoWidget::init()
     {
         Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
         if (geometryData == nullptr) return;
-
-        _ui = new Ui::CylinderInfoWidget();
-        _ui->setupUi(this);
-
-        initTableWidget();
 
         QString name = "";
         if (_isCreate) {
@@ -92,52 +91,7 @@ namespace GUI {
 
     void CylinderInfoWidget::setFaceGroupValue(int rowIndex, QList<int> facesId)
     {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-
-        CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(rowIndex, 0));
-        if (item == nullptr)return;
-        auto obj = commanger->getDataByID(item->data(CylObjID).toInt());
-        if (obj == nullptr)return;
-
-        //重新设置面id
-        QString name = obj->getDataObjectName();
-        obj->setMember(facesId);
-        if (facesId.size() == 0) {
-            name += tr("(empty)");
-        }
-        else {
-            name += tr("(%1 faces)").arg(facesId.size());
-        }
-        item->setName(name);
-
-        //处理其他模块
-        for (int faceId : facesId) {
-            for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-                if (i == rowIndex)continue;
-                CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-                if (otherItem == nullptr)continue;
-                auto otherObj = commanger->getDataByID(otherItem->data(CylObjID).toInt());
-                if (otherObj == nullptr)continue;
-                QList<int> ids = otherObj->getMember();
-
-                //如果已经包含该id,移除该id，并重新设置名称
-                if (ids.contains(faceId)) {
-                    ids.removeOne(faceId);
-
-                    QString otherName = otherObj->getDataObjectName();
-                    otherObj->setMember(ids);
-                    if (ids.size() == 0) {
-                        otherName += tr("(empty)");
-                    }
-                    else {
-                        otherName += tr("(%1 faces)").arg(ids.size());
-                    }
-                    otherItem->setName(otherName);
-                }
-            }
-        }
+        _faceGroupWidget->setFaceGroupValue(rowIndex, facesId);
     }
 
     Interface::FITKAbsGeoCommand * CylinderInfoWidget::getCurrentGeoCommand()
@@ -148,7 +102,7 @@ namespace GUI {
     void CylinderInfoWidget::closeEvent(QCloseEvent * event)
     {
         GeometryWidgetBase::closeEvent(event);
-        clearGraphHight();
+        _faceGroupWidget->clearGraphHight();
     }
 
     void CylinderInfoWidget::on_pushButton_OriginPoint_clicked()
@@ -193,10 +147,7 @@ namespace GUI {
             geometryData->appendDataObj(_obj);
 
             //切换为编辑模式
-            _ui->groupBox_FaceGroups->show();
-            _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
-            _ui->lineEdit_Name->setEnabled(false);
-            _isCreate = false;
+            switchCreateModel(false);
         }
         else {
             if (_obj == nullptr)return;
@@ -208,197 +159,6 @@ namespace GUI {
             _oper->setArgs("objID", _obj->getDataObjectID());
             _oper->execProfession();
         }
-    }
-
-    void CylinderInfoWidget::on_pushButton_Clear_clicked()
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-            if (widget == nullptr)return;
-            commanger->removeDataByID(widget->data(CylObjID).toInt());
-        }
-
-        clearTableWidget();
-        clearGraphHight();
-    }
-
-    void CylinderInfoWidget::on_pushButton_Add_clicked()
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-
-        int rowNum = _ui->tableWidget->rowCount();
-        _ui->tableWidget->setRowCount(rowNum + 1);
-
-        QString group = commanger->checkName(tr("Group-1"));
-        QString name = group + tr("(empty)");
-
-        //创建面组对象
-        Interface::FITKGeoComponent* geoCom = new Interface::FITKGeoComponent(Interface::FITKModelEnum::FITKModelSetType::FMSSurface);
-        geoCom->setDataObjectName(group);
-        commanger->appendDataObj(geoCom);
-
-        CompFaceGroupWidget* widget = new CompFaceGroupWidget(_ui->tableWidget);
-        widget->setName(name);
-        widget->setData(CylObjID, geoCom->getDataObjectID());
-        _ui->tableWidget->setCellWidget(rowNum, 0, widget);
-
-        connect(widget, SIGNAL(sigEditNameStart()), this, SLOT(slotEditNameStart()));
-        connect(widget, SIGNAL(sigEditNameFinish()), this, SLOT(slotEditNameFinish()));
-        connect(widget, SIGNAL(sigOkClicked()), this, SLOT(slotFaceWidgetOkClicked()));
-        connect(widget, SIGNAL(sigCancelClicked()), this, SLOT(slotFaceWidgetCancelClicked()));
-        connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
-
-        //更新位置
-        updateFaceWidgetCurrentPos();
-    }
-
-    void CylinderInfoWidget::slotCellTableClicked(int row, int column)
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(row, column));
-        if (widget == nullptr)return;
-        auto obj = commanger->getDataByID(widget->data(CylObjID).toInt());
-        if (obj == nullptr)return;
-
-        if (_oper) {
-            setAllFaceGroupSelect(false);
-            widget->setSelect(true);
-
-            clearGraphHight();
-
-            //执行操作器
-            _oper->setArgs("objID", _obj->getDataObjectID());
-            _oper->setArgs("faceIDs", QVariant::fromValue(obj->getMember()));
-            _oper->eventProcess(1);
-        }
-    }
-
-    void CylinderInfoWidget::slotEditNameStart()
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
-        if (widget == nullptr) return;
-
-        auto obj = commanger->getDataByID(widget->data(CylObjID).toInt());
-        if (obj == nullptr)return;
-        widget->setName(obj->getDataObjectName());
-    }
-
-    void CylinderInfoWidget::slotEditNameFinish()
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
-        if (widget == nullptr) return;
-        auto obj = commanger->getDataByID(widget->data(CylObjID).toInt());
-        if (obj == nullptr)return;
-        int objID = obj->getDataObjectID();
-        QString name = "";
-        //判断新名称是否存在
-        if (commanger->getDataByName(widget->getName())) {
-            name = obj->getDataObjectName();
-        }
-        else {
-            name = widget->getName();
-        }
-
-        //设置控件名称
-        obj->setDataObjectName(name);
-        if (obj->getMember().size() == 0) {
-            name += tr("(empty)");
-        }
-        else {
-            name += tr("(%1 faces)").arg(obj->getMember().size());
-        }
-        widget->setName(name);
-
-        //更新网格边界对象对应的名称
-        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
-        if (treeOper == nullptr) return;
-        auto meshSizeManger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
-        for (int i = 0; i < meshSizeManger->getDataCount(); i++) {
-            auto meshSizeObj = meshSizeManger->getDataByIndex(i);
-            if (meshSizeObj == nullptr)continue;
-            if (meshSizeObj->getGeoGroupComponentId() == objID) {
-                QString meshSizeNewName = _obj->getDataObjectName() + "." + obj->getDataObjectName();
-                meshSizeObj->setDataObjectName(meshSizeNewName);
-                treeOper->updateTree();
-                break;
-            }
-        }
-    }
-
-    void CylinderInfoWidget::slotFaceWidgetOkClicked()
-    {
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
-        if (widget == nullptr) return;
-        //执行选择结束事件
-        if (_oper) {
-            _oper->setArgs("curRow", widget->getCurrentPos().first);
-            _oper->eventProcess(2);
-            widget->setSelect(false);
-        }
-
-        _ui->tableWidget->setCurrentCell(-1, -1);
-    }
-
-    void CylinderInfoWidget::slotFaceWidgetCancelClicked()
-    {
-        int currentRow = _ui->tableWidget->currentRow();
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(currentRow, 0));
-        if (widget == nullptr) return;
-
-        widget->setSelect(false);
-        //清除高亮
-        clearGraphHight();
-
-        _ui->tableWidget->setCurrentCell(-1, -1);
-    }
-
-    void CylinderInfoWidget::slotFaceWidgetDeleteClicked()
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
-        if (widget == nullptr) return;
-
-        int objID = widget->data(CylObjID).toInt();
-        commanger->removeDataByID(objID);
-        _ui->tableWidget->removeRow(widget->getCurrentPos().first);
-
-        //更新界面中存储的位置
-        updateFaceWidgetCurrentPos();
-        //清除高亮
-        clearGraphHight();
-
-        //判断当前面组是否被网格边界参数所使用，被使用移除对应的网格边界参数对象
-        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
-        if (treeOper == nullptr) return;
-        auto meshSizeManger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
-        for (int i = 0; i < meshSizeManger->getDataCount(); i++) {
-            auto meshSizeObj = meshSizeManger->getDataByIndex(i);
-            if (meshSizeObj == nullptr)continue;
-            if (meshSizeObj->getGeoGroupComponentId() == objID) {
-                meshSizeManger->removeDataByID(meshSizeObj->getDataObjectID());
-                treeOper->updateTree();
-                break;
-            }
-        }
-
-        _ui->tableWidget->setCurrentCell(-1, -1);
     }
 
     bool CylinderInfoWidget::checkValue()
@@ -446,35 +206,7 @@ namespace GUI {
         double length = _obj->getLength();
         _ui->lineEdit_Length->setText(QString::number(length));
 
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()-> getGeoComponentManager();
-        if (commanger == nullptr)return;
-        _ui->tableWidget->setRowCount(commanger->getDataCount());
-        for (int i = 0; i < commanger->getDataCount(); i++) {
-            Interface::FITKGeoComponent* geoCom = dynamic_cast<Interface::FITKGeoComponent*>(commanger->getDataByIndex(i));
-            if (geoCom == nullptr)continue;
-            QList<int> ids = geoCom->getMember();
-            QString name = geoCom->getDataObjectName();
-
-            CompFaceGroupWidget* item = new CompFaceGroupWidget(_ui->tableWidget);
-            _ui->tableWidget->setCellWidget(i, 0, item);
-            if (ids.size() == 0) {
-                name += tr("(empty)");
-            }
-            else {
-                name += tr("(%1 faces)").arg(ids.size());
-            }
-            item->setName(name);
-            item->setData(CylObjID, geoCom->getDataObjectID());
-            item->setCurrentPos(i, 0);
-
-            connect(item, SIGNAL(sigEditNameStart()), this, SLOT(slotEditNameStart()));
-            connect(item, SIGNAL(sigEditNameFinish()), this, SLOT(slotEditNameFinish()));
-            connect(item, SIGNAL(sigOkClicked()), this, SLOT(slotFaceWidgetOkClicked()));
-            connect(item, SIGNAL(sigCancelClicked()), this, SLOT(slotFaceWidgetCancelClicked()));
-            connect(item, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
-        }
-        updateFaceWidgetCurrentPos();
+        _faceGroupWidget->setDataToWidget();
     }
 
     void CylinderInfoWidget::getDataFormWidget()
@@ -500,91 +232,20 @@ namespace GUI {
         _obj->setLength(length);
     }
 
-    //void CylinderInfoWidget::updateTableTitle()
-    //{
-    //    if (_obj == nullptr)return;
-    //    Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-    //    if (commanger == nullptr)return;
-
-    //    //计算剩余面
-    //    QList<int> allPoint = {};
-    //    for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-    //        CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-    //        if (otherItem == nullptr)continue;
-    //        auto otherObj = commanger->getDataByID(otherItem->data(CylObjID).toInt());
-    //        if (otherObj == nullptr)continue;
-    //        QList<int> ids = otherObj->getMember();
-    //        allPoint.append(ids);
-    //    }
-    //    QStringList header;
-    //    header << tr("Default(%1 faces)").arg(3 - allPoint.size());
-    //    _ui->tableWidget->setHorizontalHeaderLabels(header);
-    //}
-
-    void CylinderInfoWidget::initTableWidget()
+    void CylinderInfoWidget::switchCreateModel(bool isCreate)
     {
-        _ui->tableWidget->setRowCount(0);
-        _ui->tableWidget->setColumnCount(1);
-
-        _ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-        //充满表格
-        _ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
-        //设置只能单选
-        _ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-        //隐藏行表头
-        _ui->tableWidget->verticalHeader()->setVisible(false);
-        //隐藏列表头
-        _ui->tableWidget->horizontalHeader()->setVisible(false);
-
-        connect(_ui->tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(slotCellTableClicked(int, int)));
-    }
-
-    void CylinderInfoWidget::setAllFaceGroupSelect(bool type)
-    {
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-            if (widget == nullptr)return;
-            widget->setSelect(false);
+        if (isCreate == true) {
+            _ui->pushButton_CreateOrEdit->setText(tr("Create"));
+            _isCreate = true;
         }
-    }
-
-    void CylinderInfoWidget::updateFaceWidgetCurrentPos()
-    {
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-            if (widget == nullptr)return;
-            widget->setCurrentPos(i, 0);
+        else
+        {
+            //切换为编辑模式
+            _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
+            _faceGroupWidget = new CompFaceGroupWidget(this, _obj, _oper);
+            _ui->verticalLayout_FaceGroup->addWidget(_faceGroupWidget);
+            _ui->lineEdit_Name->setEnabled(false);
+            _isCreate = false;
         }
-    }
-
-    void CylinderInfoWidget::clearGraphHight()
-    {
-        //退出选择模式
-        GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
-        if (pickD == nullptr) return;
-        //拾取信息设置
-        GUI::GUIPickInfoStru pinfo;
-        pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJNone;
-        pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMNone;
-        GUI::GUIPickInfo::SetPickInfo(pinfo);
-        pickD->clearPickedData();
-
-        //刷新渲染窗口
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-        graphOper->reRender();
-    }
-
-    void CylinderInfoWidget::clearTableWidget()
-    {
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            QWidget* widget = _ui->tableWidget->cellWidget(i, 0);
-            if (widget == nullptr)continue;
-            delete widget;
-            widget = nullptr;
-        }
-
-        _ui->tableWidget->clear();
-        _ui->tableWidget->setRowCount(0);
     }
 }

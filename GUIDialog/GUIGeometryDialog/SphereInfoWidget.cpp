@@ -25,44 +25,45 @@
 
 #include <QMessageBox>
 
-#define SphereObjID Qt::UserRole
-
 namespace GUI {
 
     SphereInfoWidget::SphereInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :
         GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(true), _oper(oper)
     {
+        _ui = new Ui::SphereInfoWidget();
+        _ui->setupUi(this);
+        switchCreateModel(true);
         init();
-
-        _ui->pushButton_CreateOrEdit->setText(tr("Create"));
-        _ui->groupBox_FaceGroups->hide();
     }
 
     SphereInfoWidget::SphereInfoWidget(Interface::FITKAbsGeoModelSphere * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
         GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
         _isCreate(false), _obj(obj), _oper(oper)
     {
+        _ui = new Ui::SphereInfoWidget();
+        _ui->setupUi(this);
+        switchCreateModel(false);
         init();
-
-        _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
-        _ui->lineEdit_Name->setEnabled(false);
     }
 
     SphereInfoWidget::~SphereInfoWidget()
     {
-        if (_ui)delete _ui;
+        if (_faceGroupWidget) {
+            delete _faceGroupWidget;
+            _faceGroupWidget = nullptr;
+        }
+
+        if (_ui) {
+            delete _ui;
+            _ui = nullptr;
+        }
     }
 
     void SphereInfoWidget::init()
     {
         Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
         if (geometryData == nullptr) return;
-
-        _ui = new Ui::SphereInfoWidget();
-        _ui->setupUi(this);
-
-        initTableWidget();
 
         QString name = "";
         if (_isCreate) {
@@ -86,52 +87,7 @@ namespace GUI {
 
     void SphereInfoWidget::setFaceGroupValue(int rowIndex, QList<int> facesId)
     {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-
-        CompFaceGroupWidget* item = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(rowIndex, 0));
-        if (item == nullptr)return;
-        auto obj = commanger->getDataByID(item->data(SphereObjID).toInt());
-        if (obj == nullptr)return;
-
-        //重新设置面id
-        QString name = obj->getDataObjectName();
-        obj->setMember(facesId);
-        if (facesId.size() == 0) {
-            name += tr("(empty)");
-        }
-        else {
-            name += tr("(%1 faces)").arg(facesId.size());
-        }
-        item->setName(name);
-
-        //处理其他模块
-        for (int faceId : facesId) {
-            for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-                if (i == rowIndex)continue;
-                CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-                if (otherItem == nullptr)continue;
-                auto otherObj = commanger->getDataByID(otherItem->data(SphereObjID).toInt());
-                if (otherObj == nullptr)continue;
-                QList<int> ids = otherObj->getMember();
-
-                //如果已经包含该id,移除该id，并重新设置名称
-                if (ids.contains(faceId)) {
-                    ids.removeOne(faceId);
-
-                    QString otherName = otherObj->getDataObjectName();
-                    otherObj->setMember(ids);
-                    if (ids.size() == 0) {
-                        otherName += tr("(empty)");
-                    }
-                    else {
-                        otherName += tr("(%1 faces)").arg(ids.size());
-                    }
-                    otherItem->setName(otherName);
-                }
-            }
-        }
+        _faceGroupWidget->setFaceGroupValue(rowIndex, facesId);
     }
 
     Interface::FITKAbsGeoCommand * SphereInfoWidget::getCurrentGeoCommand()
@@ -142,7 +98,7 @@ namespace GUI {
     void SphereInfoWidget::closeEvent(QCloseEvent * event)
     {
         GeometryWidgetBase::closeEvent(event);
-        clearGraphHight();
+        _faceGroupWidget->clearGraphHight();
     }
 
     void SphereInfoWidget::on_pushButton_CenterPoint_clicked()
@@ -187,10 +143,7 @@ namespace GUI {
             geometryData->appendDataObj(_obj);
 
             //模式切换
-            _ui->groupBox_FaceGroups->show();
-            _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
-            _ui->lineEdit_Name->setEnabled(false);
-            _isCreate = false;
+            switchCreateModel(false);
         }
         else {
             if (_obj == nullptr)return;
@@ -202,195 +155,6 @@ namespace GUI {
             _oper->setArgs("objID", _obj->getDataObjectID());
             _oper->execProfession();
         }
-    }
-
-    void SphereInfoWidget::on_pushButton_Clear_clicked()
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-            if (widget == nullptr)return;
-            commanger->removeDataByID(widget->data(SphereObjID).toInt());
-        }
-
-        clearTableWidget();
-        clearGraphHight();
-    }
-
-    void SphereInfoWidget::on_pushButton_Add_clicked()
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-
-        int rowNum = _ui->tableWidget->rowCount();
-        _ui->tableWidget->setRowCount(rowNum + 1);
-
-        QString group = commanger->checkName(tr("Group-1"));
-        QString name = group + tr("(empty)");
-
-        //创建面组对象
-        Interface::FITKGeoComponent* geoCom = new Interface::FITKGeoComponent(Interface::FITKModelEnum::FITKModelSetType::FMSSurface);
-        geoCom->setDataObjectName(group);
-        commanger->appendDataObj(geoCom);
-
-        CompFaceGroupWidget* widget = new CompFaceGroupWidget(_ui->tableWidget);
-        widget->setName(name);
-        widget->setData(SphereObjID, geoCom->getDataObjectID());
-        _ui->tableWidget->setCellWidget(rowNum, 0, widget);
-
-        connect(widget, SIGNAL(sigEditNameStart()), this, SLOT(slotEditNameStart()));
-        connect(widget, SIGNAL(sigEditNameFinish()), this, SLOT(slotEditNameFinish()));
-        connect(widget, SIGNAL(sigOkClicked()), this, SLOT(slotFaceWidgetOkClicked()));
-        connect(widget, SIGNAL(sigCancelClicked()), this, SLOT(slotFaceWidgetCancelClicked()));
-        connect(widget, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
-
-        //更新位置
-        updateFaceWidgetCurrentPos();
-    }
-
-    void SphereInfoWidget::slotCellTableClicked(int row, int column)
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(row, column));
-        if (widget == nullptr)return;
-        auto obj = commanger->getDataByID(widget->data(SphereObjID).toInt());
-        if (obj == nullptr)return;
-
-        if (_oper) {
-            setAllFaceGroupSelect(false);
-            widget->setSelect(true);
-            clearGraphHight();
-            //执行操作器
-            _oper->setArgs("objID", _obj->getDataObjectID());
-            _oper->setArgs("faceIDs", QVariant::fromValue(obj->getMember()));
-            _oper->eventProcess(1);
-        }
-    }
-
-    void SphereInfoWidget::slotEditNameStart()
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
-        if (widget == nullptr) return;
-
-        auto obj = commanger->getDataByID(widget->data(SphereObjID).toInt());
-        if (obj == nullptr)return;
-        widget->setName(obj->getDataObjectName());
-    }
-
-    void SphereInfoWidget::slotEditNameFinish()
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
-        if (widget == nullptr) return;
-        auto obj = commanger->getDataByID(widget->data(SphereObjID).toInt());
-        if (obj == nullptr)return;
-        int objID = obj->getDataObjectID();
-        QString name = "";
-        //判断新名称是否存在
-        if (commanger->getDataByName(widget->getName())) {
-            name = obj->getDataObjectName();
-        }
-        else {
-            name = widget->getName();
-        }
-
-        //设置控件名称
-        obj->setDataObjectName(name);
-        if (obj->getMember().size() == 0) {
-            name += tr("(empty)");
-        }
-        else {
-            name += tr("(%1 faces)").arg(obj->getMember().size());
-        }
-        widget->setName(name);
-
-        //更新网格边界对象对应的名称
-        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
-        if (treeOper == nullptr) return;
-        auto meshSizeManger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
-        for (int i = 0; i < meshSizeManger->getDataCount(); i++) {
-            auto meshSizeObj = meshSizeManger->getDataByIndex(i);
-            if (meshSizeObj == nullptr)continue;
-            if (meshSizeObj->getGeoGroupComponentId() == objID) {
-                QString meshSizeNewName = _obj->getDataObjectName() + "." + obj->getDataObjectName();
-                meshSizeObj->setDataObjectName(meshSizeNewName);
-                treeOper->updateTree();
-                break;
-            }
-        }
-    }
-
-    void SphereInfoWidget::slotFaceWidgetOkClicked()
-    {
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
-        if (widget == nullptr) return;
-        //执行选择结束事件
-        if (_oper) {
-            _oper->setArgs("curRow", widget->getCurrentPos().first);
-            _oper->eventProcess(2);
-            widget->setSelect(false);
-        }
-
-        _ui->tableWidget->setCurrentCell(-1, -1);
-    }
-
-    void SphereInfoWidget::slotFaceWidgetCancelClicked()
-    {
-        int currentRow = _ui->tableWidget->currentRow();
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(currentRow, 0));
-        if (widget == nullptr) return;
-
-        widget->setSelect(false);
-        //清除高亮
-        clearGraphHight();
-
-        _ui->tableWidget->setCurrentCell(-1, -1);
-    }
-
-    void SphereInfoWidget::slotFaceWidgetDeleteClicked()
-    {
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-        CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(sender());
-        if (widget == nullptr) return;
-
-        int objID = widget->data(SphereObjID).toInt();
-        commanger->removeDataByID(objID);
-        _ui->tableWidget->removeRow(widget->getCurrentPos().first);
-
-        //更新界面中存储的位置
-        updateFaceWidgetCurrentPos();
-        //清除高亮
-        clearGraphHight();
-
-        //判断当前面组是否被网格边界参数所使用，被使用移除对应的网格边界参数对象
-        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
-        if (treeOper == nullptr) return;
-        auto meshSizeManger = Interface::FITKMeshGenInterface::getInstance()->getGeometryMeshSizeManager();
-        for (int i = 0; i < meshSizeManger->getDataCount(); i++) {
-            auto meshSizeObj = meshSizeManger->getDataByIndex(i);
-            if (meshSizeObj == nullptr)continue;
-            if (meshSizeObj->getGeoGroupComponentId() == objID) {
-                meshSizeManger->removeDataByID(meshSizeObj->getDataObjectID());
-                treeOper->updateTree();
-                break;
-            }
-        }
-
-        _ui->tableWidget->setCurrentCell(-1, -1);
     }
 
     bool SphereInfoWidget::checkValue()
@@ -411,35 +175,7 @@ namespace GUI {
         double radius = _obj->getRadius();
         _ui->lineEdit_Radius->setText(QString::number(radius));
 
-        if (_obj == nullptr)return;
-        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-        if (commanger == nullptr)return;
-        _ui->tableWidget->setRowCount(commanger->getDataCount());
-        for (int i = 0; i < commanger->getDataCount(); i++) {
-            Interface::FITKGeoComponent* geoCom = dynamic_cast<Interface::FITKGeoComponent*>(commanger->getDataByIndex(i));
-            if (geoCom == nullptr)continue;
-            QList<int> ids = geoCom->getMember();
-            QString name = geoCom->getDataObjectName();
-
-            CompFaceGroupWidget* item = new CompFaceGroupWidget(_ui->tableWidget);
-            _ui->tableWidget->setCellWidget(i, 0, item);
-            if (ids.size() == 0) {
-                name += tr("(empty)");
-            }
-            else {
-                name += tr("(%1 faces)").arg(ids.size());
-            }
-            item->setName(name);
-            item->setData(SphereObjID, geoCom->getDataObjectID());
-            item->setCurrentPos(i, 0);
-
-            connect(item, SIGNAL(sigEditNameStart()), this, SLOT(slotEditNameStart()));
-            connect(item, SIGNAL(sigEditNameFinish()), this, SLOT(slotEditNameFinish()));
-            connect(item, SIGNAL(sigOkClicked()), this, SLOT(slotFaceWidgetOkClicked()));
-            connect(item, SIGNAL(sigCancelClicked()), this, SLOT(slotFaceWidgetCancelClicked()));
-            connect(item, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
-        }
-        updateFaceWidgetCurrentPos();
+        _faceGroupWidget->setDataToWidget();
     }
 
     void SphereInfoWidget::getDataFormWidget()
@@ -457,89 +193,20 @@ namespace GUI {
         _obj->setRadius(radius);
     }
 
-    //void SphereInfoWidget::updateTableTitle()
-    //{
-    //    if (_obj == nullptr)return;
-    //    Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
-    //    if (commanger == nullptr)return;
-
-    //    //计算剩余面
-    //    QList<int> allPoint = {};
-    //    for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-    //        CompFaceGroupWidget* otherItem = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-    //        if (otherItem == nullptr)continue;
-    //        auto otherObj = commanger->getDataByID(otherItem->data(SphereObjID).toInt());
-    //        if (otherObj == nullptr)continue;
-    //        QList<int> ids = otherObj->getMember();
-    //        allPoint.append(ids);
-    //    }
-    //    QStringList header;
-    //    header << tr("Default(%1 faces)").arg(1 - allPoint.size());
-    //    _ui->tableWidget->setHorizontalHeaderLabels(header);
-    //}
-
-    void SphereInfoWidget::initTableWidget()
+    void SphereInfoWidget::switchCreateModel(bool isCreate)
     {
-        _ui->tableWidget->setRowCount(0);
-        _ui->tableWidget->setColumnCount(1);
-
-        _ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-        //充满表格
-        _ui->tableWidget->horizontalHeader()->setStretchLastSection(true);
-        //设置只能单选
-        _ui->tableWidget->setSelectionMode(QAbstractItemView::SingleSelection);
-        //隐藏行表头
-        _ui->tableWidget->verticalHeader()->setVisible(false);
-        //隐藏列表头
-        _ui->tableWidget->horizontalHeader()->setVisible(false);
-
-        connect(_ui->tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(slotCellTableClicked(int, int)));
-    }
-    void SphereInfoWidget::setAllFaceGroupSelect(bool type)
-    {
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-            if (widget == nullptr)return;
-            widget->setSelect(false);
+        if (isCreate == true) {
+            _ui->pushButton_CreateOrEdit->setText(tr("Create"));
+            _isCreate = true;
         }
-    }
-
-    void SphereInfoWidget::updateFaceWidgetCurrentPos()
-    {
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            CompFaceGroupWidget* widget = dynamic_cast<CompFaceGroupWidget*>(_ui->tableWidget->cellWidget(i, 0));
-            if (widget == nullptr)return;
-            widget->setCurrentPos(i, 0);
+        else
+        {
+            //切换为编辑模式
+            _ui->pushButton_CreateOrEdit->setText(tr("Edit"));
+            _faceGroupWidget = new CompFaceGroupWidget(this, _obj, _oper);
+            _ui->verticalLayout_FaceGroup->addWidget(_faceGroupWidget);
+            _ui->lineEdit_Name->setEnabled(false);
+            _isCreate = false;
         }
-    }
-    void SphereInfoWidget::clearGraphHight()
-    {
-        //退出选择模式
-        GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
-        if (pickD == nullptr) return;
-        //拾取信息设置
-        GUI::GUIPickInfoStru pinfo;
-        pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJNone;
-        pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMNone;
-        GUI::GUIPickInfo::SetPickInfo(pinfo);
-        pickD->clearPickedData();
-
-        //刷新渲染窗口
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-        graphOper->reRender();
-    }
-
-    void SphereInfoWidget::clearTableWidget()
-    {
-        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
-            QWidget* widget = _ui->tableWidget->cellWidget(i, 0);
-            if (widget == nullptr)continue;
-            delete widget;
-            widget = nullptr;
-        }
-
-        _ui->tableWidget->clear();
-        _ui->tableWidget->setRowCount(0);
     }
 }

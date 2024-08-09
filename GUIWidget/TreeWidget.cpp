@@ -1,4 +1,5 @@
 ﻿#include "TreeWidget.h"
+#include "CompTreeItem.h"
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
@@ -16,6 +17,8 @@
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractGeometryMeshSizeGenerator.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredMeshVTK.h"
 
 #include <QMenu>
 #include <QStandardItemModel>
@@ -55,10 +58,22 @@ namespace GUI{
         //展开全部子集
         setItemsExpandable(true);		
         expandAll();
+
+        QList<CompTreeItem*> compWidgets = this->findChildren<CompTreeItem*>();
+        for (auto widget : compWidgets) {
+            if (widget == nullptr)continue;
+            connect(widget, SIGNAL(sigIconButtonClicked()), this, SLOT(soltIconButtonClicked()));
+        }
     }
 
     void TreeWidget::onItemClicked(QTreeWidgetItem * item, int column)
     {
+        EventOper::TreeEventOperator* treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return;
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+		graphOper->clearHighlight();
+
         if (item == nullptr)return;
         int objID = item->data(1, 0).toInt();
         GUI::MainTreeEnum treeType = item->data(2, 0).value<GUI::MainTreeEnum>();
@@ -71,11 +86,17 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_GeometyBoxItem:name = "actionGeoCubeEdit"; break;
         case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:name = "actionGeoCylinderEdit"; break;
         case GUI::MainTreeEnum::MainTree_GeometySphereItem:name = "actionGeoSphereEdit"; break;
+        case GUI::MainTreeEnum::MainTree_GeometyBoolOrImportItem:name = "actionGeoBoolOrImportEdit"; break;
         case GUI::MainTreeEnum::MainTree_Mesh: break;
         case GUI::MainTreeEnum::MainTree_MeshBase: name = "actionMeshBaseEdit"; break;
         case GUI::MainTreeEnum::MainTree_MeshLocal: name = "actionMeshLocalSelectGroup"; break;
         case GUI::MainTreeEnum::MainTree_MeshLocalItem:name = "actionMeshLocalEdit"; break;
         case GUI::MainTreeEnum::MainTree_MeshPoint:name = "actionMeshPointEdit"; break;
+        case GUI::MainTreeEnum::MainTree_MeshBoundary:break;
+        case GUI::MainTreeEnum::MainTree_MeshBoundaryItem: {
+            graphOper->highlight(objID);
+            break;
+        }
         }
 
         if (!name.isEmpty()) {
@@ -88,8 +109,6 @@ namespace GUI{
             acOper->actionTriggered();
         }
         else {
-            auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
-            if (treeOper == nullptr) return;
             treeOper->moveProcessToStep(0);
         }
     }
@@ -116,21 +135,26 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_Geomety: break;
         case GUI::MainTreeEnum::MainTree_GeometyBoxItem: {
             //addMenuActions(menu, "actionRenameCube", "Cube rename"); 
-            addMenuActions(menu, "actionGeoCubeDelete", "Cude delete"); 
+            addMenuActions(menu, "actionGeoCubeDelete", tr("Delete")); 
             break; 
         }
         case GUI::MainTreeEnum::MainTree_GeometyCylinderItem: {
             //addMenuActions(menu, "actionRenameCylinder", "Cylinder rename");
-            addMenuActions(menu, "actionGeoCylinderDelete", "Cylinder delete");
+            addMenuActions(menu, "actionGeoCylinderDelete", tr("Delete"));
             break;
         }
         case GUI::MainTreeEnum::MainTree_GeometySphereItem: {
             //addMenuActions(menu, "actionRenameSphere", "Sphere rename");
-            addMenuActions(menu, "actionGeoSphereDelete", "Sphere delete");
+            addMenuActions(menu, "actionGeoSphereDelete", tr("Delete"));
+            break;
+        }
+        case GUI::MainTreeEnum::MainTree_GeometyBoolOrImportItem: {
+            //addMenuActions(menu, "actionRenameSphere", "Sphere rename");
+            addMenuActions(menu, "actionGeoBoolOrImportDelete", tr("Delete"));
             break;
         }
         case GUI::MainTreeEnum::MainTree_Mesh: {
-            addMenuActions(menu, "actionClearMesh", "Clear mesh");
+            addMenuActions(menu, "actionClearMesh", tr("Clear mesh"));
             break;
         }
         case GUI::MainTreeEnum::MainTree_MeshBase: break;
@@ -138,7 +162,7 @@ namespace GUI{
             break;
         }
         case GUI::MainTreeEnum::MainTree_MeshLocalItem: {
-            addMenuActions(menu, "actionMeshLocalDelete", "Delete face group");
+            addMenuActions(menu, "actionMeshLocalDelete", tr("Delete"));
             break;
         }
         }
@@ -164,6 +188,66 @@ namespace GUI{
         acOper->actionTriggered();
     }
 
+    void TreeWidget::soltIconButtonClicked()
+    {
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+
+        CompTreeItem* senderWidget = dynamic_cast<CompTreeItem*>(this->sender());
+        if (senderWidget == nullptr)return;
+        QTreeWidgetItem* item = senderWidget->getTreeItem();
+        if (item == nullptr)return;
+        int objID = item->data(1, 0).toInt();
+        GUI::MainTreeEnum type = item->data(2, 0).value<GUI::MainTreeEnum>();
+
+        switch (type){
+        case GUI::MainTreeEnum::MainTree_GeometyBoxItem:
+        case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:
+        case GUI::MainTreeEnum::MainTree_GeometySphereItem:
+        case GUI::MainTreeEnum::MainTree_GeometyBoolOrImportItem:
+        {
+            //几何显示隐藏控制
+            Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
+            if (geometryData == nullptr) break;
+            auto geoObj = geometryData->getDataByID(objID);
+            if(geoObj == nullptr)break;
+            if (geoObj->isEnable()){
+                geoObj->enable(false);
+                senderWidget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+            }
+            else {
+                geoObj->enable(true);
+                senderWidget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
+            }
+            break;
+        }
+        case GUI::MainTreeEnum::MainTree_MeshBoundaryItem:
+        {
+            //边界显示隐藏控制
+            auto globalData = FITKAPP->getGlobalData();
+            if (globalData == nullptr)break;
+            Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
+            if (meshData == nullptr)break;
+            Interface::FITKBoundaryMeshVTKManager* boundMeshManager = meshData->getBoundaryMeshManager();
+            if (boundMeshManager == nullptr)break;
+            Interface::FITKBoundaryMeshVTK* boundMesh = boundMeshManager->getDataByID(objID);
+            if (boundMesh == nullptr)break;
+            if (boundMesh->FITKAbstractNDataObject::isEnable()) {
+                boundMesh->FITKAbstractNDataObject::enable(false);
+                senderWidget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+            }
+            else {
+                boundMesh->FITKAbstractNDataObject::enable(true);
+                senderWidget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
+            }
+            break;
+        }
+        }
+
+        graphOper->updateGraph(objID);
+        graphOper->reRender(true);
+    }
+
     void TreeWidget::updateGeometryItems()
     {
         Interface::FITKOFGeometryData* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKOFGeometryData>();
@@ -178,7 +262,7 @@ namespace GUI{
             if (geometryObj == nullptr)continue;
 
             QTreeWidgetItem* item = new QTreeWidgetItem();
-            item->setText(0, geometryObj->getDataObjectName());
+            //item->setText(0, geometryObj->getDataObjectName());
             item->setData(1, 0, geometryObj->getDataObjectID());
 
             GUI::MainTreeEnum treeType = GUI::MainTreeEnum::MainTree_None;
@@ -188,10 +272,21 @@ namespace GUI{
             case Interface::FITKGeoEnum::FGTBox:  treeType = GUI::MainTreeEnum::MainTree_GeometyBoxItem; break;
             case Interface::FITKGeoEnum::FGTCylinder:treeType = GUI::MainTreeEnum::MainTree_GeometyCylinderItem; break;
             case Interface::FITKGeoEnum::FGTSphere:treeType = GUI::MainTreeEnum::MainTree_GeometySphereItem;  break;
+            case Interface::FITKGeoEnum::FGTBool:treeType = GUI::MainTreeEnum::MainTree_GeometyBoolOrImportItem;  break;
+            case Interface::FITKGeoEnum::FGTImport:treeType = GUI::MainTreeEnum::MainTree_GeometyBoolOrImportItem;  break;
             }
             item->setData(2, 0, QVariant::fromValue(treeType));
-
             geometryItem->addChild(item);
+
+            CompTreeItem* widget = new CompTreeItem(item, this);
+            if (geometryObj->isEnable()) {
+                widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
+            }
+            else {
+                widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+            }
+            widget->setText(geometryObj->getDataObjectName());
+            this->setItemWidget(item, 0, widget);
         }
     }
 
@@ -209,24 +304,31 @@ namespace GUI{
         meshBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshBase));
         meshItem->addChild(meshBaseItem);
 
-        //刷新local
-        updateLocalItems(meshItem);
+        QTreeWidgetItem* localBaseItem = new QTreeWidgetItem();
+        localBaseItem->setText(0, tr("Local"));
+        localBaseItem->setData(1, 0, -1);
+        localBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocal));
+        meshItem->addChild(localBaseItem);
 
         QTreeWidgetItem* pointBaseItem = new QTreeWidgetItem();
         pointBaseItem->setText(0, tr("Points"));
         pointBaseItem->setData(1, 0, -1);
         pointBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshPoint));
         meshItem->addChild(pointBaseItem);
+
+        QTreeWidgetItem* meshBoundItem = new QTreeWidgetItem();
+        meshBoundItem->setText(0, tr("Boundary"));
+        meshBoundItem->setData(1, 0, -1);
+        meshBoundItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshBoundary));
+        meshItem->addChild(meshBoundItem);
+
+        //update sub item
+        updateMeshLocalItems(localBaseItem);
+        updateMeshBoundaryItems(meshBoundItem);
     }
 
-    void TreeWidget::updateLocalItems(QTreeWidgetItem* parentItem)
+    void TreeWidget::updateMeshLocalItems(QTreeWidgetItem* parentItem)
     {
-        QTreeWidgetItem* localBaseItem = new QTreeWidgetItem();
-        localBaseItem->setText(0, tr("Local"));
-        localBaseItem->setData(1, 0, -1);
-        localBaseItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocal));
-        parentItem->addChild(localBaseItem);
-
         Interface::FITKMeshGenInterface* genInterface = Interface::FITKMeshGenInterface::getInstance();
         Interface::FITKAbstractGeometryMeshSizeGenerator* generator = genInterface->getGeometryMeshSizeGenerator();
         if (generator == nullptr)return;
@@ -235,13 +337,44 @@ namespace GUI{
 
         for (int i = 0; i < manger->getDataCount(); i++) {
             Interface::FITKGeometryMeshSize* geoMeshSize = manger->getDataByIndex(i);
-            if(geoMeshSize == nullptr)continue;
+            if (geoMeshSize == nullptr)continue;
 
             QTreeWidgetItem* item = new QTreeWidgetItem();
             item->setText(0, geoMeshSize->getDataObjectName());
             item->setData(1, 0, geoMeshSize->getDataObjectID());
             item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshLocalItem));
-            localBaseItem->addChild(item);
+            parentItem->addChild(item);
+        }
+    }
+
+    void TreeWidget::updateMeshBoundaryItems(QTreeWidgetItem * parentItem)
+    {
+        auto globalData = FITKAPP->getGlobalData();
+        if (globalData == nullptr)return;
+        Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
+        if (meshData == nullptr)return;
+        Interface::FITKBoundaryMeshVTKManager* boundMeshManager = meshData->getBoundaryMeshManager();
+        if (boundMeshManager == nullptr)return;
+
+        for (int i = 0; i < boundMeshManager->getDataCount(); i++) {
+            Interface::FITKBoundaryMeshVTK* boundMesh = boundMeshManager->getDataByIndex(i);
+            if (boundMesh == nullptr)continue;
+
+            QTreeWidgetItem* item = new QTreeWidgetItem();
+            item->setData(1, 0, boundMesh->getDataObjectID());
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshBoundaryItem));
+            parentItem->addChild(item);
+
+            CompTreeItem* widget = new CompTreeItem(item, this);
+            if (boundMesh->FITKAbstractNDataObject::isEnable()) {
+                widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
+            }
+            else {
+                widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+            }
+
+            widget->setText(boundMesh->getDataObjectName());
+            this->setItemWidget(item, 0, widget);
         }
     }
 

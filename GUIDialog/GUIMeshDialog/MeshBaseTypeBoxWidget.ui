@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>372</width>
-    <height>436</height>
+    <width>417</width>
+    <height>652</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -233,64 +233,64 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
-         <widget class="QLabel" name="label_X1">
-          <property name="text">
-           <string>X+</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="comboBox_X1"/>
-        </item>
-        <item row="1" column="0">
          <widget class="QLabel" name="label_X0">
           <property name="text">
            <string>X-</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="1">
+        <item row="0" column="1">
          <widget class="QComboBox" name="comboBox_X0"/>
         </item>
-        <item row="2" column="0">
-         <widget class="QLabel" name="label_Y1">
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_X1">
           <property name="text">
-           <string>Y+</string>
+           <string>X+</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="comboBox_Y1"/>
+        <item row="1" column="1">
+         <widget class="QComboBox" name="comboBox_X1"/>
         </item>
-        <item row="3" column="0">
+        <item row="2" column="0">
          <widget class="QLabel" name="label_Y0">
           <property name="text">
            <string>Y-</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="2" column="1">
          <widget class="QComboBox" name="comboBox_Y0"/>
         </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_Z1">
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_Y1">
           <property name="text">
-           <string>Z+</string>
+           <string>Y+</string>
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
-         <widget class="QComboBox" name="comboBox_Z1"/>
+        <item row="3" column="1">
+         <widget class="QComboBox" name="comboBox_Y1"/>
         </item>
-        <item row="5" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="label_Z0">
           <property name="text">
            <string>Z-</string>
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="4" column="1">
          <widget class="QComboBox" name="comboBox_Z0"/>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_Z1">
+          <property name="text">
+           <string>Z+</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QComboBox" name="comboBox_Z1"/>
         </item>
        </layout>
       </widget>

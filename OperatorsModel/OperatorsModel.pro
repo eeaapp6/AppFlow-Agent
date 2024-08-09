@@ -37,7 +37,8 @@ win32{
         -lFITKInterfaceMeshGen \
         -lFITKGeoCompOCC \
         -lFITKInterfaceModel \
-        -lFITKInterfaceGeometry
+        -lFITKInterfaceGeometry \
+        -lFITKWidget \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -62,7 +63,8 @@ win32{
         -lFITKInterfaceMeshGen\
         -lFITKGeoCompOCC \
         -lFITKInterfaceModel \
-        -lFITKInterfaceGeometry
+        -lFITKInterfaceGeometry \
+        -lFITKWidget \
 
     message("Windows OperatorsModel generated")
 }
@@ -97,7 +99,8 @@ unix{
         -lFITKInterfaceMeshGen \
         -lFITKGeoCompOCC \
         -lFITKInterfaceModel \
-        -lFITKInterfaceGeometry
+        -lFITKInterfaceGeometry \
+        -lFITKWidget \
         
     message("Linux OperatorsModel generated")
 }

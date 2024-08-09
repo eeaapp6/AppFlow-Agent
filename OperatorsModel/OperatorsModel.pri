@@ -12,6 +12,9 @@ HEADERS += \
     $$PWD/OperatorsNew.h \
     $$PWD/OperatorsOpen.h \
     $$PWD/OperatorsSave.h \
+    $$PWD/OperatorsImportManager.h \
+    $$PWD/OperatorsGeoBool.h \
+    $$PWD/OperatorsWorkingDir.h \
 
 
 SOURCES += \
@@ -27,5 +30,8 @@ SOURCES += \
     $$PWD/OperatorsNew.cpp \
     $$PWD/OperatorsOpen.cpp \
     $$PWD/OperatorsSave.cpp \
+    $$PWD/OperatorsImportManager.cpp \
+    $$PWD/OperatorsGeoBool.cpp \
+    $$PWD/OperatorsWorkingDir.cpp \
 
 FORMS += \

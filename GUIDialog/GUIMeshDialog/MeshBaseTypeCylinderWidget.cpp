@@ -19,15 +19,15 @@
 
 namespace GUI
 {
-	MeshBaseTypeCylinderWidget::MeshBaseTypeCylinderWidget(QWidget* parent) :
-		MeshBaseTypeWidgetBase(parent)
+    MeshBaseTypeCylinderWidget::MeshBaseTypeCylinderWidget(QWidget* parent) :
+        MeshBaseTypeWidgetBase(parent)
     {
         _ui = new Ui::MeshBaseTypeCylinderWidget();
         _ui->setupUi(this);
         _graphObj = new Interface::FITKRegionMeshSizeCylinder();
         init();
 
-		_ui->pushButton_2->hide();
+        _ui->pushButton_2->hide();
     }
 
     MeshBaseTypeCylinderWidget::~MeshBaseTypeCylinderWidget()
@@ -64,23 +64,23 @@ namespace GUI
         _ui->comboBox_Cylinder->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
         _ui->comboBox_Cylinder->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
 
-		connect(_ui->lineEdit_OriginPoint1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_OriginPoint2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_OriginPoint3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_AxisPoint1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_AxisPoint2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_AxisPoint3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Length, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Radius, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_RadFraction, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Division1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Division2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Division3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Grading1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->lineEdit_Grading2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
-		connect(_ui->comboBox_FirstDisk, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
-		connect(_ui->comboBox_SecondDisk, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
-		connect(_ui->comboBox_Cylinder, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_OriginPoint1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_OriginPoint2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_OriginPoint3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_AxisPoint1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_AxisPoint2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_AxisPoint3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Length, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Radius, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_RadFraction, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Division1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Division2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Division3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Grading1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Grading2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->comboBox_FirstDisk, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+        connect(_ui->comboBox_SecondDisk, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+        connect(_ui->comboBox_Cylinder, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
     }
 
     bool MeshBaseTypeCylinderWidget::checkValue()
@@ -111,7 +111,7 @@ namespace GUI
         Interface::FITKRegionMeshSizeCylinder* cylinderObj = dynamic_cast<Interface::FITKRegionMeshSizeCylinder*>(obj);
         if (cylinderObj == nullptr)return false;
 
-		this->blockSignals(true);
+        this->blockSignals(true);
 
         double origin[3] = { 0,0,0 };
         cylinderObj->getLocation(origin);
@@ -140,7 +140,7 @@ namespace GUI
         _ui->comboBox_SecondDisk->setCurrentIndex(_ui->comboBox_SecondDisk->findData(cylinderObj->getBoundary(1)));
         _ui->comboBox_Cylinder->setCurrentIndex(_ui->comboBox_Cylinder->findData(cylinderObj->getBoundary(2)));
 
-		this->blockSignals(false);
+        this->blockSignals(false);
         return true;
     }
 
@@ -174,10 +174,10 @@ namespace GUI
 
         auto type = _ui->comboBox_FirstDisk->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>();
         cylinderObj->insertBoundary(0, type);
-		type = _ui->comboBox_SecondDisk->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>();
-		cylinderObj->insertBoundary(1, type);
-		type = _ui->comboBox_Cylinder->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>();
-		cylinderObj->insertBoundary(2, type);
+        type = _ui->comboBox_SecondDisk->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>();
+        cylinderObj->insertBoundary(1, type);
+        type = _ui->comboBox_Cylinder->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>();
+        cylinderObj->insertBoundary(2, type);
         return true;
     }
 
@@ -189,8 +189,8 @@ namespace GUI
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return;
 
-		graphOper->updateGraph(_graphObj->getDataObjectID());
-		graphOper->reRender(true);
+        graphOper->updateGraph(_graphObj->getDataObjectID());
+        graphOper->reRender(true);
     }
 
     void MeshBaseTypeCylinderWidget::on_pushButton_AutoSize_clicked()
@@ -202,8 +202,10 @@ namespace GUI
         double maxPoint[3] = { -9e66, -9e66, -9e66 };
         geoManager->getBoundaryBox(minPoint, maxPoint);
 
-        double rate = qSqrt((maxPoint[0] * maxPoint[0] + maxPoint[1] * maxPoint[1] + maxPoint[2] * maxPoint[2])
-            - (minPoint[0] * minPoint[0] + minPoint[1] * minPoint[1] + minPoint[1] * minPoint[1]))*0.005;
+        double xCount = maxPoint[0] - minPoint[0];
+        double yCount = maxPoint[1] - minPoint[1];
+        double zCount = maxPoint[2] - minPoint[2];
+        double rate = qSqrt(xCount*xCount + yCount * yCount + zCount * zCount)*0.005;
 
         double resultMinPoint[3] = { 0,0,0 };
         resultMinPoint[0] = minPoint[0] - rate;
@@ -236,13 +238,13 @@ namespace GUI
         _ui->lineEdit_Length->setText(QString::number(length));
         _ui->lineEdit_Radius->setText(QString::number(redius));
 
-		if (_meshBaseWidget)_meshBaseWidget->saveValue();
+        if (_meshBaseWidget)_meshBaseWidget->saveValue();
         updateGeometryGraph();
     }
 
-	void MeshBaseTypeCylinderWidget::slotSaveValue()
-	{
-		_meshBaseWidget->saveValue();
-		updateGeometryGraph();
-	}
+    void MeshBaseTypeCylinderWidget::slotSaveValue()
+    {
+        _meshBaseWidget->saveValue();
+        updateGeometryGraph();
+    }
 }
