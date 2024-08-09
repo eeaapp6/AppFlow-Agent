@@ -1,6 +1,7 @@
 ﻿#include "MeshBaseTypeCylinderWidget.h"
 #include "ui_MeshBaseTypeCylinderWidget.h"
 #include "MeshBaseWidget.h"
+#include "CompBaseBoundary.h"
 
 #include "OperatorsInterface/GraphEventOperator.h"
 
@@ -16,6 +17,7 @@
 
 #include <QMessageBox>
 #include <QtMath>
+#include <QToolButton>
 
 namespace GUI
 {
@@ -78,9 +80,21 @@ namespace GUI
         connect(_ui->lineEdit_Division3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
         connect(_ui->lineEdit_Grading1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
         connect(_ui->lineEdit_Grading2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->label_FirstDisk, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->label_SecondDisk, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->label_Cylinder, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        _ui->label_FirstDisk->setPos(0);
+        _ui->label_SecondDisk->setPos(1);
+        _ui->label_Cylinder->setPos(2);
         connect(_ui->comboBox_FirstDisk, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
         connect(_ui->comboBox_SecondDisk, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
         connect(_ui->comboBox_Cylinder, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+        connect(_ui->comboBox_FirstDisk, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->comboBox_SecondDisk, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->comboBox_Cylinder, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        _ui->comboBox_FirstDisk->setPos(0);
+        _ui->comboBox_SecondDisk->setPos(1);
+        _ui->comboBox_Cylinder->setPos(2);
     }
 
     bool MeshBaseTypeCylinderWidget::checkValue()
@@ -191,6 +205,13 @@ namespace GUI
 
         graphOper->updateGraph(_graphObj->getDataObjectID());
         graphOper->reRender(true);
+    }
+
+    void MeshBaseTypeCylinderWidget::clearBoundaryBackgroudColor()
+    {
+        _ui->widget_Fir->setStyleSheet("");
+        _ui->widget_Sec->setStyleSheet("");
+        _ui->widget_Cyl->setStyleSheet("");
     }
 
     void MeshBaseTypeCylinderWidget::on_pushButton_AutoSize_clicked()

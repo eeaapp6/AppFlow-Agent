@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>386</width>
-    <height>459</height>
+    <width>570</width>
+    <height>692</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -261,41 +261,168 @@
       <string>Boundaries:</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_Cylinder">
-        <property name="text">
-         <string>Cylinder:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QComboBox" name="comboBox_SecondDisk"/>
-      </item>
+      <property name="leftMargin">
+       <number>9</number>
+      </property>
+      <property name="topMargin">
+       <number>9</number>
+      </property>
+      <property name="rightMargin">
+       <number>9</number>
+      </property>
+      <property name="bottomMargin">
+       <number>9</number>
+      </property>
       <item row="0" column="0">
-       <widget class="QLabel" name="label_FirstDisk">
-        <property name="text">
-         <string>First Disk:</string>
+       <widget class="QWidget" name="widget_Fir" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
         </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="GUI::CompBaseBoundaryLabel" name="label_FirstDisk">
+           <property name="text">
+            <string>First Disk:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_FirstDisk"/>
+         </item>
+        </layout>
        </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="comboBox_FirstDisk"/>
-      </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="comboBox_Cylinder"/>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_SecondDisk">
-        <property name="text">
-         <string>Second Disk:</string>
+       <widget class="QWidget" name="widget_Sec" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
         </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="GUI::CompBaseBoundaryLabel" name="label_SecondDisk">
+           <property name="text">
+            <string>Second Disk:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_SecondDisk"/>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QWidget" name="widget_Cyl" native="true">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="GUI::CompBaseBoundaryLabel" name="label_Cylinder">
+           <property name="text">
+            <string>Cylinder:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Cylinder"/>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
+   <item row="3" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>215</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GUI::CompBaseBoundaryLabel</class>
+   <extends>QLabel</extends>
+   <header>CompBaseBoundary.h</header>
+  </customwidget>
+  <customwidget>
+   <class>GUI::CompBaseBoundaryComboBox</class>
+   <extends>QComboBox</extends>
+   <header>CompBaseBoundary.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

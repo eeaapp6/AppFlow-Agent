@@ -5,6 +5,7 @@ HEADERS += \
     $$PWD/OperatorsGeoCubeManager.h \
     $$PWD/OperatorsGeoCylinderManager.h \
     $$PWD/OperatorsGeoSphereManager.h \
+    $$PWD/OperatorsMeshGeoManager.h \
     $$PWD/OperatorsMeshBaseManager.h \
     $$PWD/OperatorsMeshManager.h \
     $$PWD/OperatorsMeshLocalManager.h \
@@ -23,6 +24,7 @@ SOURCES += \
     $$PWD/OperatorsGeoCubeManager.cpp \
     $$PWD/OperatorsGeoCylinderManager.cpp \
     $$PWD/OperatorsGeoSphereManager.cpp \
+    $$PWD/OperatorsMeshGeoManager.cpp \
     $$PWD/OperatorsMeshBaseManager.cpp \
     $$PWD/OperatorsMeshManager.cpp \
     $$PWD/OperatorsMeshLocalManager.cpp \

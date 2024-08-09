@@ -18,6 +18,7 @@ namespace GUI
         MainTree_GeometySphereItem,
         MainTree_GeometyBoolOrImportItem,
         MainTree_Mesh,
+        MainTree_MeshGeometry,
         MainTree_MeshBase,
         MainTree_MeshLocal,
         MainTree_MeshLocalItem,

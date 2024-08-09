@@ -1,5 +1,7 @@
 HEADERS += \ 
     $$PWD/GUIMeshDialogAPI.h \
+    $$PWD/MeshGeoWidget.h \
+    $$PWD/MeshGeoSubWidget.h \
     $$PWD/MeshBaseWidget.h \
     $$PWD/MeshBaseTypeWidgetBase.h \
     $$PWD/MeshBaseTypeBoxWidget.h \
@@ -9,8 +11,11 @@ HEADERS += \
     $$PWD/MaterialPointWidget.h \
     $$PWD/CompMaterialPointWidget.h \
     $$PWD/LocalGroupDeleteDialog.h \
+    $$PWD/CompBaseBoundary.h \
 
 SOURCES += \
+    $$PWD/MeshGeoWidget.cpp \
+    $$PWD/MeshGeoSubWidget.cpp \
     $$PWD/MeshBaseWidget.cpp \
     $$PWD/MeshBaseTypeWidgetBase.cpp \
     $$PWD/MeshBaseTypeBoxWidget.cpp \
@@ -20,8 +25,10 @@ SOURCES += \
     $$PWD/MaterialPointWidget.cpp \
     $$PWD/CompMaterialPointWidget.cpp \
     $$PWD/LocalGroupDeleteDialog.cpp \
+    $$PWD/CompBaseBoundary.cpp \
 
 FORMS += \
+    $$PWD/MeshGeoSubWidget.ui \
     $$PWD/MeshBaseWidget.ui \
     $$PWD/MeshBaseTypeBoxWidget.ui \
     $$PWD/MeshBaseTypeCylinderWidget.ui \

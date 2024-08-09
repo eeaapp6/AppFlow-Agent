@@ -88,6 +88,7 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_GeometySphereItem:name = "actionGeoSphereEdit"; break;
         case GUI::MainTreeEnum::MainTree_GeometyBoolOrImportItem:name = "actionGeoBoolOrImportEdit"; break;
         case GUI::MainTreeEnum::MainTree_Mesh: break;
+        case GUI::MainTreeEnum::MainTree_MeshGeometry:name = "actionMeshGeoEdit"; break;
         case GUI::MainTreeEnum::MainTree_MeshBase: name = "actionMeshBaseEdit"; break;
         case GUI::MainTreeEnum::MainTree_MeshLocal: name = "actionMeshLocalSelectGroup"; break;
         case GUI::MainTreeEnum::MainTree_MeshLocalItem:name = "actionMeshLocalEdit"; break;
@@ -157,6 +158,7 @@ namespace GUI{
             addMenuActions(menu, "actionClearMesh", tr("Clear mesh"));
             break;
         }
+        case GUI::MainTreeEnum::MainTree_MeshGeometry: break;
         case GUI::MainTreeEnum::MainTree_MeshBase: break;
         case GUI::MainTreeEnum::MainTree_MeshLocal: {
             break;
@@ -254,7 +256,7 @@ namespace GUI{
         if (geometryData == nullptr) return;
 
         QTreeWidgetItem* geometryItem = new QTreeWidgetItem();
-        geometryItem->setText(0, tr("geometry"));
+        geometryItem->setText(0, tr("Geometry"));
         this->addTopLevelItem(geometryItem);
 
         for (int i = 0; i < geometryData->getDataCount(); i++) {
@@ -293,10 +295,16 @@ namespace GUI{
     void TreeWidget::updateMeshItems()
     {
         QTreeWidgetItem* meshItem = new QTreeWidgetItem();
-        meshItem->setText(0, tr("mesh"));
+        meshItem->setText(0, tr("Mesh"));
         meshItem->setData(1, 0, -1);
         meshItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Mesh));
         this->addTopLevelItem(meshItem);
+
+        QTreeWidgetItem* meshGeoItem = new QTreeWidgetItem();
+        meshGeoItem->setText(0, tr("Geometry"));
+        meshGeoItem->setData(1, 0, -1);
+        meshGeoItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshGeometry));
+        meshItem->addChild(meshGeoItem);
 
         QTreeWidgetItem* meshBaseItem = new QTreeWidgetItem();
         meshBaseItem->setText(0, tr("Base"));

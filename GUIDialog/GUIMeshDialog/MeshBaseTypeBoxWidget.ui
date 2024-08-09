@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>417</width>
-    <height>652</height>
+    <width>460</width>
+    <height>544</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -232,65 +232,185 @@
         <string>Boundaries</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
+        <property name="leftMargin">
+         <number>9</number>
+        </property>
+        <property name="topMargin">
+         <number>9</number>
+        </property>
+        <property name="rightMargin">
+         <number>9</number>
+        </property>
+        <property name="bottomMargin">
+         <number>9</number>
+        </property>
         <item row="0" column="0">
-         <widget class="QLabel" name="label_X0">
-          <property name="text">
-           <string>X-</string>
-          </property>
+         <widget class="QWidget" name="widget_X0" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="GUI::CompBaseBoundaryLabel" name="label_X0">
+             <property name="text">
+              <string>X-</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_X0"/>
+           </item>
+          </layout>
          </widget>
-        </item>
-        <item row="0" column="1">
-         <widget class="QComboBox" name="comboBox_X0"/>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="label_X1">
-          <property name="text">
-           <string>X+</string>
-          </property>
+         <widget class="QWidget" name="widget_X1" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_6">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="GUI::CompBaseBoundaryLabel" name="label_X1">
+             <property name="text">
+              <string>X+</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_X1"/>
+           </item>
+          </layout>
          </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QComboBox" name="comboBox_X1"/>
         </item>
         <item row="2" column="0">
-         <widget class="QLabel" name="label_Y0">
-          <property name="text">
-           <string>Y-</string>
-          </property>
+         <widget class="QWidget" name="widget_Y0" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_7">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="GUI::CompBaseBoundaryLabel" name="label_Y0">
+             <property name="text">
+              <string>Y-</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Y0"/>
+           </item>
+          </layout>
          </widget>
-        </item>
-        <item row="2" column="1">
-         <widget class="QComboBox" name="comboBox_Y0"/>
         </item>
         <item row="3" column="0">
-         <widget class="QLabel" name="label_Y1">
-          <property name="text">
-           <string>Y+</string>
-          </property>
+         <widget class="QWidget" name="widget_Y1" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_8">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="GUI::CompBaseBoundaryLabel" name="label_Y1">
+             <property name="text">
+              <string>Y+</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Y1"/>
+           </item>
+          </layout>
          </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QComboBox" name="comboBox_Y1"/>
         </item>
         <item row="4" column="0">
-         <widget class="QLabel" name="label_Z0">
-          <property name="text">
-           <string>Z-</string>
-          </property>
+         <widget class="QWidget" name="widget_Z0" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_9">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="GUI::CompBaseBoundaryLabel" name="label_Z0">
+             <property name="text">
+              <string>Z-</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Z0"/>
+           </item>
+          </layout>
          </widget>
-        </item>
-        <item row="4" column="1">
-         <widget class="QComboBox" name="comboBox_Z0"/>
         </item>
         <item row="5" column="0">
-         <widget class="QLabel" name="label_Z1">
-          <property name="text">
-           <string>Z+</string>
-          </property>
+         <widget class="QWidget" name="widget_Z1" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_10">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="GUI::CompBaseBoundaryLabel" name="label_Z1">
+             <property name="text">
+              <string>Z+</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Z1"/>
+           </item>
+          </layout>
          </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QComboBox" name="comboBox_Z1"/>
         </item>
        </layout>
       </widget>
@@ -299,6 +419,18 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GUI::CompBaseBoundaryLabel</class>
+   <extends>QLabel</extends>
+   <header>CompBaseBoundary.h</header>
+  </customwidget>
+  <customwidget>
+   <class>GUI::CompBaseBoundaryComboBox</class>
+   <extends>QComboBox</extends>
+   <header>CompBaseBoundary.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
