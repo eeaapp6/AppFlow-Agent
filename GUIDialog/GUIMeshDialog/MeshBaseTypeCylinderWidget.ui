@@ -262,30 +262,30 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="2" column="0">
-       <widget class="QLabel" name="label_Cylinder">
+       <widget class="GUI::CompBaseBoundaryLabel" name="label_Cylinder">
         <property name="text">
          <string>Cylinder:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="comboBox_SecondDisk"/>
+       <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_SecondDisk"/>
       </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="label_FirstDisk">
+       <widget class="GUI::CompBaseBoundaryLabel" name="label_FirstDisk">
         <property name="text">
          <string>First Disk:</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="comboBox_FirstDisk"/>
+       <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_FirstDisk"/>
       </item>
       <item row="2" column="1">
-       <widget class="QComboBox" name="comboBox_Cylinder"/>
+       <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Cylinder"/>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="label_SecondDisk">
+       <widget class="GUI::CompBaseBoundaryLabel" name="label_SecondDisk">
         <property name="text">
          <string>Second Disk:</string>
         </property>
@@ -296,6 +296,18 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GUI::CompBaseBoundaryLabel</class>
+   <extends>QLabel</extends>
+   <header>CompBaseBoundary.h</header>
+  </customwidget>
+  <customwidget>
+   <class>GUI::CompBaseBoundaryComboBox</class>
+   <extends>QComboBox</extends>
+   <header>CompBaseBoundary.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

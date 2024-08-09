@@ -270,9 +270,11 @@ namespace GUI
         CompBaseBoundaryComboBox* comBox = dynamic_cast<CompBaseBoundaryComboBox*>(sender());
         if (label) {
             rowIndex = label->getPos();
+            //label->setStyleSheet("background-color: #ADD8E6;");
         }
-        else if(comBox){
+        else if (comBox) {
             rowIndex = comBox->getPos();
+            //comBox->setStyleSheet("background-color: #ADD8E6;");
         }
 
         //清除高亮
