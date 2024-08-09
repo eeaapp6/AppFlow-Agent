@@ -26,9 +26,18 @@ namespace GUI
         virtual bool getDataFromWidget(Interface::FITKAbstractRegionMeshSize* obj) = 0;
 
         virtual void updateGeometryGraph() = 0;
+
+    protected slots:
+        ;
+        void slotMouseMove();
+    protected:
+        virtual void clearBoundaryBackgroudColor() = 0;
 	protected:
 		MainWindow* _mainWin = nullptr;
 		MeshBaseWidget* _meshBaseWidget = nullptr;
+
+        //临时数据对象
+        Interface::FITKAbstractRegionMeshSize* _graphObj = nullptr;
     };
 }
 

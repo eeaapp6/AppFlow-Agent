@@ -207,6 +207,13 @@ namespace GUI
         graphOper->reRender(true);
     }
 
+    void MeshBaseTypeCylinderWidget::clearBoundaryBackgroudColor()
+    {
+        _ui->widget_Fir->setStyleSheet("");
+        _ui->widget_Sec->setStyleSheet("");
+        _ui->widget_Cyl->setStyleSheet("");
+    }
+
     void MeshBaseTypeCylinderWidget::on_pushButton_AutoSize_clicked()
     {
         Interface::FITKGeoCommandList* geoManager = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
@@ -260,34 +267,5 @@ namespace GUI
     {
         _meshBaseWidget->saveValue();
         updateGeometryGraph();
-    }
-
-    void MeshBaseTypeCylinderWidget::slotMouseMove()
-    {
-        if (_graphObj == nullptr)return;
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-
-        int rowIndex = -1;
-        CompBaseBoundaryLabel* label = dynamic_cast<CompBaseBoundaryLabel*>(sender());
-        CompBaseBoundaryComboBox* comBox = dynamic_cast<CompBaseBoundaryComboBox*>(sender());
-        if (label) {
-            rowIndex = label->getPos();
-            //label->setStyleSheet("background-color: #ADD8E6;");
-        }
-        else if (comBox) {
-            rowIndex = comBox->getPos();
-            //comBox->setStyleSheet("background-color: #ADD8E6;");
-        }
-
-        //清除高亮
-        graphOper->clearHighlight();
-
-        getDataFromWidget(_graphObj);
-        QVector<int> ids = {};
-        ids.append(rowIndex);
-        graphOper->advHighlight(_graphObj->getDataObjectID(), ids);
-        graphOper->reRender(true);
-
     }
 }

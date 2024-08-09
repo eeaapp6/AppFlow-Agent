@@ -29,16 +29,15 @@ namespace GUI
         bool getDataFromWidget(Interface::FITKAbstractRegionMeshSize* obj) override;
 
         void updateGeometryGraph() override;
+    protected:
+        void clearBoundaryBackgroudColor() override;
     private slots:
         ;
         void on_pushButton_AutoSize_clicked();
 
 		void slotSaveValue();
-
-        void slotMouseMove();
     private:
         Ui::MeshBaseTypeCylinderWidget* _ui = nullptr;
-        Interface::FITKRegionMeshSizeCylinder* _graphObj = nullptr;
     };
 }
 
