@@ -91,12 +91,36 @@ namespace GUI
         connect(_ui->lineEdit_Grading1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
         connect(_ui->lineEdit_Grading2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
         connect(_ui->lineEdit_Grading3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->label_X0, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->label_X1, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->label_Y0, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->label_Y1, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->label_Z0, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->label_Z1, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        _ui->label_X0->setPos(0);
+        _ui->label_X1->setPos(1);
+        _ui->label_Y0->setPos(2);
+        _ui->label_Y1->setPos(3);
+        _ui->label_Z0->setPos(4);
+        _ui->label_Z1->setPos(5);
         connect(_ui->comboBox_X0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
         connect(_ui->comboBox_X1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
         connect(_ui->comboBox_Y0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
         connect(_ui->comboBox_Y1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
         connect(_ui->comboBox_Z0, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
         connect(_ui->comboBox_Z1, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
+        connect(_ui->comboBox_X0, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->comboBox_X1, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->comboBox_Y0, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->comboBox_Y1, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->comboBox_Z0, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->comboBox_Z1, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        _ui->comboBox_X0->setPos(0);
+        _ui->comboBox_X1->setPos(1);
+        _ui->comboBox_Y0->setPos(2);
+        _ui->comboBox_Y1->setPos(3);
+        _ui->comboBox_Z0->setPos(4);
+        _ui->comboBox_Z1->setPos(5);
     }
 
     bool MeshBaseTypeBoxWidget::checkValue()
@@ -233,6 +257,32 @@ namespace GUI
     {
         _meshBaseWidget->saveValue();
         updateGeometryGraph();
+    }
+
+    void MeshBaseTypeBoxWidget::slotMouseMove()
+    {
+        if (_graphObj == nullptr)return;
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+
+        int rowIndex = -1;
+        CompBaseBoundaryLabel* label = dynamic_cast<CompBaseBoundaryLabel*>(sender());
+        CompBaseBoundaryComboBox* comBox = dynamic_cast<CompBaseBoundaryComboBox*>(sender());
+        if (label) {
+            rowIndex = label->getPos();
+        }
+        else if(comBox){
+            rowIndex = comBox->getPos();
+        }
+
+        //清除高亮
+        graphOper->clearHighlight();
+
+        getDataFromWidget(_graphObj);
+        QVector<int> ids = {};
+        ids.append(rowIndex);
+        graphOper->advHighlight(_graphObj->getDataObjectID(), ids);
+        graphOper->reRender(true);
     }
 }
 

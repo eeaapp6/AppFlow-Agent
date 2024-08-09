@@ -34,6 +34,8 @@ namespace GUI
         void on_pushButton_AutoSize_clicked();
 
 		void slotSaveValue();
+
+        void slotMouseMove();
     private:
         Ui::MeshBaseTypeBoxWidget* _ui = nullptr;
         Interface::FITKRegionMeshSizeBox* _graphObj = nullptr;

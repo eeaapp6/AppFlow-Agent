@@ -9,6 +9,7 @@ HEADERS += \
     $$PWD/MaterialPointWidget.h \
     $$PWD/CompMaterialPointWidget.h \
     $$PWD/LocalGroupDeleteDialog.h \
+    $$PWD/CompBaseBoundary.h \
 
 SOURCES += \
     $$PWD/MeshBaseWidget.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
     $$PWD/MaterialPointWidget.cpp \
     $$PWD/CompMaterialPointWidget.cpp \
     $$PWD/LocalGroupDeleteDialog.cpp \
+    $$PWD/CompBaseBoundary.cpp \
 
 FORMS += \
     $$PWD/MeshBaseWidget.ui \

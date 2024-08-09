@@ -233,64 +233,64 @@
        </property>
        <layout class="QGridLayout" name="gridLayout_3">
         <item row="0" column="0">
-         <widget class="QLabel" name="label_X0">
+         <widget class="GUI::CompBaseBoundaryLabel" name="label_X0">
           <property name="text">
            <string>X-</string>
           </property>
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QComboBox" name="comboBox_X0"/>
+         <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_X0"/>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="label_X1">
+         <widget class="GUI::CompBaseBoundaryLabel" name="label_X1">
           <property name="text">
            <string>X+</string>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QComboBox" name="comboBox_X1"/>
+         <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_X1"/>
         </item>
         <item row="2" column="0">
-         <widget class="QLabel" name="label_Y0">
+         <widget class="GUI::CompBaseBoundaryLabel" name="label_Y0">
           <property name="text">
            <string>Y-</string>
           </property>
          </widget>
         </item>
         <item row="2" column="1">
-         <widget class="QComboBox" name="comboBox_Y0"/>
+         <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Y0"/>
         </item>
         <item row="3" column="0">
-         <widget class="QLabel" name="label_Y1">
+         <widget class="GUI::CompBaseBoundaryLabel" name="label_Y1">
           <property name="text">
            <string>Y+</string>
           </property>
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QComboBox" name="comboBox_Y1"/>
+         <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Y1"/>
         </item>
         <item row="4" column="0">
-         <widget class="QLabel" name="label_Z0">
+         <widget class="GUI::CompBaseBoundaryLabel" name="label_Z0">
           <property name="text">
            <string>Z-</string>
           </property>
          </widget>
         </item>
         <item row="4" column="1">
-         <widget class="QComboBox" name="comboBox_Z0"/>
+         <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Z0"/>
         </item>
         <item row="5" column="0">
-         <widget class="QLabel" name="label_Z1">
+         <widget class="GUI::CompBaseBoundaryLabel" name="label_Z1">
           <property name="text">
            <string>Z+</string>
           </property>
          </widget>
         </item>
         <item row="5" column="1">
-         <widget class="QComboBox" name="comboBox_Z1"/>
+         <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Z1"/>
         </item>
        </layout>
       </widget>
@@ -299,6 +299,18 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GUI::CompBaseBoundaryLabel</class>
+   <extends>QLabel</extends>
+   <header>CompBaseBoundary.h</header>
+  </customwidget>
+  <customwidget>
+   <class>GUI::CompBaseBoundaryComboBox</class>
+   <extends>QComboBox</extends>
+   <header>CompBaseBoundary.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
