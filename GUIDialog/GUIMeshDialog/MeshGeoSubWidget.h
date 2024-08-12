@@ -11,24 +11,33 @@ namespace EventOper {
     class ParaWidgetInterfaceOperator;
 }
 
+namespace Interface {
+    class FITKRegionMeshSizeGeom;
+}
+
 namespace GUI
 {
     class MeshGeoSubWidget :public GUIWidgetBase
     {
         Q_OBJECT;
     public:
-        MeshGeoSubWidget(EventOper::ParaWidgetInterfaceOperator * oper, QWidget* parent = nullptr);
+        MeshGeoSubWidget(int geoID, EventOper::ParaWidgetInterfaceOperator * oper, QWidget* parent = nullptr);
         ~MeshGeoSubWidget();
 
         void setName(const QString& name);
 
-        void setObjID(int id);
-
         int getObjID();
         
         void init();
+    private slots:
+        void on_spinBox_Min_valueChanged(int arg1);
+
+        void on_spinBox_Max_valueChanged(int arg1);
     private:
-        EventOper::ParaWidgetInterfaceOperator* oper = nullptr;
+        void setDataToWidget();
+    private:
+        Interface::FITKRegionMeshSizeGeom* _geoMeshSize = nullptr;
+        EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
         Ui::MeshGeoSubWidget* _ui = nullptr;
         int _objID = -1;
     };

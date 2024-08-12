@@ -7,11 +7,16 @@
 #include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractMeshSizeInfoGenerator.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSizeGeom.h"
 
 namespace GUI
 {
-    GeometryWidgetBase::GeometryWidgetBase(QWidget * parent):
-        Core::FITKWidget(parent)
+    GeometryWidgetBase::GeometryWidgetBase(Interface::FITKAbsGeoCommand * obj, EventOper::ParaWidgetInterfaceOperator * oper, QWidget * parent) :
+        Core::FITKWidget(parent), _obj(obj), _oper(oper)
     {
         _mainWin = FITKAPP->getGlobalData()->getMainWindowT<MainWindow>();
     }
@@ -38,6 +43,20 @@ namespace GUI
         //graphOper->setEnableModelTransparent(geo);
         //graphOper->setEnableMeshTransparent(mesh);
         //graphOper->reRender();
+    }
+
+    void GeometryWidgetBase::createMeshSizeGeo()
+    {
+        auto meshSizeGen = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
+        auto meshSizeManager = Interface::FITKMeshGenInterface::getInstance()->getRegionMeshSizeMgr();
+        if (meshSizeGen&&meshSizeManager) {
+            auto meshSizeGeo = dynamic_cast<Interface::FITKRegionMeshSizeGeom*>
+                (meshSizeGen->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionType::RigonGeom));
+            if (meshSizeGeo) {
+                meshSizeGeo->setGeomID(_obj->getDataObjectID());
+                meshSizeManager->appendDataObj(meshSizeGeo);
+            }
+        }
     }
 }
 

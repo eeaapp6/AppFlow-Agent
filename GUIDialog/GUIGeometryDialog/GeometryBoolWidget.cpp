@@ -17,8 +17,8 @@
 namespace GUI
 {
     GeometryBoolWidget::GeometryBoolWidget(BoolType type, EventOper::ParaWidgetInterfaceOperator* oper) :
-        GUIWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _oper(oper), _type(type)
+        GeometryWidgetBase(nullptr, oper, dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
+        _type(type)
     {
         _ui = new Ui::GeometryBoolWidget();
         _ui->setupUi(this);
@@ -117,7 +117,7 @@ namespace GUI
 
         auto geoBoolOper = geoFactory->createCommandT<Interface::FITKAbsGeoOperBool>(Interface::FITKGeoEnum::FITKGeometryComType::FGTBool);
         if (geoBoolOper == nullptr)return;
-        
+
         geoBoolOper->setDataObjectName(_ui->lineEdit_Name->text());
         switch (_type) {
         case GUI::BoolType::GeoBoolFause:
@@ -133,6 +133,10 @@ namespace GUI
         geoBoolOper->setGeoShape1(geo1->getShapeAgent());
         geoBoolOper->setGeoShape2(geo2->getShapeAgent());
         geoBoolOper->update();
+
+        _obj = geoBoolOper;
+        //几何关联的网格区域尺寸
+        createMeshSizeGeo();
 
         geometryData->appendDataObj(geoBoolOper);
 

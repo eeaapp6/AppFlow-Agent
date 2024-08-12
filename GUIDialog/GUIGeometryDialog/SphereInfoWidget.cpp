@@ -28,8 +28,8 @@
 namespace GUI {
 
     SphereInfoWidget::SphereInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :
-        GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _isCreate(true), _oper(oper)
+        GeometryWidgetBase(nullptr, oper, dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
+        _isCreate(true)
     {
         _ui = new Ui::SphereInfoWidget();
         _ui->setupUi(this);
@@ -38,8 +38,8 @@ namespace GUI {
     }
 
     SphereInfoWidget::SphereInfoWidget(Interface::FITKAbsGeoModelSphere * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
-        GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _isCreate(false), _obj(obj), _oper(oper)
+        GeometryWidgetBase(obj, oper, dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
+        _isCreate(false)
     {
         _ui = new Ui::SphereInfoWidget();
         _ui->setupUi(this);
@@ -142,6 +142,9 @@ namespace GUI {
             _obj->update();
             geometryData->appendDataObj(_obj);
 
+            //几何关联的网格区域尺寸
+            createMeshSizeGeo();
+
             //模式切换
             switchCreateModel(false);
         }
@@ -164,15 +167,16 @@ namespace GUI {
 
     void SphereInfoWidget::setDataToWidget()
     {
-        if (_obj == nullptr)return;
+        Interface::FITKAbsGeoModelSphere* obj = dynamic_cast<Interface::FITKAbsGeoModelSphere*>(_obj);
+        if (obj == nullptr)return;
 
         double centerPoint[3] = { 0,0,0 };
-        _obj->getLocation(centerPoint);
+        obj->getLocation(centerPoint);
         _ui->lineEdit_CenterPoint1->setText(QString::number(centerPoint[0]));
         _ui->lineEdit_CenterPoint2->setText(QString::number(centerPoint[1]));
         _ui->lineEdit_CenterPoint3->setText(QString::number(centerPoint[2]));
 
-        double radius = _obj->getRadius();
+        double radius = obj->getRadius();
         _ui->lineEdit_Radius->setText(QString::number(radius));
 
         _faceGroupWidget->setDataToWidget();
@@ -180,17 +184,18 @@ namespace GUI {
 
     void SphereInfoWidget::getDataFormWidget()
     {
-        if (_obj == nullptr)return;
+        Interface::FITKAbsGeoModelSphere* obj = dynamic_cast<Interface::FITKAbsGeoModelSphere*>(_obj);
+        if (obj == nullptr)return;
 
         double centerPoint[3] = { 0,0,0 };
         centerPoint[0] = _ui->lineEdit_CenterPoint1->text().toDouble();
         centerPoint[1] = _ui->lineEdit_CenterPoint2->text().toDouble();
         centerPoint[2] = _ui->lineEdit_CenterPoint3->text().toDouble();
-        _obj->setLocation(centerPoint);
+        obj->setLocation(centerPoint);
 
         double radius = 0.0;
         radius = _ui->lineEdit_Radius->text().toDouble();
-        _obj->setRadius(radius);
+        obj->setRadius(radius);
     }
 
     void SphereInfoWidget::switchCreateModel(bool isCreate)

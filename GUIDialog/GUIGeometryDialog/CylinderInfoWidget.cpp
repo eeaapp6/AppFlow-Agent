@@ -28,8 +28,8 @@
 namespace GUI {
 
     CylinderInfoWidget::CylinderInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :
-        GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _isCreate(true), _oper(oper)
+        GeometryWidgetBase(nullptr, oper, dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
+        _isCreate(true)
     {
         _ui = new Ui::CylinderInfoWidget();
         _ui->setupUi(this);
@@ -38,8 +38,8 @@ namespace GUI {
     }
 
     CylinderInfoWidget::CylinderInfoWidget(Interface::FITKAbsGeoModelCylinder * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
-        GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _isCreate(false), _obj(obj), _oper(oper)
+        GeometryWidgetBase(obj, oper, dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
+        _isCreate(false)
     {
         _ui = new Ui::CylinderInfoWidget();
         _ui->setupUi(this);
@@ -146,6 +146,9 @@ namespace GUI {
             _obj->update();
             geometryData->appendDataObj(_obj);
 
+            //几何关联的网格区域尺寸
+            createMeshSizeGeo();
+
             //切换为编辑模式
             switchCreateModel(false);
         }
@@ -187,23 +190,25 @@ namespace GUI {
 
     void CylinderInfoWidget::setDataToWidget()
     {
-        if (_obj == nullptr)return;
+        Interface::FITKAbsGeoModelCylinder* obj = dynamic_cast<Interface::FITKAbsGeoModelCylinder*>(_obj);
+        if (obj == nullptr)return;
+
         double originPoint[3] = { 0,0,0 };
-        _obj->getLocation(originPoint);
+        obj->getLocation(originPoint);
         _ui->lineEdit_OriginPoint1->setText(QString::number(originPoint[0]));
         _ui->lineEdit_OriginPoint2->setText(QString::number(originPoint[1]));
         _ui->lineEdit_OriginPoint3->setText(QString::number(originPoint[2]));
 
         double axis[3] = { 0,0,0 };
-        _obj->getDirection(axis);
+        obj->getDirection(axis);
         _ui->lineEdit_Axis1->setText(QString::number(axis[0]));
         _ui->lineEdit_Axis2->setText(QString::number(axis[1]));
         _ui->lineEdit_Axis3->setText(QString::number(axis[2]));
 
-        double radius = _obj->getRadius();
+        double radius = obj->getRadius();
         _ui->lineEdit_Radius->setText(QString::number(radius));
 
-        double length = _obj->getLength();
+        double length = obj->getLength();
         _ui->lineEdit_Length->setText(QString::number(length));
 
         _faceGroupWidget->setDataToWidget();
@@ -211,25 +216,26 @@ namespace GUI {
 
     void CylinderInfoWidget::getDataFormWidget()
     {
-        if (_obj == nullptr)return;
+        Interface::FITKAbsGeoModelCylinder* obj = dynamic_cast<Interface::FITKAbsGeoModelCylinder*>(_obj);
+        if (obj == nullptr)return;
 
         double originPoint[3] = { 0,0,0 };
         originPoint[0] = _ui->lineEdit_OriginPoint1->text().toDouble();
         originPoint[1] = _ui->lineEdit_OriginPoint2->text().toDouble();
         originPoint[2] = _ui->lineEdit_OriginPoint3->text().toDouble();
-        _obj->setLocation(originPoint);
+        obj->setLocation(originPoint);
 
         double axis[3] = { 0,0,0 };
         axis[0] = _ui->lineEdit_Axis1->text().toDouble();
         axis[1] = _ui->lineEdit_Axis2->text().toDouble();
         axis[2] = _ui->lineEdit_Axis3->text().toDouble();
-        _obj->setDirection(axis);
+        obj->setDirection(axis);
 
         double radius = _ui->lineEdit_Radius->text().toDouble();
-        _obj->setRadius(radius);
+        obj->setRadius(radius);
 
         double length = _ui->lineEdit_Length->text().toDouble();
-        _obj->setLength(length);
+        obj->setLength(length);
     }
 
     void CylinderInfoWidget::switchCreateModel(bool isCreate)

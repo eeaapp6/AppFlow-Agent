@@ -31,8 +31,8 @@
 namespace GUI 
 {
     BoolInfoWidget::BoolInfoWidget(Interface::FITKAbsGeoCommand * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
-        GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _isCreate(false), _obj(obj), _oper(oper)
+        GeometryWidgetBase(obj, oper, dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
+        _isCreate(false)
     {
         init();
         _ui->lineEdit_Name->setEnabled(false);

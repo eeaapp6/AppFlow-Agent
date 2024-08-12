@@ -10,6 +10,10 @@
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelImport.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoCommandList.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractMeshSizeInfoGenerator.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSizeGeom.h"
 
 #include <QFileDialog>
 #include <QApplication>
@@ -68,6 +72,17 @@ namespace ModelOper {
     {
         if (result == false)return;
         if (objID < 0)return;
+
+        auto meshSizeGen = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
+        auto meshSizeManager = Interface::FITKMeshGenInterface::getInstance()->getRegionMeshSizeMgr();
+        if (meshSizeGen && meshSizeManager) {
+            auto meshSizeGeo = dynamic_cast<Interface::FITKRegionMeshSizeGeom*>
+                (meshSizeGen->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionType::RigonGeom));
+            if (meshSizeGeo) {
+                meshSizeGeo->setGeomID(objID);
+                meshSizeManager->appendDataObj(meshSizeGeo);
+            }
+        }
 
         // 获取模型树控制器
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");

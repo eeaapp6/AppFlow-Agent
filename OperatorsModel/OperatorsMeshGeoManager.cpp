@@ -28,8 +28,16 @@ namespace ModelOper
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return false;
 
-        GUI::MeshGeoWidget* widget = new GUI::MeshGeoWidget(this);
-        propertyWidget->setWidget(widget);
+        if (_senderName == "actionMeshGeoEdit") {
+            GUI::MeshGeoWidget* widget = new GUI::MeshGeoWidget(this);
+            propertyWidget->setWidget(widget);
+        }
+        else if(_senderName == "actionMeshGeoDelete")
+        {
+            GUI::MeshGeoWidget* widget = new GUI::MeshGeoWidget(this);
+            propertyWidget->setWidget(widget);
+        }
+        
         return true;
     }
 

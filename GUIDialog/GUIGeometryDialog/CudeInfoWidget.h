@@ -67,9 +67,7 @@ namespace GUI
         void switchCreateModel(bool isCreate);
     private:
         bool _isCreate = false;
-        Interface::FITKAbsGeoModelBox* _obj = nullptr;
         Ui::CudeInfoWidget* _ui = nullptr;
-        EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
         CompFaceGroupWidget* _faceGroupWidget = nullptr;
     };
 }

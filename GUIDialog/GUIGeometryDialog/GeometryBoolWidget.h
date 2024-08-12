@@ -2,7 +2,7 @@
 #define _GeometryBoolWidget_H
 
 #include "GUIGeometryDialogAPI.h"
-#include "GUIWidget/GUIWidgetBase.h"
+#include "GeometryWidgetBase.h"
 
 namespace Ui {
     class GeometryBoolWidget;
@@ -21,7 +21,7 @@ namespace GUI
         GeoBoolCommon,
     };
 
-    class GUIGeometryDialogAPI GeometryBoolWidget : public GUIWidgetBase
+    class GUIGeometryDialogAPI GeometryBoolWidget : public GeometryWidgetBase
     {
         Q_OBJECT;
     public:
