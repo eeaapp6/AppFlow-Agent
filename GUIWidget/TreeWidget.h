@@ -93,6 +93,8 @@ namespace GUI {
          * @date 2024-08-06
          */
         void updateMeshItems();
+
+        void updateSetupItems();
         /**
          * @brief 更新local子节点
          * @param[i]  parentItem     父对象

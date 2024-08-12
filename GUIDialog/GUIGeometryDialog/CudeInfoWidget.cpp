@@ -20,8 +20,10 @@
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoShapeAgent.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKAbstractModel.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKComponentManager.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractMeshSizeInfoGenerator.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSizeGeom.h"
 
 #include <QMessageBox>
 #include <QTableWidgetItem>
@@ -30,8 +32,7 @@
 namespace GUI {
 
     CudeInfoWidget::CudeInfoWidget(EventOper::ParaWidgetInterfaceOperator * oper) :
-        GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _oper(oper)
+        GeometryWidgetBase(nullptr, oper, dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow()))
     {
         _ui = new Ui::CudeInfoWidget();
         _ui->setupUi(this);
@@ -40,8 +41,7 @@ namespace GUI {
     }
 
     CudeInfoWidget::CudeInfoWidget(Interface::FITKAbsGeoModelBox * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
-        GeometryWidgetBase(dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _obj(obj), _oper(oper)
+        GeometryWidgetBase(obj, oper, dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow()))
     {
         _ui = new Ui::CudeInfoWidget();
         _ui->setupUi(this);
@@ -49,7 +49,7 @@ namespace GUI {
         init();
     }
 
-    CudeInfoWidget::~CudeInfoWidget()
+        CudeInfoWidget::~CudeInfoWidget()
     {
         _faceGroupWidget->clearGraphHight();
         if (_faceGroupWidget) {
@@ -149,6 +149,9 @@ namespace GUI {
             _obj->update();
             geometryData->appendDataObj(_obj);
 
+            //几何关联的网格区域尺寸
+            createMeshSizeGeo();
+
             //切换为编辑模式
             switchCreateModel(false);
         }
@@ -166,7 +169,7 @@ namespace GUI {
 
     bool CudeInfoWidget::checkValue()
     {
-        auto outputMessage = [&](QString name,double value) {
+        auto outputMessage = [&](QString name, double value) {
             QMessageBox::critical(this, "", tr("%1 value : %2 error!").arg(name).arg(value), QMessageBox::Ok);
         };
 
@@ -193,16 +196,17 @@ namespace GUI {
 
     void CudeInfoWidget::setDataToWidget()
     {
-        if (_obj == nullptr)return;
+        Interface::FITKAbsGeoModelBox* obj = dynamic_cast<Interface::FITKAbsGeoModelBox*>(_obj);
+        if (obj == nullptr)return;
 
         double basicPoint[3] = { 0,0,0 };
-        _obj->getPoint1(basicPoint);
+        obj->getPoint1(basicPoint);
         _ui->lineEdit_BasicPoint1->setText(QString::number(basicPoint[0]));
         _ui->lineEdit_BasicPoint2->setText(QString::number(basicPoint[1]));
         _ui->lineEdit_BasicPoint3->setText(QString::number(basicPoint[2]));
 
         double dimensions[3] = { 0,0,0 };
-        _obj->getLength(dimensions);
+        obj->getLength(dimensions);
         _ui->lineEdit_Dimensions1->setText(QString::number(dimensions[0]));
         _ui->lineEdit_Dimensions2->setText(QString::number(dimensions[1]));
         _ui->lineEdit_Dimensions3->setText(QString::number(dimensions[2]));
@@ -212,19 +216,20 @@ namespace GUI {
 
     void CudeInfoWidget::getDataFormWidget()
     {
-        if (_obj == nullptr)return;
+        Interface::FITKAbsGeoModelBox* obj = dynamic_cast<Interface::FITKAbsGeoModelBox*>(_obj);
+        if (obj == nullptr)return;
 
         double basicPoint[3] = { 0,0,0 };
         basicPoint[0] = _ui->lineEdit_BasicPoint1->text().toDouble();
         basicPoint[1] = _ui->lineEdit_BasicPoint2->text().toDouble();
         basicPoint[2] = _ui->lineEdit_BasicPoint3->text().toDouble();
-        _obj->setPoint1(basicPoint);
+        obj->setPoint1(basicPoint);
 
         double dimensions[3] = { 0,0,0 };
         dimensions[0] = _ui->lineEdit_Dimensions1->text().toDouble();
         dimensions[1] = _ui->lineEdit_Dimensions2->text().toDouble();
         dimensions[2] = _ui->lineEdit_Dimensions3->text().toDouble();
-        _obj->setLength(dimensions);
+        obj->setLength(dimensions);
     }
 
     void CudeInfoWidget::switchCreateModel(bool isCreate)

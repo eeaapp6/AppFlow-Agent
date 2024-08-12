@@ -1,8 +1,7 @@
 ﻿#ifndef _CompFaceGroupWidget_H
 #define _CompFaceGroupWidget_H
 
-#include "GUIGeometryDialogAPI.h"
-#include "GeometryWidgetBase.h"
+#include "GUIWidget/GUIWidgetBase.h"
 
 class QTableWidgetItem;
 
@@ -22,7 +21,7 @@ namespace EventOper {
 
 namespace GUI
 {
-    class GUIGeometryDialogAPI CompFaceGroupWidget :public GeometryWidgetBase
+    class CompFaceGroupWidget :public GUIWidgetBase
     {
         Q_OBJECT;
     public:

@@ -32,7 +32,7 @@
 namespace GUI 
 {
     CompFaceGroupWidget::CompFaceGroupWidget(QWidget* paraent, Interface::FITKAbsGeoCommand* obj, EventOper::ParaWidgetInterfaceOperator* oper) :
-        GeometryWidgetBase(paraent), _obj(obj), _oper(oper)
+        GUIWidgetBase(paraent), _obj(obj), _oper(oper)
     {
         init();
     }

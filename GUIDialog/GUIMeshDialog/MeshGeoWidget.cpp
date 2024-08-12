@@ -36,7 +36,7 @@ namespace GUI
             auto geoCom = geoList->getDataByIndex(i);
             if (geoCom == nullptr)continue;
 
-            MeshGeoSubWidget* subWidget = new MeshGeoSubWidget(_oper, this);
+            MeshGeoSubWidget* subWidget = new MeshGeoSubWidget(geoCom->getDataObjectID(), _oper, this);
             subWidget->setName(geoCom->getDataObjectName());
             _subWidgetLayout->addWidget(subWidget);
         }

@@ -67,9 +67,7 @@ namespace GUI
         void switchCreateModel(bool isCreate);
     private:
         bool _isCreate = false;
-        Interface::FITKAbsGeoModelCylinder* _obj = nullptr;
         Ui::CylinderInfoWidget* _ui = nullptr;
-        EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
         CompFaceGroupWidget* _faceGroupWidget = nullptr;
     };
 }

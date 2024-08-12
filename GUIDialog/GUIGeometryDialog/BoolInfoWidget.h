@@ -109,19 +109,13 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-08
          */
-        Interface::FITKAbsGeoCommand* _obj = nullptr;
+        /*Interface::FITKAbsGeoCommand* _obj = nullptr;*/
         /**
          * @brief ui
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-08
          */
         Ui::BoolInfoWidget* _ui = nullptr;
-        /**
-         * @brief 操作器对象
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-08
-         */
-        EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
         /**
          * @brief 面组界面组件对象
          * @author BaGuijun (baguijun@163.com)

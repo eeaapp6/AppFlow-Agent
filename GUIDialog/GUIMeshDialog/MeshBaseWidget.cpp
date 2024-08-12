@@ -43,6 +43,7 @@ namespace GUI
 
         //默认类型为box
         Interface::FITKAbstractRegionMeshSize::RegionType type = Interface::FITKAbstractRegionMeshSize::RegionBox;
+
         //获取第一位数据
         _currentObj = _meshSizeManager->getDataByIndex(0);
         if (!_currentObj) {
@@ -51,15 +52,40 @@ namespace GUI
             //数据是新创建时，设置默认参数
             MeshBaseTypeBoxWidget widget(this);
             widget.getDataFromWidget(_currentObj);
-			_meshSizeManager->appendDataObj(_currentObj);
-		}
+            _meshSizeManager->insertDataObj(0, _currentObj);
+        }
+        else {
+            switch (_currentObj->getRegionType()) {
+            case Interface::FITKAbstractRegionMeshSize::RegionCylinder: break;
+            case Interface::FITKAbstractRegionMeshSize::RegionBox: break;
+            case Interface::FITKAbstractRegionMeshSize::RegionSphere:
+            case Interface::FITKAbstractRegionMeshSize::RegionNone:
+            case Interface::FITKAbstractRegionMeshSize::RigonFromFile:
+            case Interface::FITKAbstractRegionMeshSize::RigonGeom:
+            case Interface::FITKAbstractRegionMeshSize::RegionUserDef1:
+            case Interface::FITKAbstractRegionMeshSize::RegionUserDef2:
+            case Interface::FITKAbstractRegionMeshSize::RegionUserDef3:
+            case Interface::FITKAbstractRegionMeshSize::RegionUserDef4:
+            case Interface::FITKAbstractRegionMeshSize::RegionUserDef5: {
+                auto meshGenerator = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
+                _currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionBox);
+                //数据是新创建时，设置默认参数
+                MeshBaseTypeBoxWidget widget(this);
+                widget.getDataFromWidget(_currentObj);
+                _meshSizeManager->insertDataObj(0, _currentObj);
+            }
+            }
+        }
+
 		type = _currentObj->getRegionType();
 
-        switch (type) {
+        switch (type){
         case Interface::FITKAbstractRegionMeshSize::RegionBox: _subWidget = new MeshBaseTypeBoxWidget(this); break;
-        case Interface::FITKAbstractRegionMeshSize::RegionCylinder: _subWidget = new MeshBaseTypeCylinderWidget(this); break;
-        case Interface::FITKAbstractRegionMeshSize::RegionSphere: break;
+        case Interface::FITKAbstractRegionMeshSize::RegionCylinder:_subWidget = new MeshBaseTypeCylinderWidget(this); break;
+        case Interface::FITKAbstractRegionMeshSize::RegionSphere:break;
         }
+
+        if (_subWidget == nullptr)return;
         _ui->comboBox_Type->setCurrentIndex(_ui->comboBox_Type->findData(type));
 
         _subWidget->setDataToWidget(_currentObj);

@@ -9,12 +9,15 @@
 #include "GUIFrame/PropertyWidget.h"
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
 
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSize.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSizeGeom.h"
 
 namespace GUI
 {
@@ -112,9 +115,32 @@ namespace GUI
             meshSizeManager->removeDataByID(id);
         }
 
+        
+        //清除当前几何关联的网格区域尺寸
+        auto RegionMeshSizeManager = Interface::FITKMeshGenInterface::getInstance()->getRegionMeshSizeMgr();
+        for (auto RegionMeshSize : RegionMeshSizeManager->getRigonByType(Interface::FITKAbstractRegionMeshSize::RegionType::RigonGeom))
+        {
+            auto RegionGeoMeshSize = dynamic_cast<Interface::FITKRegionMeshSizeGeom*>(RegionMeshSize);
+            if (RegionGeoMeshSize == nullptr)continue;
+            if (RegionGeoMeshSize->getGeomID() == _obj->getDataObjectID()) {
+                RegionMeshSizeManager->removeDataObj(RegionGeoMeshSize);
+                break;
+            }
+        }
+
         //清除几何对象
         geometryData->removeDataByID(_obj->getDataObjectID());
         _oper->execProfession();
+
+        //刷新几何关联的网格区域尺寸界面
+        EventOper::ParaWidgetInterfaceOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::ParaWidgetInterfaceOperator>("actionMeshGeoDelete");
+        if (graphOper) {
+            QObject* object = new QObject();
+            object->setObjectName("actionMeshGeoDelete");
+            graphOper->setEmitter(object);
+            graphOper->actionTriggered();
+        }
+
         this->accept();
     }
 

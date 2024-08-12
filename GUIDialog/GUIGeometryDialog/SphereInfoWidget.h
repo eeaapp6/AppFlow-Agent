@@ -64,9 +64,7 @@ namespace GUI
         void switchCreateModel(bool isCreate);
     private:
         bool _isCreate = false;
-        Interface::FITKAbsGeoModelSphere* _obj = nullptr;
         Ui::SphereInfoWidget* _ui = nullptr;
-        EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
         CompFaceGroupWidget* _faceGroupWidget = nullptr;
     };
 }
