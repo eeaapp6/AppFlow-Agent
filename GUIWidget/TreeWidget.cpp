@@ -54,6 +54,7 @@ namespace GUI{
         this->clear();
         updateGeometryItems();
         updateMeshItems();
+        updateSetupItems();
 
         //展开全部子集
         setItemsExpandable(true);		
@@ -98,6 +99,7 @@ namespace GUI{
             graphOper->highlight(objID);
             break;
         }
+        case GUI::MainTreeEnum::MainTree_Setup:name = "actionSetupEdit"; break;
         }
 
         if (!name.isEmpty()) {
@@ -333,6 +335,15 @@ namespace GUI{
         //update sub item
         updateMeshLocalItems(localBaseItem);
         updateMeshBoundaryItems(meshBoundItem);
+    }
+
+    void TreeWidget::updateSetupItems()
+    {
+        QTreeWidgetItem* steupItem = new QTreeWidgetItem();
+        steupItem->setText(0, tr("Setup"));
+        steupItem->setData(1, 0, -1);
+        steupItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Setup));
+        this->addTopLevelItem(steupItem);
     }
 
     void TreeWidget::updateMeshLocalItems(QTreeWidgetItem* parentItem)

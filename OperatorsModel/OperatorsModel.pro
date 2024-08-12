@@ -30,6 +30,7 @@ win32{
         -lOperatorsInterface \
         -lGUIGeometryDialog \
         -lGUIMeshDialog \
+        -lGUICalculateDialog \
         -lFITKOFDriver \
         -lFITKInterfaceIO \
         -lFITKInterfaceMesh \
@@ -56,6 +57,7 @@ win32{
         -lOperatorsInterface \
         -lGUIGeometryDialog \
         -lGUIMeshDialog \
+        -lGUICalculateDialog \
         -lFITKOFDriver \
         -lFITKInterfaceIO \
         -lFITKInterfaceMesh \
@@ -92,6 +94,7 @@ unix{
         -lOperatorsInterface \
         -lGUIGeometryDialog \
         -lGUIMeshDialog \
+        -lGUICalculateDialog \
         -lFITKOFDriver \
         -lFITKInterfaceIO \
         -lFITKInterfaceMesh \
