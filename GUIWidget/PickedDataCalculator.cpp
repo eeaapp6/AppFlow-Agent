@@ -91,19 +91,19 @@ namespace GraphData
         {
         case PickedDataType::ModelVertPick:
             // 查找点。
-            id = gobj->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX);
+            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX);
             break;
         case PickedDataType::ModelEdgePick:
             // 查找线。
-            id = gobj->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE);
+            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE);
             break;
         case PickedDataType::ModelFacePick:
             // 查找面。
-            id = gobj->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE);
+            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE);
             break;
         case PickedDataType::ModelSolidPick:
             // 查找体。
-            id = gobj->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID);
+            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID);
             break;
         default:
             return;
@@ -192,7 +192,7 @@ namespace GraphData
         // 获取OCC数据Id。
         for (const int & index : cellsIndice)
         {
-            int id = gobj->getOCCIdByVTKCellId(index, sType);
+            int id = gobj->getShapeIdByVTKCellId(index, sType);
             flags[id] = 1;
             cellPickedFlags[index] = 1;
         }
@@ -203,7 +203,7 @@ namespace GraphData
             if (flags[i])
             {
                 // 检测当前OCC数据是否完全被选中。
-                QVector<int> subIds = gobj->getVTKCellIdsByOCCId(i, sType);
+                QVector<int> subIds = gobj->getVTKCellIdsByShapeId(i, sType);
 
                 bool isFullPicked = true;
                 for (const int & id : subIds)

@@ -526,16 +526,16 @@ namespace GraphData
         switch (m_pickedInfo._pickObjType)
         {
         case GUI::GUIPickInfo::PickObjType::POBJVert:
-            id = m_graphObject->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX);
+            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJEdge:
-            id = m_graphObject->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE);
+            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJFace:
-            id = m_graphObject->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE);
+            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJSolid:
-            id = m_graphObject->getOCCIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID);
+            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID);
             break;
         {
             return false;
@@ -666,7 +666,7 @@ namespace GraphData
         // 根据OCC形状ID获取所有VTK数据。
         for (const int & id : m_ids)
         {
-            const QVector<int> subCellIds = m_graphObject->getVTKCellIdsByOCCId(id, shapeEnum);
+            const QVector<int> subCellIds = m_graphObject->getVTKCellIdsByShapeId(id, shapeEnum);
             for (const int & cId : subCellIds)
             {
                 idArray->SetValue(cId, 1);
