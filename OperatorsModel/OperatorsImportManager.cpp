@@ -108,6 +108,13 @@ namespace ModelOper {
             if (geoObj == nullptr)return;
             geoObj->setFileName(_fileName);
             bool result = geoObj->update();
+
+            if (geoObj->getDataObjectName().isEmpty()) {
+                QFileInfo fileInfo(_fileName);
+                // 获取文件名称（不包含路径与文件类型）
+                QString name = fileInfo.baseName();
+                geoObj->setDataObjectName(name);
+            }
             geometryData->appendDataObj(geoObj);
 
             emit sigImportFinish(result, geoObj->getDataObjectID());
