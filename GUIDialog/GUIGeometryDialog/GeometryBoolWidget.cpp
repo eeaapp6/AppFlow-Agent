@@ -18,7 +18,7 @@ namespace GUI
 {
     GeometryBoolWidget::GeometryBoolWidget(BoolType type, EventOper::ParaWidgetInterfaceOperator* oper) :
         GeometryWidgetBase(nullptr, oper, dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow())),
-        _type(type)
+        _type(type), _oper(oper)
     {
         _ui = new Ui::GeometryBoolWidget();
         _ui->setupUi(this);
