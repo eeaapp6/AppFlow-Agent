@@ -11,9 +11,9 @@
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Kernel/FITKCore/FITKActionOperator.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"/*
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSetUpCase.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractSolver.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractSolver.h"*/
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKAbstractGeoModel.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
@@ -351,20 +351,20 @@ namespace GUI{
 
     void TreeWidget::updateSetupItems()
     {
-        QTreeWidgetItem* setupItem = new QTreeWidgetItem();
-        setupItem->setText(0, tr("Setup"));
-        setupItem->setData(1, 0, -1);
-        setupItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Setup));
-        this->addTopLevelItem(setupItem);
+        //QTreeWidgetItem* setupItem = new QTreeWidgetItem();
+        //setupItem->setText(0, tr("Setup"));
+        //setupItem->setData(1, 0, -1);
+        //setupItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Setup));
+        //this->addTopLevelItem(setupItem);
 
-        Interface::FITKOFSetUpCase* setUpCase = Interface::FITKOFSetUpCase::getInstance();
-        if (setUpCase == nullptr)return;
-        if (setUpCase->getCurrentSolver() == nullptr)return;
-        auto type = setUpCase->getCurrentSolver()->getSolverType();
-        switch (type){
-        case Interface::FITKOFSolverEnum::SIMPLE:updateSetupSimpleItems(setupItem); break;
-        case Interface::FITKOFSolverEnum::Inter:updateSetupInterItems(setupItem); break;
-        }
+        //Interface::FITKOFSetUpCase* setUpCase = Interface::FITKOFSetUpCase::getInstance();
+        //if (setUpCase == nullptr)return;
+        //if (setUpCase->getCurrentSolver() == nullptr)return;
+        //auto type = setUpCase->getCurrentSolver()->getSolverType();
+        //switch (type){
+        //case Interface::FITKOFSolverEnum::SIMPLE:updateSetupSimpleItems(setupItem); break;
+        //case Interface::FITKOFSolverEnum::Inter:updateSetupInterItems(setupItem); break;
+        //}
     }
 
     void TreeWidget::updateMeshLocalItems(QTreeWidgetItem* parentItem)
