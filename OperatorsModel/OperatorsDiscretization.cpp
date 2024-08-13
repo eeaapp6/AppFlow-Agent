@@ -1,44 +1,39 @@
-﻿#include "OperatorsSetup.h"
+﻿#include "OperatorsDiscretization.h"
 
 #include "GUIFrame/PropertyWidget.h"
 #include "OperatorsInterface/TreeEventOperator.h"
-#include "GUIDialog/GUICalculateDialog/SetupWidget.h"
+#include "GUIDialog/GUICalculateDialog/DiscretizationWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 
-namespace ModelOper 
+namespace ModelOper
 {
-    OperatorsSetup::OperatorsSetup()
+    OperatorsDiscretization::OperatorsDiscretization()
     {
 
     }
 
-    OperatorsSetup::~OperatorsSetup()
+    OperatorsDiscretization::~OperatorsDiscretization()
     {
 
     }
 
-    bool OperatorsSetup::execGUI()
+    bool OperatorsDiscretization::execGUI()
     {
         GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
         if (mainWindow == nullptr)return false;
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return false;
 
-        GUI::SetupWidget* widget = new GUI::SetupWidget(this, FITKAPP->getGlobalData()->getMainWindow());
+        GUI::DiscretizationWidget* widget = new GUI::DiscretizationWidget(this, propertyWidget);
         propertyWidget->setWidget(widget);
 
         return true;
     }
 
-    bool OperatorsSetup::execProfession()
+    bool OperatorsDiscretization::execProfession()
     {
-        // 获取模型树控制器
-        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
-        if (treeOper == nullptr) return false;
-        treeOper->updateTree();
-
         return true;
     }
 }

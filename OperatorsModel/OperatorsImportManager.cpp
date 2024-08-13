@@ -90,7 +90,7 @@ namespace ModelOper {
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return;
 
-        graphOper->updateGraph(objID, true);
+        graphOper->updateGraph(objID);
         treeOper->updateTree();
         graphOper->reRender(true);
     }

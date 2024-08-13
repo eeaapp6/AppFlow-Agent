@@ -12,6 +12,8 @@
 #include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Kernel/FITKCore/FITKActionOperator.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSetUpCase.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractSolver.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKAbstractGeoModel.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
@@ -100,6 +102,16 @@ namespace GUI{
             break;
         }
         case GUI::MainTreeEnum::MainTree_Setup:name = "actionSetupEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupTurbulence:name = "actionTurbulenceEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupTransportProperties:name = "actionTransportEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupDiscretization:name = "actionDiscretizationEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupSolution:name = "actionSolutionEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupPassiveScalars:name = "actionPassiveScalarsEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupOperatingConditions:name = "actionOperatingEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupCellZones:name = "actionCellZonesEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupBoundaryConditions:name = "actionBoundaryEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupInitialConditions:name = "actionInitialEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupMonitors:name = "actionMonitorsEdit"; break;
         }
 
         if (!name.isEmpty()) {
@@ -339,11 +351,20 @@ namespace GUI{
 
     void TreeWidget::updateSetupItems()
     {
-        QTreeWidgetItem* steupItem = new QTreeWidgetItem();
-        steupItem->setText(0, tr("Setup"));
-        steupItem->setData(1, 0, -1);
-        steupItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Setup));
-        this->addTopLevelItem(steupItem);
+        QTreeWidgetItem* setupItem = new QTreeWidgetItem();
+        setupItem->setText(0, tr("Setup"));
+        setupItem->setData(1, 0, -1);
+        setupItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Setup));
+        this->addTopLevelItem(setupItem);
+
+        Interface::FITKOFSetUpCase* setUpCase = Interface::FITKOFSetUpCase::getInstance();
+        if (setUpCase == nullptr)return;
+        if (setUpCase->getCurrentSolver() == nullptr)return;
+        auto type = setUpCase->getCurrentSolver()->getSolverType();
+        switch (type){
+        case Interface::FITKOFSolverEnum::SIMPLE:updateSetupSimpleItems(setupItem); break;
+        case Interface::FITKOFSolverEnum::Inter:updateSetupInterItems(setupItem); break;
+        }
     }
 
     void TreeWidget::updateMeshLocalItems(QTreeWidgetItem* parentItem)
@@ -395,6 +416,84 @@ namespace GUI{
             widget->setText(boundMesh->getDataObjectName());
             this->setItemWidget(item, 0, widget);
         }
+    }
+
+    void TreeWidget::updateSetupSimpleItems(QTreeWidgetItem * parentItem)
+    {
+        QTreeWidgetItem* item = new QTreeWidgetItem();
+        item->setText(0, tr("Turbulence"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupTurbulence));
+        parentItem->addChild(item);
+
+        item = new QTreeWidgetItem();
+        item->setText(0, tr("Transport Properties"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupTransportProperties));
+        parentItem->addChild(item);
+
+        item = new QTreeWidgetItem();
+        item->setText(0, tr("Discretization"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupDiscretization));
+        parentItem->addChild(item);
+
+        item = new QTreeWidgetItem();
+        item->setText(0, tr("Solution"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupSolution));
+        parentItem->addChild(item);
+
+        item = new QTreeWidgetItem();
+        item->setText(0, tr("Boundary Conditions"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupBoundaryConditions));
+        parentItem->addChild(item);
+
+        item = new QTreeWidgetItem();
+        item->setText(0, tr("Initial Conditions"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupInitialConditions));
+        parentItem->addChild(item);
+    }
+
+    void TreeWidget::updateSetupInterItems(QTreeWidgetItem * parentItem)
+    {
+        QTreeWidgetItem* item = new QTreeWidgetItem();
+        item->setText(0, tr("Turbulence"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupTurbulence));
+        parentItem->addChild(item);
+
+        item = new QTreeWidgetItem();
+        item->setText(0, tr("Transport Properties"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupTransportProperties));
+        parentItem->addChild(item);
+
+        item = new QTreeWidgetItem();
+        item->setText(0, tr("Discretization"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupDiscretization));
+        parentItem->addChild(item);
+
+        item = new QTreeWidgetItem();
+        item->setText(0, tr("Solution"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupSolution));
+        parentItem->addChild(item);
+
+        item = new QTreeWidgetItem();
+        item->setText(0, tr("Boundary Conditions"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupBoundaryConditions));
+        parentItem->addChild(item);
+
+        item = new QTreeWidgetItem();
+        item->setText(0, tr("Initial Conditions"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupInitialConditions));
+        parentItem->addChild(item);
     }
 
     void TreeWidget::addMenuActions(QMenu & menu, QString actions, QString objectName)

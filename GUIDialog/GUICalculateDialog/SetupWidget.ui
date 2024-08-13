@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>618</width>
-    <height>707</height>
+    <width>622</width>
+    <height>716</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -118,24 +118,31 @@
       </item>
       <item row="1" column="0">
        <layout class="QGridLayout" name="gridLayout_5">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_2">
+        <item row="1" column="2">
+         <widget class="QRadioButton" name="radioButton_Compressible">
           <property name="text">
-           <string>Flow</string>
+           <string>Compressible</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="1" column="1">
          <widget class="QRadioButton" name="radioButton_Incompressible">
           <property name="text">
            <string>Incompressible</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
-         <widget class="QRadioButton" name="radioButton_Compressible">
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_2">
           <property name="text">
-           <string>Compressible</string>
+           <string>Flow</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0" colspan="3">
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>
@@ -143,94 +150,101 @@
       </item>
       <item row="2" column="0">
        <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_3">
+        <item row="4" column="3">
+         <widget class="QCheckBox" name="checkBox_UserDefined">
           <property name="text">
-           <string>Models</string>
+           <string>User Defined</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="QCheckBox" name="checkBox_Turbulence">
-          <property name="text">
-           <string>Turbulence</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QCheckBox" name="checkBox_MRF">
-          <property name="text">
-           <string>MRF</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="3">
-         <widget class="QCheckBox" name="checkBox_Species">
-          <property name="text">
-           <string>Species</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
-         <widget class="QCheckBox" name="checkBox_HeatTransfer">
-          <property name="text">
-           <string>Heat Transfer</string>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="2">
+        <item row="2" column="2">
          <widget class="QCheckBox" name="checkBox_SRF">
           <property name="text">
            <string>SRF</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="3">
-         <widget class="QCheckBox" name="checkBox_Lagrangian">
-          <property name="text">
-           <string>Lagrangian</string>
-          </property>
-         </widget>
-        </item>
-        <item row="2" column="1">
+        <item row="3" column="1">
          <widget class="QCheckBox" name="checkBox_Radiation">
           <property name="text">
            <string>Radiation</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="2">
-         <widget class="QCheckBox" name="checkBox_Porosity">
+        <item row="2" column="3">
+         <widget class="QCheckBox" name="checkBox_Lagrangian">
           <property name="text">
-           <string>Porosity</string>
+           <string>Lagrangian</string>
           </property>
          </widget>
         </item>
-        <item row="2" column="3">
+        <item row="3" column="3">
          <widget class="QCheckBox" name="checkBox_DynamicMesh">
           <property name="text">
            <string>Dynamic Mesh</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
+        <item row="2" column="1">
+         <widget class="QCheckBox" name="checkBox_HeatTransfer">
+          <property name="text">
+           <string>Heat Transfer</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QCheckBox" name="checkBox_Turbulence">
+          <property name="text">
+           <string>Turbulence</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Models</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="2">
+         <widget class="QCheckBox" name="checkBox_Porosity">
+          <property name="text">
+           <string>Porosity</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QCheckBox" name="checkBox_MRF">
+          <property name="text">
+           <string>MRF</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QCheckBox" name="checkBox_Species">
+          <property name="text">
+           <string>Species</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
          <widget class="QCheckBox" name="checkBox_Buoyancy">
           <property name="text">
            <string>Buoyancy</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="2">
+        <item row="4" column="2">
          <widget class="QCheckBox" name="checkBox_Multiphase">
           <property name="text">
            <string>Multiphase</string>
           </property>
          </widget>
         </item>
-        <item row="3" column="3">
-         <widget class="QCheckBox" name="checkBox_UserDefined">
-          <property name="text">
-           <string>User Defined</string>
+        <item row="0" column="0" colspan="4">
+         <widget class="Line" name="line_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
           </property>
          </widget>
         </item>

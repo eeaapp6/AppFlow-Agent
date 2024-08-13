@@ -17,6 +17,12 @@ HEADERS += \
     $$PWD/OperatorsGeoBool.h \
     $$PWD/OperatorsWorkingDir.h \
     $$PWD/OperatorsSetup.h \
+    $$PWD/OperatorsTurbulence.h \
+    $$PWD/OperatorsTransport.h \
+    $$PWD/OperatorsDiscretization.h \
+    $$PWD/OperatorsSolution.h \
+    $$PWD/OperatorsBoundary.h \
+    $$PWD/OperatorsInitial.h \
 
 
 SOURCES += \
@@ -37,5 +43,11 @@ SOURCES += \
     $$PWD/OperatorsGeoBool.cpp \
     $$PWD/OperatorsWorkingDir.cpp \
     $$PWD/OperatorsSetup.cpp \
+    $$PWD/OperatorsTurbulence.cpp \
+    $$PWD/OperatorsTransport.cpp \
+    $$PWD/OperatorsDiscretization.cpp \
+    $$PWD/OperatorsSolution.cpp \
+    $$PWD/OperatorsBoundary.cpp \
+    $$PWD/OperatorsInitial.cpp \
 
 FORMS += \

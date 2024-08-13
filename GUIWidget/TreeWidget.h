@@ -110,6 +110,20 @@ namespace GUI {
          */
         void updateMeshBoundaryItems(QTreeWidgetItem* parentItem);
         /**
+         * @brief 更新Setupx下simple节点
+         * @param[i]  parentItem     父对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-06
+         */
+        void updateSetupSimpleItems(QTreeWidgetItem* parentItem);
+        /**
+         * @brief 更新Setup下inter节点
+         * @param[i]  parentItem     父对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-06
+         */
+        void updateSetupInterItems(QTreeWidgetItem* parentItem);
+        /**
          * @brief 添加action
          * @param[i]  menu           My Param doc
          * @param[i]  actions        My Param doc

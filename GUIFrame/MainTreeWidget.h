@@ -28,6 +28,16 @@ namespace GUI
         MainTree_MeshBoundaryItem,
 
         MainTree_Setup,
+        MainTree_SetupTurbulence,
+        MainTree_SetupTransportProperties,
+        MainTree_SetupDiscretization,
+        MainTree_SetupSolution,
+        MainTree_SetupPassiveScalars,
+        MainTree_SetupOperatingConditions,
+        MainTree_SetupCellZones,
+        MainTree_SetupBoundaryConditions,
+        MainTree_SetupInitialConditions,
+        MainTree_SetupMonitors,
     };
 
     class GUIFRAMEAPI MainTreeWidget : public PanelWidgetBase

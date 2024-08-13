@@ -1,6 +1,8 @@
 ﻿#include "SetupWidget.h"
 #include "ui_SetupWidget.h"
 
+#include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
+
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSetUpCase.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractSolver.h"
 
@@ -53,8 +55,6 @@ namespace GUI
         initCurrentType();
         initSetupType();
         updateTableWidget();
-
-        _ui->groupBox_SolverFilters->hide();
     }
 
     void SetupWidget::updateTableWidget()
@@ -98,6 +98,10 @@ namespace GUI
         if (currentItem == nullptr)return;
         _ui->label_CurrentSolver->setText(currentItem->text());
         _setUpCase->createSolver(currentItem->data(SetupTypePos).value<Interface::FITKOFSolverEnum::FITKOFSolverType>());
+
+        if (_oper) {
+            _oper->execProfession();
+        }
     }
 
     QString SetupWidget::typeToName(Interface::FITKOFSolverEnum::FITKOFSolverType type)
