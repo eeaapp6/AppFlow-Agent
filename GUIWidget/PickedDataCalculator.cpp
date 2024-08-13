@@ -215,7 +215,7 @@ namespace GraphData
             // 完全选中则视为被框选。
             if (isFullPicked)
             {
-                m_pickedData->getPickedIds().push_back(i);
+                m_pickedData->getPickedIds().push_back(shapeId);
             }
         }
 

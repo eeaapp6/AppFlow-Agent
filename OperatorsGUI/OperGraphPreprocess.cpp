@@ -259,7 +259,7 @@ namespace GUIOper
                 continue;
             }
 
-            obj->highlight();
+            obj->highlight(Exchange::FITKFluidVTKCommons::ShapeType::ShapeTypeNone, color);
         }
 
         // 刷新窗口。
