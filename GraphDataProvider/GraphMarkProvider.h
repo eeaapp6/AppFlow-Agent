@@ -38,7 +38,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-26
          */
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> getCurrentGraphObjs() override;
+        QList<Exchange::FITKFluidVTKGraphObject3D*> getCurrentGraphObjs() override;
 
         /**
          * @brief   获取类名。[重写]
@@ -55,7 +55,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-26
          */
-        Exchange::FITKOCC2VTKGraphObject3D* getGraphObjectByType(int type);
+        Exchange::FITKFluidVTKGraphObject3D* getGraphObjectByType(int type);
 
         /**
          * @brief   根据数据ID获取全部材料点可视化对象。（没有则创建）
@@ -64,7 +64,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-30
          */
-        Exchange::FITKOCC2VTKGraphObject3D* getMaterialPointsGraphObject();
+        Exchange::FITKFluidVTKGraphObject3D* getMaterialPointsGraphObject();
 
     private:
         /**
@@ -88,7 +88,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-26
          */
-        QHash<int, Exchange::FITKOCC2VTKGraphObject3D*> m_tempTypeObjHash;
+        QHash<int, Exchange::FITKFluidVTKGraphObject3D*> m_tempTypeObjHash;
 
     };
 }   // namespace GraphData

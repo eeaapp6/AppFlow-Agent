@@ -10,7 +10,7 @@
 
 // Graph widget and object
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObject3D.h"
 
 // Graph data manager
 #include "GraphDataProvider/GraphProviderManager.h"
@@ -32,10 +32,10 @@ namespace GUIOper
         }
 
         // 获取或创建可视化对象。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getGraphObjectsByDataId(dataObjId);
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = getGraphObjectsByDataId(dataObjId);
 
         // 添加至三维窗口。
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
@@ -65,7 +65,7 @@ namespace GUIOper
         }
 
         // 获取或创建可视化对象。（type数值与树形节点类型枚举对应。）
-        Exchange::FITKOCC2VTKGraphObject3D* obj = markProvider->getGraphObjectByType(type);
+        Exchange::FITKFluidVTKGraphObject3D* obj = markProvider->getGraphObjectByType(type);
         if (!obj)
         {
             return;
@@ -92,7 +92,7 @@ namespace GUIOper
         }
         case HighlightLevel::AdvHighlight:
         {
-            obj->advanceHighlight(Exchange::FITKOCC2VTKCommons::ShapeType::ShapeTypeNone, param.AdvHighlightIndice);
+            obj->advanceHighlight(Exchange::FITKFluidVTKCommons::ShapeType::ShapeTypeNone, param.AdvHighlightIndice);
             break;
         }
         default:
@@ -106,10 +106,10 @@ namespace GUIOper
         graphWidget->reRender();
     }
 
-    Exchange::FITKOCC2VTKGraphObject3D* OperGraphPreprocess::getModelGraphObjectByDataId(int dataObjId)
+    Exchange::FITKFluidVTKGraphObject3D* OperGraphPreprocess::getModelGraphObjectByDataId(int dataObjId)
     {
         // 可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+        Exchange::FITKFluidVTKGraphObject3D* obj{ nullptr };
 
         // 获取可视化窗口。
         Comp::FITKGraph3DWindowVTK* graphWidget = getGraphWidget();
@@ -146,8 +146,8 @@ namespace GUIOper
         }
 
         // 启用或关闭半透明。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = modelProvider->getAllModelGraphObjects();
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = modelProvider->getAllModelGraphObjects();
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (obj)
             {
@@ -176,8 +176,8 @@ namespace GUIOper
         }
 
         // 启用或关闭半透明。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = modelProvider->getAllMeshGraphObjects();
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = modelProvider->getAllMeshGraphObjects();
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (obj)
             {
@@ -205,7 +205,7 @@ namespace GUIOper
             return;
         }
 
-        Exchange::FITKOCC2VTKGraphObject3D* obj = modelProvider->getModelGraphObject(dataObjId);
+        Exchange::FITKFluidVTKGraphObject3D* obj = modelProvider->getModelGraphObject(dataObjId);
         if (obj)
         {
             obj->setVisible(visibility);
@@ -231,7 +231,7 @@ namespace GUIOper
             return;
         }
 
-        Exchange::FITKOCC2VTKGraphObject3D* obj = modelProvider->getBoundMeshGraphObject(dataObjId);
+        Exchange::FITKFluidVTKGraphObject3D* obj = modelProvider->getBoundMeshGraphObject(dataObjId);
         if (obj)
         {
             obj->setVisible(visibility);
@@ -251,15 +251,15 @@ namespace GUIOper
         }
 
         // 全部高亮。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getGraphObjectsByDataId(dataObjId);
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = getGraphObjectsByDataId(dataObjId);
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
                 continue;
             }
 
-            obj->highlight();
+            obj->highlight(Exchange::FITKFluidVTKCommons::ShapeType::ShapeTypeNone, color);
         }
 
         // 刷新窗口。
@@ -276,15 +276,15 @@ namespace GUIOper
         }
 
         // 全部高级高亮。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getGraphObjectsByDataId(dataObjId);
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = getGraphObjectsByDataId(dataObjId);
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
                 continue;
             }
 
-            obj->advanceHighlight(Exchange::FITKOCC2VTKCommons::ShapeType::ShapeTypeNone, indice, color);
+            obj->advanceHighlight(Exchange::FITKFluidVTKCommons::ShapeType::ShapeTypeNone, indice, color);
         }
 
         // 刷新窗口。

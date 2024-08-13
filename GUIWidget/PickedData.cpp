@@ -29,7 +29,7 @@
 // Graph
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor.h"
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor2D.h"
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObject3D.h"
 
 // Filter ( Algorithm )
 #include "FITK_Interface/FITKVTKAlgorithm/FITKShellFeatureEdges.h"
@@ -286,7 +286,7 @@ namespace GraphData
         }
 
         // 获取演员存储的可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj = fActor->getGraphObjectAs<Exchange::FITKOCC2VTKGraphObject3D>();
+        Exchange::FITKFluidVTKGraphObject3D* obj = fActor->getGraphObjectAs<Exchange::FITKFluidVTKGraphObject3D>();
         if (!obj)
         {
             return;
@@ -296,7 +296,7 @@ namespace GraphData
         m_graphObject = obj;
         m_dataObjId = obj->getDataId();
 
-        Exchange::FITKOCC2VTKCommons::ShapeInfo sInfo = obj->getShapeInfo();
+        Exchange::FITKFluidVTKCommons::ShapeInfo sInfo = obj->getShapeInfo();
 
         switch (m_pickedInfo._pickObjType)
         {
@@ -338,7 +338,7 @@ namespace GraphData
         }
 
         // 获取演员存储的可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj = fActor2D->getGraphObjectAs<Exchange::FITKOCC2VTKGraphObject3D>();
+        Exchange::FITKFluidVTKGraphObject3D* obj = fActor2D->getGraphObjectAs<Exchange::FITKFluidVTKGraphObject3D>();
         if (!obj)
         {
             return;
@@ -348,7 +348,7 @@ namespace GraphData
         m_graphObject = obj;
         m_dataObjId = obj->getDataId();
 
-        Exchange::FITKOCC2VTKCommons::ShapeInfo sInfo = obj->getShapeInfo();
+        Exchange::FITKFluidVTKCommons::ShapeInfo sInfo = obj->getShapeInfo();
 
         switch (m_pickedInfo._pickObjType)
         {
@@ -400,7 +400,7 @@ namespace GraphData
         sortIds();
     }
 
-    void PickedData::setPickedGraphObject(Exchange::FITKOCC2VTKGraphObject3D* obj)
+    void PickedData::setPickedGraphObject(Exchange::FITKFluidVTKGraphObject3D* obj)
     {
         if (!obj)
         {
@@ -410,12 +410,12 @@ namespace GraphData
         // 断开旧数据信号。
         if (m_graphObject)
         {
-            disconnect(m_graphObject, &Exchange::FITKOCC2VTKGraphObject3D::destroyed, this, &PickedData::slot_resetGraphObject);
+            disconnect(m_graphObject, &Exchange::FITKFluidVTKGraphObject3D::destroyed, this, &PickedData::slot_resetGraphObject);
         }
 
         // 保存数据，连接信号。
         m_graphObject = obj;
-        connect(m_graphObject, &Exchange::FITKOCC2VTKGraphObject3D::destroyed, this, &PickedData::slot_resetGraphObject, Qt::UniqueConnection);
+        connect(m_graphObject, &Exchange::FITKFluidVTKGraphObject3D::destroyed, this, &PickedData::slot_resetGraphObject, Qt::UniqueConnection);
     }
 
     void PickedData::slot_resetGraphObject()
@@ -526,16 +526,16 @@ namespace GraphData
         switch (m_pickedInfo._pickObjType)
         {
         case GUI::GUIPickInfo::PickObjType::POBJVert:
-            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX);
+            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_VERTEX);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJEdge:
-            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE);
+            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_EDGE);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJFace:
-            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE);
+            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_FACE);
             break;
         case GUI::GUIPickInfo::PickObjType::POBJSolid:
-            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID);
+            id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_SOLID);
             break;
         {
             return false;
@@ -603,7 +603,7 @@ namespace GraphData
         return m_dataObjId;
     }
 
-    Exchange::FITKOCC2VTKGraphObject3D* PickedData::getPickedGraphObejct()
+    Exchange::FITKFluidVTKGraphObject3D* PickedData::getPickedGraphObejct()
     {
         return m_graphObject;
     }
@@ -617,33 +617,33 @@ namespace GraphData
         }
 
         vtkDataSet* dataSet{ nullptr };
-        Exchange::FITKOCC2VTKCommons::ShapeAbsEnum shapeEnum;
+        Exchange::FITKFluidVTKCommons::ShapeAbsEnum shapeEnum;
 
         // 根据拾取模型数据类型获取数据集。
         switch (m_type)
         {
         case PickedDataType::ModelVertPick:
         {
-            dataSet = m_graphObject->getMesh(Exchange::FITKOCC2VTKCommons::ShapeType::ModelVertex);
-            shapeEnum = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX;
+            dataSet = m_graphObject->getMesh(Exchange::FITKFluidVTKCommons::ShapeType::ModelVertex);
+            shapeEnum = Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_VERTEX;
             break;
         }
         case PickedDataType::ModelEdgePick:
         {
-            dataSet = m_graphObject->getMesh(Exchange::FITKOCC2VTKCommons::ShapeType::ModelEdge);
-            shapeEnum = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE;
+            dataSet = m_graphObject->getMesh(Exchange::FITKFluidVTKCommons::ShapeType::ModelEdge);
+            shapeEnum = Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_EDGE;
             break;
         }
         case PickedDataType::ModelFacePick:
         {
-            dataSet = m_graphObject->getMesh(Exchange::FITKOCC2VTKCommons::ShapeType::ModelFace);
-            shapeEnum = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE;
+            dataSet = m_graphObject->getMesh(Exchange::FITKFluidVTKCommons::ShapeType::ModelFace);
+            shapeEnum = Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_FACE;
             break;
         }
         case PickedDataType::ModelSolidPick:
         {
-            dataSet = m_graphObject->getMesh(Exchange::FITKOCC2VTKCommons::ShapeType::ModelSolid);
-            shapeEnum = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID;
+            dataSet = m_graphObject->getMesh(Exchange::FITKFluidVTKCommons::ShapeType::ModelSolid);
+            shapeEnum = Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_SOLID;
             break;
         }
         default:

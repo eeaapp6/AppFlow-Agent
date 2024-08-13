@@ -6,8 +6,9 @@
 
 // Global data
 #include "FITK_Kernel/FITKCore/FITKDataRepo.h"
+
 // Graph
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObject3D.h"
 
 // Render VTK
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
@@ -61,7 +62,7 @@ namespace GUIOper
         return graphWidget;
     }
 
-    void OperGraphEvent3D::addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget, bool fitView)
+    void OperGraphEvent3D::addGraphObjectToWidget(Exchange::FITKFluidVTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget, bool fitView)
     {
         if (!obj || !graphWidget)
         {
@@ -77,8 +78,8 @@ namespace GUIOper
 
         // 添加附加可视化对象。
         //@{
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> addinObjs = obj->getAddinGraphObjs();
-        for (Exchange::FITKOCC2VTKGraphObject3D* addinObj : addinObjs)
+        QList<Exchange::FITKFluidVTKGraphObject3D*> addinObjs = obj->getAddinGraphObjs();
+        for (Exchange::FITKFluidVTKGraphObject3D* addinObj : addinObjs)
         {
             if (!addinObj)
             {
@@ -104,11 +105,11 @@ namespace GUIOper
         //@}
     }
 
-    QList<Exchange::FITKOCC2VTKGraphObject3D*> OperGraphEvent3D::getGraphObjectsByDataId(int dataObjId)
+    QList<Exchange::FITKFluidVTKGraphObject3D*> OperGraphEvent3D::getGraphObjectsByDataId(int dataObjId)
     {
         // 获取或创建可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
+        Exchange::FITKFluidVTKGraphObject3D* obj{ nullptr };
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs;
         bool isValid = false;
 
         // 获取可视化窗口。

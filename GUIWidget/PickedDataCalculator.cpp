@@ -20,8 +20,8 @@
 
 // Graph
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor.h"
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKCommons.h"
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKCommons.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObject3D.h"
 
 // Pick
 #include "PickedData.h"
@@ -77,7 +77,7 @@ namespace GraphData
 
     void PickedDataCalculator::individually()
     {
-        Exchange::FITKOCC2VTKGraphObject3D* gobj = m_pickedData->getPickedGraphObejct();
+        Exchange::FITKFluidVTKGraphObject3D* gobj = m_pickedData->getPickedGraphObejct();
         int index = m_pickedData->getPickedIndex();
         if (!gobj || index < 0)
         {
@@ -91,19 +91,19 @@ namespace GraphData
         {
         case PickedDataType::ModelVertPick:
             // 查找点。
-            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX);
+            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_VERTEX);
             break;
         case PickedDataType::ModelEdgePick:
             // 查找线。
-            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE);
+            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_EDGE);
             break;
         case PickedDataType::ModelFacePick:
             // 查找面。
-            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE);
+            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_FACE);
             break;
         case PickedDataType::ModelSolidPick:
             // 查找体。
-            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID);
+            id = gobj->getShapeIdByVTKCellId(index, Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_SOLID);
             break;
         default:
             return;
@@ -119,7 +119,7 @@ namespace GraphData
 
     void PickedDataCalculator::byAreaPick()
     {
-        Exchange::FITKOCC2VTKGraphObject3D* gobj = m_pickedData->getPickedGraphObejct();
+        Exchange::FITKFluidVTKGraphObject3D* gobj = m_pickedData->getPickedGraphObejct();
         vtkPlanes* planes = m_pickedData->getCutPlane();
         vtkActor* actor = m_pickedData->getPickedActor();
         if (!gobj || !planes || !actor)
@@ -146,29 +146,27 @@ namespace GraphData
             return;
         }
 
-        // 拾取状态数组。（加速数据判断包含）
-        QVector<int> flags;
         int len = 0;        
-        Exchange::FITKOCC2VTKCommons::ShapeAbsEnum sType;
+        Exchange::FITKFluidVTKCommons::ShapeAbsEnum sType;
 
         // 根据拾取数据类型进行不同数据获取。
         switch (m_pickedData->getPickedDataType())
         {
         case PickedDataType::ModelVertPick:
-            len = gobj->getNumberOf(Exchange::FITKOCC2VTKCommons::ShapeType::ModelVertex);
-            sType = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_VERTEX;
+            len = gobj->getNumberOf(Exchange::FITKFluidVTKCommons::ShapeType::ModelVertex);
+            sType = Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_VERTEX;
             break;
         case PickedDataType::ModelEdgePick:
-            len = gobj->getNumberOf(Exchange::FITKOCC2VTKCommons::ShapeType::ModelEdge);
-            sType = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_EDGE;
+            len = gobj->getNumberOf(Exchange::FITKFluidVTKCommons::ShapeType::ModelEdge);
+            sType = Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_EDGE;
             break;
         case PickedDataType::ModelFacePick:
-            len = gobj->getNumberOf(Exchange::FITKOCC2VTKCommons::ShapeType::ModelFace);
-            sType = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_FACE;
+            len = gobj->getNumberOf(Exchange::FITKFluidVTKCommons::ShapeType::ModelFace);
+            sType = Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_FACE;
             break;
         case PickedDataType::ModelSolidPick:
-            len = gobj->getNumberOf(Exchange::FITKOCC2VTKCommons::ShapeType::ModelSolid);
-            sType = Exchange::FITKOCC2VTKCommons::ShapeAbsEnum::STA_SOLID;
+            len = gobj->getNumberOf(Exchange::FITKFluidVTKCommons::ShapeType::ModelSolid);
+            sType = Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_SOLID;
             break;
         default:
             return;
@@ -179,9 +177,8 @@ namespace GraphData
             return;
         }
 
-        // OCC数据Id从1开始，需额外开一位数字。
-        flags.resize(len + 1);
-        flags.fill(0);
+        // 被拾取形状编号。
+        QVector<int> shapeIds;
 
         // 预处理拾取单元数据。（加速判断拾取子Id包含关系）
         int nCells = dataSet->GetNumberOfCells();
@@ -189,36 +186,39 @@ namespace GraphData
         cellPickedFlags.resize(nCells);
         cellPickedFlags.fill(0);
 
-        // 获取OCC数据Id。
+        // 获取形状数据Id。
         for (const int & index : cellsIndice)
         {
             int id = gobj->getShapeIdByVTKCellId(index, sType);
-            flags[id] = 1;
+            if (!shapeIds.contains(id))
+            {
+                shapeIds.push_back(id);
+            }
+
             cellPickedFlags[index] = 1;
         }
 
         // 保存拾取数据。
-        for (int i = 1; i <= len; i++)
+        for (int i = 0; i < shapeIds.count(); i++)
         {
-            if (flags[i])
+            int & shapeId = shapeIds[i];
+
+            // 检测当前OCC数据是否完全被选中。
+            QVector<int> subIds = gobj->getVTKCellIdsByShapeId(shapeId, sType);
+
+            bool isFullPicked = true;
+            for (const int & id : subIds)
             {
-                // 检测当前OCC数据是否完全被选中。
-                QVector<int> subIds = gobj->getVTKCellIdsByShapeId(i, sType);
+                isFullPicked &= (cellPickedFlags[id] == 1);
+            }
 
-                bool isFullPicked = true;
-                for (const int & id : subIds)
-                {
-                    isFullPicked &= (cellPickedFlags[id] == 1);
-                }
-
-                // 完全选中则视为被框选。
-                if (isFullPicked)
-                {
-                    m_pickedData->getPickedIds().push_back(i);
-                }
+            // 完全选中则视为被框选。
+            if (isFullPicked)
+            {
+                m_pickedData->getPickedIds().push_back(shapeId);
             }
         }
 
-        flags.clear();
+        shapeIds.clear();
     }
 }

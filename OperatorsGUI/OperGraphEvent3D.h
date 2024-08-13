@@ -19,7 +19,7 @@ namespace Comp
 
 namespace Exchange
 {
-    class FITKOCC2VTKGraphObject3D;
+    class FITKFluidVTKGraphObject3D;
 }
 
 namespace GUIOper
@@ -64,7 +64,7 @@ namespace GUIOper
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        void addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget, bool fitView = false);
+        void addGraphObjectToWidget(Exchange::FITKFluidVTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget, bool fitView = false);
 
         /**
          * @brief   通过数据对象ID获取可视化对象。（没有则创建）
@@ -73,7 +73,7 @@ namespace GUIOper
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-30
          */
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> getGraphObjectsByDataId(int dataObjId);
+        QList<Exchange::FITKFluidVTKGraphObject3D*> getGraphObjectsByDataId(int dataObjId);
 
     };
 

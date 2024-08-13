@@ -18,8 +18,8 @@ class vtkDataSet;
 
 namespace Exchange
 {
-    class FITKOCC2VTKGraphObject3D;
-    class FITKOCC2VTKGraphObjectPick;
+    class FITKFluidVTKGraphObject3D;
+    class FITKFluidVTKGraphObjectPick;
 }
 
 namespace GraphData
@@ -115,7 +115,7 @@ namespace GUIOper
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        void addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget);
+        void addGraphObjectToWidget(Exchange::FITKFluidVTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget);
 
     private:
         /**
@@ -123,7 +123,7 @@ namespace GUIOper
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        Exchange::FITKOCC2VTKGraphObjectPick* m_graphObjPick{ nullptr };
+        Exchange::FITKFluidVTKGraphObjectPick* m_graphObjPick{ nullptr };
 
         /**
          * @brief   拾取信息管理器。

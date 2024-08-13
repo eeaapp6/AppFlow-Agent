@@ -5,11 +5,11 @@
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraphRender.h"
 
 // Graph
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectModel.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObjectModel.h"
 
 // Adaptor
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKViewAdaptorBase.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKViewAdaptorBase.h"
 
 // Global data
 #include "FITK_Kernel/FITKCore/FITKDataRepo.h"
@@ -43,10 +43,10 @@ namespace GraphData
         return "GraphModelProvider";
     }
 
-    QList<Exchange::FITKOCC2VTKGraphObject3D*> GraphModelProvider::getCurrentGraphObjs()
+    QList<Exchange::FITKFluidVTKGraphObject3D*> GraphModelProvider::getCurrentGraphObjs()
     {
         // 当前所有模型可视化对象数据。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs;
 
         // 模型（几何）可视化对象。
         objs << m_modelObjHash.values();
@@ -60,10 +60,10 @@ namespace GraphData
         return objs;
     }
 
-    Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getModelGraphObject(int dataObjId)
+    Exchange::FITKFluidVTKGraphObject3D* GraphModelProvider::getModelGraphObject(int dataObjId)
     {
         // 模型可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+        Exchange::FITKFluidVTKGraphObject3D* obj{ nullptr };
 
         // 检查数据ID。
         Interface::FITKAbsGeoCommand* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbsGeoCommand>(dataObjId);
@@ -78,18 +78,18 @@ namespace GraphData
         return obj;
     }
 
-    QList<Exchange::FITKOCC2VTKGraphObject3D*> GraphModelProvider::getAllModelGraphObjects()
+    QList<Exchange::FITKFluidVTKGraphObject3D*> GraphModelProvider::getAllModelGraphObjects()
     {
         // 模型可视化对象列表。
-        // QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
+        // QList<Exchange::FITKFluidVTKGraphObject3D*> objs;
 
         return m_modelObjHash.values();
     }
 
-    Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getBoundMeshGraphObject(int dataObjId)
+    Exchange::FITKFluidVTKGraphObject3D* GraphModelProvider::getBoundMeshGraphObject(int dataObjId)
     {
         // 边界网格可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+        Exchange::FITKFluidVTKGraphObject3D* obj{ nullptr };
 
         // 检查数据ID。
         Interface::FITKBoundaryMeshVTK* boundMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKBoundaryMeshVTK>(dataObjId);
@@ -104,10 +104,10 @@ namespace GraphData
         return obj;
     }
 
-    QList<Exchange::FITKOCC2VTKGraphObject3D*> GraphModelProvider::getFuildBoundMeshGraphObjects(int dataObjId)
+    QList<Exchange::FITKFluidVTKGraphObject3D*> GraphModelProvider::getFuildBoundMeshGraphObjects(int dataObjId)
     {
         // 模型可视化对象。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs;
 
         // 检查数据ID。
         Interface::FITKUnstructuredFluidMeshVTK* fluidMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKUnstructuredFluidMeshVTK>(dataObjId);
@@ -135,7 +135,7 @@ namespace GraphData
             }
 
             int bdMeshId = bdMesh->getDataObjectID();
-            Exchange::FITKOCC2VTKGraphObject3D* obj = getBoundMeshGraphObject(bdMeshId);
+            Exchange::FITKFluidVTKGraphObject3D* obj = getBoundMeshGraphObject(bdMeshId);
             if (obj)
             {
                 objs.push_back(obj);
@@ -145,15 +145,15 @@ namespace GraphData
         return objs;
     }
 
-    QList<Exchange::FITKOCC2VTKGraphObject3D*> GraphModelProvider::getAllMeshGraphObjects()
+    QList<Exchange::FITKFluidVTKGraphObject3D*> GraphModelProvider::getAllMeshGraphObjects()
     {
         return m_boundMeshObjHash.values();
     }
 
-    Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getRegionMeshGraphObject(int dataObjId)
+    Exchange::FITKFluidVTKGraphObject3D* GraphModelProvider::getRegionMeshGraphObject(int dataObjId)
     {
         // 流体域形状可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+        Exchange::FITKFluidVTKGraphObject3D* obj{ nullptr };
 
         // 检查数据ID。
         Interface::FITKAbstractRegionMeshSize* regionMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractRegionMeshSize>(dataObjId);
@@ -168,7 +168,7 @@ namespace GraphData
         return obj;
     }
 
-    Exchange::FITKOCC2VTKGraphObject3D* GraphModelProvider::getCurrentGraphObjByDataId(int dataObjId)
+    Exchange::FITKFluidVTKGraphObject3D* GraphModelProvider::getCurrentGraphObjByDataId(int dataObjId)
     {
         // 查找模型。
         if (m_modelObjHash.contains(dataObjId))
@@ -204,8 +204,8 @@ namespace GraphData
     void GraphModelProvider::setVertPickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = m_modelObjHash.values();
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = m_modelObjHash.values();
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
@@ -214,11 +214,11 @@ namespace GraphData
 
             if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
-                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickNone);
+                obj->setPickMode(Exchange::FITKFluidVTKCommons::ShapePickMode::PickNone);
             }
             else
             {
-                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickVertex);
+                obj->setPickMode(Exchange::FITKFluidVTKCommons::ShapePickMode::PickVertex);
             }
         }
     }
@@ -226,8 +226,8 @@ namespace GraphData
     void GraphModelProvider::setEdgePickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = m_modelObjHash.values();
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = m_modelObjHash.values();
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
@@ -236,11 +236,11 @@ namespace GraphData
 
             if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
-                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickNone);
+                obj->setPickMode(Exchange::FITKFluidVTKCommons::ShapePickMode::PickNone);
             }
             else
             {
-                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickEdge);
+                obj->setPickMode(Exchange::FITKFluidVTKCommons::ShapePickMode::PickEdge);
             }
         }
     }
@@ -248,8 +248,8 @@ namespace GraphData
     void GraphModelProvider::setFacePickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = m_modelObjHash.values();
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = m_modelObjHash.values();
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
@@ -258,11 +258,11 @@ namespace GraphData
 
             if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
-                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickNone);
+                obj->setPickMode(Exchange::FITKFluidVTKCommons::ShapePickMode::PickNone);
             }
             else
             {
-                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickFace);
+                obj->setPickMode(Exchange::FITKFluidVTKCommons::ShapePickMode::PickFace);
             }
         }
     }
@@ -270,8 +270,8 @@ namespace GraphData
     void GraphModelProvider::setSolidPickable(int dataObjId)
     {
         // 开启可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = m_modelObjHash.values();
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = m_modelObjHash.values();
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
@@ -280,11 +280,11 @@ namespace GraphData
 
             if (obj->getDataId() != dataObjId && dataObjId != -1)
             {
-                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickNone);
+                obj->setPickMode(Exchange::FITKFluidVTKCommons::ShapePickMode::PickNone);
             }
             else
             {
-                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickSolid);
+                obj->setPickMode(Exchange::FITKFluidVTKCommons::ShapePickMode::PickSolid);
             }
         }
     }
@@ -292,8 +292,8 @@ namespace GraphData
     void GraphModelProvider::setNonePickable(int dataObjId)
     {
         // 关闭可拾取状态。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = m_modelObjHash.values();
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = m_modelObjHash.values();
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
@@ -307,7 +307,7 @@ namespace GraphData
             }
             else
             {
-                obj->setPickMode(Exchange::FITKOCC2VTKCommons::ShapePickMode::PickNone);
+                obj->setPickMode(Exchange::FITKFluidVTKCommons::ShapePickMode::PickNone);
             }
         }
     }

@@ -5,11 +5,11 @@
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraphRender.h"
 
 // Graph
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectMaterialPoints.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObjectMaterialPoints.h"
 
 // Adaptor
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKViewAdaptorBase.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKViewAdaptorBase.h"
 
 // Global data
 #include "FITK_Kernel/FITKCore/FITKDataRepo.h"
@@ -43,10 +43,10 @@ namespace GraphData
         return "GraphMarkProvider";
     }
 
-    QList<Exchange::FITKOCC2VTKGraphObject3D*> GraphMarkProvider::getCurrentGraphObjs()
+    QList<Exchange::FITKFluidVTKGraphObject3D*> GraphMarkProvider::getCurrentGraphObjs()
     {
         // 当前所有模型可视化对象数据。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs;
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs;
 
         // 临时标识符可视化对象。
         // objs << m_tempTypeObjHash.values();
@@ -54,10 +54,10 @@ namespace GraphData
         return objs;
     }
 
-    Exchange::FITKOCC2VTKGraphObject3D* GraphMarkProvider::getGraphObjectByType(int type)
+    Exchange::FITKFluidVTKGraphObject3D* GraphMarkProvider::getGraphObjectByType(int type)
     {
         // 符号可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+        Exchange::FITKFluidVTKGraphObject3D* obj{ nullptr };
 
         // type数值与树形节点类型枚举对应。
         switch (type)
@@ -76,10 +76,10 @@ namespace GraphData
         return obj;
     }
 
-    Exchange::FITKOCC2VTKGraphObject3D* GraphMarkProvider::getMaterialPointsGraphObject()
+    Exchange::FITKFluidVTKGraphObject3D* GraphMarkProvider::getMaterialPointsGraphObject()
     {
         // 全部材料点可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+        Exchange::FITKFluidVTKGraphObject3D* obj{ nullptr };
 
         // 获取材料点管理器。
         Interface::FITKMeshGenInterface* interMeshGen = Interface::FITKMeshGenInterface::getInstance();
