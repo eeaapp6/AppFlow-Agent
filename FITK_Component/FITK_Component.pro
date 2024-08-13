@@ -7,7 +7,7 @@ SUBDIRS += \
     $$PWD/FITKWidget \
     $$PWD/FITKCompMessageWidget \
     #$$PWD/FITKRenderWindowOCC \
-    $$PWD/FITKOCC2VTKGraphAdaptor \
+    $$PWD/FITKFluidVTKGraphAdaptor \
     $$PWD/FITKOFDictWriter \
     $$PWD/FITKOFDriver \
     $$PWD/FITKOFMeshIO \

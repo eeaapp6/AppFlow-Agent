@@ -27,7 +27,7 @@ win32{
         -lFITKCore \
         -lFITKWidget \
         -lOperatorsInterface \
-        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKFluidVTKGraphAdaptor \
         -lFITKRenderWindowVTK \
         -lGraphDataProvider \
         -lGUIFrame \
@@ -49,7 +49,7 @@ win32{
         -lFITKCore \
         -lFITKWidget \
         -lOperatorsInterface \
-        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKFluidVTKGraphAdaptor \
         -lFITKRenderWindowVTK \
         -lGraphDataProvider \
         -lGUIFrame \
@@ -81,7 +81,7 @@ unix{
         -lFITKCore \
         -lFITKWidget \
         -lOperatorsInterface \
-        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKFluidVTKGraphAdaptor \
         -lFITKRenderWindowVTK \
         -lGraphDataProvider \
         -lGUIFrame \

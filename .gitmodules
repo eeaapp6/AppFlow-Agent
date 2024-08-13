@@ -64,3 +64,6 @@
 [submodule "FITK_Interface/FITKInterfaceIOHDF5"]
 	path = FITK_Interface/FITKInterfaceIOHDF5
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceIOHDF5.git
+[submodule "FITK_Component/FITKFluidVTKGraphAdaptor"]
+	path = FITK_Component/FITKFluidVTKGraphAdaptor
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKFluidVTKGraphAdaptor.git

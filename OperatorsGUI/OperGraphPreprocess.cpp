@@ -10,7 +10,7 @@
 
 // Graph widget and object
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
 
 // Graph data manager
 #include "GraphDataProvider/GraphProviderManager.h"

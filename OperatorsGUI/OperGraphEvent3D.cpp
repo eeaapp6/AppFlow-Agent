@@ -7,7 +7,7 @@
 // Global data
 #include "FITK_Kernel/FITKCore/FITKDataRepo.h"
 // Graph
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
 
 // Render VTK
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"

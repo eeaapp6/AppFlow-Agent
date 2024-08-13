@@ -18,9 +18,9 @@
 // Graph
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor.h"
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor2D.h"
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectModel.h"
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObjectPickPreview.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObjectModel.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObjectPickPreview.h"
 
 // Render
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"

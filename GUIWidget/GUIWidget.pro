@@ -27,7 +27,7 @@ win32{
         -lFITKPython \
         -lFITKCore \
         -lOperatorsInterface \
-        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKFluidVTKGraphAdaptor \
         -lFITKVTKAlgorithm \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
@@ -48,7 +48,7 @@ win32{
         -lFITKPython \
         -lFITKCore \
         -lOperatorsInterface \
-        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKFluidVTKGraphAdaptor \
         -lFITKVTKAlgorithm \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
@@ -78,7 +78,7 @@ unix{
         -lFITKPython \
         -lFITKCore \
         -lOperatorsInterface \
-        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKFluidVTKGraphAdaptor \
         -lFITKVTKAlgorithm \
         -lFITKInterfaceGeometry \
         -lFITKInterfaceFlowOF \
