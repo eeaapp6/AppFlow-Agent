@@ -19,7 +19,7 @@
 // 前置声明
 namespace Exchange
 {
-    class FITKOCC2VTKGraphObject3D;
+    class FITKFluidVTKGraphObject3D;
 }
 
 enum HighlightLevel
@@ -114,7 +114,7 @@ namespace EventOper
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-23
          */
-        virtual Exchange::FITKOCC2VTKGraphObject3D* getModelGraphObjectByDataId(int dataObjId);
+        virtual Exchange::FITKFluidVTKGraphObject3D* getModelGraphObjectByDataId(int dataObjId);
 
         /**
          * @brief   将现有模型全部开启或关闭半透明显示。[虚函数]

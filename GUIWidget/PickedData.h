@@ -26,7 +26,7 @@ class vtkUnstructuredGrid;
 
 namespace Exchange
 {
-    class FITKOCC2VTKGraphObject3D;
+    class FITKFluidVTKGraphObject3D;
 }
 
 namespace GraphData
@@ -318,7 +318,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-23
          */
-        Exchange::FITKOCC2VTKGraphObject3D* getPickedGraphObejct();
+        Exchange::FITKFluidVTKGraphObject3D* getPickedGraphObejct();
 
     private:
         /**
@@ -355,7 +355,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-23
          */
-        void setPickedGraphObject(Exchange::FITKOCC2VTKGraphObject3D* obj);
+        void setPickedGraphObject(Exchange::FITKFluidVTKGraphObject3D* obj);
 
         // 获取数据方法。
         //@{
@@ -455,7 +455,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-19
          */
-        Exchange::FITKOCC2VTKGraphObject3D* m_graphObject{ nullptr };
+        Exchange::FITKFluidVTKGraphObject3D* m_graphObject{ nullptr };
 
         /**
          * @brief   拾取到的ID列表。（OCC形状ID）

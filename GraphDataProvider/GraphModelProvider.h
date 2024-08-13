@@ -38,7 +38,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> getCurrentGraphObjs() override;
+        QList<Exchange::FITKFluidVTKGraphObject3D*> getCurrentGraphObjs() override;
 
         /**
          * @brief   获取类名。[重写]
@@ -55,7 +55,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        Exchange::FITKOCC2VTKGraphObject3D* getModelGraphObject(int dataObjId);
+        Exchange::FITKFluidVTKGraphObject3D* getModelGraphObject(int dataObjId);
 
         /**
          * @brief   获取全部模型（几何）可视化对象。（没有则不创建）
@@ -63,7 +63,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-30
          */
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> getAllModelGraphObjects();
+        QList<Exchange::FITKFluidVTKGraphObject3D*> getAllModelGraphObjects();
 
         /**
          * @brief   根据数据ID获取边界网格可视化对象。（没有则创建）
@@ -72,7 +72,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-24
          */
-        Exchange::FITKOCC2VTKGraphObject3D* getBoundMeshGraphObject(int dataObjId);
+        Exchange::FITKFluidVTKGraphObject3D* getBoundMeshGraphObject(int dataObjId);
 
         /**
          * @brief   根据数据ID获取流体网格下的全部边界网格可视化对象。（没有则创建）
@@ -81,7 +81,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-24
          */
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> getFuildBoundMeshGraphObjects(int dataObjId);
+        QList<Exchange::FITKFluidVTKGraphObject3D*> getFuildBoundMeshGraphObjects(int dataObjId);
 
         /**
          * @brief   获取全部（边界）网格可视化对象。（没有则不创建）
@@ -89,7 +89,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-08-02
          */
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> getAllMeshGraphObjects();
+        QList<Exchange::FITKFluidVTKGraphObject3D*> getAllMeshGraphObjects();
 
         /**
          * @brief   根据数据ID获取流体域形状可视化对象。（没有则创建）
@@ -98,7 +98,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-25
          */
-        Exchange::FITKOCC2VTKGraphObject3D* getRegionMeshGraphObject(int dataObjId);
+        Exchange::FITKFluidVTKGraphObject3D* getRegionMeshGraphObject(int dataObjId);
 
         /**
          * @brief   根据数据ID获取对应可视化对象。（没有则不创建）
@@ -107,7 +107,7 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-23
          */
-        Exchange::FITKOCC2VTKGraphObject3D* getCurrentGraphObjByDataId(int dataObjId);
+        Exchange::FITKFluidVTKGraphObject3D* getCurrentGraphObjByDataId(int dataObjId);
 
         /**
          * @brief   根据数据ID更新可视化对象，没有则跳出。
@@ -181,21 +181,21 @@ namespace GraphData
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-06-12
          */
-        QHash<int, Exchange::FITKOCC2VTKGraphObject3D*> m_modelObjHash;
+        QHash<int, Exchange::FITKFluidVTKGraphObject3D*> m_modelObjHash;
 
         /**
          * @brief   边界网格可视化对象字典。
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-24
          */
-        QHash<int, Exchange::FITKOCC2VTKGraphObject3D*> m_boundMeshObjHash;
+        QHash<int, Exchange::FITKFluidVTKGraphObject3D*> m_boundMeshObjHash;
 
         /**
          * @brief   流体域形状可视化对象字典。
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-25
          */
-        QHash<int, Exchange::FITKOCC2VTKGraphObject3D*> m_regionMeshObjHash;
+        QHash<int, Exchange::FITKFluidVTKGraphObject3D*> m_regionMeshObjHash;
 
     };
 }   // namespace GraphData

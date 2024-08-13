@@ -13,13 +13,13 @@
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraphObjectVTK.h"
 
 // Graph
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObject3D.h"
 
 // Graph widget
 #include "FITK_Kernel/FITKCore/FITKAbstractGraphWidget.h"
 
 // Adaptor
-#include "FITK_Component/FITKOCC2VTKGraphAdaptor/FITKOCC2VTKViewAdaptorBase.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKViewAdaptorBase.h"
 
 // Data 
 #include "FITK_Kernel/FITKCore/FITKAbstractDataObject.h"
@@ -41,13 +41,13 @@ namespace GraphData
         // 析构三维可视化对象。
     }
 
-    QList<Exchange::FITKOCC2VTKGraphObject3D*> GraphProviderBase::getCurrentVisibleGraphObjs()
+    QList<Exchange::FITKFluidVTKGraphObject3D*> GraphProviderBase::getCurrentVisibleGraphObjs()
     {
         //获取所有可视化对象数据。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = getCurrentGraphObjs();
 
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objsVisible;
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objsVisible;
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (!obj)
             {
@@ -70,10 +70,10 @@ namespace GraphData
     }
 
     // 批量析构Hash指针。
-    void GraphProviderBase::deleteObjsHash(QHash<int, Exchange::FITKOCC2VTKGraphObject3D*>& hash)
+    void GraphProviderBase::deleteObjsHash(QHash<int, Exchange::FITKFluidVTKGraphObject3D*>& hash)
     {
         // 传入数据管理字典。
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : hash.values())
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : hash.values())
         {
             delete obj;
         }
@@ -82,12 +82,12 @@ namespace GraphData
     }
 
     // 批量析构双层Hash指针。
-    void GraphProviderBase::deleteObjsHash(QHash<int, QHash<int, Exchange::FITKOCC2VTKGraphObject3D*>>& hash)
+    void GraphProviderBase::deleteObjsHash(QHash<int, QHash<int, Exchange::FITKFluidVTKGraphObject3D*>>& hash)
     {
         // 传入数据管理字典。
-        for (QHash<int, Exchange::FITKOCC2VTKGraphObject3D* > subHash : hash.values())
+        for (QHash<int, Exchange::FITKFluidVTKGraphObject3D* > subHash : hash.values())
         {
-            for (Exchange::FITKOCC2VTKGraphObject3D* obj : subHash.values())
+            for (Exchange::FITKFluidVTKGraphObject3D* obj : subHash.values())
             {
                 if (obj)
                 {
@@ -101,10 +101,10 @@ namespace GraphData
         hash.clear();
     }
 
-    Exchange::FITKOCC2VTKGraphObject3D* GraphProviderBase::getGraphObject(QString adaptorKeyName, QHash<int, Exchange::FITKOCC2VTKGraphObject3D*>& objDict, Core::FITKAbstractDataObject* dataObj)
+    Exchange::FITKFluidVTKGraphObject3D* GraphProviderBase::getGraphObject(QString adaptorKeyName, QHash<int, Exchange::FITKFluidVTKGraphObject3D*>& objDict, Core::FITKAbstractDataObject* dataObj)
     {
         // 可视化对象。
-        Exchange::FITKOCC2VTKGraphObject3D* obj{ nullptr };
+        Exchange::FITKFluidVTKGraphObject3D* obj{ nullptr };
 
         // 异常处理。
         if (adaptorKeyName.isEmpty() || !dataObj)
@@ -122,7 +122,7 @@ namespace GraphData
         }
 
         // 生成可视化对象。
-        Exchange::FITKOCC2VTKViewAdaptorBase* adaptor = FITKVIEWADAPTORFACTORY->createT<Exchange::FITKOCC2VTKViewAdaptorBase>(adaptorKeyName, dataObj);
+        Exchange::FITKFluidVTKViewAdaptorBase* adaptor = FITKVIEWADAPTORFACTORY->createT<Exchange::FITKFluidVTKViewAdaptorBase>(adaptorKeyName, dataObj);
         if (!adaptor)
         {
             return obj;
@@ -148,7 +148,7 @@ namespace GraphData
         //@{
         connect(dataObj, &Core::FITKAbstractDataObject::dataObjectDestoried, this, [&](Core::FITKAbstractDataObject* objDelete)
         {
-            Exchange::FITKOCC2VTKGraphObject3D* gObj = objDict.take(objDelete->getDataObjectID());
+            Exchange::FITKFluidVTKGraphObject3D* gObj = objDict.take(objDelete->getDataObjectID());
             if (gObj)
             {
                 delete gObj;
@@ -169,10 +169,10 @@ namespace GraphData
     void GraphProviderBase::updateVisibility()
     {
         // 仅获取当前已实例化可视化对象。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = getCurrentGraphObjs();
 
         // 全部更新可见性。
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (obj)
             {
@@ -184,10 +184,10 @@ namespace GraphData
     void GraphProviderBase::clearHighlight()
     {
         // 仅获取当前已实例化可视化对象。
-        QList<Exchange::FITKOCC2VTKGraphObject3D*> objs = getCurrentGraphObjs();
+        QList<Exchange::FITKFluidVTKGraphObject3D*> objs = getCurrentGraphObjs();
 
         // 全部尝试取消高亮。
-        for (Exchange::FITKOCC2VTKGraphObject3D* obj : objs)
+        for (Exchange::FITKFluidVTKGraphObject3D* obj : objs)
         {
             if (obj)
             {

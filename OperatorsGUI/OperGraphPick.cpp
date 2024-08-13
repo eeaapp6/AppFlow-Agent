@@ -5,9 +5,9 @@
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 
 // Graph
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObjectModel.h"
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObjectPick.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObjectModel.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObjectPick.h"
 
 // Render
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
@@ -31,7 +31,7 @@ namespace GUIOper
     OperGraphPick::OperGraphPick()
     {
         // 实例化高亮可视化对象。
-        m_graphObjPick = new Exchange::FITKOCC2VTKGraphObjectPick;
+        m_graphObjPick = new Exchange::FITKFluidVTKGraphObjectPick;
         m_graphObjPick->setVisible(false);
 
         // 初始化拾取数据管理器。
@@ -180,7 +180,7 @@ namespace GUIOper
         }
     }
 
-    void OperGraphPick::addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget)
+    void OperGraphPick::addGraphObjectToWidget(Exchange::FITKFluidVTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget)
     {
         if (!obj || !graphWidget)
         {

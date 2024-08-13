@@ -18,9 +18,9 @@
 // Graph
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor.h"
 #include "FITK_Interface/FITKVTKAlgorithm/FITKGraphActor2D.h"
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObject3D.h"
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObjectModel.h"
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKOCC2VTKGraphObjectPickPreview.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObject3D.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObjectModel.h"
+#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObjectPickPreview.h"
 
 // Render
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowVTK.h"
@@ -41,7 +41,7 @@ namespace GUIOper
     OperGraphPickPreview::OperGraphPickPreview()
     {
         // 实例化预选高亮可视化对象。
-        m_graphObjPreview = new Exchange::FITKOCC2VTKGraphObjectPickPreview;
+        m_graphObjPreview = new Exchange::FITKFluidVTKGraphObjectPickPreview;
 
         // 初始化拾取数据管理器。
         m_pickedProvider = GraphData::PickedDataProvider::getInstance();
@@ -155,7 +155,7 @@ namespace GUIOper
         }
     }
 
-    void OperGraphPickPreview::addGraphObjectToWidget(Exchange::FITKOCC2VTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget)
+    void OperGraphPickPreview::addGraphObjectToWidget(Exchange::FITKFluidVTKGraphObject3D* obj, Comp::FITKGraph3DWindowVTK* graphWidget)
     {
         if (!obj || !graphWidget)
         {

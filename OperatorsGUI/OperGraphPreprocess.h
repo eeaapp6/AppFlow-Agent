@@ -67,7 +67,7 @@ namespace GUIOper
          * @author  ChengHaotian (yeguangbaozi@foxmail.com)
          * @date    2024-07-23
          */
-        Exchange::FITKOCC2VTKGraphObject3D* getModelGraphObjectByDataId(int dataObjId) override;
+        Exchange::FITKFluidVTKGraphObject3D* getModelGraphObjectByDataId(int dataObjId) override;
 
         /**
          * @brief   将现有模型全部开启或关闭半透明显示。[重写]
