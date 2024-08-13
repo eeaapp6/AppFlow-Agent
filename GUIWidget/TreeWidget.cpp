@@ -351,17 +351,17 @@ namespace GUI{
 
     void TreeWidget::updateSetupItems()
     {
-        //QTreeWidgetItem* setupItem = new QTreeWidgetItem();
-        //setupItem->setText(0, tr("Setup"));
-        //setupItem->setData(1, 0, -1);
-        //setupItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Setup));
-        //this->addTopLevelItem(setupItem);
+        QTreeWidgetItem* setupItem = new QTreeWidgetItem();
+        setupItem->setText(0, tr("Setup"));
+        setupItem->setData(1, 0, -1);
+        setupItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Setup));
+        this->addTopLevelItem(setupItem);
 
         //Interface::FITKOFSetUpCase* setUpCase = Interface::FITKOFSetUpCase::getInstance();
         //if (setUpCase == nullptr)return;
         //if (setUpCase->getCurrentSolver() == nullptr)return;
         //auto type = setUpCase->getCurrentSolver()->getSolverType();
-        //switch (type){
+        //switch (type) {
         //case Interface::FITKOFSolverEnum::SIMPLE:updateSetupSimpleItems(setupItem); break;
         //case Interface::FITKOFSolverEnum::Inter:updateSetupInterItems(setupItem); break;
         //}

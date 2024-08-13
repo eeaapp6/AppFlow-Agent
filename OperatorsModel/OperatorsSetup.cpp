@@ -26,8 +26,8 @@ namespace ModelOper
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return false;
 
-        //GUI::SetupWidget* widget = new GUI::SetupWidget(this, FITKAPP->getGlobalData()->getMainWindow());
-        //propertyWidget->setWidget(widget);
+        GUI::SetupWidget* widget = new GUI::SetupWidget(this, FITKAPP->getGlobalData()->getMainWindow());
+        propertyWidget->setWidget(widget);
 
         return true;
     }
