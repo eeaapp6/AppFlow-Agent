@@ -32,7 +32,7 @@ win32{
         -lFITKInterfaceMesh \
         -lFITKInterfaceMeshGen \
         -lFITKAdaptor \
-        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKFluidVTKGraphAdaptor \
         -lFITKRenderWindowVTK \
         -lFITKVTKAlgorithm \
         -lGUIFrame
@@ -51,7 +51,7 @@ win32{
         -lFITKInterfaceMesh \
         -lFITKInterfaceMeshGen \
         -lFITKAdaptor \
-        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKFluidVTKGraphAdaptor \
         -lFITKRenderWindowVTK \
         -lFITKVTKAlgorithm \
         -lGUIFrame
@@ -79,7 +79,7 @@ unix{
         -lFITKInterfaceMesh \
         -lFITKInterfaceMeshGen \
         -lFITKAdaptor \
-        -lFITKOCC2VTKGraphAdaptor \
+        -lFITKFluidVTKGraphAdaptor \
         -lFITKRenderWindowVTK \
         -lFITKVTKAlgorithm \
         -lGUIFrame
