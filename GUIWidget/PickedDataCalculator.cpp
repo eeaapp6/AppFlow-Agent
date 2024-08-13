@@ -146,8 +146,6 @@ namespace GraphData
             return;
         }
 
-        // 拾取状态数组。（加速数据判断包含）
-        QVector<int> flags;
         int len = 0;        
         Exchange::FITKFluidVTKCommons::ShapeAbsEnum sType;
 
@@ -179,9 +177,8 @@ namespace GraphData
             return;
         }
 
-        // OCC数据Id从1开始，需额外开一位数字。
-        flags.resize(len + 1);
-        flags.fill(0);
+        // 被拾取形状编号。
+        QVector<int> shapeIds;
 
         // 预处理拾取单元数据。（加速判断拾取子Id包含关系）
         int nCells = dataSet->GetNumberOfCells();
@@ -189,36 +186,39 @@ namespace GraphData
         cellPickedFlags.resize(nCells);
         cellPickedFlags.fill(0);
 
-        // 获取OCC数据Id。
+        // 获取形状数据Id。
         for (const int & index : cellsIndice)
         {
             int id = gobj->getShapeIdByVTKCellId(index, sType);
-            flags[id] = 1;
+            if (!shapeIds.contains(id))
+            {
+                shapeIds.push_back(id);
+            }
+
             cellPickedFlags[index] = 1;
         }
 
         // 保存拾取数据。
-        for (int i = 1; i <= len; i++)
+        for (int i = 0; i < shapeIds.count(); i++)
         {
-            if (flags[i])
+            int & shapeId = shapeIds[i];
+
+            // 检测当前OCC数据是否完全被选中。
+            QVector<int> subIds = gobj->getVTKCellIdsByShapeId(shapeId, sType);
+
+            bool isFullPicked = true;
+            for (const int & id : subIds)
             {
-                // 检测当前OCC数据是否完全被选中。
-                QVector<int> subIds = gobj->getVTKCellIdsByShapeId(i, sType);
+                isFullPicked &= (cellPickedFlags[id] == 1);
+            }
 
-                bool isFullPicked = true;
-                for (const int & id : subIds)
-                {
-                    isFullPicked &= (cellPickedFlags[id] == 1);
-                }
-
-                // 完全选中则视为被框选。
-                if (isFullPicked)
-                {
-                    m_pickedData->getPickedIds().push_back(i);
-                }
+            // 完全选中则视为被框选。
+            if (isFullPicked)
+            {
+                m_pickedData->getPickedIds().push_back(i);
             }
         }
 
-        flags.clear();
+        shapeIds.clear();
     }
 }
