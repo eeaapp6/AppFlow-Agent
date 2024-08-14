@@ -51,7 +51,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Box1:</string>
+         <string>Body 1:</string>
         </property>
        </widget>
       </item>
@@ -87,7 +87,7 @@
          </size>
         </property>
         <property name="text">
-         <string>Box2:</string>
+         <string>Body 2:</string>
         </property>
        </widget>
       </item>
