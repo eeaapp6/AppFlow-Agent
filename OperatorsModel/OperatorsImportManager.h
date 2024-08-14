@@ -25,6 +25,8 @@ namespace ModelOper
     private slots:
         ;
         void slotGeoImportFinish(bool result, int objID);
+
+        void slotMeshImportFinish(bool result, int objID);
     };
 
     class ImportReadThread :public Core::FITKThreadTask

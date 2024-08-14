@@ -58,7 +58,14 @@ namespace ModelOper {
             connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotGeoImportFinish(bool, int)));
         }
         else  if (_senderName == "actionImportMesh") {
-            fileDialog.getOpenFileName(_mainWindow, tr("Import Mesh"), workDir);
+            QString fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Mesh"), workDir);
+            if (fileName.isEmpty())return false;
+
+            ImportReadThread* importThread = new ImportReadThread();
+            importThread->_type = ImportType::ImportMesh;
+            importThread->_fileName = fileName;
+            pool->execTask(importThread);
+            connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotMeshImportFinish(bool, int)));
         }
         return true;
     }
@@ -83,6 +90,22 @@ namespace ModelOper {
                 meshSizeManager->appendDataObj(meshSizeGeo);
             }
         }
+
+        // 获取模型树控制器
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return;
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+
+        graphOper->updateGraph(objID);
+        treeOper->updateTree();
+        graphOper->reRender(true);
+    }
+
+    void OperatorsImportManager::slotMeshImportFinish(bool result, int objID)
+    {
+        if (result == false)return;
+        if (objID < 0)return;
 
         // 获取模型树控制器
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
