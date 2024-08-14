@@ -1,4 +1,12 @@
-﻿#ifndef _CylinderInfoWidget_H
+﻿/**
+ * 
+ * @file CylinderInfoWidget.h
+ * @brief cylinder create or edit widget
+ * @author BaGuijun (baguijun@163.com)
+ * @date 2024-08-14
+ * 
+ */
+#ifndef _CylinderInfoWidget_H
 #define _CylinderInfoWidget_H
 
 #include "GUIGeometryDialogAPI.h"
@@ -28,18 +36,54 @@ namespace GUI
     {
         Q_OBJECT;
     public:
-        //创建构造函数
+        /**
+         * @brief create constructor
+         * @param[i]  oper           operators
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         CylinderInfoWidget(EventOper::ParaWidgetInterfaceOperator* oper);
-        //编辑构造函数
+        /**
+         * @brief edit construectors
+         * @param[i]  obj            geometry objectors
+         * @param[i]  oper           operators
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         CylinderInfoWidget(Interface::FITKAbsGeoModelCylinder* obj, EventOper::ParaWidgetInterfaceOperator* oper);
+        /**
+         * @brief Destroy the Cylinder Info Widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         ~CylinderInfoWidget();
-
+        /**
+         * @brief init
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void init();
-        //重新设置基点
+        /**
+         * @brief Set the Origin Point object
+         * @param[i]  point          My Param doc
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void setOriginPoint(double* point);
-
+        /**
+         * @brief Set the Face Group Value object
+         * @param[i]  rowIndex       face group index
+         * @param[i]  facesId        face ids
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void setFaceGroupValue(int rowIndex, QList<int> facesId);
-
+        /**
+         * @brief Get the Current Geo Command object
+         * @return Interface::FITKAbsGeoCommand* 
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         Interface::FITKAbsGeoCommand* getCurrentGeoCommand();
     protected:
         /**
@@ -50,14 +94,44 @@ namespace GUI
         void closeEvent(QCloseEvent *event) override;
     private slots:
         ;
+        /**
+         * @brief origin points button clicked slot
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void on_pushButton_OriginPoint_clicked();
-
+        /**
+         * @brief cancel button clicked slot
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void on_pushButton_Cancel_clicked();
-
+        /**
+         * @brief create or edit button clicked slot
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void on_pushButton_CreateOrEdit_clicked();
     private:
+        /**
+         * @brief check value
+         * @return true success
+         * @return false fail
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         bool checkValue();
+        /**
+         * @brief Set the Data To Widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void setDataToWidget();
+        /**
+         * @brief Get the Data Form Widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void getDataFormWidget();
         /**
          * @brief 是否切换为创建模式
@@ -66,8 +140,23 @@ namespace GUI
          */
         void switchCreateModel(bool isCreate);
     private:
+        /**
+         * @brief current widget isCreate
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         bool _isCreate = false;
+        /**
+         * @brief ui object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         Ui::CylinderInfoWidget* _ui = nullptr;
+        /**
+         * @brief face group widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         CompFaceGroupWidget* _faceGroupWidget = nullptr;
     };
 }

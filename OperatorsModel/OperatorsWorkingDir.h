@@ -27,26 +27,27 @@ namespace ModelOper
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-04-06
          */
-        explicit OperatorsWorkingDir( ) = default;
+        explicit OperatorsWorkingDir() = default;
         /**
          * @brief Destroy the Oper G U I Working Dir object
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-04-06
          */
-        ~OperatorsWorkingDir( )         = default;
+        ~OperatorsWorkingDir() = default;
 
     private:
         /**
-         * @brief 弹出对话框
-         * @return true
-         * @return false
+         * @brief 执行
+         * @return true 成功
+         * @return false 失败
          * @author BaGuijun (baguijun@163.com)
-         * @date 2024-04-06
+         * @date 2024-08-14
          */
-        bool execGUI( ) override;
+        bool execGUI() override;
     };
-    //注册
+
+    // 注册
     Register2FITKOPeratorRepo(actionWorkingDir, OperatorsWorkingDir);
-}  // namespace GUIOper
+} // namespace GUIOper
 
 #endif

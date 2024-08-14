@@ -1,19 +1,54 @@
-﻿#ifndef _OperatorsGeoCubeManager_H
+﻿/**
+ * 
+ * @file OperatorsGeoCubeManager.h
+ * @brief 立方体几何操作器
+ * @author BaGuijun (baguijun@163.com)
+ * @date 2024-08-14
+ * 
+ */
+#ifndef _OperatorsGeoCubeManager_H
 #define _OperatorsGeoCubeManager_H
 
 #include "OperManagerBase.h"
 
 namespace ModelOper
 {
+    /**
+     * @brief 立方体几何操作器
+     * @author BaGuijun (baguijun@163.com)
+     * @date 2024-08-14
+     */
     class OperatorsGeoCubeManager :public OperManagerBase
     {
         Q_OBJECT;
     public:
+        /**
+         * @brief Construct a new Operators Geo Cube Manager object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         OperatorsGeoCubeManager();
+        /**
+         * @brief Destroy the Operators Geo Cube Manager object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         ~OperatorsGeoCubeManager();
-
+        /**
+         * @brief 执行
+         * @return true 成功
+         * @return false 失败
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         virtual bool execGUI();
-
+        /**
+         * @brief 执行结果处理
+         * @return true 成功
+         * @return false 失败
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         virtual bool execProfession();
         /**
          * @brief 其他事件执行
@@ -25,8 +60,17 @@ namespace ModelOper
         void eventProcess(int index, QVariant value = QVariant()) override;
     private slots:
         ;
+        /**
+         * @brief 基点选择槽函数
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void slotReselectBasePoint();
-
+        /**
+         * @brief 面组选择槽函数
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void slotSelectFaceGroup();
     };
 

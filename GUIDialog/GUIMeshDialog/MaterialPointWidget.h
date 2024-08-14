@@ -1,4 +1,12 @@
-﻿#ifndef _MaterialPointWidget_H
+﻿/**
+ * 
+ * @file MaterialPointWidget.h
+ * @brief 材料点界面
+ * @author BaGuijun (baguijun@163.com)
+ * @date 2024-08-14
+ * 
+ */
+#ifndef _MaterialPointWidget_H
 #define _MaterialPointWidget_H
 
 #include "GUIMeshDialogAPI.h"
@@ -14,15 +22,39 @@ namespace EventOper {
 
 namespace GUI
 {
+    /**
+     * @brief 材料点界面
+     * @author BaGuijun (baguijun@163.com)
+     * @date 2024-08-14
+     */
     class GUIMeshDialogAPI MaterialPointWidget :public GUIWidgetBase
     {
         Q_OBJECT;
     public:
+        /**
+         * @brief Construct a new Material Point Widget object
+         * @param[i]  oper           操作器对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         MaterialPointWidget(EventOper::ParaWidgetInterfaceOperator* oper);
+        /**
+         * @brief Destroy the Material Point Widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         ~MaterialPointWidget();
-
+        /**
+         * @brief 界面初始化
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void init();
-
+        /**
+         * @brief 初始化表格界面
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void initTableWidget();
     protected:
         /**
@@ -66,6 +98,12 @@ namespace GUI
          */
         void slotMatPointWidgetPointChange();
     private:
+        /**
+         * @brief 创建一个新的材料点名称
+         * @return QString 新名称
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         QString getPointNewName();
         /**
          * @brief 更新表格
@@ -117,7 +155,17 @@ namespace GUI
          */
         void updateGraph(bool isShow = true);
     private:
+        /**
+         * @brief ui对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         Ui::MaterialPointWidget* _ui = nullptr;
+        /**
+         * @brief 操作器对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
     };
 }

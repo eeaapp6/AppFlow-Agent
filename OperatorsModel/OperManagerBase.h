@@ -1,6 +1,7 @@
 ﻿/**
- * @file OperManagerBase.h
  * @brief 操作器基类
+ * @author BaGuijun (baguijun@163.com)
+ * @date 2024-08-14
  */
 #ifndef __OPERMANAGERBASE_H__
 #define __OPERMANAGERBASE_H__
@@ -15,20 +16,36 @@ namespace ModelOper
 {
     /**
      * @brief 操作器基类
+     * @author BaGuijun (baguijun@163.com)
+     * @date 2024-08-14
      */
     class OperatorsModelAPI OperManagerBase : public EventOper::ParaWidgetInterfaceOperator
     {
         Q_OBJECT
     public:
+        /**
+         * @brief Construct a new Oper Manager Base object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         OperManagerBase();
+        /**
+         * @brief Destroy the Oper Manager Base object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         virtual ~OperManagerBase();
     protected:
         /**
          * @brief 参数预处理
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
          */
         void preArgs() override;
         /**
-         * @brief 操作类型
+         * @brief 操作器类型
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
          */
         enum OperType
         {
@@ -42,9 +59,15 @@ namespace ModelOper
         } _operType{ None };
         /**
          * @brief 主界面
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
          */
         GUI::MainWindow* _mainWindow = nullptr;
-
+        /**
+         * @brief 触发对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         QString _senderName = "";
     };
 } // namespace ModelOper

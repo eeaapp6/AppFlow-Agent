@@ -1,4 +1,12 @@
-﻿#ifndef _CudeInfoWidget_H
+﻿/**
+ * 
+ * @file CudeInfoWidget.h
+ * @brief cude create or edit widget
+ * @author BaGuijun (baguijun@163.com)
+ * @date 2024-08-14
+ * 
+ */
+#ifndef _CudeInfoWidget_H
 #define _CudeInfoWidget_H
 
 #include "GUIGeometryDialogAPI.h"
@@ -23,41 +31,112 @@ namespace EventOper {
 namespace GUI
 {
     class CompFaceGroupWidget;
-
+    /**
+     * @brief cude create or edit widget
+     * @author BaGuijun (baguijun@163.com)
+     * @date 2024-08-14
+     */
     class GUIGeometryDialogAPI CudeInfoWidget :public GeometryWidgetBase
     {
         Q_OBJECT;
     public:
-        //创建构造函数
+        /**
+         * @brief create constructor
+         * @param[i]  oper           operators
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         CudeInfoWidget(EventOper::ParaWidgetInterfaceOperator* oper);
-        //编辑构造函数
+        /**
+         * @brief edit constructor
+         * @param[i]  obj            My Param doc
+         * @param[i]  oper           My Param doc
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         CudeInfoWidget(Interface::FITKAbsGeoModelBox* obj, EventOper::ParaWidgetInterfaceOperator* oper);
+        /**
+         * @brief Destroy the Cude Info Widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         ~CudeInfoWidget();
-
+        /**
+         * @brief init
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void init();
-        //重新设置基点
+        /**
+         * @brief Set the Basic Point of cude
+         * @param[i]  point          base point
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void setBasicPoint(double* point);
-
+        /**
+         * @brief Set the Face Group of cude
+         * @param[i]  rowIndex       faceGroup index
+         * @param[i]  facesId        faceIDS
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void setFaceGroupValue(int rowIndex, QList<int> facesId);
-
+        /**
+         * @brief get current geometry object
+         * @return Interface::FITKAbsGeoCommand* 
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         Interface::FITKAbsGeoCommand* getCurrentGeoCommand();
     protected:
         /**
-         * @brief 关闭事件重写
+         * @brief close event override
+         * @param[i]  event          event object
          * @author BaGuijun (baguijun@163.com)
-         * @date 2024-07-16
+         * @date 2024-08-14
          */
         void closeEvent(QCloseEvent *event) override;
     private slots:
         ;
+        /**
+         * @brief basePoint button clicled slot
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void on_pushButton_BasicPoint_clicked();
-
+        /**
+         * @brief cencel button clicked slot
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void on_pushButton_Cancel_clicked();
-
+        /**
+         * @brief create or edit button clicked slot
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void on_pushButton_CreateOrEdit_clicked();
     private:
+        /**
+         * @brief check widget value
+         * @return true  success
+         * @return false  fial
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         bool checkValue();
+        /**
+         * @brief Set the Data To Widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void setDataToWidget();
+        /**
+         * @brief Get the Data Form Widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void getDataFormWidget();
         /**
          * @brief 是否切换为创建模式
@@ -66,8 +145,23 @@ namespace GUI
          */
         void switchCreateModel(bool isCreate);
     private:
+        /**
+         * @brief current type isCreate
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         bool _isCreate = false;
+        /**
+         * @brief ui object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         Ui::CudeInfoWidget* _ui = nullptr;
+        /**
+         * @brief face group widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         CompFaceGroupWidget* _faceGroupWidget = nullptr;
     };
 }

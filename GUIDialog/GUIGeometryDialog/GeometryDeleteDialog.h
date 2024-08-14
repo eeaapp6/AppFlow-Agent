@@ -1,4 +1,12 @@
-﻿#ifndef GeometryDeleteDialog_H
+﻿/**
+ * 
+ * @file GeometryDeleteDialog.h
+ * @brief 几何删除对话框
+ * @author BaGuijun (baguijun@163.com)
+ * @date 2024-08-14
+ * 
+ */
+#ifndef GeometryDeleteDialog_H
 #define GeometryDeleteDialog_H
 
 #include "GUIGeometryDialogAPI.h"
@@ -18,11 +26,28 @@ namespace Interface {
 
 namespace GUI 
 {    
+    /**
+     * @brief 几何删除对话框
+     * @author BaGuijun (baguijun@163.com)
+     * @date 2024-08-14
+     */
     class GUIGeometryDialogAPI GeometryDeleteDialog : public Core::FITKDialog
     {
         Q_OBJECT;
     public:
+        /**
+         * @brief Construct a new Geometry Delete Dialog object
+         * @param[i]  obj            几何对象
+         * @param[i]  oper           操作器对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         GeometryDeleteDialog(Interface::FITKAbsGeoCommand* obj, EventOper::ParaWidgetInterfaceOperator* oper);
+        /**
+         * @brief Destroy the Geometry Delete Dialog object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         ~GeometryDeleteDialog();
     private slots:
         ;
@@ -39,8 +64,23 @@ namespace GUI
          */
         void on_pushButton_Cancel_clicked();
     protected:
+        /**
+         * @brief 操作器对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
+        /**
+         * @brief ui对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         Ui::GeometryDeleteDialog* _ui = nullptr;
+        /**
+         * @brief 几何数据对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         Interface::FITKAbsGeoCommand* _obj = nullptr;
     };
 }

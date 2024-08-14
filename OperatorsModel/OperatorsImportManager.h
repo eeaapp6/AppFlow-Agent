@@ -1,4 +1,12 @@
-﻿#ifndef _OperatorsImportManager_H
+﻿/**
+ * 
+ * @file OperatorsImportManager.h
+ * @brief 文件导入操作器
+ * @author BaGuijun (baguijun@163.com)
+ * @date 2024-08-14
+ * 
+ */
+#ifndef _OperatorsImportManager_H
 #define _OperatorsImportManager_H
 
 #include "OperManagerBase.h"
@@ -6,43 +14,120 @@
 
 namespace ModelOper
 {
+    /**
+     * @brief 导入类型
+     * @author BaGuijun (baguijun@163.com)
+     * @date 2024-08-14
+     */
     enum class ImportType {
-        ImportNone,
-        ImportGeo,
-        ImportMesh,
+        ImportNone,        ///空
+        ImportGeo,         ///几何
+        ImportMesh,        ///网格
     };
+    /**
+     * @brief 文件导入操作器
+     * @author BaGuijun (baguijun@163.com)
+     * @date 2024-08-14
+     */
     class OperatorsImportManager :public OperManagerBase
     {
         Q_OBJECT;
     public:
+        /**
+         * @brief Construct a new Operators Import Manager object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         OperatorsImportManager();
+        /**
+         * @brief Destroy the Operators Import Manager object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         ~OperatorsImportManager();
-
+        /**
+         * @brief 执行
+         * @return true 成功
+         * @return false 失败
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         virtual bool execGUI();
-
+        /**
+         * @brief 执行结果处理
+         * @return true 成功
+         * @return false 失败
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         virtual bool execProfession();
-
     private slots:
         ;
+        /**
+         * @brief 几何导入完成槽函数
+         * @param[i]  result         是否成功
+         * @param[i]  objID          几何id
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void slotGeoImportFinish(bool result, int objID);
-
+        /**
+         * @brief 网格导入完成槽函数
+         * @param[i]  result         是否成功
+         * @param[i]  objID          网格id
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void slotMeshImportFinish(bool result, int objID);
     };
 
+    /**
+     * @brief 导入文件读取线程
+     * @author BaGuijun (baguijun@163.com)
+     * @date 2024-08-14
+     */
     class ImportReadThread :public Core::FITKThreadTask
     {
         Q_OBJECT;
     public:
+        /**
+         * @brief Construct a new Import Read Thread object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         ImportReadThread() = default;
+        /**
+         * @brief Destroy the Import Read Thread object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         ~ImportReadThread() = default;
-
+        /**
+         * @brief 执行函数
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void run();
     signals:
         ;
+        /**
+         * @brief 导入完成信号
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void sigImportFinish(bool, int);
-
     public:
+        /**
+         * @brief 类型
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         ImportType _type = ImportType::ImportNone;
+        /**
+         * @brief 文件名称
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         QString _fileName = "";
     };
 

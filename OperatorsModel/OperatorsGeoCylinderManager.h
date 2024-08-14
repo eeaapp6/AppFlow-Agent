@@ -1,19 +1,54 @@
-﻿#ifndef _OperatorsGeoCylinderManager_H
+﻿/**
+ * 
+ * @file OperatorsGeoCylinderManager.h
+ * @brief 圆柱型几何操作器
+ * @author BaGuijun (baguijun@163.com)
+ * @date 2024-08-14
+ * 
+ */
+#ifndef _OperatorsGeoCylinderManager_H
 #define _OperatorsGeoCylinderManager_H
 
 #include "OperManagerBase.h"
 
 namespace ModelOper
 {
+    /**
+     * @brief 圆柱型几何操作器
+     * @author BaGuijun (baguijun@163.com)
+     * @date 2024-08-14
+     */
     class OperatorsGeoCylinderManager :public OperManagerBase
     {
         Q_OBJECT;
     public:
+        /**
+         * @brief Construct a new Operators Geo Cylinder Manager object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         OperatorsGeoCylinderManager();
+        /**
+         * @brief Destroy the Operators Geo Cylinder Manager object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         ~OperatorsGeoCylinderManager();
-
+        /**
+         * @brief 执行
+         * @return true 成功
+         * @return false 失败
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         virtual bool execGUI();
-
+        /**
+         * @brief 执行结果处理
+         * @return true 成功
+         * @return false 失败
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         virtual bool execProfession();
         /**
          * @brief 其他事件执行
@@ -23,11 +58,19 @@ namespace ModelOper
          * @date 2024-08-01
          */
         void eventProcess(int index, QVariant value) override;
-
     private slots:
         ;
+        /**
+         * @brief 原点选择事件
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void slotReselectOriginPoint();
-
+        /**
+         * @brief 面组选择事件
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void slotSelectFaceGroup();
     };
 

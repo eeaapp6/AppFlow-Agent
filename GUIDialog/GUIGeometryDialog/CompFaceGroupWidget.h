@@ -1,4 +1,12 @@
-﻿#ifndef _CompFaceGroupWidget_H
+﻿/**
+ * 
+ * @file CompFaceGroupWidget.h
+ * @brief 面组界面
+ * @author BaGuijun (baguijun@163.com)
+ * @date 2024-08-14
+ * 
+ */
+#ifndef _CompFaceGroupWidget_H
 #define _CompFaceGroupWidget_H
 
 #include "GUIWidget/GUIWidgetBase.h"
@@ -21,20 +29,56 @@ namespace EventOper {
 
 namespace GUI
 {
+    /**
+     * @brief 面组界面
+     * @author BaGuijun (baguijun@163.com)
+     * @date 2024-08-14
+     */
     class CompFaceGroupWidget :public GUIWidgetBase
     {
         Q_OBJECT;
     public:
-        //编辑构造函数
+        /**
+         * @brief Construct a new Comp Face Group Widget object
+         * @param[i]  paraent        父对象
+         * @param[i]  obj            几何数据对象
+         * @param[i]  oper           操作器对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         CompFaceGroupWidget(QWidget* paraent, Interface::FITKAbsGeoCommand* obj, EventOper::ParaWidgetInterfaceOperator* oper);
+        /**
+         * @brief Destroy the Comp Face Group Widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         ~CompFaceGroupWidget();
-
+        /**
+         * @brief 初始化
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void init();
-        //设置面组
+        /**
+         * @brief 设置面组
+         * @param[i]  rowIndex       面组所对应的行数
+         * @param[i]  facesId        面id组
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void setFaceGroupValue(int rowIndex, QList<int> facesId);
-        //获取当前数据对象
+        /**
+         * @brief 获取当前几何数据对象
+         * @return Interface::FITKAbsGeoCommand* 几何数据对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         Interface::FITKAbsGeoCommand* getCurrentGeoCommand();
-
+        /**
+         * @brief Set the Data To Widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void setDataToWidget();
         /**
          * @brief 清除所有高亮
@@ -44,8 +88,17 @@ namespace GUI
         void clearGraphHight();
     private slots:
         ;
+        /**
+         * @brief tableWidget clear slot
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void on_pushButton_Clear_clicked();
-
+        /**
+         * @brief tableWidget add slot
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void on_pushButton_Add_clicked();
         /**
          * @brief 表格点击事件
@@ -60,6 +113,11 @@ namespace GUI
          * @date 2024-07-16
          */
         void slotEditNameStart();
+        /**
+         * @brief face group rename finish slot
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void slotEditNameFinish();
         /**
          * @brief 面组界面ok点击事件
@@ -80,12 +138,28 @@ namespace GUI
          */
         void slotFaceWidgetDeleteClicked();
     private:
+        /**
+         * @brief check tableWidget value
+         * @return true success
+         * @return false fail
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         bool checkValue();
         //更新表格标题
         //void updateTableTitle();
-        //初始化表格
+        /**
+         * @brief init table Widget
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void initTableWidget();
-
+        /**
+         * @brief Set the All Face Group isSelect
+         * @param[i]  type           isSelect
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void setAllFaceGroupSelect(bool type);
         /**
          * @brief 刷新面组界面记录的位置
@@ -101,8 +175,23 @@ namespace GUI
          */
         void clearTableWidget();
     private:
+        /**
+         * @brief geometry data object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         Interface::FITKAbsGeoCommand* _obj = nullptr;
+        /**
+         * @brief ui object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         Ui::CompFaceGroupWidget* _ui = nullptr;
+        /**
+         * @brief operators object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
     };
 }
