@@ -41,7 +41,10 @@ namespace ModelOper
             }
             if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
 
-            meshDriver->setValue("WorkDir", workDir);
+            //网格划分路径指定
+            QString meshGenDir = workDir + "/mesh";
+
+            meshDriver->setValue("WorkDir", meshGenDir);
             meshDriver->setValue("HasGeoMeshSize", manager->getDataCount() > 0);
             meshDriver->startMesher();
             connect(meshDriver, &Interface::FITKAbstractMesherDriver::mesherFinished, [this] {
