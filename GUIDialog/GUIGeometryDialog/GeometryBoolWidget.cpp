@@ -137,10 +137,15 @@ namespace GUI
         _obj = geoBoolOper;
         //几何关联的网格区域尺寸
         createMeshSizeGeo();
-
         geometryData->appendDataObj(geoBoolOper);
 
+        //隐藏原模型
+        geo1->enable(false);
+        geo2->enable(false);
+
         if (_oper) {
+            _oper->setArgs("geo1ObjID", geo1->getDataObjectID());
+            _oper->setArgs("geo2ObjID", geo2->getDataObjectID());
             _oper->setArgs("objID", geoBoolOper->getDataObjectID());
             _oper->execProfession();
 

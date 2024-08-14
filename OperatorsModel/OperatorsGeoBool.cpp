@@ -82,9 +82,13 @@ namespace ModelOper {
 
         _mainWindow->getPropertyWidget()->init();
 
-        int objID = -1;
+        int objID, geo1ObjID, geo2ObjID = -1;
+        this->argValue("geo1ObjID", geo1ObjID);
+        this->argValue("geo2ObjID", geo2ObjID);
         this->argValue("objID", objID);
 
+        graphOper->updateGraph(geo1ObjID);
+        graphOper->updateGraph(geo2ObjID);
         graphOper->updateGraph(objID);
         treeOper->updateTree();
         graphOper->reRender(true);
