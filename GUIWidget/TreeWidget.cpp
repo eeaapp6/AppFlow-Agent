@@ -11,9 +11,9 @@
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Kernel/FITKCore/FITKActionOperator.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"/*
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSetUpCase.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractSolver.h"*/
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFEnum.hpp"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolverData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKAbstractGeoModel.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
@@ -357,14 +357,14 @@ namespace GUI{
         setupItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Setup));
         this->addTopLevelItem(setupItem);
 
-        //Interface::FITKOFSetUpCase* setUpCase = Interface::FITKOFSetUpCase::getInstance();
-        //if (setUpCase == nullptr)return;
-        //if (setUpCase->getCurrentSolver() == nullptr)return;
-        //auto type = setUpCase->getCurrentSolver()->getSolverType();
-        //switch (type) {
-        //case Interface::FITKOFSolverEnum::SIMPLE:updateSetupSimpleItems(setupItem); break;
-        //case Interface::FITKOFSolverEnum::Inter:updateSetupInterItems(setupItem); break;
-        //}
+        Interface::FITKOFSolverData* solverData = FITKAPP->getGlobalData()->getPostData<Interface::FITKOFSolverData>();
+        if (solverData == nullptr)return;
+
+        auto type = solverData->getSolverType();
+        switch (type) {
+        case Interface::FITKOFPostProcessEnum::FITKOFSolverType::SIMPLE:updateSetupSimpleItems(setupItem); break;
+        case Interface::FITKOFPostProcessEnum::FITKOFSolverType::Inter:updateSetupInterItems(setupItem); break;
+        }
     }
 
     void TreeWidget::updateMeshLocalItems(QTreeWidgetItem* parentItem)

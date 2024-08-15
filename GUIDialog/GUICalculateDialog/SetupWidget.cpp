@@ -3,12 +3,17 @@
 
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
 
-//#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSetUpCase.h"
-//#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractSolver.h"
+#include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
+#include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowSolverProcessFactory.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolverData.h"
 
 #include <QButtonGroup>
 
-#define SetupTypePos Qt::UserRole
+#define SetupTypePos "setupWidgetSolverTypePost"
+#define SetupSolverPos Qt::UserRole+1
+#define SetupType Interface::FITKOFPostProcessEnum::FITKOFSolverFiltersType
 
 namespace GUI
 {
@@ -18,9 +23,10 @@ namespace GUI
         _ui = new Ui::SetupWidget();
         _ui->setupUi(this);
 
-        /*_setUpCase = Interface::FITKOFSetUpCase::getInstance();*/
-
         init();
+
+        _solverFactory = dynamic_cast<Interface::FITKFlowSolverProcessFactory*>
+            (FITKAPP->getComponents()->getComponentByName("FITKFlowSolverProcess"));
     }
 
     SetupWidget::~SetupWidget()
@@ -41,6 +47,23 @@ namespace GUI
         buttonGroup->addButton(_ui->radioButton_Incompressible);
         buttonGroup->addButton(_ui->radioButton_Compressible);
 
+        _ui->radioButton_SteadyState->setProperty(SetupTypePos, QVariant::fromValue(SetupType::SteadyState));
+        _ui->radioButton_Transient->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Transient));
+        _ui->radioButton_Compressible->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Compressible));
+        _ui->radioButton_Incompressible->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Incompressible));
+        _ui->checkBox_Turbulence->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Turbulences));
+        _ui->checkBox_HeatTransfer->setProperty(SetupTypePos, QVariant::fromValue(SetupType::HeatTransfer));
+        _ui->checkBox_Radiation->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Radiation));
+        _ui->checkBox_Buoyancy->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Buoyancy));
+        _ui->checkBox_MRF->setProperty(SetupTypePos, QVariant::fromValue(SetupType::MRF));
+        _ui->checkBox_SRF->setProperty(SetupTypePos, QVariant::fromValue(SetupType::SRF));
+        _ui->checkBox_Porosity->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Porosity));
+        _ui->checkBox_Multiphase->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Multiphase));
+        _ui->checkBox_Species->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Spcies));
+        _ui->checkBox_Lagrangian->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Lagrangian));
+        _ui->checkBox_DynamicMesh->setProperty(SetupTypePos, QVariant::fromValue(SetupType::DynamicMesh));
+        _ui->checkBox_UserDefined->setProperty(SetupTypePos, QVariant::fromValue(SetupType::UserDefined));
+
         _ui->tableWidget->setRowCount(0);
         _ui->tableWidget->setColumnCount(1);
         //自适应
@@ -55,6 +78,12 @@ namespace GUI
         initCurrentType();
         initSetupType();
         updateTableWidget();
+
+        QList<QAbstractButton*> radioList = this->findChildren<QAbstractButton*>();
+        for (auto radio : radioList) {
+            if (radio == nullptr)continue;
+            connect(radio, SIGNAL(clicked()), this, SLOT(slotTypeSelect()));
+        }
     }
 
     void SetupWidget::updateTableWidget()
@@ -62,58 +91,39 @@ namespace GUI
         _ui->tableWidget->clear();
         _ui->tableWidget->setRowCount(0);
 
-        //for (int i = 0; i < _types.size(); i++) {
-        //    Interface::FITKOFSolverEnum::FITKOFSolverType type = _types[i];
-        //    QString name = typeToName(type);
-        //    QTableWidgetItem* item = new QTableWidgetItem(name);
-        //    item->setData(SetupTypePos, QVariant::fromValue(type));
-        //    _ui->tableWidget->insertRow(i);
-        //    _ui->tableWidget->setItem(i, 0, item);
-        //}
-    }
-
-    void SetupWidget::on_radioButton_SteadyState_clicked()
-    {
-
-    }
-
-    void SetupWidget::on_radioButton_Transient_clicked()
-    {
-
-    }
-
-    void SetupWidget::on_radioButton_Incompressible_clicked()
-    {
-
-    }
-
-    void SetupWidget::on_radioButton_Compressible_clicked()
-    {
-
+        for (int i = 0; i < _types.size(); i++) {
+            Interface::FITKOFPostProcessEnum::FITKOFSolverType type = _types[i];
+            QString name = typeToName(type);
+            QTableWidgetItem* item = new QTableWidgetItem(name);
+            item->setData(SetupSolverPos, QVariant::fromValue(type));
+            _ui->tableWidget->insertRow(i);
+            _ui->tableWidget->setItem(i, 0, item);
+        }
     }
 
     void SetupWidget::on_pushButton_Select_clicked()
     {
-        //QTableWidgetItem* currentItem = _ui->tableWidget->currentItem();
-        //if (currentItem == nullptr)return;
-        //_ui->label_CurrentSolver->setText(currentItem->text());
-        //_setUpCase->createSolver(currentItem->data(SetupTypePos).value<Interface::FITKOFSolverEnum::FITKOFSolverType>());
+        if (_solverFactory == nullptr)return;
+        QTableWidgetItem* currentItem = _ui->tableWidget->currentItem();
+        if (currentItem == nullptr)return;
+        _ui->label_CurrentSolver->setText(currentItem->text());
+        _solverFactory->setSolverType(currentItem->data(SetupSolverPos).value<Interface::FITKOFPostProcessEnum::FITKOFSolverType>());
 
-        //if (_oper) {
-        //    _oper->execProfession();
-        //}
+        if (_oper) {
+            _oper->execProfession();
+        }
     }
 
-    //QString SetupWidget::typeToName(Interface::FITKOFPostProcessEnum::FITKOFSolverType type)
-    //{
-    //    QString name = "";
-    //    switch (type) {
-    //    case Interface::FITKOFPostProcessEnum::FITKOFSolverType::NoneSolver: break;
-    //    case Interface::FITKOFPostProcessEnum::FITKOFSolverType::SIMPLE: name = tr("SIMPLE"); break;
-    //    case Interface::FITKOFPostProcessEnum::FITKOFSolverType::Inter: name = tr("Inter"); break;
-    //    }
-    //    return name;
-    //}
+    QString SetupWidget::typeToName(Interface::FITKOFPostProcessEnum::FITKOFSolverType type)
+    {
+        QString name = "";
+        switch (type) {
+        case Interface::FITKOFPostProcessEnum::FITKOFSolverType::NoneSolver: break;
+        case Interface::FITKOFPostProcessEnum::FITKOFSolverType::SIMPLE: name = tr("SIMPLE"); break;
+        case Interface::FITKOFPostProcessEnum::FITKOFSolverType::Inter: name = tr("Inter"); break;
+        }
+        return name;
+    }
 
     void SetupWidget::initSetupType()
     {
@@ -123,11 +133,28 @@ namespace GUI
 
     void SetupWidget::initCurrentType()
     {
-        //QString name = "";
-        //if (_setUpCase->getCurrentSolver()) {
-        //    name = typeToName(_setUpCase->getCurrentSolver()->getSolverType());
-        //}
-        //_ui->label_CurrentSolver->setText(name);
+        Interface::FITKOFSolverData* solver = FITKAPP->getGlobalData()->getPostData<Interface::FITKOFSolverData>();
+        if (solver == nullptr)return;
+        QString name = typeToName(solver->getSolverType());
+        _ui->label_CurrentSolver->setText(name);
+    }
+
+    void SetupWidget::slotTypeSelect()
+    {
+        if (_solverFactory == nullptr)return;
+        _types.clear();
+        QList<SetupType> typeList = {};
+        QList<QAbstractButton*> radioList = this->findChildren<QAbstractButton*>();
+        for (auto radio : radioList) {
+            if (radio == nullptr)continue;
+            if (radio->isChecked()) {
+                typeList.append(radio->property(SetupTypePos).value<SetupType>());
+            }
+        }
+
+        _types = _solverFactory->getSolverTypeByFilters(typeList);
+
+        updateTableWidget();
     }
 }
 

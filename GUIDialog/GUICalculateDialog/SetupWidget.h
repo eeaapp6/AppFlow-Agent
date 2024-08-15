@@ -10,15 +10,15 @@
 #define _SetupWidget_H
 
 #include "GUICalculateDialogAPI.h"
-#include "GUIWidget/GUIWidgetBase.h"/*
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFEnum.hpp"*/
+#include "GUIWidget/GUIWidgetBase.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFEnum.hpp"
 
 namespace Ui {
     class SetupWidget;
 }
 
 namespace Interface {
-    class FITKOFSetUpCase;
+    class FITKFlowSolverProcessFactory;
 }
 
 namespace EventOper {
@@ -70,7 +70,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        /*QString typeToName(Interface::FITKOFPostProcessEnum::FITKOFSolverType type);*/
+        QString typeToName(Interface::FITKOFPostProcessEnum::FITKOFSolverType type);
         /**
          * @brief 初始化设置类型
          * @author BaGuijun (baguijun@163.com)
@@ -84,18 +84,26 @@ namespace GUI
          */
         void initCurrentType();
     private slots:
-        void on_radioButton_SteadyState_clicked();
-
-        void on_radioButton_Transient_clicked();
-
-        void on_radioButton_Incompressible_clicked();
-
-        void on_radioButton_Compressible_clicked();
-
+        ;
+        /**
+         * @brief选择按钮点击事件
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
         void on_pushButton_Select_clicked();
-
+        /**
+         * @brief求解器类型选择槽函数
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        void slotTypeSelect();
     private:
-        Interface::FITKOFSetUpCase* _setUpCase = nullptr;
+        /**
+         * @brief 求解器工厂
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        Interface::FITKFlowSolverProcessFactory* _solverFactory = nullptr;
         /**
          * @brief 操作器对象
          * @author BaGuijun (baguijun@163.com)
@@ -107,8 +115,13 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        Ui::SetupWidget* _ui = nullptr;/*
-        QList<Interface::FITKOFPostProcessEnum::FITKOFSolverType> _types = {};*/
+        Ui::SetupWidget* _ui = nullptr;
+        /**
+         * @brief 求解器类型
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        QList<Interface::FITKOFPostProcessEnum::FITKOFSolverType> _types = {};
     };
 }
 
