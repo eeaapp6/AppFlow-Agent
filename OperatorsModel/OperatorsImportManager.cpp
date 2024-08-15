@@ -130,7 +130,7 @@ namespace ModelOper {
             auto geoObj = geoFactory->createCommandT<Interface::FITKAbsGeoModelImport>(Interface::FITKGeoEnum::FITKGeometryComType::FGTImport);
             if (geoObj == nullptr)return;
             geoObj->setFileName(_fileName);
-            bool result = geoObj->update();
+            
 
             if (geoObj->getDataObjectName().isEmpty()) {
                 QFileInfo fileInfo(_fileName);
@@ -139,6 +139,7 @@ namespace ModelOper {
                 geoObj->setDataObjectName(name);
             }
             geometryData->appendDataObj(geoObj);
+			bool result = geoObj->update();
 
             emit sigImportFinish(result, geoObj->getDataObjectID());
             break;
