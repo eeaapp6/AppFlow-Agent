@@ -10,6 +10,7 @@
 #define _GUIWidgetInt_H
 
 #include "GUICalculateDialogAPI.h"
+#include "GUICalculateWidgetBase.h"
 #include <QSpinBox>
 
 namespace Interface {
@@ -24,7 +25,7 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-14
      */
-    class GUICalculateDialogAPI GUIWidgetInt :public QSpinBox
+    class GUICalculateDialogAPI GUIWidgetInt :public QSpinBox, public GUICalculateSubWidgetBase
     {
         Q_OBJECT;
     public:

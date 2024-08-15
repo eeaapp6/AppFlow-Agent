@@ -10,6 +10,7 @@
 #define _GUIWidgetBool_H
 
 #include "GUICalculateDialogAPI.h"
+#include "GUICalculateWidgetBase.h"
 #include <QCheckBox>
 
 namespace Interface {
@@ -24,7 +25,7 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-14
      */
-    class GUICalculateDialogAPI GUIWidgetBool :public QCheckBox
+    class GUICalculateDialogAPI GUIWidgetBool :public QCheckBox, public GUICalculateSubWidgetBase
     {
         Q_OBJECT;
     public:

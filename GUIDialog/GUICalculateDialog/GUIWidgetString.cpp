@@ -5,8 +5,8 @@
 
 namespace GUI
 {
-    GUIWidgetString::GUIWidgetString(Interface::FITKFlowDataBase * data, QWidget * parent):
-        QLineEdit(parent)
+    GUIWidgetString::GUIWidgetString(Interface::FITKFlowDataBase * data, QWidget * parent) :
+        QLineEdit(parent), GUICalculateSubWidgetBase(parent)
     {
         _value = dynamic_cast<Interface::FITKFlowDataString*>(data);
         init();

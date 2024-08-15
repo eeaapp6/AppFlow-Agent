@@ -33,6 +33,12 @@ SOURCES += \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \
+    $$PWD/TurbulenceWidget.ui \
+    $$PWD/TransportWidget.ui \
+    $$PWD/DiscretizationWidget.ui \
+    $$PWD/SolutionWidget.ui \
+    $$PWD/BoundaryWidget.ui \
+    $$PWD/InitialWidget.ui \
 
  RESOURCES += \
     $$PWD/../../Resources/Resources.qrc

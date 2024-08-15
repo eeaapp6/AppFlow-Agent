@@ -6,7 +6,7 @@
 namespace GUI
 {
     GUIWidgetInt::GUIWidgetInt(Interface::FITKFlowDataBase * data, QWidget * parent):
-        QSpinBox(parent)
+        QSpinBox(parent), GUICalculateSubWidgetBase(parent)
     {
         _value = dynamic_cast<Interface::FITKFlowDataInt*>(data);
         init();

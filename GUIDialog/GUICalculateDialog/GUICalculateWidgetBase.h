@@ -16,6 +16,10 @@ namespace EventOper {
     class ParaWidgetInterfaceOperator;
 }
 
+namespace Interface {
+    class FITKOFSolverData;
+}
+
 namespace GUI
 {
     /**
@@ -41,6 +45,12 @@ namespace GUI
          * @date 2024-08-14
          */
         ~GUICalculateWidgetBase();
+        /**
+         * @brief 更新表格
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        virtual void updateTableWidget();
     protected:
         /**
          * @brief 操作器对象
@@ -48,6 +58,21 @@ namespace GUI
          * @date 2024-08-14
          */
         EventOper::ParaWidgetInterfaceOperator*  _oper = nullptr;
+        /**
+         * @brief 求解器数据对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        Interface::FITKOFSolverData* _solverData = nullptr;
+    };
+    //---------------------------------------------------------------------------------------------------------------
+    class GUICalculateDialogAPI GUICalculateSubWidgetBase
+    {
+    public:
+        GUICalculateSubWidgetBase(QWidget* parent = nullptr);
+        virtual ~GUICalculateSubWidgetBase();
+    protected:
+        GUICalculateWidgetBase* _calculateWdiget = nullptr;
     };
 }
 #endif

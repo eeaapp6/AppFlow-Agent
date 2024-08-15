@@ -10,6 +10,7 @@
 #define _GUIWidgetComBox_H
 
 #include "GUICalculateDialogAPI.h"
+#include "GUICalculateWidgetBase.h"
 #include <QComboBox>
 
 namespace Interface {
@@ -24,7 +25,7 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-14
      */
-    class GUICalculateDialogAPI GUIWidgetComBox :public QComboBox
+    class GUICalculateDialogAPI GUIWidgetComBox :public QComboBox, public GUICalculateSubWidgetBase
     {
         Q_OBJECT;
     public:
