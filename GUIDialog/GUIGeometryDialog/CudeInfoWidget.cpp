@@ -110,9 +110,9 @@ namespace GUI {
 
     void CudeInfoWidget::on_pushButton_BasicPoint_clicked()
     {
-        if (_oper) {
-            _oper->eventProcess(0);
-        }
+        //if (_oper) {
+        //    _oper->eventProcess(0);
+        //}
     }
 
     void CudeInfoWidget::on_pushButton_Cancel_clicked()
