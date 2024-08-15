@@ -12,6 +12,10 @@
 #include "GUICalculateDialogAPI.h"
 #include "GUICalculateWidgetBase.h"
 
+namespace Ui {
+    class InitialWidget;
+}
+
 namespace EventOper {
     class ParaWidgetInterfaceOperator;
 }
@@ -41,6 +45,25 @@ namespace GUI
          * @date 2024-08-14
          */
         ~InitialWidget();
+        /**
+         * @brief 初始化
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        void init();
+        /**
+         * @brief 更新表格
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        virtual void updateTableWidget() override;
+    private:
+        /**
+         * @brief ui
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        Ui::InitialWidget* _ui = nullptr;
     };
 }
 #endif

@@ -103,9 +103,9 @@ namespace GUI {
 
     void SphereInfoWidget::on_pushButton_CenterPoint_clicked()
     {
-        if (_oper) {
-            _oper->eventProcess(0);
-        }
+        //if (_oper) {
+        //    _oper->eventProcess(0);
+        //}
     }
 
     void SphereInfoWidget::on_pushButton_Cancel_clicked()

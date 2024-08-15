@@ -10,6 +10,7 @@
 #define _GUIWidgetString_H
 
 #include "GUICalculateDialogAPI.h"
+#include "GUICalculateWidgetBase.h"
 #include <QLineEdit>
 
 namespace Interface {
@@ -19,7 +20,7 @@ namespace Interface {
 
 namespace GUI
 {
-    class GUICalculateDialogAPI GUIWidgetString :public QLineEdit
+    class GUICalculateDialogAPI GUIWidgetString :public QLineEdit, public GUICalculateSubWidgetBase
     {
         Q_OBJECT;
     public:

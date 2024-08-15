@@ -10,6 +10,7 @@
 #define _GUIWidgetDouble_H
 
 #include "GUICalculateDialogAPI.h"
+#include "GUICalculateWidgetBase.h"
 #include <QDoubleSpinBox>
 
 namespace Interface {
@@ -24,7 +25,7 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-14
      */
-    class GUICalculateDialogAPI GUIWidgetDouble :public QDoubleSpinBox
+    class GUICalculateDialogAPI GUIWidgetDouble :public QDoubleSpinBox, public GUICalculateSubWidgetBase
     {
         Q_OBJECT;
     public:

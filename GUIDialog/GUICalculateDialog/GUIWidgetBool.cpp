@@ -6,7 +6,7 @@
 namespace GUI
 {
     GUIWidgetBool::GUIWidgetBool(Interface::FITKFlowDataBase * data, QWidget * parent) :
-        QCheckBox(parent)
+        QCheckBox(parent), GUICalculateSubWidgetBase(parent)
     {
         _value = dynamic_cast<Interface::FITKFlowDataBool*>(data);
 
