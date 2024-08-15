@@ -6,7 +6,6 @@
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolverData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTurbulenceData.h"
 
 namespace GUI
 {
@@ -45,7 +44,7 @@ namespace GUI
     void TurbulenceWidget::updateTableWidget()
     {
         if (_solverData == nullptr)return;
-        Interface::FITKOFTurbulenceData* turData = _solverData->getTurbulence();
+        auto turData = _solverData->getSolverSettingData(Interface::FITKOFPostProcessEnum::FITKOFSolverRequiresSettingType::Turbulence);
         if (turData == nullptr)return;
 
         //清空表格
