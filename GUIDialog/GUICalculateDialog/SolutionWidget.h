@@ -57,6 +57,9 @@ namespace GUI
          * @date 2024-08-14
          */
         virtual void updateTableWidget() override;
+    protected:
+        void showEvent(QShowEvent *event);
+        void resizeEvent(QResizeEvent *event);
     private:
         /**
          * @brief ui

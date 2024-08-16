@@ -1,5 +1,6 @@
 ﻿#include "TurbulenceWidget.h"
 #include "ui_TurbulenceWidget.h"
+#include "compCalLineWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
