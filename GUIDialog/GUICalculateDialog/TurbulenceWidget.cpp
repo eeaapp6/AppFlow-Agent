@@ -5,6 +5,7 @@
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolverData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTurbulenceData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
 
 #include <QButtonGroup>
@@ -16,6 +17,12 @@ namespace GUI
     {
         _ui = new Ui::TurbulenceWidget();
         _ui->setupUi(this);
+
+        if (_solverData) {
+            auto data = _solverData->getSolverSettingData(Interface::FITKOFPostProcessEnum::FITKOFSolverRequiresSettingType::Turbulence);
+            _turData = dynamic_cast<Interface::FITKOFTurbulenceData*>(data);
+        }
+
         init();
     }
 
@@ -50,62 +57,96 @@ namespace GUI
 
     void TurbulenceWidget::updateWidget()
     {
-        if (_solverData == nullptr)return;
-        auto turData = _solverData->getSolverSettingData(Interface::FITKOFPostProcessEnum::FITKOFSolverRequiresSettingType::Turbulence);
-        if (turData == nullptr)return;
+        if (_turData == nullptr)return;
+
+        _ui->checkBox_Enable->setChecked(_turData->isEnableTurbulenceEquations());
+
+        auto type = _turData->getTurbulenceModelingType();
+        switch (type) {
+        case Interface::FITKOFSolverTurbulenceEnum::Laminar:_ui->radioButton_Laminar->setChecked(true); break;
+        case Interface::FITKOFSolverTurbulenceEnum::RAS: {
+            _ui->radioButton_RANS->setChecked(true);
+            _ui->widget_sub->show();
+            break;
+        }
+        case Interface::FITKOFSolverTurbulenceEnum::LES:{
+            _ui->radioButton_LES->setChecked(true);
+            _ui->widget_sub->show();
+            break;
+        }
+        }
+    }
+
+    void TurbulenceWidget::on_checkBox_Enable_clicked()
+    {
+        if (_turData == nullptr)return;
+        _turData->setEnableTurbulenceEquations(_ui->checkBox_Enable->isChecked());
     }
 
     void TurbulenceWidget::slotRadioButtonClicked()
     {
+        if (_turData == nullptr)return;
+
+        Interface::FITKOFSolverTurbulenceEnum::FITKOFTurbulenceModelType type;
         if (_radioGroup->checkedButton() == _ui->radioButton_Laminar) {
             _ui->widget_sub->hide();
+            type = Interface::FITKOFSolverTurbulenceEnum::Laminar;
         }
-        else {
+        else if(_radioGroup->checkedButton() == _ui->radioButton_RANS){
             _ui->widget_sub->show();
             _ui->checkBox_Enable->setChecked(false);
+            _turData->setEnableTurbulenceEquations(false);
+            type = Interface::FITKOFSolverTurbulenceEnum::RAS;
+        }
+        else if (_radioGroup->checkedButton() == _ui->radioButton_LES) {
+            _ui->widget_sub->show();
+            _ui->checkBox_Enable->setChecked(false);
+            _turData->setEnableTurbulenceEquations(false);
+            type = Interface::FITKOFSolverTurbulenceEnum::LES;
+        }
+
+        _turData->setTurbulenceModelingType(type);
+    }
+
+    void TurbulenceWidget::on_comboBox_Model_activated(int index)
+    {
+        QLayoutItem* item;
+        while ((item = _ui->verticalLayout_ModelSub->takeAt(0)) != nullptr) {
+            if (QWidget* widget = item->widget()) {
+                widget->deleteLater(); // 推荐使用 deleteLater，以确保小部件在适当时机被删除
+            }
+            delete item; // 删除布局项
         }
     }
-}
 
-
-void GUI::TurbulenceWidget::on_comboBox_Model_activated(int index)
-{
-    QLayoutItem* item;
-    while ((item = _ui->verticalLayout_ModelSub->takeAt(0)) != nullptr) {
-        if (QWidget* widget = item->widget()) {
-            widget->deleteLater(); // 推荐使用 deleteLater，以确保小部件在适当时机被删除
+    void TurbulenceWidget::on_pushButton_ModelUnfold_clicked()
+    {
+        if (_ui->pushButton_ModelUnfold->isChecked()) {
+            _ui->widget_ModelSub->show();
         }
-        delete item; // 删除布局项
-    }
-}
-
-void GUI::TurbulenceWidget::on_pushButton_ModelUnfold_clicked()
-{
-    if (_ui->pushButton_ModelUnfold->isChecked()) {
-        _ui->widget_ModelSub->show();
-    }
-    else {
-        _ui->widget_ModelSub->hide();
-    }
-}
-
-void GUI::TurbulenceWidget::on_comboBox_Delta_activated(int index)
-{
-    QLayoutItem* item;
-    while ((item = _ui->verticalLayout_DeltaSub->takeAt(0)) != nullptr) {
-        if (QWidget* widget = item->widget()) {
-            widget->deleteLater(); 
+        else {
+            _ui->widget_ModelSub->hide();
         }
-        delete item; 
     }
-}
 
-void GUI::TurbulenceWidget::on_pushButton_DeltaUnfold_clicked()
-{
-    if (_ui->pushButton_DeltaUnfold->isChecked()) {
-        _ui->widget_DeltaSub->show();
+    void TurbulenceWidget::on_comboBox_Delta_activated(int index)
+    {
+        QLayoutItem* item;
+        while ((item = _ui->verticalLayout_DeltaSub->takeAt(0)) != nullptr) {
+            if (QWidget* widget = item->widget()) {
+                widget->deleteLater();
+            }
+            delete item;
+        }
     }
-    else {
-        _ui->widget_DeltaSub->hide();
+
+    void TurbulenceWidget::on_pushButton_DeltaUnfold_clicked()
+    {
+        if (_ui->pushButton_DeltaUnfold->isChecked()) {
+            _ui->widget_DeltaSub->show();
+        }
+        else {
+            _ui->widget_DeltaSub->hide();
+        }
     }
 }

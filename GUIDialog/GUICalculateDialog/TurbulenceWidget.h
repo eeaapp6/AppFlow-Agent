@@ -22,6 +22,10 @@ namespace EventOper {
     class ParaWidgetInterfaceOperator;
 }
 
+namespace Interface {
+    class FITKOFTurbulenceData;
+}
+
 namespace GUI
 {
     /**
@@ -61,6 +65,7 @@ namespace GUI
         void updateWidget();
     private slots:
         ;
+        void on_checkBox_Enable_clicked();
         /**
          * @brief RadioButton按钮点击事件
          * @author BaGuijun (baguijun@163.com)
@@ -74,7 +79,6 @@ namespace GUI
         void on_comboBox_Delta_activated(int index);
 
         void on_pushButton_DeltaUnfold_clicked();
-
     private:
         /**
          * @brief ui
@@ -88,6 +92,12 @@ namespace GUI
          * @date 2024-08-14
          */
         QButtonGroup* _radioGroup = nullptr;
+        /**
+         * @brief 湍流数据对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        Interface::FITKOFTurbulenceData* _turData = nullptr;
     };
 }
 #endif
