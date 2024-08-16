@@ -39,18 +39,14 @@ namespace GUI
 
     void SetupWidget::init()
     {
-        QButtonGroup* buttonGroup = new QButtonGroup(this);
-        buttonGroup->addButton(_ui->radioButton_SteadyState);
-        buttonGroup->addButton(_ui->radioButton_Transient);
-
-        buttonGroup = new QButtonGroup(this);
-        buttonGroup->addButton(_ui->radioButton_Incompressible);
-        buttonGroup->addButton(_ui->radioButton_Compressible);
-
-        _ui->radioButton_SteadyState->setProperty(SetupTypePos, QVariant::fromValue(SetupType::SteadyState));
-        _ui->radioButton_Transient->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Transient));
-        _ui->radioButton_Compressible->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Compressible));
-        _ui->radioButton_Incompressible->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Incompressible));
+        _ui->pushButton_SteadyState->setProperty(SetupTypePos, QVariant::fromValue(SetupType::SteadyState));
+        _ui->pushButton_SteadyState->setCheckable(true);
+        _ui->pushButton_Transient->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Transient));
+        _ui->pushButton_Transient->setCheckable(true);
+        _ui->pushButton_Compressible->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Compressible));
+        _ui->pushButton_Compressible->setCheckable(true);
+        _ui->pushButton_Incompressible->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Incompressible));
+        _ui->pushButton_Incompressible->setCheckable(true);
         _ui->checkBox_Turbulence->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Turbulences));
         _ui->checkBox_HeatTransfer->setProperty(SetupTypePos, QVariant::fromValue(SetupType::HeatTransfer));
         _ui->checkBox_Radiation->setProperty(SetupTypePos, QVariant::fromValue(SetupType::Radiation));
@@ -141,6 +137,32 @@ namespace GUI
 
     void SetupWidget::slotTypeSelect()
     {
+        QPushButton* senderObj = dynamic_cast<QPushButton*>(sender());
+        if (senderObj == _ui->pushButton_SteadyState) {
+            bool isChecked = _ui->pushButton_SteadyState->isChecked();
+            if (isChecked == true) {
+                _ui->pushButton_Transient->setChecked(false);
+            }
+        }
+        else if (senderObj == _ui->pushButton_Transient) {
+            bool isChecked = _ui->pushButton_Transient->isChecked();
+            if (isChecked == true) {
+                _ui->pushButton_SteadyState->setChecked(false);
+            }
+        }
+        else if (senderObj == _ui->pushButton_Incompressible) {
+            bool isChecked = _ui->pushButton_Incompressible->isChecked();
+            if (isChecked == true) {
+                _ui->pushButton_Compressible->setChecked(false);
+            }
+        }
+        else if (senderObj == _ui->pushButton_Compressible) {
+            bool isChecked = _ui->pushButton_Compressible->isChecked();
+            if (isChecked == true) {
+                _ui->pushButton_Incompressible->setChecked(false);
+            }
+        }
+
         if (_solverFactory == nullptr)return;
         _types.clear();
         QList<SetupType> typeList = {};
