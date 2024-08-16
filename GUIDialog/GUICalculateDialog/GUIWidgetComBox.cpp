@@ -38,13 +38,5 @@ namespace GUI
     {
         if (_value == nullptr)return;
         _value->setIndex(currentIndex());
-
-        if (_value->getDataObjectName() == "Turbulence Modeling") {
-            Interface::FITKFlowSolverProcessFactory* factor = dynamic_cast<Interface::FITKFlowSolverProcessFactory*>(FITKAPP->getComponents()->getComponentByName("FITKFlowSolverProcess"));
-            if (factor == nullptr)return;
-            Interface::FITKOFPostProcessEnum::FITKOFSolverRequiresSettingType type = Interface::FITKOFPostProcessEnum::Turbulence;
-            factor->setParaData(type, _value, currentIndex());
-            _calculateWdiget->updateTableWidget();
-        }
     }
 }
