@@ -12,6 +12,8 @@
 #include "GUICalculateDialogAPI.h"
 #include "GUICalculateWidgetBase.h"
 
+class QButtonGroup;
+
 namespace Ui {
     class TurbulenceWidget;
 }
@@ -56,7 +58,23 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        virtual void updateTableWidget() override;
+        void updateWidget();
+    private slots:
+        ;
+        /**
+         * @brief RadioButton按钮点击事件
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        void slotRadioButtonClicked();
+        void on_comboBox_Model_activated(int index);
+
+        void on_pushButton_ModelUnfold_clicked();
+
+        void on_comboBox_Delta_activated(int index);
+
+        void on_pushButton_DeltaUnfold_clicked();
+
     private:
         /**
          * @brief ui
@@ -64,6 +82,12 @@ namespace GUI
          * @date 2024-08-14
          */
         Ui::TurbulenceWidget* _ui = nullptr;
+        /**
+         * @brief RadioButton group
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        QButtonGroup* _radioGroup = nullptr;
     };
 }
 #endif
