@@ -6,7 +6,6 @@ HEADERS += \
     $$PWD/GUIWidgetDouble.h \
     $$PWD/GUIWidgetInt.h \
     $$PWD/GUIWidgetString.h \
-    $$PWD/DataSwitchToWidget.h \
     $$PWD/GUICalculateWidgetBase.h \
     $$PWD/TurbulenceWidget.h \
     $$PWD/TransportWidget.h \
@@ -14,6 +13,7 @@ HEADERS += \
     $$PWD/SolutionWidget.h \
     $$PWD/BoundaryWidget.h \
     $$PWD/InitialWidget.h \
+    $$PWD/compCalLineWidget.h \
 
 SOURCES += \
     $$PWD/SetupWidget.cpp \
@@ -22,7 +22,6 @@ SOURCES += \
     $$PWD/GUIWidgetDouble.cpp \
     $$PWD/GUIWidgetInt.cpp \
     $$PWD/GUIWidgetString.cpp \
-    $$PWD/DataSwitchToWidget.cpp \
     $$PWD/GUICalculateWidgetBase.cpp \
     $$PWD/TurbulenceWidget.cpp \
     $$PWD/TransportWidget.cpp \
@@ -30,6 +29,7 @@ SOURCES += \
     $$PWD/SolutionWidget.cpp \
     $$PWD/BoundaryWidget.cpp \
     $$PWD/InitialWidget.cpp \
+    $$PWD/compCalLineWidget.cpp \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \
@@ -39,6 +39,7 @@ FORMS += \
     $$PWD/SolutionWidget.ui \
     $$PWD/BoundaryWidget.ui \
     $$PWD/InitialWidget.ui \
+    $$PWD/compCalLineWidget.ui \
 
  RESOURCES += \
     $$PWD/../../Resources/Resources.qrc

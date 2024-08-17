@@ -1,0 +1,79 @@
+﻿/**
+ * 
+ * @file compCalLineWidget.h
+ * @brief 求解器单个参数组件界面
+ * @author BaGuijun (baguijun@163.com)
+ * @date 2024-08-16
+ * 
+ */
+#ifndef _compCalLineWidget_H
+#define _compCalLineWidget_H
+
+#include "GUICalculateDialogAPI.h"
+#include "GUIWidget/GUIWidgetBase.h"
+
+namespace Ui {
+    class compCalLineWidget;
+}
+
+namespace Interface {
+    class FITKFlowDataBase;
+}
+
+namespace GUI
+{
+    /**
+     * @brief 求解器单个参数组件界面
+     * @author BaGuijun (baguijun@163.com)
+     * @date 2024-08-16
+     */
+    class GUICalculateDialogAPI compCalLineWidget : public GUIWidgetBase
+    {
+        Q_OBJECT;
+    public:
+        /**
+         * @brief Construct a new comp Cal Line Widget object
+         * @param[i]  data           数据对象
+         * @param[i]  parent         父对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-16
+         */
+        compCalLineWidget(Interface::FITKFlowDataBase* data, QWidget* parent = nullptr);
+        /**
+         * @brief Destroy the comp Cal Line Widget object
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-16
+         */
+        ~compCalLineWidget();
+        /**
+         * @brief 初始化函数
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-16
+         */
+        void init();
+        /**
+         * @brief 数据类型转换为控件【静态函数】
+         * @param[i]  data           数据对象
+         * @param[i]  parent         父对象
+         * @return GUICalculateDialogAPI*
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        static QWidget* DataSwitchToWidget(Interface::FITKFlowDataBase* data, QWidget* parent = nullptr);
+    private:
+        /**
+         * @brief ui对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-16
+         */
+        Ui::compCalLineWidget* _ui = nullptr;
+        /**
+         * @brief 数据对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-16
+         */
+        Interface::FITKFlowDataBase* _data = nullptr;
+    };
+}
+
+#endif

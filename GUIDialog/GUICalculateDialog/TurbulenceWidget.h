@@ -12,12 +12,18 @@
 #include "GUICalculateDialogAPI.h"
 #include "GUICalculateWidgetBase.h"
 
+class QButtonGroup;
+
 namespace Ui {
     class TurbulenceWidget;
 }
 
 namespace EventOper {
     class ParaWidgetInterfaceOperator;
+}
+
+namespace Interface {
+    class FITKOFTurbulenceData;
 }
 
 namespace GUI
@@ -56,7 +62,23 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        virtual void updateTableWidget() override;
+        void updateWidget();
+    private slots:
+        ;
+        void on_checkBox_Enable_clicked();
+        /**
+         * @brief RadioButton按钮点击事件
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        void slotRadioButtonClicked();
+        void on_comboBox_Model_activated(int index);
+
+        void on_pushButton_ModelUnfold_clicked();
+
+        void on_comboBox_Delta_activated(int index);
+
+        void on_pushButton_DeltaUnfold_clicked();
     private:
         /**
          * @brief ui
@@ -64,6 +86,18 @@ namespace GUI
          * @date 2024-08-14
          */
         Ui::TurbulenceWidget* _ui = nullptr;
+        /**
+         * @brief RadioButton group
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        QButtonGroup* _radioGroup = nullptr;
+        /**
+         * @brief 湍流数据对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        Interface::FITKOFTurbulenceData* _turData = nullptr;
     };
 }
 #endif
