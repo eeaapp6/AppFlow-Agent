@@ -14,7 +14,8 @@ win32{
     INCLUDEPATH    +=  ./   \
                        ../  \
                        ../../ \
-
+                       
+    Release:CONFIG            +=  console
     Release:DESTDIR         = ../output/bin
     Release:MOC_DIR         = ../generate/FlowApp/release/moc
     Release:RCC_DIR         = ../generate/FlowApp/release/rcc
