@@ -49,6 +49,9 @@ namespace GUI
          * @date 2024-08-14
          */
         void init();
+    protected:
+        //鼠标滚轮事件
+        void wheelEvent(QWheelEvent *event) override;
     private slots:
         ;
         /**

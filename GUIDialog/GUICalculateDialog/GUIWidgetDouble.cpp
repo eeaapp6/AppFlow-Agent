@@ -29,6 +29,11 @@ namespace GUI
         this->setValue(value);
     }
 
+    void GUIWidgetDouble::wheelEvent(QWheelEvent * event)
+    {
+        Q_UNUSED(event);
+    }
+
     void GUIWidgetDouble::slotDataChange()
     {
         if (_value == nullptr)return;
