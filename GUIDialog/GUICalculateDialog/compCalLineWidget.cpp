@@ -26,6 +26,8 @@ namespace GUI
     {
         _ui = new Ui::compCalLineWidget();
         _ui->setupUi(this);
+
+        init();
     }
 
     compCalLineWidget::~compCalLineWidget()
