@@ -66,7 +66,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        void setFaceGroupValue(int rowIndex, QList<int> facesId);
+        void setFaceGroupValue(int rowIndex, QList<int> facesId, bool removefromOthers = true);
         /**
          * @brief 获取当前几何数据对象
          * @return Interface::FITKAbsGeoCommand* 几何数据对象

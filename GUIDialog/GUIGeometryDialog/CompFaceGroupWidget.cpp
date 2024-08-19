@@ -55,7 +55,7 @@ namespace GUI
         setDataToWidget();
     }
 
-    void CompFaceGroupWidget::setFaceGroupValue(int rowIndex, QList<int> facesId)
+    void CompFaceGroupWidget::setFaceGroupValue(int rowIndex, QList<int> facesId, bool r )
     {
         if (_obj == nullptr)return;
         Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
@@ -77,7 +77,8 @@ namespace GUI
         }
         item->setName(name);
 
-        //处理其他模块
+        if (!r) return;
+        //处理其他面组
         for (int faceId : facesId) {
             for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
                 if (i == rowIndex)continue;
