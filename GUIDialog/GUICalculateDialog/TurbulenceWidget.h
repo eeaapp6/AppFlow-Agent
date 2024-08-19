@@ -62,7 +62,14 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        void updateWidget();
+        void updateSubWidget();
+    private:
+        /**
+         * @brief 通过数据对象初始化界面
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        void setDataToWidget();
     private slots:
         ;
         void on_checkBox_Enable_clicked();

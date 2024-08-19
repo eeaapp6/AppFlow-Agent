@@ -37,40 +37,26 @@ namespace GUI
 
     void TurbulenceWidget::init()
     {
-        if (_turData == nullptr)return;
-
+        //界面默认设置
         _ui->checkBox_Enable->setChecked(true);
-
         _radioGroup = new QButtonGroup();
         _radioGroup->addButton(_ui->radioButton_Laminar);
         _radioGroup->addButton(_ui->radioButton_RANS);
         _radioGroup->addButton(_ui->radioButton_LES);
         _ui->radioButton_Laminar->setChecked(true);
-
         _ui->widget_sub->hide();
-
         //默认隐藏湍流模型参数
         _ui->pushButton_ModelUnfold->setCheckable(true);
         _ui->pushButton_DeltaUnfold->setCheckable(true);
         _ui->widget_ModelSub->hide();
         _ui->widget_DeltaSub->hide();
 
-        //添加模型类型选项
-        auto Modelingtype = _turData->getTurbulenceModelingType();
-        QStringList ModelTypes = _factor->getSolverTemplate()->getTurbulenceModelTypeList(Modelingtype);
-        _ui->comboBox_Model->clear();
-        _ui->comboBox_Model->addItems(ModelTypes);
-        _ui->comboBox_Model->setCurrentText(_turData->getCurrentModelType());
-        QStringList types = _factor->getSolverTemplate()->getTurbulenceModelTypeList(Modelingtype);
-        _ui->comboBox_Model->clear();
-        _ui->comboBox_Model->addItems(types);
-        _ui->comboBox_Model->setCurrentText(_turData->getCurrentModelType());
-
-        updateWidget();
+        //更具数据对象初始化界面
+        setDataToWidget();
         connect(_radioGroup, SIGNAL(buttonClicked(int)), this, SLOT(slotRadioButtonClicked()));
     }
 
-    void TurbulenceWidget::updateWidget()
+    void TurbulenceWidget::updateSubWidget()
     {
         if (_turData == nullptr)return;
 
@@ -114,11 +100,36 @@ namespace GUI
                 _ui->verticalLayout_ModelSub->addWidget(new compCalLineWidget(dataBase, this));
             }
         }
-        if (_turData->getCurrentDeltaData()) {
-            for (int i = 0; i < _turData->getCurrentDeltaData()->getParameterCount(); i++) {
-                auto dataBase = _turData->getCurrentDeltaData()->getParameterAt(i);
+        if (_turData->getDeltaData(_ui->comboBox_Delta->currentText())) {
+            auto deltaData = _turData->getDeltaData(_ui->comboBox_Delta->currentText());
+            for (int i = 0; i < deltaData->getParameterCount(); i++) {
+                auto dataBase = deltaData->getParameterAt(i);
                 if (dataBase == nullptr)continue;
                 _ui->verticalLayout_DeltaSub->addWidget(new compCalLineWidget(dataBase, this));
+            }
+        }
+    }
+
+    void TurbulenceWidget::setDataToWidget()
+    {
+        if (_turData == nullptr)return;
+
+        auto Modelingtype = _turData->getTurbulenceModelingType();
+        QStringList ModelTypes = _factor->getSolverTemplate()->getTurbulenceModelTypeList(Modelingtype);
+        _ui->comboBox_Model->clear();
+        _ui->comboBox_Model->addItems(ModelTypes);
+        if (_turData->getCurrentTurbulenceModelData()) {
+            _ui->comboBox_Model->setCurrentText(_turData->getCurrentModelType());
+
+            QStringList DeltaTypes = _factor->getSolverTemplate()->getTurbulenceDeltaTypeList(_turData->getCurrentModelType());
+            _ui->comboBox_Delta->clear();
+            _ui->comboBox_Delta->addItems(DeltaTypes);
+            QString deltaType = _turData->getCurrentDeltaType();
+            if (!deltaType.isEmpty()) {
+                _ui->comboBox_Delta->setCurrentText(deltaType);
+            }
+            else {
+                _ui->comboBox_Delta->setCurrentIndex(0);
             }
         }
     }
@@ -147,7 +158,12 @@ namespace GUI
             QStringList types = _factor->getSolverTemplate()->getTurbulenceModelTypeList(type);
             _ui->comboBox_Model->clear();
             _ui->comboBox_Model->addItems(types);
-            _ui->comboBox_Model->setCurrentText(_turData->getCurrentModelType());
+            if (_turData->getCurrentTurbulenceModelData()) {
+                _ui->comboBox_Model->setCurrentText(_turData->getCurrentModelType());
+            }
+            else {
+                _ui->comboBox_Model->setCurrentIndex(0);
+            }
 
             QString type = _ui->comboBox_Model->currentText();
             _factor->setTurbulenceModel(type);
@@ -161,7 +177,12 @@ namespace GUI
             QStringList types = _factor->getSolverTemplate()->getTurbulenceModelTypeList(type);
             _ui->comboBox_Model->clear();
             _ui->comboBox_Model->addItems(types);
-            _ui->comboBox_Model->setCurrentText(_turData->getCurrentModelType());
+            if (_turData->getCurrentTurbulenceModelData()) {
+                _ui->comboBox_Model->setCurrentText(_turData->getCurrentModelType());
+            }
+            else {
+                _ui->comboBox_Model->setCurrentIndex(0);
+            }
 
             QString type = _ui->comboBox_Model->currentText();
             _factor->setTurbulenceModel(type);
@@ -169,7 +190,7 @@ namespace GUI
 
         _turData->setTurbulenceModelingType(type);
 
-        updateWidget();
+        updateSubWidget();
     }
 
     void TurbulenceWidget::on_comboBox_Model_activated(int index)
@@ -177,7 +198,17 @@ namespace GUI
         QString type = _ui->comboBox_Model->currentText();
         _factor->setTurbulenceModel(type);
 
-        updateWidget();
+        QStringList deltaTyps = _factor->getSolverTemplate()->getTurbulenceDeltaTypeList(type);
+        if (deltaTyps.isEmpty()) {
+            _ui->widget_Delta->hide();
+        }
+        else
+        {
+            _ui->widget_Delta->show();
+            _ui->comboBox_Delta->addItems(deltaTyps);
+        }
+
+        updateSubWidget();
     }
 
     void TurbulenceWidget::on_pushButton_ModelUnfold_clicked()
@@ -189,12 +220,12 @@ namespace GUI
             _ui->widget_ModelSub->hide();
         }
 
-        updateWidget();
+        updateSubWidget();
     }
 
     void TurbulenceWidget::on_comboBox_Delta_activated(int index)
     {
-        updateWidget();
+        updateSubWidget();
     }
 
     void TurbulenceWidget::on_pushButton_DeltaUnfold_clicked()
@@ -206,6 +237,6 @@ namespace GUI
             _ui->widget_DeltaSub->hide();
         }
 
-        updateWidget();
+        updateSubWidget();
     }
 }
