@@ -4,7 +4,7 @@
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolverData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFCasePhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTurbulenceData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowSolverProcessFactory.h"
