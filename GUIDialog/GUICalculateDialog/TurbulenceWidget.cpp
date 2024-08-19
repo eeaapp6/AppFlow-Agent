@@ -44,11 +44,13 @@ namespace GUI
         _radioGroup->addButton(_ui->radioButton_RANS);
         _radioGroup->addButton(_ui->radioButton_LES);
         _ui->radioButton_Laminar->setChecked(true);
-        _ui->widget_sub->hide();
         //默认隐藏湍流模型参数
         _ui->pushButton_ModelUnfold->setCheckable(true);
         _ui->pushButton_DeltaUnfold->setCheckable(true);
+        _ui->widget_sub->hide();
+        _ui->widget_Model->hide();
         _ui->widget_ModelSub->hide();
+        _ui->widget_Delta->hide();
         _ui->widget_DeltaSub->hide();
 
         //更具数据对象初始化界面
@@ -59,24 +61,6 @@ namespace GUI
     void TurbulenceWidget::updateSubWidget()
     {
         if (_turData == nullptr)return;
-
-        _ui->checkBox_Enable->setChecked(_turData->isEnableTurbulenceEquations());
-
-        auto type = _turData->getTurbulenceModelingType();
-        switch (type) {
-        case Interface::FITKOFSolverTurbulenceEnum::Laminar:_ui->radioButton_Laminar->setChecked(true); break;
-        case Interface::FITKOFSolverTurbulenceEnum::RAS: {
-            _ui->radioButton_RANS->setChecked(true);
-            _ui->widget_sub->show();
-            break;
-        }
-        case Interface::FITKOFSolverTurbulenceEnum::LES:{
-            _ui->radioButton_LES->setChecked(true);
-            _ui->widget_sub->show();
-            break;
-        }
-        }
-
         //清除子参数
         QLayoutItem* item;
         while ((item = _ui->verticalLayout_ModelSub->takeAt(0)) != nullptr) {
@@ -100,7 +84,7 @@ namespace GUI
                 _ui->verticalLayout_ModelSub->addWidget(new compCalLineWidget(dataBase, this));
             }
         }
-        if (_turData->getDeltaData(_ui->comboBox_Delta->currentText())) {
+        if (_turData->getDeltaData(_turData->getCurrentDeltaType())) {
             auto deltaData = _turData->getDeltaData(_ui->comboBox_Delta->currentText());
             for (int i = 0; i < deltaData->getParameterCount(); i++) {
                 auto dataBase = deltaData->getParameterAt(i);
@@ -114,14 +98,26 @@ namespace GUI
     {
         if (_turData == nullptr)return;
 
-        auto Modelingtype = _turData->getTurbulenceModelingType();
-        QStringList ModelTypes = _factor->getSolverTemplate()->getTurbulenceModelTypeList(Modelingtype);
-        _ui->comboBox_Model->clear();
-        _ui->comboBox_Model->addItems(ModelTypes);
-        if (_turData->getCurrentTurbulenceModelData()) {
+        auto turModelingType = _turData->getTurbulenceModelingType();
+
+        switch (turModelingType) {
+        case Interface::FITKOFSolverTurbulenceEnum::Laminar: {
+            _ui->radioButton_Laminar->setChecked(true);
+            break;
+        }
+        case Interface::FITKOFSolverTurbulenceEnum::RAS: {
+            _ui->radioButton_RANS->setChecked(true);
+            _ui->widget_sub->show();
+            QStringList ModelTypes = _factor->getSolverTemplate()->getTurbulenceModelTypeList(turModelingType);
+            _ui->comboBox_Model->clear();
+            _ui->comboBox_Model->addItems(ModelTypes);
+            _ui->widget_Model->show();
+            if (!_turData->getCurrentTurbulenceModelData()) break;
             _ui->comboBox_Model->setCurrentText(_turData->getCurrentModelType());
 
             QStringList DeltaTypes = _factor->getSolverTemplate()->getTurbulenceDeltaTypeList(_turData->getCurrentModelType());
+            if (DeltaTypes.isEmpty()) break;
+            _ui->widget_Delta->show();
             _ui->comboBox_Delta->clear();
             _ui->comboBox_Delta->addItems(DeltaTypes);
             QString deltaType = _turData->getCurrentDeltaType();
@@ -131,6 +127,32 @@ namespace GUI
             else {
                 _ui->comboBox_Delta->setCurrentIndex(0);
             }
+            break;
+        }
+        case Interface::FITKOFSolverTurbulenceEnum::LES: {
+            _ui->radioButton_LES->setChecked(true);
+            _ui->widget_sub->show();
+            QStringList ModelTypes = _factor->getSolverTemplate()->getTurbulenceModelTypeList(turModelingType);
+            _ui->comboBox_Model->clear();
+            _ui->comboBox_Model->addItems(ModelTypes);
+            _ui->widget_Model->show();
+            if (!_turData->getCurrentTurbulenceModelData()) break;
+            _ui->comboBox_Model->setCurrentText(_turData->getCurrentModelType());
+
+            QStringList DeltaTypes = _factor->getSolverTemplate()->getTurbulenceDeltaTypeList(_turData->getCurrentModelType());
+            if (DeltaTypes.isEmpty()) break;
+            _ui->widget_Delta->show();
+            _ui->comboBox_Delta->clear();
+            _ui->comboBox_Delta->addItems(DeltaTypes);
+            QString deltaType = _turData->getCurrentDeltaType();
+            if (!deltaType.isEmpty()) {
+                _ui->comboBox_Delta->setCurrentText(deltaType);
+            }
+            else {
+                _ui->comboBox_Delta->setCurrentIndex(0);
+            }
+            break;
+        }
         }
     }
 
@@ -148,47 +170,78 @@ namespace GUI
         if (_radioGroup->checkedButton() == _ui->radioButton_Laminar) {
             _ui->widget_sub->hide();
             type = Interface::FITKOFSolverTurbulenceEnum::Laminar;
+            _turData->setTurbulenceModelingType(type);
+            _factor->updateTurbulenceDelta();
         }
         else if (_radioGroup->checkedButton() == _ui->radioButton_RANS) {
             _ui->widget_sub->show();
+            _ui->widget_Model->show();
             _ui->checkBox_Enable->setChecked(false);
             _turData->setEnableTurbulenceEquations(false);
             type = Interface::FITKOFSolverTurbulenceEnum::RAS;
-
-            QStringList types = _factor->getSolverTemplate()->getTurbulenceModelTypeList(type);
+            _turData->setTurbulenceModelingType(type);
+            _factor->updateTurbulenceDelta();
+            //湍流模型设置
+            QStringList ModelTypes = _factor->getSolverTemplate()->getTurbulenceModelTypeList(type);
             _ui->comboBox_Model->clear();
-            _ui->comboBox_Model->addItems(types);
+            _ui->comboBox_Model->addItems(ModelTypes);
+            if (ModelTypes.isEmpty())return;
+            //获取到的类型不为空
             if (_turData->getCurrentTurbulenceModelData()) {
                 _ui->comboBox_Model->setCurrentText(_turData->getCurrentModelType());
             }
             else {
                 _ui->comboBox_Model->setCurrentIndex(0);
             }
-
             QString type = _ui->comboBox_Model->currentText();
             _factor->setTurbulenceModel(type);
+
+            //delta
+            QStringList DeltaTypes = _factor->getSolverTemplate()->getTurbulenceDeltaTypeList(type);
+            _ui->comboBox_Delta->clear();
+            _ui->comboBox_Delta->addItems(DeltaTypes);
+            if (DeltaTypes.isEmpty()) {
+                _ui->widget_Delta->hide();
+                return;
+            }
+            _ui->widget_Delta->show();
+            _turData->setCurrentDeltaType(DeltaTypes[0]);
         }
         else if (_radioGroup->checkedButton() == _ui->radioButton_LES) {
             _ui->widget_sub->show();
+            _ui->widget_Model->show();
+            _ui->widget_Delta->show();
             _ui->checkBox_Enable->setChecked(false);
             _turData->setEnableTurbulenceEquations(false);
             type = Interface::FITKOFSolverTurbulenceEnum::LES;
-
-            QStringList types = _factor->getSolverTemplate()->getTurbulenceModelTypeList(type);
+            _turData->setTurbulenceModelingType(type);
+            _factor->updateTurbulenceDelta();
+            //湍流模型设置
+            QStringList ModelTypes = _factor->getSolverTemplate()->getTurbulenceModelTypeList(type);
             _ui->comboBox_Model->clear();
-            _ui->comboBox_Model->addItems(types);
+            _ui->comboBox_Model->addItems(ModelTypes);
+            if (ModelTypes.isEmpty())return;
+            //获取到的类型不为空
             if (_turData->getCurrentTurbulenceModelData()) {
                 _ui->comboBox_Model->setCurrentText(_turData->getCurrentModelType());
             }
             else {
                 _ui->comboBox_Model->setCurrentIndex(0);
             }
-
             QString type = _ui->comboBox_Model->currentText();
             _factor->setTurbulenceModel(type);
-        }
 
-        _turData->setTurbulenceModelingType(type);
+            //delta
+            QStringList DeltaTypes = _factor->getSolverTemplate()->getTurbulenceDeltaTypeList(type);
+            _ui->comboBox_Delta->clear();
+            _ui->comboBox_Delta->addItems(DeltaTypes);
+            if (DeltaTypes.isEmpty()) {
+                _ui->widget_Delta->hide();
+                return;
+            }
+            _ui->widget_Delta->show();
+            _turData->setCurrentDeltaType(DeltaTypes[0]);
+        }
 
         updateSubWidget();
     }
@@ -205,9 +258,17 @@ namespace GUI
         else
         {
             _ui->widget_Delta->show();
+            _ui->comboBox_Delta->clear();
             _ui->comboBox_Delta->addItems(deltaTyps);
+            _turData->setCurrentDeltaType(deltaTyps[0]);
         }
 
+        updateSubWidget();
+    }
+
+    void TurbulenceWidget::on_comboBox_Delta_activated(int index)
+    {
+        _turData->setCurrentDeltaType(_ui->comboBox_Delta->currentText());
         updateSubWidget();
     }
 
@@ -220,11 +281,6 @@ namespace GUI
             _ui->widget_ModelSub->hide();
         }
 
-        updateSubWidget();
-    }
-
-    void TurbulenceWidget::on_comboBox_Delta_activated(int index)
-    {
         updateSubWidget();
     }
 
