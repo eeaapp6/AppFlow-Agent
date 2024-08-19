@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>716</width>
+    <height>596</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,62 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QTableWidget" name="tableWidget"/>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>696</width>
+        <height>576</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="tab_Time">
+          <attribute name="title">
+           <string>Time</string>
+          </attribute>
+         </widget>
+         <widget class="QWidget" name="tab_Convection">
+          <attribute name="title">
+           <string>Convection</string>
+          </attribute>
+         </widget>
+         <widget class="QWidget" name="tab_Gradients">
+          <attribute name="title">
+           <string>Gradients</string>
+          </attribute>
+         </widget>
+         <widget class="QWidget" name="tab_Interpolation">
+          <attribute name="title">
+           <string>Interpolation</string>
+          </attribute>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>
