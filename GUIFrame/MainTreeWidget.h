@@ -3,7 +3,6 @@
 
 #include "GUIFrameAPI.h"
 #include "PanelWidgetBase.h"
-#include "GUIFramEnum.h"
 
 namespace GUI
 {
