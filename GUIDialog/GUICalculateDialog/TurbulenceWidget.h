@@ -58,7 +58,7 @@ namespace GUI
          */
         void init();
         /**
-         * @brief 更新表格
+         * @brief 更新界面
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */

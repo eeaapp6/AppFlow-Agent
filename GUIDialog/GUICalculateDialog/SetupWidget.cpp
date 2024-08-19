@@ -7,7 +7,7 @@
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowSolverProcessFactory.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolverData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFCasePhysicsData.h"
 
 #include <QButtonGroup>
 
@@ -129,7 +129,7 @@ namespace GUI
 
     void SetupWidget::initCurrentType()
     {
-        Interface::FITKOFSolverData* solver = FITKAPP->getGlobalData()->getPostData<Interface::FITKOFSolverData>();
+        Interface::FITKOFCasePhysicsData* solver = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFCasePhysicsData>();
         if (solver == nullptr)return;
         QString name = typeToName(solver->getSolverType());
         _ui->label_CurrentSolver->setText(name);

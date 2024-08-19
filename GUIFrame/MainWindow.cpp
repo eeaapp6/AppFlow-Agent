@@ -196,33 +196,47 @@ namespace GUI
 
         //三维交互
         pannel = gategory->addPannel(tr("View"));
-        action = createAction(tr("Auto"), "actionViewPan");
-        changeAction(action, ":FITKIcons/icoR_autofit.png");
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = getAction("actionViewAuto");
+        if (action) {
+            changeAction(action, ":FITKIcons/icoR_autofit.png", tr("Auto"));
+            pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        }
 
-        action = createAction(tr("X forward"), "actionViewLeft");
-        changeAction(action, ":FITKIcons/icoR_viewLeft.svg");
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = getAction("actionViewLeft");
+        if (action) {
+            changeAction(action, ":FITKIcons/icoR_viewLeft.svg", tr("X forward"));
+            pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        }
+       
+        action = getAction("actionViewRight");
+        if (action) {
+            changeAction(action, ":FITKIcons/icoR_viewRight.svg", tr("X negative"));
+            pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        }
+        
+        action = getAction("actionViewTop");
+        if(action){
+            changeAction(action, ":FITKIcons/icoR_viewTop.svg", tr("Y forward"));
+            pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        }
+        
+        action = getAction("actionViewBottom");
+        if (action) {
+            changeAction(action, ":FITKIcons/icoR_viewBottom.svg", tr("Y negative"));
+            pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        }
 
-        action = createAction(tr("X negative"), "actionViewRight");
-        changeAction(action, ":FITKIcons/icoR_viewRight.svg");
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = getAction("actionViewFront");
+        if (action) {
+            changeAction(action, ":FITKIcons/icoR_viewFront.svg", tr("Z forward"));
+            pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        }
 
-        action = createAction(tr("Y forward"), "actionViewTop");
-        changeAction(action, ":FITKIcons/icoR_viewTop.svg");
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-
-        action = createAction(tr("Y negative"), "actionViewBottom");
-        changeAction(action, ":FITKIcons/icoR_viewBottom.svg");
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-
-        action = createAction(tr("Z forward"), "actionViewFront");
-        changeAction(action, ":FITKIcons/icoR_viewFront.svg");
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-
-        action = createAction(tr("Z negative"), "actionViewBack");
-        changeAction(action, ":FITKIcons/icoR_viewBack.svg");
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        action = getAction("actionViewBack");
+        if (action) {
+            changeAction(action, ":FITKIcons/icoR_viewBack.svg", tr("Z negative"));
+            pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        }
     }
 
     void MainWindow::initGeometry()

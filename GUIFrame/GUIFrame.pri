@@ -1,6 +1,5 @@
 HEADERS += \
     $$PWD/GUIFrameAPI.h \
-    $$PWD/GUIFramEnum.h \
     $$PWD/ActionEventHandler.h \
     $$PWD/MainTreeWidget.h \
     $$PWD/MainWindow.h \

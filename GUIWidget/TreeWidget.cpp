@@ -13,7 +13,7 @@
 #include "FITK_Kernel/FITKCore/FITKActionOperator.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFEnum.hpp"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolverData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFCasePhysicsData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKAbstractGeoModel.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
@@ -357,7 +357,7 @@ namespace GUI{
         setupItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Setup));
         this->addTopLevelItem(setupItem);
 
-        Interface::FITKOFSolverData* solverData = FITKAPP->getGlobalData()->getPostData<Interface::FITKOFSolverData>();
+        Interface::FITKOFCasePhysicsData* solverData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFCasePhysicsData>();
         if (solverData == nullptr)return;
 
         auto type = solverData->getSolverType();

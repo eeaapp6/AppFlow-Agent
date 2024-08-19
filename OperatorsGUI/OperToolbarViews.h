@@ -112,11 +112,11 @@ namespace GUIOper
     Register2FITKOPeratorRepo(actionViewLeft, OperToolbarViews);
     Register2FITKOPeratorRepo(actionViewRight, OperToolbarViews);
     Register2FITKOPeratorRepo(actionViewIso, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewUser1, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewUser2, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewUser3, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewSave, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewFit, OperToolbarViews);
+    Register2FITKOPeratorRepo(actionViewAuto, OperToolbarViews);
+    Register2FITKOPeratorRepo(actionSaveImage, OperToolbarViews);
+    Register2FITKOPeratorRepo(actionViewParallel, OperToolbarViews);
+    Register2FITKOPeratorRepo(actionViewPerspective, OperToolbarViews);
+
 }  // namespace GUIOper
 
 #endif
