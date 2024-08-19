@@ -163,6 +163,9 @@ namespace GUIOper
     //点击按钮后执行的GUI操作
     bool OperToolbarViews::execGUI()
     {
+        //视角切换由三维渲染组件执行，操作器中不再重复执行
+        return false;
+
         //if (FITKAPP == nullptr)return false;
 
         //if (_emitter == nullptr) return false;
