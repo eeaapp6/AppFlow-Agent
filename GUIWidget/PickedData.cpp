@@ -537,9 +537,8 @@ namespace GraphData
         case GUI::GUIPickInfo::PickObjType::POBJSolid:
             id = m_graphObject->getShapeIdByVTKCellId(index, Exchange::FITKFluidVTKCommons::ShapeAbsEnum::STA_SOLID);
             break;
-        {
+        default:
             return false;
-        }
         }
 
         if (id == -1)
