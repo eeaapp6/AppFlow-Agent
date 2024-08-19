@@ -2,7 +2,9 @@
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolverData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowSolverProcessFactory.h"
 
 namespace GUI
 {
@@ -10,6 +12,7 @@ namespace GUI
         GUIWidgetBase(parent), _oper(oper)
     {
         _solverData = FITKAPP->getGlobalData()->getPostData<Interface::FITKOFSolverData>();
+        _factor = dynamic_cast<Interface::FITKFlowSolverProcessFactory*>(FITKAPP->getComponents()->getComponentByName("FITKFlowSolverProcess"));
     }
 
     GUICalculateWidgetBase::~GUICalculateWidgetBase()

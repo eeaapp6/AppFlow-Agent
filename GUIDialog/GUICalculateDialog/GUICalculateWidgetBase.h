@@ -18,6 +18,7 @@ namespace EventOper {
 
 namespace Interface {
     class FITKOFSolverData;
+    class FITKFlowSolverProcessFactory;
 }
 
 namespace GUI
@@ -64,6 +65,12 @@ namespace GUI
          * @date 2024-08-14
          */
         Interface::FITKOFSolverData* _solverData = nullptr;
+        /**
+         * @brief 工厂对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-14
+         */
+        Interface::FITKFlowSolverProcessFactory* _factor = nullptr;
     };
     //---------------------------------------------------------------------------------------------------------------
     class GUICalculateDialogAPI GUICalculateSubWidgetBase

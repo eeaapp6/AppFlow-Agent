@@ -25,8 +25,8 @@ namespace GUI
         int range[2] = { 0,0 };
         _value->getRange(range);
 
-        this->setValue(value);
         this->setRange(range[0], range[1]);
+        this->setValue(value);
     }
 
     void GUIWidgetInt::slotDataChange()
