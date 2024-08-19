@@ -20,23 +20,31 @@ namespace GUI
             _ui = nullptr;
         }
     }
+
     void DiscretizationWidget::init()
     {
-        //自适应布局（更具表头数量平均分配大小）
-        _ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-        //设置tableWidget的item不可编辑
-        _ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-        //隐藏行表头
-        _ui->tableWidget->verticalHeader()->setVisible(false);
-        //隐藏列表头
-        _ui->tableWidget->horizontalHeader()->setVisible(false);
-        //隐藏网格线
-        _ui->tableWidget->setShowGrid(false);
-
-        updateTableWidget();
+        updateWidget();
     }
-    void DiscretizationWidget::updateTableWidget()
+
+    void DiscretizationWidget::updateWidget()
     {
+
+    }
+
+    void DiscretizationWidget::showEvent(QShowEvent * event)
+    {
+        int width = _ui->tabWidget->width();
+        int tabCount = _ui->tabWidget->count();
+        int tabWidth = width / tabCount;
+        this->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
+    }
+
+    void DiscretizationWidget::resizeEvent(QResizeEvent * event)
+    {
+        int width = _ui->tabWidget->width();
+        int tabCount = _ui->tabWidget->count();
+        int tabWidth = width / tabCount;
+        this->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
     }
 }
 

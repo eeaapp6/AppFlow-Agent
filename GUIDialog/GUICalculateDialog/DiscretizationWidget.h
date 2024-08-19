@@ -52,11 +52,26 @@ namespace GUI
          */
         void init();
         /**
-         * @brief 更新表格
+         * @brief 更新widget
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        virtual void updateTableWidget() override;
+        void updateWidget();
+    protected:
+        /**
+         * @brief 显示事件重写
+         * @param[i]  event          事件对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-16
+         */
+        void showEvent(QShowEvent *event) override;
+        /**
+         * @brief 界面大小变化事件重写
+         * @param[i]  event          事件对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-16
+         */
+        void resizeEvent(QResizeEvent *event) override;
     private:
         /**
          * @brief ui

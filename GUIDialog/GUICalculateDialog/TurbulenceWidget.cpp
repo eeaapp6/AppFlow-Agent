@@ -37,6 +37,8 @@ namespace GUI
 
     void TurbulenceWidget::init()
     {
+        if (_turData == nullptr)return;
+
         _ui->checkBox_Enable->setChecked(true);
 
         _radioGroup = new QButtonGroup();

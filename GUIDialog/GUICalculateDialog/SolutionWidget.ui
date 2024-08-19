@@ -15,34 +15,65 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QTabWidget" name="tabWidget">
-     <property name="currentIndex">
-      <number>0</number>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
      </property>
-     <widget class="QWidget" name="Solvers">
-      <attribute name="title">
-       <string>Solver</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="SolverName">
-      <attribute name="title">
-       <string>SolverName</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="Residuals">
-      <attribute name="title">
-       <string>Residuals</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="Relaxation">
-      <attribute name="title">
-       <string>Relaxation</string>
-      </attribute>
-     </widget>
-     <widget class="QWidget" name="Limits">
-      <attribute name="title">
-       <string>Limits</string>
-      </attribute>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>703</width>
+        <height>619</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QTabWidget" name="tabWidget">
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="Solvers">
+          <attribute name="title">
+           <string>Solver</string>
+          </attribute>
+         </widget>
+         <widget class="QWidget" name="SolverName">
+          <attribute name="title">
+           <string>SolverName</string>
+          </attribute>
+         </widget>
+         <widget class="QWidget" name="Residuals">
+          <attribute name="title">
+           <string>Residuals</string>
+          </attribute>
+         </widget>
+         <widget class="QWidget" name="Relaxation">
+          <attribute name="title">
+           <string>Relaxation</string>
+          </attribute>
+         </widget>
+         <widget class="QWidget" name="Limits">
+          <attribute name="title">
+           <string>Limits</string>
+          </attribute>
+         </widget>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
    </item>
