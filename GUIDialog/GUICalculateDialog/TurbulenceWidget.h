@@ -81,9 +81,9 @@ namespace GUI
         void slotRadioButtonClicked();
         void on_comboBox_Model_activated(int index);
 
-        void on_pushButton_ModelUnfold_clicked();
-
         void on_comboBox_Delta_activated(int index);
+
+        void on_pushButton_ModelUnfold_clicked();
 
         void on_pushButton_DeltaUnfold_clicked();
     private:
