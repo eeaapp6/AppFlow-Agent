@@ -26,6 +26,9 @@ namespace GUI
     private:
         void initRadioData();
         void initSubData();
+    private slots:
+        ;
+        void slotRadioClicked(int index);
     private:
         Ui::GUIWidgetRadioGroup* _ui = nullptr;
         Interface::FITKFlowDataRadioGroup* _data = nullptr;
