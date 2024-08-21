@@ -17,8 +17,8 @@ namespace EventOper {
 }
 
 namespace Interface {
-    class FITKOFCasePhysicsData;
-    class FITKFlowSolverProcessFactory;
+    class FITKOFPhysicsHandlerManager;
+    class FITKOFSolverManager;
 }
 
 namespace GUI
@@ -60,17 +60,17 @@ namespace GUI
          */
         EventOper::ParaWidgetInterfaceOperator*  _oper = nullptr;
         /**
-         * @brief 求解器数据对象
+         * @brief  求解器管理器
          * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
+         * @date   2024-08-21
          */
-        Interface::FITKOFCasePhysicsData* _solverData = nullptr;
+        Interface::FITKOFSolverManager* _solverManager = nullptr;
         /**
-         * @brief 工厂对象
+         * @brief  物理数据管理器
          * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
+         * @date   2024-08-21
          */
-        Interface::FITKFlowSolverProcessFactory* _factor = nullptr;
+        Interface::FITKOFPhysicsHandlerManager* _physicsManager = nullptr;
     };
     //---------------------------------------------------------------------------------------------------------------
     class GUICalculateDialogAPI GUICalculateSubWidgetBase

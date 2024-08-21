@@ -10,8 +10,7 @@
 #define _SetupWidget_H
 
 #include "GUICalculateDialogAPI.h"
-#include "GUIWidget/GUIWidgetBase.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFEnum.hpp"
+#include "GUICalculateWidgetBase.h"
 
 namespace Ui {
     class SetupWidget;
@@ -31,7 +30,7 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-14
      */
-    class GUICalculateDialogAPI SetupWidget : public GUIWidgetBase
+    class GUICalculateDialogAPI SetupWidget : public GUICalculateWidgetBase
     {
         Q_OBJECT;
     public:
@@ -63,14 +62,6 @@ namespace GUI
         void updateTableWidget();
     private:
         /**
-         * @brief 求解器类型转名称
-         * @param[i]  type           求解器类型
-         * @return QString           求解器名称
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
-         */
-        QString typeToName(Interface::FITKOFSolverTypeEnum::FITKOFSolverType type);
-        /**
          * @brief 初始化设置类型
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
@@ -97,18 +88,6 @@ namespace GUI
          */
         void slotTypeSelect();
     private:
-        ///**
-        // * @brief 求解器工厂
-        // * @author BaGuijun (baguijun@163.com)
-        // * @date 2024-08-14
-        // */
-        //Interface::FITKFlowSolverProcessFactory* _solverFactory = nullptr;
-        /**
-         * @brief 操作器对象
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
-         */
-        EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
         /**
          * @brief ui对象
          * @author BaGuijun (baguijun@163.com)
@@ -120,7 +99,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        QList<Interface::FITKOFSolverTypeEnum::FITKOFSolverType> _types = {};
+        QList<QString> _types = {};
     };
 }
 
