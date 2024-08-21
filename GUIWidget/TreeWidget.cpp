@@ -13,7 +13,7 @@
 #include "FITK_Kernel/FITKCore/FITKActionOperator.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFEnum.hpp"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFCasePhysicsData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKAbstractGeoModel.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
@@ -357,14 +357,14 @@ namespace GUI{
         setupItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Setup));
         this->addTopLevelItem(setupItem);
 
-        Interface::FITKOFCasePhysicsData* solverData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFCasePhysicsData>();
+        Interface::FITKOFPhysicsData* solverData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
         if (solverData == nullptr)return;
 
-        auto type = solverData->getSolverType();
-        switch (type) {
-        case Interface::FITKOFPostProcessEnum::FITKOFSolverType::SIMPLE:updateSetupSimpleItems(setupItem); break;
-        case Interface::FITKOFPostProcessEnum::FITKOFSolverType::Inter:updateSetupInterItems(setupItem); break;
-        }
+        //auto type = solverData->getSolverType();
+        //switch (type) {
+        //case Interface::FITKOFPostProcessEnum::FITKOFSolverType::SIMPLE:updateSetupSimpleItems(setupItem); break;
+        //case Interface::FITKOFPostProcessEnum::FITKOFSolverType::Inter:updateSetupInterItems(setupItem); break;
+        //}
     }
 
     void TreeWidget::updateMeshLocalItems(QTreeWidgetItem* parentItem)

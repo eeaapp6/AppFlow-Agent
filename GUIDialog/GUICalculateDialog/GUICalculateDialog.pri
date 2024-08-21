@@ -6,6 +6,7 @@ HEADERS += \
     $$PWD/GUIWidgetDouble.h \
     $$PWD/GUIWidgetInt.h \
     $$PWD/GUIWidgetString.h \
+    $$PWD/GUIWidgetRadioGroup.h \
     $$PWD/GUICalculateWidgetBase.h \
     $$PWD/TurbulenceWidget.h \
     $$PWD/TransportWidget.h \
@@ -22,6 +23,7 @@ SOURCES += \
     $$PWD/GUIWidgetDouble.cpp \
     $$PWD/GUIWidgetInt.cpp \
     $$PWD/GUIWidgetString.cpp \
+    $$PWD/GUIWidgetRadioGroup.cpp \
     $$PWD/GUICalculateWidgetBase.cpp \
     $$PWD/TurbulenceWidget.cpp \
     $$PWD/TransportWidget.cpp \
@@ -39,6 +41,7 @@ FORMS += \
     $$PWD/SolutionWidget.ui \
     $$PWD/BoundaryWidget.ui \
     $$PWD/InitialWidget.ui \
+    $$PWD/GUIWidgetRadioGroup.ui \
     $$PWD/compCalLineWidget.ui \
 
  RESOURCES += \

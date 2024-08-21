@@ -18,7 +18,6 @@ namespace Ui {
 }
 
 namespace Interface {
-    class FITKFlowSolverProcessFactory;
 }
 
 namespace EventOper {
@@ -70,7 +69,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        QString typeToName(Interface::FITKOFPostProcessEnum::FITKOFSolverType type);
+        QString typeToName(Interface::FITKOFSolverTypeEnum::FITKOFSolverType type);
         /**
          * @brief 初始化设置类型
          * @author BaGuijun (baguijun@163.com)
@@ -98,12 +97,12 @@ namespace GUI
          */
         void slotTypeSelect();
     private:
-        /**
-         * @brief 求解器工厂
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
-         */
-        Interface::FITKFlowSolverProcessFactory* _solverFactory = nullptr;
+        ///**
+        // * @brief 求解器工厂
+        // * @author BaGuijun (baguijun@163.com)
+        // * @date 2024-08-14
+        // */
+        //Interface::FITKFlowSolverProcessFactory* _solverFactory = nullptr;
         /**
          * @brief 操作器对象
          * @author BaGuijun (baguijun@163.com)
@@ -121,7 +120,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        QList<Interface::FITKOFPostProcessEnum::FITKOFSolverType> _types = {};
+        QList<Interface::FITKOFSolverTypeEnum::FITKOFSolverType> _types = {};
     };
 }
 

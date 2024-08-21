@@ -6,7 +6,6 @@
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataBase.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataCombox.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowSolverProcessFactory.h"
 
 #include <QTableWidget>
 

@@ -13,7 +13,6 @@
 #include "FITK_Component/FITKMeshGenOF/FITKMeshGenOFInterface.h"
 #include "FITK_Component/FITKOFDictWriter/FITKOFDictWriterIO.h"
 #include "FITK_Component/FITKOFMeshIO/FITKOFMeshReader.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowSolverProcessFactory.h"
 #include "OperatorsModel/OpersModelInterface.h"
 #include "OperatorsGUI/OpersGUIInterface.h"
 #include "PreWindowInitializer.h"
@@ -39,8 +38,6 @@ QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
     componentList << new IO::FITKOFDictWriterIO;
     // OpenFOAM网格读取组件
     componentList << new IO::FITKOFMeshReader;
-    //后处理求解器工厂
-    componentList << new Interface::FITKFlowSolverProcessFactory;
 
     // VTK窗口初始化器
     compVTKrender->addInitializer(1, new PreWindowInitializer);
