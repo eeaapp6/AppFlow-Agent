@@ -6,7 +6,10 @@
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractOFSolver.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolverManager.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
 
 #include <QButtonGroup>
 
@@ -92,29 +95,32 @@ namespace GUI
 
     void SetupWidget::on_pushButton_Select_clicked()
     {
-        //if (_solverManager == nullptr)return;
-        //QTableWidgetItem* currentItem = _ui->tableWidget->currentItem();
-        //if (currentItem == nullptr)return;
+        if (_solverManager == nullptr)return;
+        if (_factoryData == nullptr)return;
+        QTableWidgetItem* currentItem = _ui->tableWidget->currentItem();
+        if (currentItem == nullptr)return;
 
-        //_ui->label_CurrentSolver->setText(currentItem->text());
-        //_solverManager->setSolver(currentItem->text());
+        _ui->label_CurrentSolver->setText(currentItem->text());
+        _factoryData->setSolver(currentItem->text());
 
-        //if (_oper) {
-        //    _oper->execProfession();
-        //}
+        if (_oper) {
+            _oper->execProfession();
+        }
     }
 
     void SetupWidget::initSetupType()
     {
+        if (_solverManager == nullptr)return;
         _types = _solverManager->filterSolvers(QList<Interface::FITKOFSolverTypeEnum::FITKOFSolverFiltersType>());
     }
 
     void SetupWidget::initCurrentType()
     {
-        //Interface::FITKOFCasePhysicsData* solver = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFCasePhysicsData>();
-        //if (solver == nullptr)return;
-        //QString name = typeToName(solver->getSolverType());
-        //_ui->label_CurrentSolver->setText(name);
+        Interface::FITKOFPhysicsData* physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+        if (physicsData == nullptr)return;
+        Interface::FITKAbstractOFSolver* solverData = physicsData->getSolver();
+        if (solverData == nullptr)return;
+        _ui->label_CurrentSolver->setText(solverData->getDataObjectName());
     }
 
     void SetupWidget::slotTypeSelect()
@@ -157,7 +163,6 @@ namespace GUI
         }
 
         _types = _solverManager->filterSolvers(typeList);
-
         updateTableWidget();
     }
 }

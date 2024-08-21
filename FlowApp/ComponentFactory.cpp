@@ -11,6 +11,7 @@
 #include "FITK_Component/FITKRenderWindowVTK/FITKGraph3DWindowInterface.h"
 #include "FITK_Component/FITKGeoCompOCC/FITKGeoCompOCCInterface.h"
 #include "FITK_Component/FITKMeshGenOF/FITKMeshGenOFInterface.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
 #include "FITK_Component/FITKOFDictWriter/FITKOFDictWriterIO.h"
 #include "FITK_Component/FITKOFMeshIO/FITKOFMeshReader.h"
 #include "OperatorsModel/OpersModelInterface.h"
@@ -38,7 +39,8 @@ QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
     componentList << new IO::FITKOFDictWriterIO;
     // OpenFOAM网格读取组件
     componentList << new IO::FITKOFMeshReader;
-
+    // 物理场数据工厂组件
+    componentList << new Interface::FITKFlowPhysicsHandlerFactory;
     // VTK窗口初始化器
     compVTKrender->addInitializer(1, new PreWindowInitializer);
 

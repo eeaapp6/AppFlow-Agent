@@ -23,7 +23,7 @@ namespace EventOper {
 }
 
 namespace Interface {
-    class FITKOFTurbulenceData;
+    class FITKOFTurbulenceManager;
 }
 
 namespace GUI
@@ -100,11 +100,11 @@ namespace GUI
          */
         QButtonGroup* _radioGroup = nullptr;
         /**
-         * @brief 湍流数据对象
+         * @brief  湍流管理器
          * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
+         * @date   2024-08-21
          */
-        Interface::FITKOFTurbulenceData* _turData = nullptr;
+        Interface::FITKOFTurbulenceManager* _turManager = nullptr;
     };
 }
 #endif

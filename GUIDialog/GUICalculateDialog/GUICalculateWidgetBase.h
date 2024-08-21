@@ -17,8 +17,11 @@ namespace EventOper {
 }
 
 namespace Interface {
-    class FITKOFPhysicsHandlerManager;
+    class FITKOFPhysicsManager;
+    class FITKAbstractOFSolver;
     class FITKOFSolverManager;
+    class FITKOFPhysicsData;
+    class FITKFlowPhysicsHandlerFactory;
 }
 
 namespace GUI
@@ -70,7 +73,19 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date   2024-08-21
          */
-        Interface::FITKOFPhysicsHandlerManager* _physicsManager = nullptr;
+        Interface::FITKOFPhysicsManager* _physicsManager = nullptr;
+        /**
+         * @brief  物理数据对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-08-21
+         */
+        Interface::FITKOFPhysicsData* _physicsData = nullptr;
+        /**
+         * @brief  工厂对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-08-21
+         */
+        Interface::FITKFlowPhysicsHandlerFactory* _factoryData = nullptr;
     };
     //---------------------------------------------------------------------------------------------------------------
     class GUICalculateDialogAPI GUICalculateSubWidgetBase
