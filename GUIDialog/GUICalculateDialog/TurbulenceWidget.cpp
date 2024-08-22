@@ -58,7 +58,7 @@ namespace GUI
         //信号连接
         connect(_radioGroup, SIGNAL(buttonClicked(int)), this, SLOT(slotRadioButtonClicked()));
         connect(_ui->comboBox_Model, SIGNAL(currentIndexChanged(int)), this, SLOT(slotComboBoxModelChange(int)));
-        connect(_ui->comboBox_Delta, SIGNAL(currentIndexChanged(int)), this, SLOT(slotComboBoxDeltaChange()));
+        connect(_ui->comboBox_Delta, SIGNAL(currentIndexChanged(int)), this, SLOT(slotComboBoxDeltaChange(int)));
     }
 
     void TurbulenceWidget::updateSubWidget()
