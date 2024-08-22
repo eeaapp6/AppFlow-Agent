@@ -9,6 +9,8 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFDiscretization.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
 
+#include <QToolBox>
+
 namespace GUI
 {
     DiscretizationWidget::DiscretizationWidget(EventOper::ParaWidgetInterfaceOperator * oper, QWidget * parent) :
@@ -74,6 +76,8 @@ namespace GUI
     void DiscretizationWidget::updateConvectionWidget()
     {
         if (_disValue == nullptr)return;
+        QToolBox* toolBox = new QToolBox(this);
+
         int conNum = _disValue->getConvectionCount();
         for (int i = 0; i < conNum; i++) {
             auto conValue = _disValue->getConvectionVPara(i);
@@ -85,8 +89,11 @@ namespace GUI
                 if (subValue == nullptr)continue;
                 QWidget* widget = compCalLineWidget::DataSwitchToWidget(subValue, this);
                 _ui->verticalLayout_Convection->addWidget(widget);
+                toolBox->addItem(widget, conName);
             }
         }
+
+        _ui->verticalLayout_Convection->addWidget(toolBox);
     }
 }
 
