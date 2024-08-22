@@ -79,9 +79,9 @@ namespace GUI
          * @date 2024-08-14
          */
         void slotRadioButtonClicked();
-        void on_comboBox_Model_activated(int index);
+        void slotComboBoxModelChange(int index);
 
-        void on_comboBox_Delta_activated(int index);
+        void slotComboBoxDeltaChange(int index);
 
         void on_pushButton_ModelUnfold_clicked();
 

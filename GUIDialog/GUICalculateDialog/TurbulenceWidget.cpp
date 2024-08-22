@@ -54,7 +54,11 @@ namespace GUI
 
         //更具数据对象初始化界面
         setDataToWidget();
+
+        //信号连接
         connect(_radioGroup, SIGNAL(buttonClicked(int)), this, SLOT(slotRadioButtonClicked()));
+        connect(_ui->comboBox_Model, SIGNAL(currentIndexChanged(int)), this, SLOT(slotComboBoxModelChange(int)));
+        connect(_ui->comboBox_Delta, SIGNAL(currentIndexChanged(int)), this, SLOT(slotComboBoxDeltaChange()));
     }
 
     void TurbulenceWidget::updateSubWidget()
@@ -213,15 +217,17 @@ namespace GUI
         updateSubWidget();
     }
 
-    void TurbulenceWidget::on_comboBox_Model_activated(int index)
+    void TurbulenceWidget::slotComboBoxModelChange(int index)
     {
+        if (index == -1)return;
         if (_factoryData == nullptr)return;
         _factoryData->setTurbence(_ui->comboBox_Model->currentText());
         updateSubWidget();
     }
 
-    void TurbulenceWidget::on_comboBox_Delta_activated(int index)
+    void TurbulenceWidget::slotComboBoxDeltaChange(int index)
     {
+        if (index == -1)return;
         //_turData->setCurrentDeltaType(_ui->comboBox_Delta->currentText());
         //updateSubWidget();
     }
