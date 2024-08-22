@@ -32,6 +32,8 @@ namespace GUI
     private:
         Ui::GUIWidgetRadioGroup* _ui = nullptr;
         Interface::FITKFlowDataRadioGroup* _data = nullptr;
+
+        QList<QWidget*> _subWidget = {};
     };
 }
 
