@@ -15,6 +15,7 @@ HEADERS += \
     $$PWD/BoundaryWidget.h \
     $$PWD/InitialWidget.h \
     $$PWD/compCalLineWidget.h \
+    $$PWD/compHBoxWidget.h \
 
 SOURCES += \
     $$PWD/SetupWidget.cpp \
@@ -32,6 +33,7 @@ SOURCES += \
     $$PWD/BoundaryWidget.cpp \
     $$PWD/InitialWidget.cpp \
     $$PWD/compCalLineWidget.cpp \
+    $$PWD/compHBoxWidget.cpp \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \
@@ -43,6 +45,7 @@ FORMS += \
     $$PWD/InitialWidget.ui \
     $$PWD/GUIWidgetRadioGroup.ui \
     $$PWD/compCalLineWidget.ui \
+    $$PWD/compHBoxWidget.ui \
 
  RESOURCES += \
     $$PWD/../../Resources/Resources.qrc

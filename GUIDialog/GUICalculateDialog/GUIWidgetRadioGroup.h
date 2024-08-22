@@ -5,6 +5,7 @@
 #include <QWidget>
 
 class QButtonGroup;
+class QHBoxLayout;
 
 namespace Ui {
     class GUIWidgetRadioGroup;
@@ -17,6 +18,8 @@ namespace Interface {
 
 namespace GUI
 {
+    class compHBoxWidget;
+
     class GUICalculateDialogAPI GUIWidgetRadioGroup : public QWidget
     {
         Q_OBJECT;
@@ -28,6 +31,13 @@ namespace GUI
     private:
         void initRadioData();
         void initSubData();
+        /**
+         * @brief    禁用Radio界面
+         * @return   void
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-22
+         */
+        void disableAllRadioWidget();
     private slots:
         ;
         void slotRadioClicked(int index);
@@ -38,6 +48,8 @@ namespace GUI
         QList<QWidget*> _subWidget = {};
 
         QButtonGroup* _group = nullptr;
+
+        QHash<int, compHBoxWidget*> _radioWidgets = {};
     };
 }
 

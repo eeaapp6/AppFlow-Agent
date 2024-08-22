@@ -38,6 +38,7 @@ namespace GUI
     void DiscretizationWidget::updateWidget()
     {
         updateTimeWidget();
+        updateConvectionWidget();
     }
 
     void DiscretizationWidget::showEvent(QShowEvent * event)
@@ -67,6 +68,24 @@ namespace GUI
             if (dataBase == nullptr)continue;
             QWidget* widget = compCalLineWidget::DataSwitchToWidget(dataBase, this);
             _ui->verticalLayout_Time->addWidget(widget);
+        }
+    }
+
+    void DiscretizationWidget::updateConvectionWidget()
+    {
+        if (_disValue == nullptr)return;
+        int conNum = _disValue->getConvectionCount();
+        for (int i = 0; i < conNum; i++) {
+            auto conValue = _disValue->getConvectionVPara(i);
+            QString conName = _disValue->getConvectionVName(i);
+            if(conValue == nullptr)continue;
+
+            for (auto subValue : conValue->getParameter())
+            {
+                if (subValue == nullptr)continue;
+                QWidget* widget = compCalLineWidget::DataSwitchToWidget(subValue, this);
+                _ui->verticalLayout_Convection->addWidget(widget);
+            }
         }
     }
 }

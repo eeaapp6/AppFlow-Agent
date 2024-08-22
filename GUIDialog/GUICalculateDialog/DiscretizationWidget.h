@@ -77,7 +77,18 @@ namespace GUI
          */
         void resizeEvent(QResizeEvent *event) override;
     private:
+        /**
+         * @brief    更新离散时间界面
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-22
+         */
         void updateTimeWidget();
+        /**
+         * @brief    更新离散对流界面
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-22
+         */
+        void updateConvectionWidget();
     private:
         /**
          * @brief ui
