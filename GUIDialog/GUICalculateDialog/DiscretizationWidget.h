@@ -89,6 +89,18 @@ namespace GUI
          * @date     2024-08-22
          */
         void updateConvectionWidget();
+        /**
+         * @brief    更新梯度界面
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-22
+         */
+        void updateGradientsWidget();
+        /**
+         * @brief    更新插值界面
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-22
+         */
+        void updateInterpolationWidget();
     private:
         /**
          * @brief ui

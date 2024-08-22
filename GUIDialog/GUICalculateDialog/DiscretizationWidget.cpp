@@ -41,6 +41,8 @@ namespace GUI
     {
         updateTimeWidget();
         updateConvectionWidget();
+        updateGradientsWidget();
+        updateInterpolationWidget();
     }
 
     void DiscretizationWidget::showEvent(QShowEvent * event)
@@ -103,6 +105,23 @@ namespace GUI
         }
 
         _ui->verticalLayout_Convection->addWidget(toolBox);
+    }
+
+    void DiscretizationWidget::updateGradientsWidget()
+    {
+
+    }
+
+    void DiscretizationWidget::updateInterpolationWidget()
+    {
+        if (_disValue == nullptr)return;
+        auto intValue = _disValue->getInterpolation();
+        if (intValue == nullptr)return;
+
+        for (auto value : intValue->getParameter()) {
+            QWidget* widget = new compCalLineWidget(value, this);
+            _ui->verticalLayout_Interpolation->addWidget(widget);
+        }
     }
 }
 
