@@ -16,6 +16,10 @@ namespace Ui {
     class DiscretizationWidget;
 }
 
+namespace Interface {
+    class FITKOFDiscretization;
+}
+
 namespace EventOper {
     class ParaWidgetInterfaceOperator;
 }
@@ -73,12 +77,20 @@ namespace GUI
          */
         void resizeEvent(QResizeEvent *event) override;
     private:
+        void updateTimeWidget();
+    private:
         /**
          * @brief ui
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
         Ui::DiscretizationWidget* _ui = nullptr;
+        /**
+         * @brief  离散数据对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-08-22
+         */
+        Interface::FITKOFDiscretization* _disValue = nullptr;
     };
 }
 #endif

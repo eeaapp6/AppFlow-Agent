@@ -6,6 +6,7 @@
 #include "GUIWidgetDouble.h"
 #include "GUIWidgetInt.h"
 #include "GUIWidgetString.h"
+#include "GUIWidgetRadioGroup.h"
 
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataBase.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataCombox.h"
@@ -13,6 +14,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataString.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataBool.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataDouble.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataRadioGroup.h"
 
 #include <QWidget>
 #include <QTableWidget>
@@ -47,17 +49,43 @@ namespace GUI
         _ui->horizontalLayout->addWidget(widget);
     }
 
-    QWidget* compCalLineWidget::DataSwitchToWidget(Interface::FITKFlowDataBase * data, QWidget * parent)
+    QWidget* compCalLineWidget::DataSwitchToWidget(Interface::FITKFlowDataBase * data, QWidget * parent, QString name)
     {
         QWidget* widget = nullptr;
         if (data == nullptr)return widget;
         Interface::FlowDataType type = data->getDataType();
         switch (type) {
-        case Interface::FlowDataType::FLowDataInt:widget = new GUIWidgetInt(data, parent); break;
-        case Interface::FlowDataType::FLowDataDouble:widget = new GUIWidgetDouble(data, parent); break;
-        case Interface::FlowDataType::FLowDataString:widget = new GUIWidgetString(data, parent); break;
-        case Interface::FlowDataType::FLowDataComBox:widget = new GUIWidgetComBox(data, parent); break;
-        case Interface::FlowDataType::FLowDataBool:widget = new GUIWidgetBool(data, parent); break;
+        case Interface::FlowDataType::FLowDataInt: {
+            auto w = new GUIWidgetInt(data, parent);
+            widget = w;
+            break;
+        }
+        case Interface::FlowDataType::FLowDataDouble: {
+            auto w = new GUIWidgetDouble(data, parent);
+            widget = w;
+            break;
+        }
+        case Interface::FlowDataType::FLowDataString: {
+            auto w = new GUIWidgetString(data, parent);
+            widget = w;
+            break;
+        }
+        case Interface::FlowDataType::FLowDataComBox: {
+            auto w = new GUIWidgetComBox(data, parent);
+            widget = w;
+            break;
+        }
+        case Interface::FlowDataType::FLowDataBool: {
+            auto w = new GUIWidgetBool(data, parent);
+            w->setText(name);
+            widget = w;
+            break;
+        }
+        case Interface::FlowDataType::FLowDataRadioGroup: {
+            auto w = new GUIWidgetRadioGroup(data, parent);
+            widget = w;
+            break;
+        }
         }
         return widget;
     }

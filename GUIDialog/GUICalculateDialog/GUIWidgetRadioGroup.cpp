@@ -7,6 +7,7 @@
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QPair>
+#include <QFrame>
 
 namespace GUI
 {
@@ -17,8 +18,6 @@ namespace GUI
         if (_data == nullptr)return;
         _ui = new Ui::GUIWidgetRadioGroup();
         _ui->setupUi(this);
-
-        _ui->line->hide();
         init();
     }
 
@@ -32,21 +31,30 @@ namespace GUI
         if (_data == nullptr)return;
         initRadioData();
         initSubData();
+
+        //设置默认选项
+        int currentindex = _data->getCurrentValueIndex();
+        auto radioButton = _group->button(currentindex);
+        if (radioButton == nullptr)return;
+        radioButton->setChecked(true);
+        slotRadioClicked(currentindex);
     }
 
     void GUIWidgetRadioGroup::initRadioData()
     {
         if (_data == nullptr)return;
-        QButtonGroup* group = new QButtonGroup(this);
+        _group = new QButtonGroup(this);
 
         QList<Interface::FITKRadioGroupValue> radioValues = _data->getRadioValues();
-        for (auto radioValue : radioValues) {
-            QHBoxLayout* layout = new QHBoxLayout(this);
+        if (radioValues.size() == 0)return;
 
+        for (int i = 0; i < radioValues.size(); i++) {
+            auto radioValue = radioValues[i];
             //radio单选按钮添加
             QRadioButton*  radioButton = new QRadioButton(this);
             radioButton->setText(radioValue._name);
-            layout->addWidget(radioButton);
+            _ui->verticalLayout->addWidget(radioButton);
+            _group->addButton(radioButton, i);
 
             //单选选项数据添加
             Interface::FITKAbstractParameter* values = radioValue._value;
@@ -55,11 +63,10 @@ namespace GUI
                 if (v == nullptr)continue;
                 QWidget* widget = compCalLineWidget::DataSwitchToWidget(v, this);
                 if (widget == nullptr)continue;
-                layout->addWidget(widget);
+                _ui->verticalLayout->addWidget(widget);
             }
-            _ui->verticalLayout_Value->addLayout(layout);
         }
-        connect(group, SIGNAL(buttonClicked(int)), this, SLOT(slotRadioClicked(int)));
+        connect(_group, SIGNAL(buttonClicked(int)), this, SLOT(slotRadioClicked(int)));
     }
 
     void GUIWidgetRadioGroup::initSubData()
@@ -68,19 +75,23 @@ namespace GUI
 
         auto subDataList = _data->getSubValues();
         if (subDataList.size() == 0)return;
-        _ui->line->show();
+
+        QFrame* line = new QFrame(this);
+        line->setFrameShape(QFrame::HLine);
+        _ui->verticalLayout->addWidget(line);
 
         for (auto subData : subDataList) {
-            QWidget* widget = compCalLineWidget::DataSwitchToWidget(subData, this);
+            if (subData == nullptr)continue;
+            QWidget* widget = compCalLineWidget::DataSwitchToWidget(subData, this, subData->getDataObjectName());
             if (widget == nullptr)continue;
-            widget->setObjectName(subData->getDataObjectName());
-            _ui->verticalLayout_SubValue->addWidget(widget);
+            _ui->verticalLayout->addWidget(widget);
             _subWidget.append(widget);
         }
     }
 
     void GUIWidgetRadioGroup::slotRadioClicked(int index)
     {
+        if (index == -1)return;
         if (_data == nullptr)return;
         _data->setCurrentIndex(index);
         QList<bool> subEnable = _data->getCurrentValueSubState();

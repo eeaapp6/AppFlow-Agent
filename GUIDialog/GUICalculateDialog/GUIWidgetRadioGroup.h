@@ -4,6 +4,8 @@
 #include "GUICalculateDialogAPI.h"
 #include <QWidget>
 
+class QButtonGroup;
+
 namespace Ui {
     class GUIWidgetRadioGroup;
 }
@@ -34,6 +36,8 @@ namespace GUI
         Interface::FITKFlowDataRadioGroup* _data = nullptr;
 
         QList<QWidget*> _subWidget = {};
+
+        QButtonGroup* _group = nullptr;
     };
 }
 
