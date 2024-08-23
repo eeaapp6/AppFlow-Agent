@@ -7,6 +7,8 @@
 #include "GUIWidgetInt.h"
 #include "GUIWidgetString.h"
 #include "GUIWidgetRadioGroup.h"
+#include "GUIWidgetBoolGroup.h"
+#include "compHBoxWidget.h"
 
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataBase.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataCombox.h"
@@ -15,6 +17,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataBool.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataDouble.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataRadioGroup.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataBoolGroup.h"
 
 #include <QWidget>
 #include <QTableWidget>
@@ -84,6 +87,23 @@ namespace GUI
         }
         case Interface::FlowDataType::FLowDataRadioGroup: {
             auto w = new GUIWidgetRadioGroup(data, parent);
+            widget = w;
+            break;
+        }case Interface::FlowDataType::FLowDataDoubleList: {
+            auto doubleListData = dynamic_cast<Interface::FITKFlowDataDoubleList*>(data);
+            if (doubleListData == nullptr)break;
+            QList<QWidget*> widgets = {};
+            for (auto d : doubleListData->getDoubleDatas()) {
+                if (!d)continue;
+                widgets.append(new GUIWidgetDouble(d, parent));
+            }
+            compHBoxWidget* w = new compHBoxWidget(widgets, parent);
+            widget = w;
+            break;
+        }case Interface::FlowDataType::FLowDataBoolGroup: {
+            auto boolGroupData = dynamic_cast<Interface::FITKFlowDataBoolGroup*>(data);
+            if (boolGroupData == nullptr)break;
+            GUIWidgetBoolGroup* w = new GUIWidgetBoolGroup(boolGroupData, parent);
             widget = w;
             break;
         }

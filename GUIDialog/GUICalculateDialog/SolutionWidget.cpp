@@ -118,6 +118,14 @@ namespace GUI
     void SolutionWidget::updateLimits()
     {
         if (_solValue == nullptr)return;
+        auto limValue = _solValue->getLimits();
+        if (limValue == nullptr)return;
+
+        for (auto v : limValue->getParameter()) {
+            if (v == nullptr)continue;
+            QWidget* widget = compCalLineWidget::DataSwitchToWidget(v, this);
+            _ui->verticalLayout_Limits->addWidget(widget);
+        }
     }
 }
 
