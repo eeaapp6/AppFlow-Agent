@@ -95,11 +95,9 @@ namespace GUI
             QString conName = _disValue->getConvectionVName(i);
             if(conValue == nullptr)continue;
 
-            for (auto subValue : conValue->getParameter())
-            {
+            for (auto subValue : conValue->getParameter()){
                 if (subValue == nullptr)continue;
                 QWidget* widget = compCalLineWidget::DataSwitchToWidget(subValue, this);
-                _ui->verticalLayout_Convection->addWidget(widget);
                 toolBox->addItem(widget, conName);
             }
         }
@@ -109,7 +107,28 @@ namespace GUI
 
     void DiscretizationWidget::updateGradientsWidget()
     {
+        if (_disValue == nullptr)return;
+        auto gradValue = _disValue->getGradients();
+        if (gradValue == nullptr)return;
 
+        QToolBox* toolBox = new QToolBox(this);
+
+        toolBox->setStyleSheet(
+            "QToolBox::tab {"
+            "    background-color: #d3d3d3;" /* 淡浅灰色背景 */
+            "}"
+            "QToolBox::tab:selected {"
+            "    background-color: #a9a9a9;" /* 选中时的背景色，稍深的灰色 */
+            "}"
+        );
+
+        for (auto value : gradValue->getParameter()) {
+            if (value == nullptr)continue;
+            QWidget* widget = compCalLineWidget::DataSwitchToWidget(value, this);
+            toolBox->addItem(widget, value->getDataObjectName());
+        }
+
+        _ui->verticalLayout_Gradients->addWidget(toolBox);
     }
 
     void DiscretizationWidget::updateInterpolationWidget()
