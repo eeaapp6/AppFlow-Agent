@@ -18,7 +18,7 @@ namespace Interface {
 
 namespace GUI
 {
-    class compHBoxWidget;
+    class CompHBoxWidget;
 
     class GUICalculateDialogAPI GUIWidgetRadioGroup : public QWidget
     {
@@ -49,7 +49,7 @@ namespace GUI
 
         QButtonGroup* _group = nullptr;
 
-        QHash<int, compHBoxWidget*> _radioWidgets = {};
+        QHash<int, CompHBoxWidget*> _radioWidgets = {};
     };
 }
 

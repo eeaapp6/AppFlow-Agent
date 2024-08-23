@@ -1,13 +1,13 @@
 ﻿/**
  * 
- * @file compCalLineWidget.h
+ * @file CompCalLineWidget.h
  * @brief 求解器单个参数组件界面
  * @author BaGuijun (baguijun@163.com)
  * @date 2024-08-16
  * 
  */
-#ifndef _compCalLineWidget_H
-#define _compCalLineWidget_H
+#ifndef _CompCalLineWidget_H
+#define _CompCalLineWidget_H
 
 #include "GUICalculateDialogAPI.h"
 #include "GUIWidget/GUIWidgetBase.h"
@@ -15,7 +15,7 @@
 class QToolBox;
 
 namespace Ui {
-    class compCalLineWidget;
+    class CompCalLineWidget;
 }
 
 namespace Interface {
@@ -29,7 +29,7 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-16
      */
-    class GUICalculateDialogAPI compCalLineWidget : public GUIWidgetBase
+    class GUICalculateDialogAPI CompCalLineWidget : public GUIWidgetBase
     {
         Q_OBJECT;
     public:
@@ -40,13 +40,13 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-16
          */
-        compCalLineWidget(Interface::FITKFlowDataBase* data, QWidget* parent = nullptr);
+        CompCalLineWidget(Interface::FITKFlowDataBase* data, QWidget* parent = nullptr);
         /**
          * @brief Destroy the comp Cal Line Widget object
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-16
          */
-        ~compCalLineWidget();
+        ~CompCalLineWidget();
         /**
          * @brief 初始化函数
          * @author BaGuijun (baguijun@163.com)
@@ -76,7 +76,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-16
          */
-        Ui::compCalLineWidget* _ui = nullptr;
+        Ui::CompCalLineWidget* _ui = nullptr;
         /**
          * @brief 数据对象
          * @author BaGuijun (baguijun@163.com)

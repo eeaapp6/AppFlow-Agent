@@ -1,7 +1,7 @@
 ﻿#include "GUIWidgetRadioGroup.h"
 #include "ui_GUIWidgetRadioGroup.h"
-#include "compCalLineWidget.h"
-#include "compHBoxWidget.h"
+#include "CompCalLineWidget.h"
+#include "CompHBoxWidget.h"
 
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataRadioGroup.h"
 
@@ -66,12 +66,12 @@ namespace GUI
             if (values) {
                 for (auto v : values->getParameter()) {
                     if (v == nullptr)continue;
-                    QWidget* widget = compCalLineWidget::DataSwitchToWidget(v, this);
+                    QWidget* widget = CompCalLineWidget::DataSwitchToWidget(v, this);
                     if (widget == nullptr)continue;
                     widgetList.append(widget);
                 }
             }
-            compHBoxWidget* subWidget = new compHBoxWidget(widgetList, this);
+            CompHBoxWidget* subWidget = new CompHBoxWidget(widgetList, this);
             _radioWidgets.insert(i, subWidget);
             _ui->verticalLayout->addWidget(subWidget);
         }
@@ -94,7 +94,7 @@ namespace GUI
 
         for (auto subData : subDataList) {
             if (subData == nullptr)continue;
-            QWidget* widget = compCalLineWidget::DataSwitchToWidget(subData, this, subData->getDataObjectName());
+            QWidget* widget = CompCalLineWidget::DataSwitchToWidget(subData, this, subData->getDataObjectName());
             if (widget == nullptr)continue;
             _ui->verticalLayout->addWidget(widget);
             _subWidget.append(widget);

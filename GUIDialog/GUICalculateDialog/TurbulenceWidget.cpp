@@ -1,6 +1,6 @@
 ﻿#include "TurbulenceWidget.h"
 #include "ui_TurbulenceWidget.h"
-#include "compCalLineWidget.h"
+#include "CompCalLineWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -87,7 +87,7 @@ namespace GUI
             for (int i = 0; i < turData->getTurbulenceParams()->getParameterCount(); i++) {
                 auto dataBase = turData->getTurbulenceParams()->getParameterAt(i);
                 if (dataBase == nullptr)continue;
-                _ui->verticalLayout_ModelSub->addWidget(new compCalLineWidget(dataBase, this));
+                _ui->verticalLayout_ModelSub->addWidget(new CompCalLineWidget(dataBase, this));
             }
         }
         //if (turData->getDeltaData(turData->getCurrentDeltaType())) {

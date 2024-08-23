@@ -1,5 +1,5 @@
-﻿#include "compCalLineWidget.h"
-#include "ui_compCalLineWidget.h"
+﻿#include "CompCalLineWidget.h"
+#include "ui_CompCalLineWidget.h"
 
 #include "GUIWidgetBool.h"
 #include "GUIWidgetComBox.h"
@@ -8,7 +8,7 @@
 #include "GUIWidgetString.h"
 #include "GUIWidgetRadioGroup.h"
 #include "GUIWidgetBoolGroup.h"
-#include "compHBoxWidget.h"
+#include "CompHBoxWidget.h"
 
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataBase.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataCombox.h"
@@ -27,21 +27,21 @@
 
 namespace GUI
 {
-    compCalLineWidget::compCalLineWidget(Interface::FITKFlowDataBase * data, QWidget * parent) :
+    CompCalLineWidget::CompCalLineWidget(Interface::FITKFlowDataBase * data, QWidget * parent) :
         GUIWidgetBase(parent), _data(data)
     {
-        _ui = new Ui::compCalLineWidget();
+        _ui = new Ui::CompCalLineWidget();
         _ui->setupUi(this);
 
         init();
     }
 
-    compCalLineWidget::~compCalLineWidget()
+    CompCalLineWidget::~CompCalLineWidget()
     {
         if (_ui)delete _ui;
     }
 
-    void compCalLineWidget::init()
+    void CompCalLineWidget::init()
     {
         if (_data == nullptr)return;
         QLabel* label = new QLabel(this);
@@ -49,11 +49,11 @@ namespace GUI
         _ui->horizontalLayout->addWidget(label);
 
         QWidget* widget = DataSwitchToWidget(_data, this);
-        if (widget == nullptr);
+        if (widget == nullptr)return;
         _ui->horizontalLayout->addWidget(widget);
     }
 
-    QWidget* compCalLineWidget::DataSwitchToWidget(Interface::FITKFlowDataBase * data, QWidget * parent, QString name)
+    QWidget* CompCalLineWidget::DataSwitchToWidget(Interface::FITKFlowDataBase * data, QWidget * parent, QString name)
     {
         QWidget* widget = nullptr;
         if (data == nullptr)return widget;
@@ -97,7 +97,7 @@ namespace GUI
                 if (!d)continue;
                 widgets.append(new GUIWidgetDouble(d, parent));
             }
-            compHBoxWidget* w = new compHBoxWidget(widgets, parent);
+            CompHBoxWidget* w = new CompHBoxWidget(widgets, parent);
             widget = w;
             break;
         }case Interface::FlowDataType::FLowDataBoolGroup: {
@@ -111,7 +111,7 @@ namespace GUI
         return widget;
     }
 
-    QToolBox * compCalLineWidget::CreateToolBox(QWidget * parent)
+    QToolBox * CompCalLineWidget::CreateToolBox(QWidget * parent)
     {
         QToolBox* toolBox = new QToolBox(parent);
         toolBox->setStyleSheet(

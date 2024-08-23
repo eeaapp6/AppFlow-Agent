@@ -1,6 +1,6 @@
 ﻿#include "DiscretizationWidget.h"
 #include "ui_DiscretizationWidget.h"
-#include "compCalLineWidget.h"
+#include "CompCalLineWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -47,6 +47,7 @@ namespace GUI
 
     void DiscretizationWidget::showEvent(QShowEvent * event)
     {
+        Q_UNUSED(event);
         int width = _ui->tabWidget->width();
         int tabCount = _ui->tabWidget->count();
         int tabWidth = width / tabCount;
@@ -55,6 +56,7 @@ namespace GUI
 
     void DiscretizationWidget::resizeEvent(QResizeEvent * event)
     {
+        Q_UNUSED(event);
         int width = _ui->tabWidget->width();
         int tabCount = _ui->tabWidget->count();
         int tabWidth = width / tabCount;
@@ -70,7 +72,7 @@ namespace GUI
         for (auto dataBase : timeValue->getParameter())
         {
             if (dataBase == nullptr)continue;
-            QWidget* widget = compCalLineWidget::DataSwitchToWidget(dataBase, this);
+            QWidget* widget = CompCalLineWidget::DataSwitchToWidget(dataBase, this);
             _ui->verticalLayout_Time->addWidget(widget);
         }
     }
@@ -78,7 +80,7 @@ namespace GUI
     void DiscretizationWidget::updateConvectionWidget()
     {
         if (_disValue == nullptr)return;
-        QToolBox* toolBox = compCalLineWidget::CreateToolBox(this);
+        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(this);
 
         int conNum = _disValue->getConvectionCount();
         for (int i = 0; i < conNum; i++) {
@@ -88,7 +90,7 @@ namespace GUI
 
             for (auto subValue : conValue->getParameter()){
                 if (subValue == nullptr)continue;
-                QWidget* widget = compCalLineWidget::DataSwitchToWidget(subValue, this);
+                QWidget* widget = CompCalLineWidget::DataSwitchToWidget(subValue, this);
                 toolBox->addItem(widget, conName);
             }
         }
@@ -102,11 +104,11 @@ namespace GUI
         auto gradValue = _disValue->getGradients();
         if (gradValue == nullptr)return;
 
-        QToolBox* toolBox = compCalLineWidget::CreateToolBox(this);
+        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(this);
 
         for (auto value : gradValue->getParameter()) {
             if (value == nullptr)continue;
-            QWidget* widget = compCalLineWidget::DataSwitchToWidget(value, this);
+            QWidget* widget = CompCalLineWidget::DataSwitchToWidget(value, this);
             toolBox->addItem(widget, value->getDataObjectName());
         }
 
@@ -120,7 +122,7 @@ namespace GUI
         if (intValue == nullptr)return;
 
         for (auto value : intValue->getParameter()) {
-            QWidget* widget = new compCalLineWidget(value, this);
+            QWidget* widget = new CompCalLineWidget(value, this);
             _ui->verticalLayout_Interpolation->addWidget(widget);
         }
     }

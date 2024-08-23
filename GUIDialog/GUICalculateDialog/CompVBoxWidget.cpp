@@ -1,15 +1,15 @@
-﻿#include "compVBoxWidget.h"
-#include "ui_compVBoxWidget.h"
-#include "compCalLineWidget.h"
+﻿#include "CompVBoxWidget.h"
+#include "ui_CompVBoxWidget.h"
+#include "CompCalLineWidget.h"
 
 #include <QRadioButton>
 
 namespace GUI
 {
-    compVBoxWidget::compVBoxWidget(QList<QWidget*> widgetList, QWidget * parent) :
+    CompVBoxWidget::CompVBoxWidget(QList<QWidget*> widgetList, QWidget * parent) :
         QWidget(parent), _subWidgets(widgetList)
     {
-        _ui = new Ui::compVBoxWidget();
+        _ui = new Ui::CompVBoxWidget();
         _ui->setupUi(this);
 
         for (int i = 0; i < widgetList.size(); i++) {
@@ -19,12 +19,12 @@ namespace GUI
         }
     }
 
-    compVBoxWidget::~compVBoxWidget()
+    CompVBoxWidget::~CompVBoxWidget()
     {
         if (_ui)delete _ui;
     }
 
-    void compVBoxWidget::setSubWidgetEnable(bool enable, bool isFirst)
+    void CompVBoxWidget::setSubWidgetEnable(bool enable, bool isFirst)
     {
         for (int i = 0; i < _subWidgets.size(); i++) {
             auto w = _subWidgets[i];

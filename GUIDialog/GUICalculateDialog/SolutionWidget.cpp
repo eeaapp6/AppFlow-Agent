@@ -1,7 +1,7 @@
 ﻿#include "SolutionWidget.h"
 #include "ui_SolutionWidget.h"
-#include "compCalLineWidget.h"
-#include "compVBoxWidget.h"
+#include "CompCalLineWidget.h"
+#include "CompVBoxWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -42,6 +42,7 @@ namespace GUI
 
     void SolutionWidget::showEvent(QShowEvent * event)
     {
+        Q_UNUSED(event);
         int width = _ui->tabWidget->width();
         int tabCount = _ui->tabWidget->count();
         int tabWidth = width / tabCount;
@@ -50,6 +51,7 @@ namespace GUI
 
     void SolutionWidget::resizeEvent(QResizeEvent * event)
     {
+        Q_UNUSED(event);
         int width = _ui->tabWidget->width();
         int tabCount = _ui->tabWidget->count();
         int tabWidth = width / tabCount;
@@ -74,7 +76,7 @@ namespace GUI
         
         for (auto value : solverValue->getParameter()) {
             if (value == nullptr)continue;
-            QWidget* widget = new compCalLineWidget(value, this);
+            QWidget* widget = new CompCalLineWidget(value, this);
             _ui->verticalLayout_Solver->addWidget(widget);
         }
     }
@@ -83,7 +85,7 @@ namespace GUI
     {
         if (_solValue == nullptr)return;
 
-        QToolBox* toolBox = compCalLineWidget::CreateToolBox(this);
+        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(this);
 
         int resNum = _solValue->getResidualsCount();
         for (int i = 0; i < resNum; i++) {
@@ -92,10 +94,10 @@ namespace GUI
             QList<QWidget*> widgets = {};
             for (auto v : value->getParameter()) {
                 if (v == nullptr)return;
-                QWidget* widget = new compCalLineWidget(v, this);
+                QWidget* widget = new CompCalLineWidget(v, this);
                 widgets.append(widget);
             }
-            compVBoxWidget* VBoxWidget = new compVBoxWidget(widgets, this);
+            CompVBoxWidget* VBoxWidget = new CompVBoxWidget(widgets, this);
             toolBox->addItem(VBoxWidget, name);
         }
 
@@ -110,7 +112,7 @@ namespace GUI
 
         for (auto v : relValue->getParameter()) {
             if (v == nullptr)continue;
-            QWidget* widget = new compCalLineWidget(v, this);
+            QWidget* widget = new CompCalLineWidget(v, this);
             _ui->verticalLayout_Relaxation->addWidget(widget);
         }
     }
@@ -123,7 +125,7 @@ namespace GUI
 
         for (auto v : limValue->getParameter()) {
             if (v == nullptr)continue;
-            QWidget* widget = compCalLineWidget::DataSwitchToWidget(v, this);
+            QWidget* widget = CompCalLineWidget::DataSwitchToWidget(v, this);
             _ui->verticalLayout_Limits->addWidget(widget);
         }
     }

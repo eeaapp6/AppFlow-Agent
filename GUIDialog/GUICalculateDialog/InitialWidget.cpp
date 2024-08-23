@@ -1,6 +1,6 @@
 ﻿#include "InitialWidget.h"
 #include "ui_InitialWidget.h"
-#include "compCalLineWidget.h"
+#include "CompCalLineWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -41,7 +41,7 @@ namespace GUI
 
         for (auto v : basicValue->getParameter()) {
             if (v == nullptr)continue;
-            QWidget* widget = new compCalLineWidget(v, this);
+            QWidget* widget = new CompCalLineWidget(v, this);
             _ui->verticalLayout_Basic->addWidget(widget);
         }
     }

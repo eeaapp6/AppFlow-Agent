@@ -1,6 +1,6 @@
 ﻿#include "GUIWidgetBoolGroup.h"
 #include "ui_GUIWidgetBoolGroup.h"
-#include "compCalLineWidget.h"
+#include "CompCalLineWidget.h"
 
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataBoolGroup.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
@@ -65,7 +65,7 @@ namespace GUI {
         if (!_dataBase->getValueGroup())return;
         for (auto v : _dataBase->getValueGroup()->getParameter()) {
             if (!v)continue;
-            QWidget* w = new compCalLineWidget(v, this);
+            QWidget* w = new CompCalLineWidget(v, this);
             _ui->verticalLayout_Sub->addWidget(w);
         }
     }

@@ -15,9 +15,9 @@ HEADERS += \
     $$PWD/SolutionWidget.h \
     $$PWD/BoundaryWidget.h \
     $$PWD/InitialWidget.h \
-    $$PWD/compCalLineWidget.h \
-    $$PWD/compHBoxWidget.h \
-    $$PWD/compVBoxWidget.h \
+    $$PWD/CompCalLineWidget.h \
+    $$PWD/CompHBoxWidget.h \
+    $$PWD/CompVBoxWidget.h \
 
 SOURCES += \
     $$PWD/SetupWidget.cpp \
@@ -35,9 +35,9 @@ SOURCES += \
     $$PWD/SolutionWidget.cpp \
     $$PWD/BoundaryWidget.cpp \
     $$PWD/InitialWidget.cpp \
-    $$PWD/compCalLineWidget.cpp \
-    $$PWD/compHBoxWidget.cpp \
-    $$PWD/compVBoxWidget.cpp \
+    $$PWD/CompCalLineWidget.cpp \
+    $$PWD/CompHBoxWidget.cpp \
+    $$PWD/CompVBoxWidget.cpp \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \
@@ -49,9 +49,9 @@ FORMS += \
     $$PWD/InitialWidget.ui \
     $$PWD/GUIWidgetRadioGroup.ui \
     $$PWD/GUIWidgetBoolGroup.ui \
-    $$PWD/compCalLineWidget.ui \
-    $$PWD/compHBoxWidget.ui \
-    $$PWD/compVBoxWidget.ui \
+    $$PWD/CompCalLineWidget.ui \
+    $$PWD/CompHBoxWidget.ui \
+    $$PWD/CompVBoxWidget.ui \
 
  RESOURCES += \
     $$PWD/../../Resources/Resources.qrc

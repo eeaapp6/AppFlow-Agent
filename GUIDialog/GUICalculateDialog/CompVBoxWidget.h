@@ -1,17 +1,17 @@
 ﻿/**********************************************************************
- * @file   compHBoxWidget.h
+ * @file   CompVBoxWidget.h
  * @brief  水平布局组件界面
  * @author BaGuijun (baguijun@163.com)
  * @date   2024-08-22
  *********************************************************************/
-#ifndef _compHBoxWidget_H
-#define _compHBoxWidget_H
+#ifndef _CompVBoxWidget_H
+#define _CompVBoxWidget_H
 
 #include "GUICalculateDialogAPI.h"
 #include <QWidget>
 
 namespace Ui {
-    class compHBoxWidget;
+    class CompVBoxWidget;
 }
 
 namespace Interface {
@@ -27,17 +27,17 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date   2024-08-22
      */
-    class GUICalculateDialogAPI compHBoxWidget :public QWidget
+    class GUICalculateDialogAPI CompVBoxWidget :public QWidget
     {
         Q_OBJECT;
     public:
-        compHBoxWidget(QList<QWidget*> widgetList, QWidget* parent = nullptr);
+        CompVBoxWidget(QList<QWidget*> widgetList, QWidget* parent = nullptr);
         /**
          * @brief    析构函数
          * @author   BaGuijun (baguijun@163.com)
          * @date     2024-08-22
          */
-        ~compHBoxWidget();
+        ~CompVBoxWidget();
         /**
          * @brief    设置子项界面不可显示
          * @param[i] enable     是否显示
@@ -52,10 +52,10 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date   2024-08-22
          */
-        Ui::compHBoxWidget* _ui = nullptr;
+        Ui::CompVBoxWidget* _ui = nullptr;
 
         QList<QWidget*> _subWidgets = {};
     };
 }
 
-#endif // !_compHBoxWidget_H
+#endif // !_CompVBoxWidget_H

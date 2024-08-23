@@ -18,6 +18,8 @@ namespace GUI
 
     void CompLineEdit::mouseDoubleClickEvent(QMouseEvent* event)
     {
+        Q_UNUSED(event);
+
         //QLineEdit::mouseDoubleClickEvent(event);
         setReadOnly(false);
         setStyleSheet("");
