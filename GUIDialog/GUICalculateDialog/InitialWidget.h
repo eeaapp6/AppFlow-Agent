@@ -16,6 +16,10 @@ namespace Ui {
     class InitialWidget;
 }
 
+namespace Interface {
+    class FITKOFInitialConditions;
+}
+
 namespace EventOper {
     class ParaWidgetInterfaceOperator;
 }
@@ -53,11 +57,24 @@ namespace GUI
         void init();
     private:
         /**
+         * @brief    更新Basic界面
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-23
+         */
+        void updateBasicWidget();
+    private:
+        /**
          * @brief ui
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
         Ui::InitialWidget* _ui = nullptr;
+        /**
+         * @brief  初始化对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-08-23
+         */
+        Interface::FITKOFInitialConditions* _initValue = nullptr;
     };
 }
 #endif
