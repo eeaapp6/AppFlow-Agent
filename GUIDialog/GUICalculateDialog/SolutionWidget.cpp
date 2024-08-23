@@ -22,11 +22,6 @@ namespace GUI
 
     void SolutionWidget::init()
     {
-        updateTableWidget();
-    }
-
-    void SolutionWidget::updateTableWidget()
-    {
 
     }
 

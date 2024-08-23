@@ -24,11 +24,6 @@ namespace GUI
 
     }
 
-    void GUICalculateWidgetBase::updateTableWidget()
-    {
-
-    }
-
     //-----------------------------------------------------------------------------------------------------
     
     GUICalculateSubWidgetBase::GUICalculateSubWidgetBase(QWidget* parent)

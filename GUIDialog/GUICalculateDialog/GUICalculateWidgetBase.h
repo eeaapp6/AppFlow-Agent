@@ -49,12 +49,6 @@ namespace GUI
          * @date 2024-08-14
          */
         ~GUICalculateWidgetBase();
-        /**
-         * @brief 更新表格
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
-         */
-        virtual void updateTableWidget();
     protected:
         /**
          * @brief 操作器对象

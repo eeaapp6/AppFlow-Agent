@@ -20,12 +20,10 @@ namespace GUI
             _ui = nullptr;
         }
     }
+
     void TransportWidget::init()
     {
-        updateTableWidget();
-    }
-    void TransportWidget::updateTableWidget()
-    {
+       
     }
 }
 

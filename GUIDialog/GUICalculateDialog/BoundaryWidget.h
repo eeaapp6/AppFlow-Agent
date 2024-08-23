@@ -51,12 +51,6 @@ namespace GUI
          * @date 2024-08-14
          */
         void init();
-        /**
-         * @brief 更新表格
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
-         */
-        virtual void updateTableWidget() override;
     private:
         /**
          * @brief ui
