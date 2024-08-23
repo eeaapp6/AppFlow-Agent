@@ -20,6 +20,7 @@
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QLabel>
+#include <QToolBox>
 
 namespace GUI
 {
@@ -88,6 +89,21 @@ namespace GUI
         }
         }
         return widget;
+    }
+
+    QToolBox * compCalLineWidget::CreateToolBox(QWidget * parent)
+    {
+        QToolBox* toolBox = new QToolBox(parent);
+        toolBox->setStyleSheet(
+            "QToolBox::tab {"
+            "    background-color: #d3d3d3;" /* 淡浅灰色背景 */
+            "}"
+            "QToolBox::tab:selected {"
+            "    background-color: #a9a9a9;" /* 选中时的背景色，稍深的灰色 */
+            "}"
+        );
+
+        return toolBox;
     }
 }
 

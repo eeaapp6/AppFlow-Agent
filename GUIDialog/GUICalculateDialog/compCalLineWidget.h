@@ -12,6 +12,8 @@
 #include "GUICalculateDialogAPI.h"
 #include "GUIWidget/GUIWidgetBase.h"
 
+class QToolBox;
+
 namespace Ui {
     class compCalLineWidget;
 }
@@ -60,6 +62,14 @@ namespace GUI
          * @date 2024-08-14
          */
         static QWidget* DataSwitchToWidget(Interface::FITKFlowDataBase* data, QWidget* parent = nullptr, QString name = "");
+        /**
+         * @brief    创建QToolBox
+         * @param[i] parent 父对象
+         * @return   QToolBox *  QToolBox对象
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-23
+         */
+        static QToolBox* CreateToolBox(QWidget* parent = nullptr);
     private:
         /**
          * @brief ui对象

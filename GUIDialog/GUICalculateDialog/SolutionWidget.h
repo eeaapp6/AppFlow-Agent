@@ -16,6 +16,10 @@ namespace Ui {
     class SolutionWidget;
 }
 
+namespace Interface {
+    class FITKOFSolution;
+}
+
 namespace EventOper {
     class ParaWidgetInterfaceOperator;
 }
@@ -67,12 +71,24 @@ namespace GUI
          */
         void resizeEvent(QResizeEvent *event);
     private:
+        void updateSlovers();
+        void updateSlover();
+        void updateResiduals();
+        void updateRelaxation();
+        void updateLimits();
+    private:
         /**
          * @brief ui
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
         Ui::SolutionWidget* _ui = nullptr;
+        /**
+         * @brief  solution对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-08-23
+         */
+        Interface::FITKOFSolution* _solValue = nullptr;
     };
 }
 #endif

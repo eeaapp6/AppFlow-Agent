@@ -78,16 +78,7 @@ namespace GUI
     void DiscretizationWidget::updateConvectionWidget()
     {
         if (_disValue == nullptr)return;
-        QToolBox* toolBox = new QToolBox(this);
-
-        toolBox->setStyleSheet(
-            "QToolBox::tab {"
-            "    background-color: #d3d3d3;" /* 淡浅灰色背景 */
-            "}"
-            "QToolBox::tab:selected {"
-            "    background-color: #a9a9a9;" /* 选中时的背景色，稍深的灰色 */
-            "}"
-        );
+        QToolBox* toolBox = compCalLineWidget::CreateToolBox(this);
 
         int conNum = _disValue->getConvectionCount();
         for (int i = 0; i < conNum; i++) {
@@ -111,16 +102,7 @@ namespace GUI
         auto gradValue = _disValue->getGradients();
         if (gradValue == nullptr)return;
 
-        QToolBox* toolBox = new QToolBox(this);
-
-        toolBox->setStyleSheet(
-            "QToolBox::tab {"
-            "    background-color: #d3d3d3;" /* 淡浅灰色背景 */
-            "}"
-            "QToolBox::tab:selected {"
-            "    background-color: #a9a9a9;" /* 选中时的背景色，稍深的灰色 */
-            "}"
-        );
+        QToolBox* toolBox = compCalLineWidget::CreateToolBox(this);
 
         for (auto value : gradValue->getParameter()) {
             if (value == nullptr)continue;
