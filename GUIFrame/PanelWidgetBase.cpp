@@ -29,7 +29,7 @@ namespace GUI
 	PanelWidgetBase::~PanelWidgetBase()
 	{
 		// 移除显示部件
-		removeWidget();
+//		removeWidget();
 		delete m_Layout;
 		delete m_TitleLabel;
 	}
