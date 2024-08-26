@@ -78,6 +78,20 @@ namespace GUI {
          * @date     2024-08-26
          */
         void setOptions(QStringList Options);
+        /**
+         * @brief    设置当前索引
+         * @param[i] index   索引
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-26
+         */
+        void setCurrentText(const QString index);
+        /**
+         * @brief    设置子界面数据
+         * @param[i] data 子界面数据
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-26
+         */
+        void setSubWidgetData(Interface::FITKAbstractParameter* data);
     private slots:
         ;
         /**

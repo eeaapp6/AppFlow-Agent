@@ -22,9 +22,10 @@ namespace GUI
 
     void CompSelectComBoxWidget::init()
     {
-        _ui->widget_Sub->hide();
+        _ui->widget_Sub->show();
         _ui->label_Name->setText(_type);
         _ui->pushButton->setCheckable(true);
+        _ui->pushButton->setChecked(true);
     }
 
     void CompSelectComBoxWidget::update()
@@ -65,7 +66,33 @@ namespace GUI
         _ui->comboBox->addItems(Options);
         _ui->comboBox->setCurrentIndex(0);
         _ui->comboBox->blockSignals(false);
-        update();
+    }
+
+    void CompSelectComBoxWidget::setCurrentText(const QString index)
+    {
+        _ui->comboBox->blockSignals(true);
+        _ui->comboBox->setCurrentText(index);
+        _ui->comboBox->blockSignals(false);
+    }
+
+    void CompSelectComBoxWidget::setSubWidgetData(Interface::FITKAbstractParameter * data)
+    {
+        if (data == nullptr)return;
+        //清除全部子界面
+        QLayoutItem* item;
+        while ((item = _ui->verticalLayout_Sub->takeAt(0)) != nullptr) {
+            if (QWidget* widget = item->widget()) {
+                widget->deleteLater(); // 推荐使用 deleteLater，以确保小部件在适当时机被删除
+            }
+            delete item; // 删除布局项
+        }
+
+        for (auto d : data->getParameter()) {
+            if (d == nullptr)continue;
+            QWidget* w = new CompCalLineWidget(d, this);
+            if (w == nullptr)continue;
+            _ui->verticalLayout_Sub->addWidget(w);
+        }
     }
 
     void CompSelectComBoxWidget::on_pushButton_clicked()

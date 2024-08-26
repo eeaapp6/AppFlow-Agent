@@ -55,8 +55,6 @@ namespace GUI
          * @date 2024-08-14
          */
         void init();
-
-        /*Interface::FITKAbstractParameter* getSubDataFormText(const QString& type);*/
     protected:
         /**
          * @brief 显示事件重写

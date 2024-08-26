@@ -91,11 +91,15 @@ namespace GUI
         QToolBox* toolBox = CompCalLineWidget::CreateToolBox(this);
 
         for (int i = 0; i < solversNum; i++) {
+            Interface::FITKOFAbsSolutionSolver* solversData = _solValue->getSolverVariablePara(i);
+            if(solversData == nullptr)continue;
             QString type = _solValue->getSolverVariableName(i);
             QStringList options = solutionManager->filterSolutionSolvers(type, _physicsData->getSolver()->getSolverType());
             CompSelectComBoxWidget* comp = new CompSelectComBoxWidget(type, toolBox);
             comp->setFunction(&solutionGetSubData, i);
             comp->setOptions(options);
+            comp->setCurrentText(solversData->getDataObjectName());
+            comp->setSubWidgetData(solversData->getSolverSolutionPara());
             toolBox->addItem(comp, type);
         }
         _ui->verticalLayout_Solvers->addWidget(toolBox);
