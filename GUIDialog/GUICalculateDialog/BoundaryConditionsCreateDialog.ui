@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>BoundaryWidget</class>
- <widget class="QWidget" name="BoundaryWidget">
+ <class>BoundaryConditionsCreateDialog</class>
+ <widget class="QDialog" name="BoundaryConditionsCreateDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,9 +11,8 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout"/>
  </widget>
  <resources/>
  <connections/>

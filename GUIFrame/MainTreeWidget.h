@@ -35,6 +35,7 @@ namespace GUI
         MainTree_SetupOperatingConditions,
         MainTree_SetupCellZones,
         MainTree_SetupBoundaryConditions,
+        MainTree_SetupBoundaryConditionsItem,
         MainTree_SetupInitialConditions,
         MainTree_SetupMonitors,
 

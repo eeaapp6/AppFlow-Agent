@@ -21,7 +21,7 @@ HEADERS += \
     $$PWD/OperatorsTransport.h \
     $$PWD/OperatorsDiscretization.h \
     $$PWD/OperatorsSolution.h \
-    $$PWD/OperatorsBoundary.h \
+    $$PWD/OperatorsBoundaryConditions.h \
     $$PWD/OperatorsInitial.h \
     $$PWD/OperatorsRun.h \
 
@@ -48,7 +48,7 @@ SOURCES += \
     $$PWD/OperatorsTransport.cpp \
     $$PWD/OperatorsDiscretization.cpp \
     $$PWD/OperatorsSolution.cpp \
-    $$PWD/OperatorsBoundary.cpp \
+    $$PWD/OperatorsBoundaryConditions.cpp \
     $$PWD/OperatorsInitial.cpp \
     $$PWD/OperatorsRun.cpp \
 

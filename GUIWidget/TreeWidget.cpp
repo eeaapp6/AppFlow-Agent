@@ -111,7 +111,7 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_SetupPassiveScalars:name = "actionPassiveScalarsEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupOperatingConditions:name = "actionOperatingEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupCellZones:name = "actionCellZonesEdit"; break;
-        case GUI::MainTreeEnum::MainTree_SetupBoundaryConditions:name = "actionBoundaryEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupBoundaryConditionsItem:name = "actionBoundaryConditionsEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupInitialConditions:name = "actionInitialEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupMonitors:name = "actionMonitorsEdit"; break;
         case GUI::MainTreeEnum::MainTree_Run:name = "actionRun"; break;
@@ -182,6 +182,10 @@ namespace GUI{
         }
         case GUI::MainTreeEnum::MainTree_MeshLocalItem: {
             addMenuActions(menu, "actionMeshLocalDelete", tr("Delete"));
+            break;
+        }
+        case GUI::MainTreeEnum::MainTree_SetupBoundaryConditions: {
+            addMenuActions(menu, "actionBoundaryConditionsCreate", tr("Create"));
             break;
         }
         }

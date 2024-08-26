@@ -1,19 +1,19 @@
 ﻿/**
  * 
- * @file BoundaryWidget.h
+ * @file BoundaryConditionsWidget.h
  * @brief 求解器参数边界界面
  * @author BaGuijun (baguijun@163.com)
  * @date 2024-08-14
  * 
  */
-#ifndef _BoundaryWidget_H
-#define _BoundaryWidget_H
+#ifndef _BoundaryConditionsWidget_H
+#define _BoundaryConditionsWidget_H
 
 #include "GUICalculateDialogAPI.h"
 #include "GUICalculateWidgetBase.h"
 
 namespace Ui {
-    class BoundaryWidget;
+    class BoundaryConditionsWidget;
 }
 
 namespace EventOper {
@@ -27,7 +27,7 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-14
      */
-    class GUICalculateDialogAPI BoundaryWidget :public GUICalculateWidgetBase
+    class GUICalculateDialogAPI BoundaryConditionsWidget :public GUICalculateWidgetBase
     {
         Q_OBJECT;
     public:
@@ -38,13 +38,13 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        BoundaryWidget(EventOper::ParaWidgetInterfaceOperator* oper, QWidget* parent = nullptr);
+        BoundaryConditionsWidget(EventOper::ParaWidgetInterfaceOperator* oper, QWidget* parent = nullptr);
         /**
          * @brief Destroy the Boundary Widget object
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        ~BoundaryWidget();
+        ~BoundaryConditionsWidget();
         /**
          * @brief 初始化
          * @author BaGuijun (baguijun@163.com)
@@ -57,7 +57,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-         Ui::BoundaryWidget* _ui = nullptr;
+         Ui::BoundaryConditionsWidget* _ui = nullptr;
     };
 }
 #endif

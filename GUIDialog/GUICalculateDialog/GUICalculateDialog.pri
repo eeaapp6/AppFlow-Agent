@@ -13,7 +13,8 @@ HEADERS += \
     $$PWD/TransportWidget.h \
     $$PWD/DiscretizationWidget.h \
     $$PWD/SolutionWidget.h \
-    $$PWD/BoundaryWidget.h \
+    $$PWD/BoundaryConditionsWidget.h \
+    $$PWD/BoundaryConditionsCreateDialog.h \
     $$PWD/InitialWidget.h \
     $$PWD/CompCalLineWidget.h \
     $$PWD/CompHBoxWidget.h \
@@ -36,7 +37,8 @@ SOURCES += \
     $$PWD/TransportWidget.cpp \
     $$PWD/DiscretizationWidget.cpp \
     $$PWD/SolutionWidget.cpp \
-    $$PWD/BoundaryWidget.cpp \
+    $$PWD/BoundaryConditionsWidget.cpp \
+    $$PWD/BoundaryConditionsCreateDialog.cpp \
     $$PWD/InitialWidget.cpp \
     $$PWD/CompCalLineWidget.cpp \
     $$PWD/CompHBoxWidget.cpp \
@@ -51,7 +53,8 @@ FORMS += \
     $$PWD/TransportWidget.ui \
     $$PWD/DiscretizationWidget.ui \
     $$PWD/SolutionWidget.ui \
-    $$PWD/BoundaryWidget.ui \
+    $$PWD/BoundaryConditionsWidget.ui \
+    $$PWD/BoundaryConditionsCreateDialog.ui \
     $$PWD/InitialWidget.ui \
     $$PWD/GUIWidgetRadioGroup.ui \
     $$PWD/GUIWidgetBoolGroup.ui \

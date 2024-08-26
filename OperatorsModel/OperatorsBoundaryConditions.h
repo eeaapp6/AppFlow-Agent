@@ -1,13 +1,13 @@
 ﻿/**
  * 
- * @file OperatorsBoundary.h
+ * @file OperatorsBoundaryConditions.h
  * @brief 网格边界操作器
  * @author BaGuijun (baguijun@163.com)
  * @date 2024-08-14
  * 
  */
-#ifndef _OperatorsBoundary_H
-#define _OperatorsBoundary_H
+#ifndef _OperatorsBoundaryConditions_H
+#define _OperatorsBoundaryConditions_H
 
 #include "OperManagerBase.h"
 
@@ -18,7 +18,7 @@ namespace ModelOper
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-14
      */
-    class OperatorsBoundary :public OperManagerBase
+    class OperatorsBoundaryConditions :public OperManagerBase
     {
         Q_OBJECT;
     public:
@@ -27,13 +27,13 @@ namespace ModelOper
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        OperatorsBoundary();
+        OperatorsBoundaryConditions();
         /**
          * @brief Destroy the Operators Boundary object
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        ~OperatorsBoundary();
+        ~OperatorsBoundaryConditions();
         /**
          * @brief 执行
          * @return true 成功
@@ -53,7 +53,8 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionBoundaryEdit, OperatorsBoundary);
+    Register2FITKOPeratorRepo(actionBoundaryConditionsCreate, OperatorsBoundaryConditions);
+    Register2FITKOPeratorRepo(actionBoundaryConditionsEdit, OperatorsBoundaryConditions);
 }
 
 #endif
