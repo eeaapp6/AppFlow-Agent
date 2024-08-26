@@ -17,7 +17,7 @@ public:
 
 
 protected slots:
-    void on_senProgramDriverMessageSig(AppFrame::FITKAbstractProgramerDriver* driver, int messageType, const QString& message);
+    void on_sendProgramDriverMessageSig(AppFrame::FITKAbstractProgramerDriver* driver, int messageType, const QString& message);
 
 };
 
