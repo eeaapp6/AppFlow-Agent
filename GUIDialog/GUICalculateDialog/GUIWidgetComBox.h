@@ -49,6 +49,14 @@ namespace GUI
          * @date 2024-08-14
          */
         void init();
+    protected:
+        /**
+         * @brief    鼠标滚轮事件
+         * @param[i] event 事件对象
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-26
+         */
+        void wheelEvent(QWheelEvent *event) override;
     private slots:
         ;
         /**

@@ -33,6 +33,11 @@ namespace GUI
         setCurrentIndex(index);
     }
 
+    void GUIWidgetComBox::wheelEvent(QWheelEvent * event)
+    {
+        Q_UNUSED(event);
+    }
+
     void GUIWidgetComBox::slotDataChange()
     {
         if (_value == nullptr)return;

@@ -2,18 +2,39 @@
 #include "ui_SolutionWidget.h"
 #include "CompCalLineWidget.h"
 #include "CompVBoxWidget.h"
+#include "CompSelectComBoxWidget.h"
 
+#include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractOFSolver.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolution.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsManager.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolutionSolverManager.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolutionSolver.h"
 
 #include <QToolBox>
 
 namespace GUI
 {
+    Interface::FITKAbstractParameter* solutionGetSubData(const QString & type, int index)
+    {
+        auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
+        if (phyFactory == nullptr)return nullptr;
+        auto phyData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+        if (phyData == nullptr)return nullptr;
+
+        phyFactory->setSolutionSolver(index, type);
+        Interface::FITKOFAbsSolutionSolver* solution = phyData->getSolution()->getSolverVariablePara(index);
+        if (solution == nullptr)return nullptr;
+
+        return solution->getSolverSolutionPara();
+    }
+
     SolutionWidget::SolutionWidget(EventOper::ParaWidgetInterfaceOperator * oper, QWidget * parent) :
         GUICalculateWidgetBase(oper, parent)
     {
@@ -60,7 +81,24 @@ namespace GUI
 
     void SolutionWidget::updateSlovers()
     {
+        if (_physicsManager == nullptr)return;
+        auto solutionManager = _physicsManager->getSolutionSolverManager();
+        if (solutionManager == nullptr)return;
+        if (_factoryData == nullptr)return;
         if (_solValue == nullptr)return;
+        int solversNum = _solValue->getSolversCount();
+
+        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(this);
+
+        for (int i = 0; i < solversNum; i++) {
+            QString type = _solValue->getSolverVariableName(i);
+            QStringList options = solutionManager->filterSolutionSolvers(type, _physicsData->getSolver()->getSolverType());
+            CompSelectComBoxWidget* comp = new CompSelectComBoxWidget(type, toolBox);
+            comp->setFunction(&solutionGetSubData, i);
+            comp->setOptions(options);
+            toolBox->addItem(comp, type);
+        }
+        _ui->verticalLayout_Solvers->addWidget(toolBox);
     }
 
     void SolutionWidget::updateSlover()
