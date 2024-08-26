@@ -5,6 +5,7 @@
 #include "CommandLineHandler.h".
 #include "SignalProcessor.h"
 #include "FlowAPPSettings.h"
+#include "WorkBenchHandler.h"
 
 #ifdef Q_OS_WIN
 #include <Windows.h>
@@ -51,8 +52,8 @@ int main(int argc, char *argv[])
     app.regComponentsFactory(new ComponentFactory);      // 注册组件工厂
     app.regAppSettings(new FlowAPPSettings);             // 注册应用结构设置
     app.regCommandLineHandler(new CommandLineHandler);   // 注册命令行处理
-    app.addGolbalSignalProcesser(new SignalProcessor);
-
+    app.addGolbalSignalProcesser(new SignalProcessor);   // 信号处理器
+    app.regWorkBenchHandler(new FlowAppWorkBenchHandler); //workbench处理
     /*
     app.regAppSettings(new StructuralSettings);          // 注册应用结构设置
     // 注册全局信号处理器

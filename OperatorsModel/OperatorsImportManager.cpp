@@ -38,62 +38,71 @@ namespace ModelOper {
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return false;
 
-        //获取线程池
-        Core::FITKThreadPool* pool = Core::FITKThreadPool::getInstance();
-        if (pool == nullptr)return false;
 
         QString workDir = "";
         if (FITKAPP->getAppSettings()) {
             workDir = FITKAPP->getAppSettings()->getWorkingDir();
         }
         if (workDir.isEmpty()) workDir = QApplication::applicationDirPath();
-
+        QString fileName;
         QFileDialog fileDialog;
         if (_senderName == "actionImportGeometry") {
-            QString fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Geometry"), workDir, tr("File(*.stp ; *.step ; *.igs ; *.stl)"));
+            fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Geometry"), workDir, tr("File(*.brep ; *.stp ; *.step ; *.igs ; *.stl)"));
             if (fileName.isEmpty())return false;
 
-            ImportReadThread* importThread = new ImportReadThread();
-            importThread->_type = ImportType::ImportGeo;
-            importThread->_fileName = fileName;
-            pool->execTask(importThread);
-            connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotGeoImportFinish(bool, int)));
+//             ImportReadThread* importThread = new ImportReadThread();
+//             importThread->_type = ImportType::ImportGeo;
+//             importThread->_fileName = fileName;
+//             pool->execTask(importThread);
+//             connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotGeoImportFinish(bool, int)));
         }
         else  if (_senderName == "actionImportMesh") {
-            QString fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Mesh"), workDir);
+            fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Mesh"), workDir);
             if (fileName.isEmpty())return false;
 
-            ImportReadThread* importThread = new ImportReadThread();
-            importThread->_type = ImportType::ImportMesh;
-            importThread->_fileName = fileName;
-            pool->execTask(importThread);
-            connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotMeshImportFinish(bool, int)));
-
-            //// 获取单例
-            //auto meshGen = Interface::FITKMeshGenInterface::getInstance();
-            //// 读取网格
-            //auto meshProcessor = meshGen->getMeshProcessor();
-            //if (meshProcessor == nullptr) return false;
-            //meshProcessor->setValue("WorkDir", QApplication::applicationDirPath() + "/../WorkDir");
-            //meshProcessor->start();
-
-            ////刷新渲染窗口
-            //EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-            //if (graphOper == nullptr)return false;
-            //// 网格对象
-            //auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
-            //graphOper->updateGraph(mesh->getDataObjectID());
-
-            //// 获取模型树控制器
-            //auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
-            //if (treeOper == nullptr) return false;
-            //treeOper->updateTree();
+//             ImportReadThread* importThread = new ImportReadThread();
+//             importThread->_type = ImportType::ImportMesh;
+//             importThread->_fileName = fileName;
+//             pool->execTask(importThread);
+//             connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotMeshImportFinish(bool, int)));
         }
+        this->setArgs("FileName", fileName);
+        this->setArgs("SenderName", _senderName);
+
         return true;
     }
 
     bool OperatorsImportManager::execProfession()
     {
+
+        //获取线程池
+        Core::FITKThreadPool* pool = Core::FITKThreadPool::getInstance();
+        if (pool == nullptr)return false;
+        QString fileName, senderName; 
+        this->argValue<QString>("FileName",fileName);
+        if (fileName.isEmpty()) return false;
+        this->argValue<QString>("SenderName", senderName);
+        if (senderName.isEmpty()) return false;
+
+        if (senderName == "actionImportGeometry")
+        {
+            
+            ImportReadThread* importThread = new ImportReadThread();
+            importThread->_type = ImportType::ImportGeo;
+            importThread->_fileName = fileName;
+            connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotGeoImportFinish(bool, int)));
+            pool->execTask(importThread);
+        }
+        else  if (senderName == "actionImportMesh") 
+        {
+            
+            ImportReadThread* importThread = new ImportReadThread();
+            importThread->_type = ImportType::ImportMesh;
+            importThread->_fileName = fileName;
+            connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotMeshImportFinish(bool, int)));
+            pool->execTask(importThread);
+        }
+        this->clearArgs();
         return true;
     }
 
