@@ -19,6 +19,7 @@ HEADERS += \
     $$PWD/CompHBoxWidget.h \
     $$PWD/CompVBoxWidget.h \
     $$PWD/CompSelectComBoxWidget.h \
+    $$PWD/CompTranPhasesWidget.h \
 
 SOURCES += \
     $$PWD/SetupWidget.cpp \
@@ -40,6 +41,7 @@ SOURCES += \
     $$PWD/CompHBoxWidget.cpp \
     $$PWD/CompVBoxWidget.cpp \
     $$PWD/CompSelectComBoxWidget.cpp \
+    $$PWD/CompTranPhasesWidget.cpp \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \
@@ -55,6 +57,7 @@ FORMS += \
     $$PWD/CompHBoxWidget.ui \
     $$PWD/CompVBoxWidget.ui \
     $$PWD/CompSelectComBoxWidget.ui \
+    $$PWD/CompTranPhasesWidget.ui \
 
  RESOURCES += \
     $$PWD/../../Resources/Resources.qrc

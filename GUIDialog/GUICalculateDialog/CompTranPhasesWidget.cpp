@@ -1,0 +1,75 @@
+﻿#include "CompTranPhasesWidget.h"
+#include "ui_CompTranPhasesWidget.h"
+#include "CompSelectComBoxWidget.h"
+#include "CompCalLineWidget.h"
+
+#include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
+#include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTransportProp.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTransportModel.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTransportModelManager.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsManager.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractOFSolver.h"
+
+
+namespace GUI 
+{
+    Interface::FITKAbstractParameter* getTranPhasesData(const QString& type, int index)
+    {
+        auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
+        if (phyFactory == nullptr)return nullptr;
+        auto phyData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+        if (phyData == nullptr)return nullptr;
+
+        phyFactory->setTransportModel(index, type);
+        auto tranPhaeseObj = phyData->getTransportProp()->getPhase(index);
+        if (tranPhaeseObj == nullptr)return nullptr;
+        return tranPhaeseObj->getTransportModel()->getTransportModelPara();
+    }
+
+    CompTranPhasesWidget::CompTranPhasesWidget(Interface::FITKOFTransportPhase * phaseData, int index, QWidget * parent) :
+        GUICalculateWidgetBase(nullptr, parent), _index(index), _phaseData(phaseData)
+    {
+        _ui = new Ui::CompTranPhasesWidget();
+        _ui->setupUi(this);
+
+        init();
+    }
+
+    CompTranPhasesWidget::~CompTranPhasesWidget()
+    {
+        if (_ui)delete _ui;
+    }
+
+    void CompTranPhasesWidget::init()
+    {
+        if (_phaseData == nullptr)return;
+        if (_physicsManager == nullptr)return;
+        auto tranManager = _physicsManager->getTransportModelManager();
+        if (tranManager == nullptr)return;
+        
+        Interface::FITKAbstractParameter* otherData = _phaseData->getPhaseAdditionalData();
+        if (otherData) {
+            for (auto data : otherData->getParameter()) {
+                if (data == nullptr)continue;
+                QWidget* widget = new CompCalLineWidget(data, this);
+                _ui->verticalLayout_Sub->addWidget(widget);
+            }
+        }
+
+        Interface::FITKAbsOFTransportModel* tranModelData = _phaseData->getTransportModel();
+        if (tranModelData) {
+            CompSelectComBoxWidget* widget = new CompSelectComBoxWidget("Transport Model", this);
+            QStringList optians = tranManager->filterTransportModels(_physicsData->getSolver()->getSolverType());
+            widget->setFunction(&getTranPhasesData, _index);
+            widget->setOptions(optians);
+            widget->setCurrentText(tranModelData->getDataObjectName());
+            widget->setSubWidgetData(tranModelData->getTransportModelPara());
+            _ui->verticalLayout_Sub->addWidget(widget);
+        }
+    }
+}

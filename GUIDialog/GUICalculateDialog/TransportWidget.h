@@ -16,6 +16,10 @@ namespace Ui {
     class TransportWidget;
 }
 
+namespace Interface {
+    class FITKOFTransportProp;
+}
+
 namespace EventOper {
     class ParaWidgetInterfaceOperator;
 }
@@ -58,6 +62,12 @@ namespace GUI
          * @date 2024-08-14
          */
         Ui::TransportWidget* _ui = nullptr;
+        /**
+         * @brief  材料阶段数据对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-08-26
+         */
+        Interface::FITKOFTransportProp* _tranData = nullptr;
     };
 }
 #endif
