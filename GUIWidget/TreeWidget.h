@@ -95,6 +95,8 @@ namespace GUI {
         void updateMeshItems();
 
         void updateSetupItems();
+
+        void updateRunItems();
         /**
          * @brief 更新local子节点
          * @param[i]  parentItem     父对象

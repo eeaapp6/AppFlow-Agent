@@ -58,6 +58,7 @@ namespace GUI{
         updateGeometryItems();
         updateMeshItems();
         updateSetupItems();
+        updateRunItems();
 
         //展开全部子集
         setItemsExpandable(true);		
@@ -113,6 +114,7 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_SetupBoundaryConditions:name = "actionBoundaryEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupInitialConditions:name = "actionInitialEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupMonitors:name = "actionMonitorsEdit"; break;
+        case GUI::MainTreeEnum::MainTree_Run:name = "actionRun"; break;
         }
 
         if (!name.isEmpty()) {
@@ -368,6 +370,15 @@ namespace GUI{
         case Interface::FITKOFSolverTypeEnum::FITKOFSolverType::SIMPLE:updateSetupSimpleItems(setupItem); break;
         case Interface::FITKOFSolverTypeEnum::FITKOFSolverType::INTER:updateSetupInterItems(setupItem); break;
         }
+    }
+
+    void TreeWidget::updateRunItems()
+    {
+        QTreeWidgetItem* runItem = new QTreeWidgetItem();
+        runItem->setText(0, tr("RUN"));
+        runItem->setData(1, 0, -1);
+        runItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Run));
+        this->addTopLevelItem(runItem);
     }
 
     void TreeWidget::updateMeshLocalItems(QTreeWidgetItem* parentItem)

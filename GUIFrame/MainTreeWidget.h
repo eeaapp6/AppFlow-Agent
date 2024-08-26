@@ -37,6 +37,8 @@ namespace GUI
         MainTree_SetupBoundaryConditions,
         MainTree_SetupInitialConditions,
         MainTree_SetupMonitors,
+
+        MainTree_Run,
     };
 
     class GUIFRAMEAPI MainTreeWidget : public PanelWidgetBase

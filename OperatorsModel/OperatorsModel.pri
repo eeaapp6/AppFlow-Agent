@@ -23,6 +23,7 @@ HEADERS += \
     $$PWD/OperatorsSolution.h \
     $$PWD/OperatorsBoundary.h \
     $$PWD/OperatorsInitial.h \
+    $$PWD/OperatorsRun.h \
 
 
 SOURCES += \
@@ -49,5 +50,6 @@ SOURCES += \
     $$PWD/OperatorsSolution.cpp \
     $$PWD/OperatorsBoundary.cpp \
     $$PWD/OperatorsInitial.cpp \
+    $$PWD/OperatorsRun.cpp \
 
 FORMS += \
