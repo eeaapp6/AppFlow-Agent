@@ -74,7 +74,18 @@ namespace ModelOper
         // 读取网格
         auto meshProcessor = meshGen->getMeshProcessor();
         if (meshProcessor == nullptr) return;
-        meshProcessor->setValue("WorkDir", QApplication::applicationDirPath() + "/../WorkDir");
+
+        //工作路径获取
+        QString workDir = "";
+        if (FITKAPP->getAppSettings()) {
+            workDir = FITKAPP->getAppSettings()->getWorkingDir();
+        }
+        if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
+
+        //网格划分路径指定
+        QString meshGenDir = workDir + "/mesh";
+
+        meshProcessor->setValue("WorkDir", meshGenDir);
         meshProcessor->start();
         //刷新渲染窗口
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");

@@ -3,6 +3,7 @@
 #include "GUIFrame/PropertyWidget.h"
 #include "OperatorsInterface/TreeEventOperator.h"
 #include "GUIDialog/GUICalculateDialog/BoundaryConditionsWidget.h"
+#include "GUIDialog/GUICalculateDialog/BoundaryConditionsCreateDialog.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -28,7 +29,8 @@ namespace ModelOper
 
         switch (_operType){
         case ModelOper::OperManagerBase::Create: {
-
+            GUI::BoundaryConditionsCreateDialog* dialog = new GUI::BoundaryConditionsCreateDialog(this);
+            dialog->show();
             break;
         }
         case ModelOper::OperManagerBase::Edit: {
@@ -38,11 +40,24 @@ namespace ModelOper
         }
         }
 
-        return true;
+        return false;
     }
 
     bool OperatorsBoundaryConditions::execProfession()
     {
+        switch (_operType){
+        case ModelOper::OperManagerBase::Create:{
+            // 获取模型树控制器
+            auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+            if (treeOper == nullptr) return false;
+            treeOper->updateTree();
+            break;
+        }
+        case ModelOper::OperManagerBase::Edit: {
+            break;
+        }
+        }
+
         return true;
     }
 }

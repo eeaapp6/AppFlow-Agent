@@ -15,6 +15,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFEnum.hpp"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractOFSolver.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFBoundary.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceModel/FITKAbstractGeoModel.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKMeshGenInterface.h"
@@ -467,6 +468,17 @@ namespace GUI{
         item->setData(1, 0, -1);
         item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupBoundaryConditions));
         parentItem->addChild(item);
+
+        auto physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+        for (int i = 0; i < physicsData->getBoundaryManager()->getDataCount(); i++) {
+            auto boundary = physicsData->getBoundaryManager()->getDataByIndex(i);
+            if (boundary == nullptr)continue;
+            QTreeWidgetItem* bitem = new QTreeWidgetItem();
+            bitem->setText(0, boundary->getDataObjectName());
+            bitem->setData(1, 0, boundary->getDataObjectID());
+            bitem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupBoundaryConditionsItem));
+            item->addChild(bitem);
+        }
 
         item = new QTreeWidgetItem();
         item->setText(0, tr("Initial Conditions"));
