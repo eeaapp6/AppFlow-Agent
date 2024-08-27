@@ -53,6 +53,58 @@ namespace GUI
 
         return boundary->getFlowVBType(index)->getBoundaryTypePara();
     }
+    /**
+     * @brief   Turbulence子数据回调函数
+     * @param[i] type 类型
+     * @param[i] widget 对应的界面
+     * @return   Interface::FITKAbstractParameter* 子数据对象
+     * @author   BaGuijun (baguijun@163.com)
+     * @date     2024-08-27
+     */
+    Interface::FITKAbstractParameter* getBoundaryTurbulenceSubData(const QString& type, CompSelectComBoxWidget* widget)
+    {
+        if (widget == nullptr)return nullptr;
+        auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
+        if (phyFactory == nullptr)return nullptr;
+        auto phyData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+        if (phyData == nullptr)return nullptr;
+
+        int objID = widget->getData("objID").toInt();
+        QString objName = widget->getData("objName").toString();
+        int index = widget->getData("index").toInt();
+        int boundaryID = widget->getData("boundaryID").toInt();
+        auto boundary = phyData->getBoundaryManager()->getDataByID(boundaryID);
+        if (boundary == nullptr)return nullptr;
+
+        phyFactory->setVariableBoundaryType(boundaryID, objName, type);
+        return boundary->getTurbulenceVBType(index)->getBoundaryTypePara();
+    }
+    /**
+     * @brief    Phases子数据回调函数
+     * @param[i] type 类型
+     * @param[i] widget 对应的界面
+     * @return   Interface::FITKAbstractParameter* 子数据对象
+     * @author   BaGuijun (baguijun@163.com)
+     * @date     2024-08-27
+     */
+    Interface::FITKAbstractParameter* getBoundaryPhasesSubData(const QString& type, CompSelectComBoxWidget* widget)
+    {
+        if (widget == nullptr)return nullptr;
+        auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
+        if (phyFactory == nullptr)return nullptr;
+        auto phyData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+        if (phyData == nullptr)return nullptr;
+
+        int objID = widget->getData("objID").toInt();
+        QString objName = widget->getData("objName").toString();
+        int index = widget->getData("index").toInt();
+        int boundaryID = widget->getData("boundaryID").toInt();
+        auto boundary = phyData->getBoundaryManager()->getDataByID(boundaryID);
+        if (boundary == nullptr)return nullptr;
+
+        phyFactory->setVariableBoundaryType(boundaryID, objName, type);
+        return boundary->getPhasesVBType(index)->getBoundaryTypePara();
+    }
 
     BoundaryConditionsWidget::BoundaryConditionsWidget(Interface::FITKOFBoundary* boundaryObj, EventOper::ParaWidgetInterfaceOperator * oper, QWidget * parent) :
         GUICalculateWidgetBase(oper, parent), _boundaryObj(boundaryObj)
@@ -189,9 +241,14 @@ namespace GUI
             QStringList options = boundartTypeMan->filterBoundariesType(_physicsData->getSolver()->getSolverType(),
                 _currentType, _boundaryObj->getFlowVariableName(i));
             CompSelectComBoxWidget* w = new CompSelectComBoxWidget(_boundaryObj->getTurbulenceVariableName(i), this);
+            w->setData("boundaryID", _boundaryObj->getDataObjectID());
+            w->setData("objID", data->getDataObjectID());
+            w->setData("objName", _boundaryObj->getFlowVariableName(i));
+            w->setData("index", i);
             w->setSubWidgetData(data->getBoundaryTypePara());
             w->setOptions(options);
             w->setCurrentText(data->getDataObjectName());
+            w->setFunction(&getBoundaryTurbulenceSubData);
             toolBox->addItem(w, _boundaryObj->getFlowVariableName(i));
         }
         layout->addWidget(toolBox);
@@ -220,9 +277,14 @@ namespace GUI
             QStringList options = boundartTypeMan->filterBoundariesType(_physicsData->getSolver()->getSolverType(),
                 _currentType, _boundaryObj->getFlowVariableName(i));
             CompSelectComBoxWidget* w = new CompSelectComBoxWidget(_boundaryObj->getPhasesVariableName(i), this);
+            w->setData("boundaryID", _boundaryObj->getDataObjectID());
+            w->setData("objID", data->getDataObjectID());
+            w->setData("objName", _boundaryObj->getFlowVariableName(i));
+            w->setData("index", i);
             w->setSubWidgetData(data->getBoundaryTypePara());
             w->setOptions(options);
             w->setCurrentText(data->getDataObjectName());
+            w->setFunction(&getBoundaryPhasesSubData);
             toolBox->addItem(w, _boundaryObj->getFlowVariableName(i));
         }
         layout->addWidget(toolBox);
