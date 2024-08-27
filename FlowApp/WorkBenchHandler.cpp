@@ -10,12 +10,17 @@ void FlowAppWorkBenchHandler::execHandler()
     {
         //遍历文件
         AppFrame::IOFileInfo finfo = this->getInputFileInfo(i);
-        if (finfo._suffix == "brep")
+        if (finfo._suffix == "brep" || finfo._suffix == "step")
         {
             //导入文件
             this->importGeoFile(QString("%1/%2").arg(finfo._path).arg(finfo._name));
         }
     }
+
+}
+
+void FlowAppWorkBenchHandler::execOutput()
+{
 
 }
 

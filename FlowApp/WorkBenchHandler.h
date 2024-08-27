@@ -38,7 +38,12 @@ public:
       * @date 2024-08-26
       */
     virtual void execHandler() override;
-
+    /**
+    * @brief 程序结束写出文件
+    * @author libaojun (libaojunqd@foxmail.com)
+    * @date 2024-08-27
+    */
+    virtual void execOutput() override;
 private:
      /**
       * @brief 导入几何文件
