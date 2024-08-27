@@ -35,14 +35,11 @@ namespace GUI
     void TurbulenceWidget::init()
     {
         //界面默认设置
-        _ui->checkBox_Enable->setChecked(true);
         _radioGroup = new QButtonGroup();
         _radioGroup->addButton(_ui->radioButton_Laminar);
         _radioGroup->addButton(_ui->radioButton_RANS);
         _radioGroup->addButton(_ui->radioButton_LES);
         _ui->radioButton_Laminar->setChecked(true);
-        _ui->radioButton_RANS->setEnabled(false);
-        _ui->radioButton_LES->setEnabled(false);
         //默认隐藏湍流模型参数
         _ui->pushButton_ModelUnfold->setCheckable(true);
         _ui->pushButton_DeltaUnfold->setCheckable(true);
@@ -106,25 +103,9 @@ namespace GUI
         auto solverData = _physicsData->getSolver();
         if (solverData == nullptr)return;
         
-        //如果未启用湍流方程
-        _ui->checkBox_Enable->setChecked(_physicsData->isEnableTurbulenceEqu());
-        if (_physicsData->isEnableTurbulenceEqu()) {
-            _ui->radioButton_Laminar->setChecked(true);
-            _ui->radioButton_Laminar->setEnabled(true);
-            _ui->radioButton_RANS->setEnabled(false);
-            _ui->radioButton_LES->setEnabled(false);
-            _ui->widget_Model->hide();
-            _ui->widget_Delta->hide();
-            return;
-        }
-        
-        //启用湍流方程组
         //湍流数据是否存在
         Interface::FITKAbstractOFTurbulence* turObj = _physicsData->getTurbulence();
         if (turObj == nullptr)return;
-        _ui->radioButton_Laminar->setEnabled(false);
-        _ui->radioButton_RANS->setEnabled(true);
-        _ui->radioButton_LES->setEnabled(true);
         _ui->widget_sub->show();
         _ui->widget_Model->show();
         
@@ -136,44 +117,21 @@ namespace GUI
         _ui->comboBox_Model->setCurrentText(turObj->getDataObjectName());
 
         switch (turType){
-        case Interface::FITKOFSolverTypeEnum::RANS:
-        {
+        case Interface::FITKOFSolverTypeEnum::TurbNone: {
+            _ui->radioButton_Laminar->setChecked(true);
+            break;
+        }
+        case Interface::FITKOFSolverTypeEnum::RANS:{
             _ui->radioButton_RANS->setChecked(true);
             break;
         }
-        case Interface::FITKOFSolverTypeEnum::LES:
-        {
+        case Interface::FITKOFSolverTypeEnum::LES:{
             _ui->radioButton_LES->setChecked(true);
             break;
         }
         }
 
         updateSubWidget();
-    }
-
-    void TurbulenceWidget::on_checkBox_Enable_clicked()
-    {
-        if (_physicsData == nullptr)return;
-        if (_ui->checkBox_Enable->isChecked()) {
-            _physicsData->setEnableTurbulenceEqu(true);
-
-            _ui->radioButton_Laminar->setChecked(true);
-            _ui->radioButton_Laminar->setEnabled(true);
-            _ui->radioButton_RANS->setEnabled(false);
-            _ui->radioButton_LES->setEnabled(false);
-
-            _ui->widget_Model->hide();
-            _ui->widget_Delta->hide();
-        }
-        else {
-            _physicsData->setEnableTurbulenceEqu(false);
-            _ui->radioButton_RANS->setChecked(true);
-            _ui->radioButton_Laminar->setEnabled(false);
-            _ui->radioButton_RANS->setEnabled(true);
-            _ui->radioButton_LES->setEnabled(true);
-        }
-
-        slotRadioButtonClicked();
     }
 
     void TurbulenceWidget::slotRadioButtonClicked()
@@ -188,6 +146,7 @@ namespace GUI
         if (_radioGroup->checkedButton() == _ui->radioButton_Laminar) {
             _ui->widget_sub->hide();
             type = Interface::FITKOFSolverTypeEnum::TurbNone;
+            _factoryData->setTurbence("");
         }
         else if (_radioGroup->checkedButton() == _ui->radioButton_RANS) {
             _ui->widget_sub->show();

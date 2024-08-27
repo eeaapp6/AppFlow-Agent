@@ -46,6 +46,9 @@ namespace GUI
         if (_data == nullptr)return;
         QLabel* label = new QLabel(this);
         label->setText(_data->getDataObjectName());
+        int width = this->width();
+        label->setMinimumWidth(width*0.4);
+        label->setMaximumWidth(width*0.4);
         _ui->horizontalLayout->addWidget(label);
 
         QWidget* widget = DataSwitchToWidget(_data, this);

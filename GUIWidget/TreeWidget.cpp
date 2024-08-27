@@ -370,10 +370,61 @@ namespace GUI{
         Interface::FITKAbstractOFSolver* solverData = physicsData->getSolver();
         if (solverData == nullptr)return;
 
-        auto type = solverData->getSolverType();
-        switch (type) {
-        case Interface::FITKOFSolverTypeEnum::FITKOFSolverType::SIMPLE:updateSetupSimpleItems(setupItem); break;
-        case Interface::FITKOFSolverTypeEnum::FITKOFSolverType::INTER:updateSetupInterItems(setupItem); break;
+        QTreeWidgetItem* item = nullptr;
+        if (physicsData->isEnableTurbulenceEqu()) {
+            item = new QTreeWidgetItem();
+            item->setText(0, tr("Turbulence"));
+            item->setData(1, 0, -1);
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupTurbulence));
+            setupItem->addChild(item);
+        }
+
+        if (physicsData->getTransportProp()) {
+            item = new QTreeWidgetItem();
+            item->setText(0, tr("Transport Properties"));
+            item->setData(1, 0, -1);
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupTransportProperties));
+            setupItem->addChild(item);
+        }
+
+        if (physicsData->getDiscretization()) {
+            item = new QTreeWidgetItem();
+            item->setText(0, tr("Discretization"));
+            item->setData(1, 0, -1);
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupDiscretization));
+            setupItem->addChild(item);
+        }
+
+        if (physicsData->getSolution()) {
+            item = new QTreeWidgetItem();
+            item->setText(0, tr("Solution"));
+            item->setData(1, 0, -1);
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupSolution));
+            setupItem->addChild(item);
+        }
+
+        item = new QTreeWidgetItem();
+        item->setText(0, tr("Boundary Conditions"));
+        item->setData(1, 0, -1);
+        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupBoundaryConditions));
+        setupItem->addChild(item);
+
+        for (int i = 0; i < physicsData->getBoundaryManager()->getDataCount(); i++) {
+            auto boundary = physicsData->getBoundaryManager()->getDataByIndex(i);
+            if (boundary == nullptr)continue;
+            QTreeWidgetItem* bitem = new QTreeWidgetItem();
+            bitem->setText(0, boundary->getDataObjectName());
+            bitem->setData(1, 0, boundary->getDataObjectID());
+            bitem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupBoundaryConditionsItem));
+            item->addChild(bitem);
+        }
+
+        if (physicsData->getInitialConditions()) {
+            item = new QTreeWidgetItem();
+            item->setText(0, tr("Initial Conditions"));
+            item->setData(1, 0, -1);
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupInitialConditions));
+            setupItem->addChild(item);
         }
     }
 
@@ -435,95 +486,6 @@ namespace GUI{
             widget->setText(boundMesh->getDataObjectName());
             this->setItemWidget(item, 0, widget);
         }
-    }
-
-    void TreeWidget::updateSetupSimpleItems(QTreeWidgetItem * parentItem)
-    {
-        QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setText(0, tr("Turbulence"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupTurbulence));
-        parentItem->addChild(item);
-
-        item = new QTreeWidgetItem();
-        item->setText(0, tr("Transport Properties"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupTransportProperties));
-        parentItem->addChild(item);
-
-        item = new QTreeWidgetItem();
-        item->setText(0, tr("Discretization"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupDiscretization));
-        parentItem->addChild(item);
-
-        item = new QTreeWidgetItem();
-        item->setText(0, tr("Solution"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupSolution));
-        parentItem->addChild(item);
-
-        item = new QTreeWidgetItem();
-        item->setText(0, tr("Boundary Conditions"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupBoundaryConditions));
-        parentItem->addChild(item);
-
-        auto physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
-        for (int i = 0; i < physicsData->getBoundaryManager()->getDataCount(); i++) {
-            auto boundary = physicsData->getBoundaryManager()->getDataByIndex(i);
-            if (boundary == nullptr)continue;
-            QTreeWidgetItem* bitem = new QTreeWidgetItem();
-            bitem->setText(0, boundary->getDataObjectName());
-            bitem->setData(1, 0, boundary->getDataObjectID());
-            bitem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupBoundaryConditionsItem));
-            item->addChild(bitem);
-        }
-
-        item = new QTreeWidgetItem();
-        item->setText(0, tr("Initial Conditions"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupInitialConditions));
-        parentItem->addChild(item);
-    }
-
-    void TreeWidget::updateSetupInterItems(QTreeWidgetItem * parentItem)
-    {
-        QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setText(0, tr("Turbulence"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupTurbulence));
-        parentItem->addChild(item);
-
-        item = new QTreeWidgetItem();
-        item->setText(0, tr("Transport Properties"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupTransportProperties));
-        parentItem->addChild(item);
-
-        item = new QTreeWidgetItem();
-        item->setText(0, tr("Discretization"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupDiscretization));
-        parentItem->addChild(item);
-
-        item = new QTreeWidgetItem();
-        item->setText(0, tr("Solution"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupSolution));
-        parentItem->addChild(item);
-
-        item = new QTreeWidgetItem();
-        item->setText(0, tr("Boundary Conditions"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupBoundaryConditions));
-        parentItem->addChild(item);
-
-        item = new QTreeWidgetItem();
-        item->setText(0, tr("Initial Conditions"));
-        item->setData(1, 0, -1);
-        item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupInitialConditions));
-        parentItem->addChild(item);
     }
 
     void TreeWidget::addMenuActions(QMenu & menu, QString actions, QString objectName)

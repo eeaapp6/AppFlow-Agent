@@ -64,6 +64,11 @@ namespace GUI
 
             //子数据添加
             if (values) {
+                if (values->getParameterCount() > 0) {
+                    int width = this->width();
+                    radioButton->setMinimumWidth(width*0.4);
+                    radioButton->setMaximumWidth(width*0.4);
+                }
                 for (auto v : values->getParameter()) {
                     if (v == nullptr)continue;
                     QWidget* widget = CompCalLineWidget::DataSwitchToWidget(v, this);

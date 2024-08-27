@@ -72,7 +72,6 @@ namespace GUI
         void setDataToWidget();
     private slots:
         ;
-        void on_checkBox_Enable_clicked();
         /**
          * @brief RadioButton按钮点击事件
          * @author BaGuijun (baguijun@163.com)
