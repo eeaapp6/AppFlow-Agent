@@ -11,11 +11,16 @@
 
 #include "GUICalculateDialogAPI.h"
 #include "GUICalculateWidgetBase.h"
+#include "FITK_Component/FITKWidget/FITKSciNotationLineEdit.h"
 #include <QDoubleSpinBox>
 
 namespace Interface {
     class FITKFlowDataBase;
     class FITKFlowDataDouble;
+}
+
+namespace Comp {
+    class FITKSciNotationLineEdit;
 }
 
 namespace GUI
@@ -25,7 +30,7 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-14
      */
-    class GUICalculateDialogAPI GUIWidgetDouble :public QDoubleSpinBox, public GUICalculateSubWidgetBase
+    class GUICalculateDialogAPI GUIWidgetDouble :public Comp::FITKSciNotationLineEdit, public GUICalculateSubWidgetBase
     {
         Q_OBJECT;
     public:
@@ -52,14 +57,14 @@ namespace GUI
     protected:
         //鼠标滚轮事件
         void wheelEvent(QWheelEvent *event) override;
-    private slots:
+    protected slots:
         ;
         /**
-         * @brief 数据更改槽函数
+         * @brief LineEdit中文本发生更改槽函数
          * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
+         * @date 2024-06-11
          */
-        void slotDataChange();
+        virtual void textChanged() override;
     protected:
         /**
          * @brief 数据对象

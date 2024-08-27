@@ -6,11 +6,10 @@
 namespace GUI
 {
     GUIWidgetDouble::GUIWidgetDouble(Interface::FITKFlowDataBase * data, QWidget * parent):
-        QDoubleSpinBox(parent), GUICalculateSubWidgetBase(parent)
+        Comp::FITKSciNotationLineEdit(parent), GUICalculateSubWidgetBase(parent)
     {
         _value = dynamic_cast<Interface::FITKFlowDataDouble*>(data);
         init();
-        connect(this, SIGNAL(valueChanged(double)), this, SLOT(slotDataChange()));
     }
 
     GUIWidgetDouble::~GUIWidgetDouble()
@@ -24,9 +23,7 @@ namespace GUI
         double value = _value->getValue();
         double range[2] = { 0,0 };
         _value->getRange(range);
-
-        this->setRange(range[0], range[1]);
-        this->setValue(value);
+        this->setCurrentValidValue(value);
     }
 
     void GUIWidgetDouble::wheelEvent(QWheelEvent * event)
@@ -34,9 +31,13 @@ namespace GUI
         Q_UNUSED(event);
     }
 
-    void GUIWidgetDouble::slotDataChange()
+    void GUIWidgetDouble::textChanged()
     {
         if (_value == nullptr)return;
-        _value->setValue(value());
+        Comp::FITKSciNotationLineEdit::textChanged();
+
+        double value = 0.0;
+        getCurrentValidValue(value);
+        _value->setValue(value);
     }
 }
