@@ -23,7 +23,10 @@ namespace GUI
         double value = _value->getValue();
         double range[2] = { 0,0 };
         _value->getRange(range);
+        this->setRange(range);
         this->setCurrentValidValue(value);
+
+        connect(this, SIGNAL(dataChanged()), this, SLOT(slotDataChangeFinished()));
     }
 
     void GUIWidgetDouble::wheelEvent(QWheelEvent * event)
@@ -31,10 +34,9 @@ namespace GUI
         Q_UNUSED(event);
     }
 
-    void GUIWidgetDouble::textChanged()
+    void GUIWidgetDouble::slotDataChangeFinished()
     {
         if (_value == nullptr)return;
-        Comp::FITKSciNotationLineEdit::textChanged();
 
         double value = 0.0;
         getCurrentValidValue(value);

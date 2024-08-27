@@ -57,14 +57,14 @@ namespace GUI
     protected:
         //鼠标滚轮事件
         void wheelEvent(QWheelEvent *event) override;
-    protected slots:
+    private slots:
         ;
         /**
-         * @brief LineEdit中文本发生更改槽函数
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-06-11
+         * @brief    数据更改槽函数
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-27
          */
-        virtual void textChanged() override;
+        void slotDataChangeFinished();
     protected:
         /**
          * @brief 数据对象
