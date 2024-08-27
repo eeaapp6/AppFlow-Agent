@@ -1,28 +1,233 @@
 ﻿#include "BoundaryConditionsWidget.h"
 #include "ui_BoundaryConditionsWidget.h"
+#include "CompSelectComBoxWidget.h"
+#include "CompCalLineWidget.h"
 
+#include "OperatorsInterface/GraphEventOperator.h"
+#include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
+
+#include "FITK_Kernel/FITKCore/FITKOperatorRepo.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFBoundary.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFBoundaryType.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFBoundaryTypeManager.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsManager.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractOFSolver.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+
+#include <QTabBar>
+#include <QToolBox>
 
 namespace GUI
 {
-    BoundaryConditionsWidget::BoundaryConditionsWidget(EventOper::ParaWidgetInterfaceOperator * oper, QWidget * parent) :
-        GUICalculateWidgetBase(oper, parent)
+    /**
+     * @brief    FLow子数据回调函数
+     * @param[i] type 类型
+     * @param[i] widget 对应的界面
+     * @return   Interface::FITKAbstractParameter* 子数据对象
+     * @author   BaGuijun (baguijun@163.com)
+     * @date     2024-08-27
+     */
+    Interface::FITKAbstractParameter* getBoundaryFlowSubData(const QString& type, CompSelectComBoxWidget* widget)
+    {
+        if (widget == nullptr)return nullptr;
+        auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
+        if (phyFactory == nullptr)return nullptr;
+        auto phyData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+        if (phyData == nullptr)return nullptr;
+
+        int objID = widget->getData("objID").toInt();
+        QString objName = widget->getData("objName").toString();
+        int index = widget->getData("index").toInt();
+        int boundaryID = widget->getData("boundaryID").toInt();
+        auto boundary = phyData->getBoundaryManager()->getDataByID(boundaryID);
+        if (boundary == nullptr)return nullptr;
+
+        phyFactory->setVariableBoundaryType(boundaryID, objName, type);
+
+        return boundary->getFlowVBType(index)->getBoundaryTypePara();
+    }
+
+    BoundaryConditionsWidget::BoundaryConditionsWidget(Interface::FITKOFBoundary* boundaryObj, EventOper::ParaWidgetInterfaceOperator * oper, QWidget * parent) :
+        GUICalculateWidgetBase(oper, parent), _boundaryObj(boundaryObj)
     {
         _ui = new Ui::BoundaryConditionsWidget();
         _ui->setupUi(this);
+        init();
     }
 
     BoundaryConditionsWidget::~BoundaryConditionsWidget()
     {
-        if (_ui) {
-            delete _ui;
-            _ui = nullptr;
-        }
+        if (_ui) delete _ui;
     }
+
     void BoundaryConditionsWidget::init()
     {
+        if (_boundaryObj == nullptr)return;
+        auto globalData = FITKAPP->getGlobalData();
+        if (globalData == nullptr)return;
+        Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
+        if (meshData == nullptr)return;
+        Interface::FITKBoundaryMeshVTKManager* boundMeshManager = meshData->getBoundaryMeshManager();
+        if (boundMeshManager == nullptr)return;
 
+        //名称设置
+        QString name = _boundaryObj->getDataObjectName();
+        _ui->lineEdit_Name->setText(name);
+        _ui->lineEdit_Name->setEnabled(false);
+
+        //网格边界名称设置
+        auto meshBoundary = boundMeshManager->getDataByID(_boundaryObj->getMeshBoundaryID());
+        _ui->lineEdit_Boundary->setEnabled(false);
+        if (meshBoundary)_ui->lineEdit_Boundary->setText(meshBoundary->getDataObjectName());
+
+        //边界类型名称设置
+        _currentType = _boundaryObj->getBoundaryType();
+        QString typeName = "";
+        switch (_currentType) {
+        case Interface::FITKOFSolverTypeEnum::BWall:typeName = tr("Wall"); break;
+        case Interface::FITKOFSolverTypeEnum::BPressureInlet:typeName = tr("Pressure Inlet"); break;
+        case Interface::FITKOFSolverTypeEnum::BVelocityInlet:typeName = tr("Velocity Inlet"); break;
+        case Interface::FITKOFSolverTypeEnum::BPressureOutlet:typeName = tr("Pressure Outlet"); break;
+        case Interface::FITKOFSolverTypeEnum::BOutflow:typeName = tr("Outflow"); break;
+        case Interface::FITKOFSolverTypeEnum::BSymmetry:typeName = tr("Symmetry"); break;
+        case Interface::FITKOFSolverTypeEnum::BWedge:typeName = tr("Wedge"); break;
+        }
+        _ui->lineEdit_Type->setText(typeName);
+        _ui->lineEdit_Type->setEnabled(false);
+
+        update();
+    }
+
+    void BoundaryConditionsWidget::update()
+    {
+        if (_boundaryObj == nullptr)return;
+
+        updateFlow();
+        updateTurbulence();
+        updatePhases();
+    }
+
+    void BoundaryConditionsWidget::showEvent(QShowEvent * event)
+    {
+        GUICalculateWidgetBase::showEvent(event);
+        if (_boundaryObj == nullptr)return;
+
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        graphOper->clearHighlight();
+        graphOper->highlight(_boundaryObj->getMeshBoundaryID());
+    }
+
+    void BoundaryConditionsWidget::hideEvent(QHideEvent * event)
+    {
+        GUICalculateWidgetBase::hideEvent(event);
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        graphOper->clearHighlight();
+    }
+
+    void BoundaryConditionsWidget::updateFlow()
+    {
+        if (_boundaryObj == nullptr)return;
+        if (_physicsManager == nullptr)return;
+        auto boundartTypeMan = _physicsManager->getBoundaryTypeManager();
+        if (boundartTypeMan == nullptr)return;
+        int num = _boundaryObj->getFlowCount();
+        if (num == 0) {
+            _ui->tabWidget->removeTab(0);
+            return;
+        }
+
+        QWidget* widget = new QWidget(this);
+        QVBoxLayout* layout = new QVBoxLayout();
+        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(widget);
+        for (int i = 0; i < num; i++) {
+            Interface::FITKOFAbsBoundaryType* data = _boundaryObj->getFlowVBType(i);
+            if (data == nullptr)continue;
+            QStringList options = boundartTypeMan->filterBoundariesType(_physicsData->getSolver()->getSolverType(),
+                _currentType, _boundaryObj->getFlowVariableName(i));
+            CompSelectComBoxWidget* w = new CompSelectComBoxWidget(_boundaryObj->getFlowVariableName(i), this);
+            w->setData("boundaryID", _boundaryObj->getDataObjectID());
+            w->setData("objID", data->getDataObjectID());
+            w->setData("objName", _boundaryObj->getFlowVariableName(i));
+            w->setData("index", i);
+            w->setSubWidgetData(data->getBoundaryTypePara());
+            w->setOptions(options);
+            w->setCurrentText(data->getDataObjectName());
+            w->setFunction(&getBoundaryFlowSubData);
+            toolBox->addItem(w, _boundaryObj->getFlowVariableName(i));
+        }
+        layout->addWidget(toolBox);
+        widget->setLayout(layout);
+        _ui->tabWidget->addTab(widget, tr("Flow"));
+    }
+
+    void BoundaryConditionsWidget::updateTurbulence()
+    {
+        if (_boundaryObj == nullptr)return;
+        if (_physicsManager == nullptr)return;
+        auto boundartTypeMan = _physicsManager->getBoundaryTypeManager();
+        if (boundartTypeMan == nullptr)return;
+        int num = _boundaryObj->getTurbulenceCount();
+        if (num == 0) {
+            return;
+        }
+
+        QWidget* widget = new QWidget(this);
+        QVBoxLayout* layout = new QVBoxLayout();
+        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(widget);
+        for (int i = 0; i < num; i++) {
+            Interface::FITKOFAbsBoundaryType* data = _boundaryObj->getTurbulenceVBType(i);
+            if (data == nullptr)continue;
+            QStringList options = boundartTypeMan->filterBoundariesType(_physicsData->getSolver()->getSolverType(),
+                _currentType, _boundaryObj->getFlowVariableName(i));
+            CompSelectComBoxWidget* w = new CompSelectComBoxWidget(_boundaryObj->getTurbulenceVariableName(i), this);
+            w->setSubWidgetData(data->getBoundaryTypePara());
+            w->setOptions(options);
+            w->setCurrentText(data->getDataObjectName());
+            toolBox->addItem(w, _boundaryObj->getFlowVariableName(i));
+        }
+        layout->addWidget(toolBox);
+        widget->setLayout(layout);
+        _ui->tabWidget->addTab(widget, tr("Turbulence"));
+    }
+
+    void BoundaryConditionsWidget::updatePhases()
+    {
+        if (_boundaryObj == nullptr)return;
+        if (_physicsManager == nullptr)return;
+        auto boundartTypeMan = _physicsManager->getBoundaryTypeManager();
+        if (boundartTypeMan == nullptr)return;
+        int num = _boundaryObj->getPhasesCount();
+        if (num == 0) {
+            _ui->tabWidget->removeTab(2);
+            return;
+        }
+
+        QWidget* widget = new QWidget(this);
+        QVBoxLayout* layout = new QVBoxLayout();
+        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(widget);
+        for (int i = 0; i < num; i++) {
+            Interface::FITKOFAbsBoundaryType* data = _boundaryObj->getPhasesVBType(i);
+            if (data == nullptr)continue;
+            QStringList options = boundartTypeMan->filterBoundariesType(_physicsData->getSolver()->getSolverType(),
+                _currentType, _boundaryObj->getFlowVariableName(i));
+            CompSelectComBoxWidget* w = new CompSelectComBoxWidget(_boundaryObj->getPhasesVariableName(i), this);
+            w->setSubWidgetData(data->getBoundaryTypePara());
+            w->setOptions(options);
+            w->setCurrentText(data->getDataObjectName());
+            toolBox->addItem(w, _boundaryObj->getFlowVariableName(i));
+        }
+        layout->addWidget(toolBox);
+        widget->setLayout(layout);
+        _ui->tabWidget->addTab(widget, tr("Phases"));
     }
 }
 

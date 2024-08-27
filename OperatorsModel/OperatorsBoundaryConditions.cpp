@@ -7,6 +7,8 @@
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFBoundary.h"
 
 namespace ModelOper
 {
@@ -26,6 +28,10 @@ namespace ModelOper
         if (mainWindow == nullptr)return false;
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return false;
+        auto physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+        if (physicsData == nullptr)return false;
+        auto boundaryManager = physicsData->getBoundaryManager();
+        if (boundaryManager == nullptr)return false;
 
         switch (_operType){
         case ModelOper::OperManagerBase::Create: {
@@ -34,7 +40,10 @@ namespace ModelOper
             break;
         }
         case ModelOper::OperManagerBase::Edit: {
-            GUI::BoundaryConditionsWidget* widget = new GUI::BoundaryConditionsWidget(this, propertyWidget);
+            int objID = -1;
+            this->argValue<int>("objID", objID);
+            Interface::FITKOFBoundary* boundaryObj = boundaryManager->getDataByID(objID);
+            GUI::BoundaryConditionsWidget* widget = new GUI::BoundaryConditionsWidget(boundaryObj, this, propertyWidget);
             propertyWidget->setWidget(widget);
             break;
         }

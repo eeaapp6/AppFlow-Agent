@@ -33,7 +33,7 @@ namespace GUI
         if (_myFunction == nullptr)return;
         QString currentOption = _ui->comboBox->currentText();
         if (currentOption.isEmpty())return;
-        Interface::FITKAbstractParameter* subData = _myFunction(currentOption, _index);
+        Interface::FITKAbstractParameter* subData = _myFunction(currentOption, this);
         if (subData == nullptr)return;
 
         //清除全部子界面
@@ -53,9 +53,8 @@ namespace GUI
         }
     }
 
-    void CompSelectComBoxWidget::setFunction(getSubDataFormText function, int index)
+    void CompSelectComBoxWidget::setFunction(getSubDataFormText function)
     {
-        _index = index;
         _myFunction = function;
     }
 
@@ -93,6 +92,16 @@ namespace GUI
             if (w == nullptr)continue;
             _ui->verticalLayout_Sub->addWidget(w);
         }
+    }
+
+    void CompSelectComBoxWidget::setData(QString name, QVariant data)
+    {
+        _data.insert(name, data);
+    }
+
+    QVariant CompSelectComBoxWidget::getData(const QString name)
+    {
+        return _data.value(name);
     }
 
     void CompSelectComBoxWidget::on_pushButton_clicked()

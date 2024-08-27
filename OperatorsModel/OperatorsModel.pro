@@ -40,6 +40,7 @@ win32{
         -lFITKInterfaceModel \
         -lFITKInterfaceGeometry \
         -lFITKWidget \
+        -lFITKInterfaceFlowOF \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -67,6 +68,7 @@ win32{
         -lFITKInterfaceModel \
         -lFITKInterfaceGeometry \
         -lFITKWidget \
+        -lFITKInterfaceFlowOF \
 
     message("Windows OperatorsModel generated")
 }
@@ -104,6 +106,7 @@ unix{
         -lFITKInterfaceModel \
         -lFITKInterfaceGeometry \
         -lFITKWidget \
+        -lFITKInterfaceFlowOF \
         
     message("Linux OperatorsModel generated")
 }

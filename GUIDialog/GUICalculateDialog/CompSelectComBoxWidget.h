@@ -18,13 +18,13 @@ namespace Interface {
 }
 
 namespace GUI {
-
     /**
      * @brief  获取不同子数据函数指针声明
      * @author BaGuijun (baguijun@163.com)
      * @date   2024-08-26
      */
-    typedef Interface::FITKAbstractParameter* (*getSubDataFormText)(const QString&, int);
+    class CompSelectComBoxWidget;
+    typedef Interface::FITKAbstractParameter* (*getSubDataFormText)(const QString&, CompSelectComBoxWidget*);
 
     /**
      * @brief  comBox选择组件界面
@@ -70,7 +70,7 @@ namespace GUI {
          * @author   BaGuijun (baguijun@163.com)
          * @date     2024-08-26
          */
-        void setFunction(getSubDataFormText function, int index = -1);
+        void setFunction(getSubDataFormText function);
         /**
          * @brief    设置选项
          * @param[i] Options  选项
@@ -92,6 +92,22 @@ namespace GUI {
          * @date     2024-08-26
          */
         void setSubWidgetData(Interface::FITKAbstractParameter* data);
+        /**
+         * @brief    设置信息
+         * @param[i] name 名称
+         * @param[i] data 数据
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-27
+         */
+        void setData(QString name, QVariant data);
+        /**
+         * @brief    获取信息
+         * @param[i] name 名称
+         * @return   QVariant 数据信息
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-27
+         */
+        QVariant getData(const QString name);
     private slots:
         ;
         /**
@@ -127,11 +143,11 @@ namespace GUI {
          */
         getSubDataFormText _myFunction = nullptr;
         /**
-         * @brief  solution切换时需要索引值（目前solution专用）
+         * @brief  存储信息
          * @author BaGuijun (baguijun@163.com)
-         * @date   2024-08-26
+         * @date   2024-08-27
          */
-        int _index = -1;
+        QHash<QString, QVariant> _data = {};
     };
 }
 

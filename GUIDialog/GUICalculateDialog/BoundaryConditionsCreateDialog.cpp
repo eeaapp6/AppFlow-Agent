@@ -28,6 +28,8 @@ namespace GUI
         _physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
         _factoryData = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
         init();
+
+        this->setWindowTitle(tr("Create Boundary"));
     }
 
     BoundaryConditionsCreateDialog::~BoundaryConditionsCreateDialog()
@@ -65,7 +67,7 @@ namespace GUI
         _ui->comboBox_Type->addItem(tr("Velocity Inlet"), Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BVelocityInlet);
         _ui->comboBox_Type->addItem(tr("Pressure Outlet"), Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BPressureOutlet);
         _ui->comboBox_Type->addItem(tr("Outflow"), Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BOutflow);
-        _ui->comboBox_Type->addItem(tr("Summetry"), Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BSymmetry);
+        _ui->comboBox_Type->addItem(tr("Symmetry"), Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BSymmetry);
         _ui->comboBox_Type->addItem(tr("Wedge"), Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BWedge);
     }
 

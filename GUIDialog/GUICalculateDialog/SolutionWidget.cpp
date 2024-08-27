@@ -21,13 +21,15 @@
 
 namespace GUI
 {
-    Interface::FITKAbstractParameter* solutionGetSubData(const QString & type, int index)
+    Interface::FITKAbstractParameter* solutionGetSubData(const QString & type, CompSelectComBoxWidget* widget)
     {
+        if (widget == nullptr)return nullptr;
         auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
         if (phyFactory == nullptr)return nullptr;
         auto phyData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
         if (phyData == nullptr)return nullptr;
 
+        int index = widget->getData("index").toInt();
         phyFactory->setSolutionSolver(index, type);
         Interface::FITKOFAbsSolutionSolver* solution = phyData->getSolution()->getSolverVariablePara(index);
         if (solution == nullptr)return nullptr;
@@ -96,7 +98,8 @@ namespace GUI
             QString type = _solValue->getSolverVariableName(i);
             QStringList options = solutionManager->filterSolutionSolvers(type, _physicsData->getSolver()->getSolverType());
             CompSelectComBoxWidget* comp = new CompSelectComBoxWidget(type, toolBox);
-            comp->setFunction(&solutionGetSubData, i);
+            comp->setData("index", i);
+            comp->setFunction(&solutionGetSubData);
             comp->setOptions(options);
             comp->setCurrentText(solversData->getDataObjectName());
             comp->setSubWidgetData(solversData->getSolverSolutionPara());

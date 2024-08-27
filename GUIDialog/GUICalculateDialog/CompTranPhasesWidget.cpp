@@ -18,13 +18,15 @@
 
 namespace GUI 
 {
-    Interface::FITKAbstractParameter* getTranPhasesData(const QString& type, int index)
+    Interface::FITKAbstractParameter* getTranPhasesData(const QString& type, CompSelectComBoxWidget* widget)
     {
+        if (widget == nullptr)return nullptr;
         auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
         if (phyFactory == nullptr)return nullptr;
         auto phyData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
         if (phyData == nullptr)return nullptr;
 
+        int index = widget->getData("index").toInt();
         phyFactory->setTransportModel(index, type);
         auto tranPhaeseObj = phyData->getTransportProp()->getPhase(index);
         if (tranPhaeseObj == nullptr)return nullptr;
@@ -65,7 +67,8 @@ namespace GUI
         if (tranModelData) {
             CompSelectComBoxWidget* widget = new CompSelectComBoxWidget("Transport Model", this);
             QStringList optians = tranManager->filterTransportModels(_physicsData->getSolver()->getSolverType());
-            widget->setFunction(&getTranPhasesData, _index);
+            widget->setData("index", _index);
+            widget->setFunction(&getTranPhasesData);
             widget->setOptions(optians);
             widget->setCurrentText(tranModelData->getDataObjectName());
             widget->setSubWidgetData(tranModelData->getTransportModelPara());
