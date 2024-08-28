@@ -130,7 +130,7 @@ namespace GUI
 
         auto mainLayout = new QGridLayout();
         mainLayout->setObjectName("CentralGridLayout");
-        mainLayout->setContentsMargins(5, 5, 5, 0);
+        mainLayout->setContentsMargins(5, 5, 5, 10);
         mainLayout->addWidget(spliterLayout);
 
         _currentWidget->setLayout(mainLayout);
