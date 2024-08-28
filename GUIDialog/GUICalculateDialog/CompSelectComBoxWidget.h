@@ -8,6 +8,7 @@
 #define _CompSelectComBoxWidget_H
 
 #include <QWidget>
+#include <QVariant>
 
 namespace Ui {
     class CompSelectComBoxWidget;
