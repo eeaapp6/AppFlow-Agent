@@ -1,17 +1,17 @@
 ﻿/**********************************************************************
- * @file   BoundaryConditionsCreateDialog.h
+ * @file   BoundaryCreateDialog.h
  * @brief  边界参数创建对话框
  * @author BaGuijun (baguijun@163.com)
  * @date   2024-08-26
  *********************************************************************/
-#ifndef _BoundaryConditionsCreateDialog_H
-#define _BoundaryConditionsCreateDialog_H
+#ifndef _BoundaryCreateDialog_H
+#define _BoundaryCreateDialog_H
 
 #include "GUIWidget/GUIDialogBase.h"
 #include "GUICalculateDialogAPI.h"
 
 namespace Ui {
-    class BoundaryConditionsCreateDialog;
+    class BoundaryCreateDialog;
 }
 
 namespace Interface {
@@ -30,7 +30,7 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date   2024-08-26
      */
-    class GUICalculateDialogAPI BoundaryConditionsCreateDialog : public GUIDialogBase
+    class GUICalculateDialogAPI BoundaryCreateDialog : public GUIDialogBase
     {
         Q_OBJECT;
     public:
@@ -40,13 +40,13 @@ namespace GUI
          * @author   BaGuijun (baguijun@163.com)
          * @date     2024-08-26
          */
-        BoundaryConditionsCreateDialog(EventOper::ParaWidgetInterfaceOperator* oper);
+        BoundaryCreateDialog(EventOper::ParaWidgetInterfaceOperator* oper);
         /**
          * @brief    析构函数
          * @author   BaGuijun (baguijun@163.com)
          * @date     2024-08-26
          */
-        ~BoundaryConditionsCreateDialog();
+        ~BoundaryCreateDialog();
         /**
          * @brief    初始化
          * @author   BaGuijun (baguijun@163.com)
@@ -89,7 +89,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date   2024-08-26
          */
-        Ui::BoundaryConditionsCreateDialog* _ui = nullptr;
+        Ui::BoundaryCreateDialog* _ui = nullptr;
         /**
          * @brief  操作器
          * @author BaGuijun (baguijun@163.com)

@@ -54,6 +54,7 @@ namespace ModelOper
 
     // 按钮注册相关操作
     Register2FITKOPeratorRepo(actionBoundaryConditionsCreate, OperatorsBoundaryConditions);
+    Register2FITKOPeratorRepo(actionBoundaryConditionsDelete, OperatorsBoundaryConditions);
     Register2FITKOPeratorRepo(actionBoundaryConditionsEdit, OperatorsBoundaryConditions);
 }
 

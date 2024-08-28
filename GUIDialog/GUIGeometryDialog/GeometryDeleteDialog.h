@@ -10,7 +10,7 @@
 #define GeometryDeleteDialog_H
 
 #include "GUIGeometryDialogAPI.h"
-#include "FITK_Kernel/FITKCore/FITKAbstractGUI.h"
+#include "GUIWidget/GUIDialogBase.h"
 
 namespace Ui {
     class GeometryDeleteDialog;
@@ -31,7 +31,7 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-14
      */
-    class GUIGeometryDialogAPI GeometryDeleteDialog : public Core::FITKDialog
+    class GUIGeometryDialogAPI GeometryDeleteDialog : public GUIDialogBase
     {
         Q_OBJECT;
     public:

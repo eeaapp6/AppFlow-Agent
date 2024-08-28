@@ -1,5 +1,5 @@
-﻿#include "BoundaryConditionsWidget.h"
-#include "ui_BoundaryConditionsWidget.h"
+﻿#include "BoundaryWidget.h"
+#include "ui_BoundaryWidget.h"
 #include "CompSelectComBoxWidget.h"
 #include "CompCalLineWidget.h"
 
@@ -106,20 +106,20 @@ namespace GUI
         return boundary->getPhasesVBType(index)->getBoundaryTypePara();
     }
 
-    BoundaryConditionsWidget::BoundaryConditionsWidget(Interface::FITKOFBoundary* boundaryObj, EventOper::ParaWidgetInterfaceOperator * oper, QWidget * parent) :
+    BoundaryWidget::BoundaryWidget(Interface::FITKOFBoundary* boundaryObj, EventOper::ParaWidgetInterfaceOperator * oper, QWidget * parent) :
         GUICalculateWidgetBase(oper, parent), _boundaryObj(boundaryObj)
     {
-        _ui = new Ui::BoundaryConditionsWidget();
+        _ui = new Ui::BoundaryWidget();
         _ui->setupUi(this);
         init();
     }
 
-    BoundaryConditionsWidget::~BoundaryConditionsWidget()
+    BoundaryWidget::~BoundaryWidget()
     {
         if (_ui) delete _ui;
     }
 
-    void BoundaryConditionsWidget::init()
+    void BoundaryWidget::init()
     {
         if (_boundaryObj == nullptr)return;
         auto globalData = FITKAPP->getGlobalData();
@@ -157,7 +157,7 @@ namespace GUI
         update();
     }
 
-    void BoundaryConditionsWidget::update()
+    void BoundaryWidget::update()
     {
         if (_boundaryObj == nullptr)return;
 
@@ -166,7 +166,12 @@ namespace GUI
         updatePhases();
     }
 
-    void BoundaryConditionsWidget::showEvent(QShowEvent * event)
+    Interface::FITKOFBoundary * BoundaryWidget::getCurrentObj()
+    {
+        return _boundaryObj;
+    }
+
+    void BoundaryWidget::showEvent(QShowEvent * event)
     {
         GUICalculateWidgetBase::showEvent(event);
         if (_boundaryObj == nullptr)return;
@@ -177,7 +182,7 @@ namespace GUI
         graphOper->highlight(_boundaryObj->getMeshBoundaryID());
     }
 
-    void BoundaryConditionsWidget::hideEvent(QHideEvent * event)
+    void BoundaryWidget::hideEvent(QHideEvent * event)
     {
         GUICalculateWidgetBase::hideEvent(event);
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
@@ -185,7 +190,7 @@ namespace GUI
         graphOper->clearHighlight();
     }
 
-    void BoundaryConditionsWidget::updateFlow()
+    void BoundaryWidget::updateFlow()
     {
         if (_boundaryObj == nullptr)return;
         if (_physicsManager == nullptr)return;
@@ -221,7 +226,7 @@ namespace GUI
         _ui->tabWidget->addTab(widget, tr("Flow"));
     }
 
-    void BoundaryConditionsWidget::updateTurbulence()
+    void BoundaryWidget::updateTurbulence()
     {
         if (_boundaryObj == nullptr)return;
         if (_physicsManager == nullptr)return;
@@ -256,7 +261,7 @@ namespace GUI
         _ui->tabWidget->addTab(widget, tr("Turbulence"));
     }
 
-    void BoundaryConditionsWidget::updatePhases()
+    void BoundaryWidget::updatePhases()
     {
         if (_boundaryObj == nullptr)return;
         if (_physicsManager == nullptr)return;

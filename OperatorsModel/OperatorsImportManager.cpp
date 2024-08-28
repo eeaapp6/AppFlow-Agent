@@ -57,14 +57,43 @@ namespace ModelOper {
 //             connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotGeoImportFinish(bool, int)));
         }
         else  if (_senderName == "actionImportMesh") {
-            fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Mesh"), workDir);
-            if (fileName.isEmpty())return false;
+            //fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Mesh"), workDir);
+            //if (fileName.isEmpty())return false;
 
 //             ImportReadThread* importThread = new ImportReadThread();
 //             importThread->_type = ImportType::ImportMesh;
 //             importThread->_fileName = fileName;
 //             pool->execTask(importThread);
 //             connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotMeshImportFinish(bool, int)));
+
+                    //工作路径获取
+            QString workDir = "";
+            if (FITKAPP->getAppSettings()) {
+                workDir = FITKAPP->getAppSettings()->getWorkingDir();
+            }
+            if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
+
+            // 获取单例
+            auto meshGen = Interface::FITKMeshGenInterface::getInstance();
+            // 读取网格
+            auto meshProcessor = meshGen->getMeshProcessor();
+            if (meshProcessor == nullptr) return false;
+            //网格划分路径指定
+            QString meshGenDir = workDir + "/mesh";
+
+            meshProcessor->setValue("WorkDir", meshGenDir);
+            meshProcessor->start();
+            //刷新渲染窗口
+            EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+            if (graphOper == nullptr)return false;
+            // 网格对象
+            auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
+            graphOper->updateGraph(mesh->getDataObjectID());
+
+            // 获取模型树控制器
+            auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+            if (treeOper == nullptr) return false;
+            treeOper->updateTree();
         }
         this->setArgs("FileName", fileName);
         this->setArgs("SenderName", _senderName);

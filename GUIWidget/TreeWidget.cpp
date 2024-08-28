@@ -189,6 +189,10 @@ namespace GUI{
             addMenuActions(menu, "actionBoundaryConditionsCreate", tr("Create"));
             break;
         }
+        case GUI::MainTreeEnum::MainTree_SetupBoundaryConditionsItem: {
+            addMenuActions(menu, "actionBoundaryConditionsDelete", tr("Delete"));
+            break;
+        }
         }
 
         if (menu.actions().size() == 0) return;

@@ -1,5 +1,5 @@
-﻿#include "BoundaryConditionsCreateDialog.h"
-#include "ui_BoundaryConditionsCreateDialog.h"
+﻿#include "BoundaryCreateDialog.h"
+#include "ui_BoundaryCreateDialog.h"
 
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
@@ -19,10 +19,10 @@ Q_DECLARE_METATYPE(Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType)
 
 namespace GUI
 {
-    BoundaryConditionsCreateDialog::BoundaryConditionsCreateDialog(EventOper::ParaWidgetInterfaceOperator * oper) :
+    BoundaryCreateDialog::BoundaryCreateDialog(EventOper::ParaWidgetInterfaceOperator * oper) :
         GUIDialogBase(FITKAPP->getGlobalData()->getMainWindow()), _oper(oper)
     {
-        _ui = new Ui::BoundaryConditionsCreateDialog();
+        _ui = new Ui::BoundaryCreateDialog();
         _ui->setupUi(this);
 
         _physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
@@ -32,12 +32,12 @@ namespace GUI
         this->setWindowTitle(tr("Create Boundary"));
     }
 
-    BoundaryConditionsCreateDialog::~BoundaryConditionsCreateDialog()
+    BoundaryCreateDialog::~BoundaryCreateDialog()
     {
         if (_ui)delete _ui;
     }
 
-    void BoundaryConditionsCreateDialog::init()
+    void BoundaryCreateDialog::init()
     {
         if (_physicsData == nullptr)return;
         auto boundManager = _physicsData->getBoundaryManager();
@@ -71,7 +71,7 @@ namespace GUI
         _ui->comboBox_Type->addItem(tr("Wedge"), Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BWedge);
     }
 
-    void BoundaryConditionsCreateDialog::hideEvent(QHideEvent * event)
+    void BoundaryCreateDialog::hideEvent(QHideEvent * event)
     {
         GUIDialogBase::hideEvent(event);
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
@@ -79,7 +79,7 @@ namespace GUI
         graphOper->clearHighlight();
     }
 
-    void BoundaryConditionsCreateDialog::showEvent(QShowEvent * event)
+    void BoundaryCreateDialog::showEvent(QShowEvent * event)
     {
         GUIDialogBase::showEvent(event);
         int id = -1;
@@ -89,13 +89,13 @@ namespace GUI
         highlightMeshBoundary(id);
     }
 
-    void BoundaryConditionsCreateDialog::on_comboBox_Boundary_activated(int index)
+    void BoundaryCreateDialog::on_comboBox_Boundary_activated(int index)
     {
         Q_UNUSED(index);
         highlightMeshBoundary(_ui->comboBox_Boundary->currentData().toInt());
     }
 
-    void BoundaryConditionsCreateDialog::on_pushButton_OK_clicked()
+    void BoundaryCreateDialog::on_pushButton_OK_clicked()
     {
         if (_ui->comboBox_Boundary->count() == 0)return;
 
@@ -119,12 +119,12 @@ namespace GUI
         this->accept();
     }
 
-    void BoundaryConditionsCreateDialog::on_pushButton_Cancel_clicked()
+    void BoundaryCreateDialog::on_pushButton_Cancel_clicked()
     {
         this->reject();
     }
 
-    void BoundaryConditionsCreateDialog::highlightMeshBoundary(int meshBoundID)
+    void BoundaryCreateDialog::highlightMeshBoundary(int meshBoundID)
     {
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return;

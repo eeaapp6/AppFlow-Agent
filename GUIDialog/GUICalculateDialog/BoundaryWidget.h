@@ -1,20 +1,20 @@
 ﻿/**
  * 
- * @file BoundaryConditionsWidget.h
+ * @file BoundaryWidget.h
  * @brief 求解器参数边界界面
  * @author BaGuijun (baguijun@163.com)
  * @date 2024-08-14
  * 
  */
-#ifndef _BoundaryConditionsWidget_H
-#define _BoundaryConditionsWidget_H
+#ifndef _BoundaryWidget_H
+#define _BoundaryWidget_H
 
 #include "GUICalculateDialogAPI.h"
 #include "GUICalculateWidgetBase.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFEnum.hpp"
 
 namespace Ui {
-    class BoundaryConditionsWidget;
+    class BoundaryWidget;
 }
 
 namespace Interface {
@@ -32,7 +32,7 @@ namespace GUI
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-14
      */
-    class GUICalculateDialogAPI BoundaryConditionsWidget :public GUICalculateWidgetBase
+    class GUICalculateDialogAPI BoundaryWidget :public GUICalculateWidgetBase
     {
         Q_OBJECT;
     public:
@@ -43,13 +43,13 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        BoundaryConditionsWidget(Interface::FITKOFBoundary* boundaryObj, EventOper::ParaWidgetInterfaceOperator* oper, QWidget* parent = nullptr);
+        BoundaryWidget(Interface::FITKOFBoundary* boundaryObj, EventOper::ParaWidgetInterfaceOperator* oper, QWidget* parent = nullptr);
         /**
          * @brief Destroy the Boundary Widget object
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        ~BoundaryConditionsWidget();
+        ~BoundaryWidget();
         /**
          * @brief 初始化
          * @author BaGuijun (baguijun@163.com)
@@ -62,6 +62,13 @@ namespace GUI
          * @date     2024-08-27
          */
         void update();
+        /**
+         * @brief    获取当前的数据对象
+         * @return   Interface::FITKOFBoundary* 当前数据对象
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-28
+         */
+        Interface::FITKOFBoundary* getCurrentObj();
     protected:
         /**
          * @brief    显示事件
@@ -78,8 +85,23 @@ namespace GUI
          */
         void hideEvent(QHideEvent *event) override;
     private:
+        /**
+         * @brief    更新Flow
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-28
+         */
         void updateFlow();
+        /**
+         * @brief    更新湍流
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-28
+         */
         void updateTurbulence();
+        /**
+         * @brief    更新phases
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-28
+         */
         void updatePhases();
     private:
         /**
@@ -87,7 +109,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-         Ui::BoundaryConditionsWidget* _ui = nullptr;
+         Ui::BoundaryWidget* _ui = nullptr;
          /**
           * @brief  边界数据对象
           * @author BaGuijun (baguijun@163.com)

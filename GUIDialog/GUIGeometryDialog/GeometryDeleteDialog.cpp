@@ -22,7 +22,7 @@
 namespace GUI
 {
     GeometryDeleteDialog::GeometryDeleteDialog(Interface::FITKAbsGeoCommand * obj, EventOper::ParaWidgetInterfaceOperator * oper) :
-        _oper(oper), _obj(obj)
+        GUIDialogBase(FITKAPP->getGlobalData()->getMainWindow()), _oper(oper), _obj(obj)
     {
         _ui = new Ui::GeometryDeleteDialog();
         _ui->setupUi(this);
