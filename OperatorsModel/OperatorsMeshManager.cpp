@@ -1,5 +1,9 @@
 ﻿#include "OperatorsMeshManager.h"
 
+#include "GUIFrame/MainWindow.h"
+#include "GUIFrame/PropertyWidget.h"
+#include "GUIDialog/GUICalculateDialog/BoundaryWidget.h"
+
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
@@ -10,6 +14,8 @@
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFBoundary.h"
 
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "OperatorsInterface/TreeEventOperator.h"
@@ -52,11 +58,28 @@ namespace ModelOper
             });
         }
         else if (actionName == "actionClearMesh") {
+            //清除网格数据
             auto globalData = FITKAPP->getGlobalData();
             if (globalData == nullptr)return false;
             Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
             if (meshData == nullptr)return false;
             meshData->clearMesh();
+
+            //清除求解器参数中对应的边界
+            auto physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+            if (physicsData == nullptr)return false;
+            auto boundaryManager = physicsData->getBoundaryManager();
+            if (boundaryManager == nullptr)return false;
+            boundaryManager->clear();
+
+            //如果当前界面是求解器边界参数界面，清除界面
+            if (_mainWindow == nullptr) return false;
+            GUI::BoundaryWidget* boundWidget = dynamic_cast<GUI::BoundaryWidget*>(_mainWindow->getPropertyWidget()->getCurrentWidget());
+            if (boundWidget) {
+                _mainWindow->getPropertyWidget()->init();
+            }
+
+            //刷新
             treeOper->updateTree();
             graphOper->reRender();
         }
