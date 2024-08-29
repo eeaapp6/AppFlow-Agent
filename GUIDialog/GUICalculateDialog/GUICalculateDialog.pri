@@ -23,6 +23,7 @@ HEADERS += \
     $$PWD/CompSelectComBoxWidget.h \
     $$PWD/CompTranPhasesWidget.h \
     $$PWD/RunWidget.h \
+    $$PWD/RunProcess.h \
 
 SOURCES += \
     $$PWD/SetupWidget.cpp \
@@ -48,6 +49,7 @@ SOURCES += \
     $$PWD/CompSelectComBoxWidget.cpp \
     $$PWD/CompTranPhasesWidget.cpp \
     $$PWD/RunWidget.cpp \
+    $$PWD/RunProcess.cpp \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \

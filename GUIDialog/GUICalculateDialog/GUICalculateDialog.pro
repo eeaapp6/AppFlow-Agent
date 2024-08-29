@@ -29,6 +29,7 @@ win32{
         -lFITKWidget \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceMesh \
+        -lFITKOFDictWriter \
    
 
 
@@ -48,6 +49,7 @@ win32{
         -lFITKWidget \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceMesh \
+        -lFITKOFDictWriter \
      
 
 
@@ -76,6 +78,7 @@ unix{
         -lFITKWidget \
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceMesh \
+        -lFITKOFDictWriter \
        
 
     message("Linux GUICalculateDialog generated")
