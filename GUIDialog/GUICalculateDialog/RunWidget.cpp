@@ -33,7 +33,10 @@ namespace GUI
 
     RunWidget::~RunWidget()
     {
-        if (_ui)delete _ui;
+        if (_ui) {
+            delete _ui;
+            _ui = nullptr;
+        }
     }
 
     void RunWidget::init()
@@ -56,7 +59,7 @@ namespace GUI
             _currentPro = nullptr;
         }
 
-        setRunType(false);
+        setRunType(_currentPro);
     }
 
     void RunWidget::on_spinBox_NumOfPro_valueChanged(int arg1)
@@ -70,6 +73,7 @@ namespace GUI
         if (_currentPro) {
             _currentPro->kill();
         }
+        slotProcessFinish();
     }
 
     void RunWidget::on_pushButton_Run_clicked()
@@ -92,7 +96,7 @@ namespace GUI
         switch (_currentCUPType) {
         case GUI::RunCPUType::Serial:break;
         case GUI::RunCPUType::Parallel: {
-            sh += QString("mpirun -np %1").arg(_currentCUPNum);
+            sh += QString("mpirun -np %1 ").arg(_currentCUPNum);
             break;
         }
         }
@@ -103,8 +107,16 @@ namespace GUI
             _currentPro->kill();
         }
         _currentPro = new RunProcess();
-        setRunType(true);
-        connect(_currentPro, SIGNAL(sigFinish()), this, SLOT(slotProcessFinish()));
+        setRunType(_currentPro);
+
+        //进程结束信号处理
+        connect(_currentPro, &RunProcess::sigFinish, [=]() {
+            if (_currentPro) {
+                delete _currentPro;
+                _currentPro = nullptr;
+            }
+            if (_ui) setRunType(_currentPro);
+        });
         _currentPro->start(sh);
     }
 
