@@ -6,6 +6,7 @@
 #include "FITK_Kernel/FITKAppFramework/FITKSignalTransfer.h"
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
+#include "FITK_Kernel/FITKCore/FITKDirFileTools.h"
 #include "FITK_Component/FITKOFDictWriter/FITKOFDictWriterIO.h"
 
 #include <QButtonGroup>
@@ -61,18 +62,21 @@ namespace GUI
 
     void RunWidget::on_pushButton_Run_clicked()
     {
-        //auto dicWriComp = FITKAPP->getComponents()->getComponentTByName<IO::FITKOFDictWriterIO>("IO::FITKOFDictWriterIO");
-        //if (dicWriComp == nullptr)return;
-        ////工作路径获取
-        //QString workDir = "";
-        //if (FITKAPP->getAppSettings()) {
-        //    workDir = FITKAPP->getAppSettings()->getWorkingDir();
-        //}
-        //if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
-        //QString caseDir = workDir + "/case";
-        //dicWriComp->setFilePath(caseDir);
-        //dicWriComp->setPhysicsDictW(true);
-        //if (!dicWriComp->exec())return;
+        auto dicWriComp = FITKAPP->getComponents()->getComponentTByName<IO::FITKOFDictWriterIO>("IO::FITKOFDictWriterIO");
+        if (dicWriComp == nullptr)return;
+        //工作路径获取
+        QString workDir = "";
+        if (FITKAPP->getAppSettings()) {
+            workDir = FITKAPP->getAppSettings()->getWorkingDir();
+        }
+        if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
+        QString caseDir = workDir + "/case";
+        if (!dicWriComp->setFilePath(caseDir)) {
+            Core::CreateDir(caseDir);
+            dicWriComp->setFilePath(caseDir);
+        }
+        dicWriComp->setPhysicsDictW();
+        if (!dicWriComp->exec())return;
 
         QString sh = "";
         switch (_currentCUPType) {
