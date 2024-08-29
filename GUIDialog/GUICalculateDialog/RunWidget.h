@@ -58,6 +58,8 @@ namespace GUI
          * @date     2024-08-29
          */
         bool writeCase(QString casePath);
+
+        void setRunType(bool isRun);
     private:
         Ui::RunWidget* _ui = nullptr;
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;

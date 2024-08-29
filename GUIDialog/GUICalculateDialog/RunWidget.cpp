@@ -39,6 +39,7 @@ namespace GUI
     void RunWidget::init()
     {
         initCPU();
+        setRunType(_currentPro);
     }
 
     void RunWidget::slotCPUChange(QAbstractButton * button)
@@ -54,6 +55,8 @@ namespace GUI
             delete _currentPro;
             _currentPro = nullptr;
         }
+
+        setRunType(false);
     }
 
     void RunWidget::on_spinBox_NumOfPro_valueChanged(int arg1)
@@ -96,8 +99,11 @@ namespace GUI
         sh += QString("simpleFoam -case %1").arg(caseDir);
 
         //启动进程
-        if (_currentPro)slotProcessFinish();
+        if (_currentPro) {
+            _currentPro->kill();
+        }
         _currentPro = new RunProcess();
+        setRunType(true);
         connect(_currentPro, SIGNAL(sigFinish()), this, SLOT(slotProcessFinish()));
         _currentPro->start(sh);
     }
@@ -162,5 +168,20 @@ namespace GUI
         if (!dicWriComp->exec())return false;
 
         return true;
+    }
+
+    void RunWidget::setRunType(bool isRun)
+    {
+        if (isRun) {
+            _ui->progressBar->show();
+            _ui->pushButton_Run->setEnabled(false);
+            _ui->pushButton_Stop->setEnabled(true);
+        }
+        else
+        {
+            _ui->progressBar->hide();
+            _ui->pushButton_Run->setEnabled(true);
+            _ui->pushButton_Stop->setEnabled(false);
+        }
     }
 }

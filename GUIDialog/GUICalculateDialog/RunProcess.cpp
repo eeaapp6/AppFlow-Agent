@@ -22,6 +22,7 @@ namespace GUI
     {
         if (_process) {
             _process->kill();
+            _process->waitForFinished();
             delete _process;
             _process = nullptr;
         }
@@ -61,6 +62,7 @@ namespace GUI
     {
         if (_process == nullptr)return;
         _process->kill();
+        _process->waitForFinished();
     }
 
     void RunProcess::slotProcessOutput()
