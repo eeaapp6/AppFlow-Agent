@@ -11,6 +11,7 @@
 
 #include <QButtonGroup>
 #include <QProcess>
+#include <QDir>
 
 #define CPUType "CPUType"
 Q_DECLARE_METATYPE(GUI::RunCPUType)
@@ -19,7 +20,7 @@ namespace GUI
 {
     static RunCPUType _currentCUPType = RunCPUType::Serial;
     static int _currentCUPNum = 4;
-    static RunProcess* _currentPro = new RunProcess();
+    static RunProcess* _currentPro = nullptr;
 
     RunWidget::RunWidget(EventOper::ParaWidgetInterfaceOperator* oper, QWidget* parent) :
         QWidget(parent), _oper(oper)
@@ -47,6 +48,15 @@ namespace GUI
         updateCPU();
     }
 
+    void RunWidget::slotProcessFinish()
+    {
+        if (_currentPro) {
+            _currentPro->kill();
+            delete _currentPro;
+            _currentPro = nullptr;
+        }
+    }
+
     void RunWidget::on_spinBox_NumOfPro_valueChanged(int arg1)
     {
         _currentCUPNum = arg1;
@@ -55,15 +65,11 @@ namespace GUI
 
     void RunWidget::on_pushButton_Stop_clicked()
     {
-        if (_currentPro) {
-            _currentPro->kill();
-        }
+        slotProcessFinish();
     }
 
     void RunWidget::on_pushButton_Run_clicked()
     {
-        auto dicWriComp = FITKAPP->getComponents()->getComponentTByName<IO::FITKOFDictWriterIO>("IO::FITKOFDictWriterIO");
-        if (dicWriComp == nullptr)return;
         //工作路径获取
         QString workDir = "";
         if (FITKAPP->getAppSettings()) {
@@ -71,13 +77,13 @@ namespace GUI
         }
         if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
         QString caseDir = workDir + "/case";
-        if (!dicWriComp->setFilePath(caseDir)) {
-            Core::CreateDir(caseDir);
-            dicWriComp->setFilePath(caseDir);
-        }
-        dicWriComp->setPhysicsDictW();
-        if (!dicWriComp->exec())return;
 
+        //清理字典文件
+        if (!clearCasePath(caseDir))return;
+        //写出字典文件
+        if (!writeCase(caseDir))return;
+
+        //脚本生成
         QString sh = "";
         switch (_currentCUPType) {
         case GUI::RunCPUType::Serial:break;
@@ -86,11 +92,13 @@ namespace GUI
             break;
         }
         }
-        sh += "simpleFoam -case /home/baguijun/public/openFOAMTest/pipe";
+        sh += QString("simpleFoam -case %1").arg(caseDir);
 
-        if (_currentPro) {
-            _currentPro->start(sh);
-        }
+        //启动进程
+        if (_currentPro)slotProcessFinish();
+        _currentPro = new RunProcess();
+        connect(_currentPro, SIGNAL(sigFinish()), this, SLOT(slotProcessFinish()));
+        _currentPro->start(sh);
     }
 
     void RunWidget::initCPU()
@@ -119,5 +127,39 @@ namespace GUI
         }
         }
         _ui->spinBox_NumOfPro->setValue(_currentCUPNum);
+    }
+
+    bool RunWidget::clearCasePath(QString casePath)
+    {
+        QDir dir(casePath);
+        // 设置过滤器，只获取目录
+        dir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+
+        // 获取目录列表
+        QStringList directories = dir.entryList();
+
+        //清除非system与constant文件夹
+        for (auto path : directories) {
+            if(path == "system")continue;
+            if(path == "constant")continue;
+            Core::RemoveDir(casePath + "/" + path);
+        }
+
+        return true;
+    }
+
+    bool RunWidget::writeCase(QString casePath)
+    {
+        auto dicWriComp = FITKAPP->getComponents()->getComponentTByName<IO::FITKOFDictWriterIO>("IO::FITKOFDictWriterIO");
+        if (dicWriComp == nullptr)return false;
+
+        if (!dicWriComp->setFilePath(casePath)) {
+            Core::CreateDir(casePath);
+            dicWriComp->setFilePath(casePath);
+        }
+        dicWriComp->setPhysicsDictW();
+        if (!dicWriComp->exec())return false;
+
+        return true;
     }
 }

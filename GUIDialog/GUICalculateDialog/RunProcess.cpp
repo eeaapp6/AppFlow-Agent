@@ -13,13 +13,18 @@ namespace GUI
     RunProcess::RunProcess()
     {
         _process = new QProcess(this);
-        connect(_process, SIGNAL(readyReadStandardOutput(QPrivateSignal)), this, SLOT(slotProcessOutput()));
-        connect(_process, SIGNAL(finished(int, QProcess::ExitStatus);), this, SLOT(slotProcessFinish(int, QProcess::ExitStatus)));
+        connect(_process, SIGNAL(readyReadStandardOutput()), this, SLOT(slotProcessOutput()));
+        connect(_process, SIGNAL(readyReadStandardError()), this, SLOT(slotProcessOutputError()));
+        connect(_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(slotProcessFinish(int, QProcess::ExitStatus)));
     }
 
     RunProcess::~RunProcess()
     {
-
+        if (_process) {
+            _process->kill();
+            delete _process;
+            _process = nullptr;
+        }
     }
 
     void RunProcess::start(QString sh)
@@ -43,6 +48,13 @@ namespace GUI
         file.close();
 
         _process->start("/bin/bash", QStringList() << shFilePath);
+
+        //判断进程是否启动成功
+        if (!_process->waitForStarted()) {
+            QString message = tr("Solution calculation failed to start!");
+            emit FITKAPP->getSignalTransfer()->outputMessageSig(3, message);
+            emit sigFinish();
+        }
     }
 
     void RunProcess::kill()
@@ -57,15 +69,21 @@ namespace GUI
         emit FITKAPP->getSignalTransfer()->outputMessageSig(4, message);
     }
 
-    void RunProcess::slotProcessFinish(int exitCode, QProcess::ExitStatus exitStatus)
+    void RunProcess::slotProcessOutputError()
     {
-        if (exitStatus == QProcess::NormalExit) {}
-        if (exitStatus == QProcess::CrashExit) {}
+
     }
 
-    void RunProcess::outputMessage(QString message)
+    void RunProcess::slotProcessFinish(int exitCode, QProcess::ExitStatus exitStatus)
     {
-
+        switch (exitStatus)
+        {
+        case QProcess::NormalExit:
+            break;
+        case QProcess::CrashExit:
+            break;
+        }
+        emit sigFinish();
     }
 }
 

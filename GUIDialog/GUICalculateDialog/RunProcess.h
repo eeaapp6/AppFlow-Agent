@@ -16,12 +16,14 @@ namespace GUI
         void start(QString sh);
 
         void kill();
+    signals:
+        ;
+        void sigFinish();
     private slots:
         ;
         void slotProcessOutput();
+        void slotProcessOutputError();
         void slotProcessFinish(int exitCode, QProcess::ExitStatus exitStatus);
-    private:
-        void outputMessage(QString message);
     private:
         QProcess* _process = nullptr;
     };
