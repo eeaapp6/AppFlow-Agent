@@ -34,6 +34,7 @@ namespace GUI
         void slotCPUChange(QAbstractButton* button);
         void on_spinBox_NumOfPro_valueChanged(int arg1);
 
+        void on_pushButton_Stop_clicked();
         void on_pushButton_Run_clicked();
 
     private:

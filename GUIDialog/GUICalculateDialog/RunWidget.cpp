@@ -52,20 +52,27 @@ namespace GUI
         updateCPU();
     }
 
+    void RunWidget::on_pushButton_Stop_clicked()
+    {
+        if (_currentPro) {
+            _currentPro->kill();
+        }
+    }
+
     void RunWidget::on_pushButton_Run_clicked()
     {
-        auto dicWriComp = FITKAPP->getComponents()->getComponentTByName<IO::FITKOFDictWriterIO>("IO::FITKOFDictWriterIO");
-        if (dicWriComp == nullptr)return;
-        //工作路径获取
-        QString workDir = "";
-        if (FITKAPP->getAppSettings()) {
-            workDir = FITKAPP->getAppSettings()->getWorkingDir();
-        }
-        if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
-        QString caseDir = workDir + "/case";
-        dicWriComp->setFilePath(caseDir);
-        dicWriComp->setPhysicsDictW(true);
-        if (!dicWriComp->exec())return;
+        //auto dicWriComp = FITKAPP->getComponents()->getComponentTByName<IO::FITKOFDictWriterIO>("IO::FITKOFDictWriterIO");
+        //if (dicWriComp == nullptr)return;
+        ////工作路径获取
+        //QString workDir = "";
+        //if (FITKAPP->getAppSettings()) {
+        //    workDir = FITKAPP->getAppSettings()->getWorkingDir();
+        //}
+        //if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
+        //QString caseDir = workDir + "/case";
+        //dicWriComp->setFilePath(caseDir);
+        //dicWriComp->setPhysicsDictW(true);
+        //if (!dicWriComp->exec())return;
 
         QString sh = "";
         switch (_currentCUPType) {

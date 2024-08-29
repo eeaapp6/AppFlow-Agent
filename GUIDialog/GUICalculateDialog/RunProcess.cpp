@@ -45,6 +45,12 @@ namespace GUI
         _process->start("/bin/bash", QStringList() << shFilePath);
     }
 
+    void RunProcess::kill()
+    {
+        if (_process == nullptr)return;
+        _process->kill();
+    }
+
     void RunProcess::slotProcessOutput()
     {
         QString message = _process->readAllStandardOutput();

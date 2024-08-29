@@ -14,6 +14,8 @@ namespace GUI
         ~RunProcess();
 
         void start(QString sh);
+
+        void kill();
     private slots:
         ;
         void slotProcessOutput();
