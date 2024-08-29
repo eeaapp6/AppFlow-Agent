@@ -51,7 +51,6 @@ namespace GUI
     void RunWidget::slotProcessFinish()
     {
         if (_currentPro) {
-            _currentPro->kill();
             delete _currentPro;
             _currentPro = nullptr;
         }
@@ -65,7 +64,9 @@ namespace GUI
 
     void RunWidget::on_pushButton_Stop_clicked()
     {
-        slotProcessFinish();
+        if (_currentPro) {
+            _currentPro->kill();
+        }
     }
 
     void RunWidget::on_pushButton_Run_clicked()
