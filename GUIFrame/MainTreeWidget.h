@@ -40,6 +40,7 @@ namespace GUI
         MainTree_SetupMonitors,
 
         MainTree_Run,
+        MainTree_Post,
     };
 
     class GUIFRAMEAPI MainTreeWidget : public PanelWidgetBase

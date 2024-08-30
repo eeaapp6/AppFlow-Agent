@@ -24,6 +24,7 @@ HEADERS += \
     $$PWD/CompTranPhasesWidget.h \
     $$PWD/RunWidget.h \
     $$PWD/RunProcess.h \
+    $$PWD/PostWidget.h \
 
 SOURCES += \
     $$PWD/SetupWidget.cpp \
@@ -50,6 +51,7 @@ SOURCES += \
     $$PWD/CompTranPhasesWidget.cpp \
     $$PWD/RunWidget.cpp \
     $$PWD/RunProcess.cpp \
+    $$PWD/PostWidget.cpp \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \
@@ -69,6 +71,7 @@ FORMS += \
     $$PWD/CompSelectComBoxWidget.ui \
     $$PWD/CompTranPhasesWidget.ui \
     $$PWD/RunWidget.ui \
+    $$PWD/PostWidget.ui \
 
  RESOURCES += \
     $$PWD/../../Resources/Resources.qrc

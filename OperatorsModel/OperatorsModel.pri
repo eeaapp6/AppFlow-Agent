@@ -24,6 +24,7 @@ HEADERS += \
     $$PWD/OperatorsBoundaryConditions.h \
     $$PWD/OperatorsInitial.h \
     $$PWD/OperatorsRun.h \
+    $$PWD/OperatorsPost.h \
 
 
 SOURCES += \
@@ -51,5 +52,6 @@ SOURCES += \
     $$PWD/OperatorsBoundaryConditions.cpp \
     $$PWD/OperatorsInitial.cpp \
     $$PWD/OperatorsRun.cpp \
+    $$PWD/OperatorsPost.cpp \
 
 FORMS += \

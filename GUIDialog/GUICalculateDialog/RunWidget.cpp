@@ -12,6 +12,7 @@
 #include <QButtonGroup>
 #include <QProcess>
 #include <QDir>
+#include <QTextStream>
 
 #define CPUType "CPUType"
 Q_DECLARE_METATYPE(GUI::RunCPUType)
@@ -90,17 +91,9 @@ namespace GUI
         if (!clearCasePath(caseDir))return;
         //写出字典文件
         if (!writeCase(caseDir))return;
-
-        //脚本生成
-        QString sh = "";
-        switch (_currentCUPType) {
-        case GUI::RunCPUType::Serial:break;
-        case GUI::RunCPUType::Parallel: {
-            sh += QString("mpirun -np %1 ").arg(_currentCUPNum);
-            break;
-        }
-        }
-        sh += QString("simpleFoam -case %1").arg(caseDir);
+        //写出启动脚本
+        QString shPath = creatStartSh(workDir, caseDir);
+        if (shPath.isEmpty())return;
 
         //启动进程
         if (_currentPro) {
@@ -117,7 +110,7 @@ namespace GUI
             }
             if (_ui) setRunType(_currentPro);
         });
-        _currentPro->start(sh);
+        _currentPro->start(shPath);
     }
 
     void RunWidget::initCPU()
@@ -180,6 +173,32 @@ namespace GUI
         if (!dicWriComp->exec())return false;
 
         return true;
+    }
+
+    QString RunWidget::creatStartSh(QString workDir, QString caseDir)
+    {
+        //脚本生成
+        QString sh = "";
+        switch (_currentCUPType) {
+        case GUI::RunCPUType::Serial:break;
+        case GUI::RunCPUType::Parallel: {
+            sh += QString("mpirun -np %1 ").arg(_currentCUPNum);
+            break;
+        }
+        }
+        sh += QString("simpleFoam -case %1").arg(caseDir);
+
+        QString shFilePath = workDir + "/startOpenFoam.sh";
+        QFile file(shFilePath);
+        // 打开文件进行写操作
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) return "";
+        // 创建一个 QTextStream 对象来写入文本
+        QTextStream out(&file);
+        // 写入字符串到文件
+        out << sh;
+        // 关闭文件
+        file.close();
+        return shFilePath;
     }
 
     void RunWidget::setRunType(bool isRun)

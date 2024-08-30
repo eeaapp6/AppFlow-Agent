@@ -58,6 +58,15 @@ namespace GUI
          * @date     2024-08-29
          */
         bool writeCase(QString casePath);
+        /**
+         * @brief    创建启动脚本
+         * @param[i] workDir   工作路径
+         * @param[i] caseDir   算例路劲
+         * @return   QString   脚本路径
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-30
+         */
+        QString creatStartSh(QString workDir, QString caseDir);
 
         void setRunType(bool isRun);
     private:

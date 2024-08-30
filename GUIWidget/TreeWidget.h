@@ -93,10 +93,24 @@ namespace GUI {
          * @date 2024-08-06
          */
         void updateMeshItems();
-
+        /**
+         * @brief    更新求解器参数节点
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-30
+         */
         void updateSetupItems();
-
+        /**
+         * @brief    更新求解器运行节点
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-30
+         */
         void updateRunItems();
+        /**
+         * @brief    更新后处理节点
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-30
+         */
+        void updatePostItems();
         /**
          * @brief 更新local子节点
          * @param[i]  parentItem     父对象

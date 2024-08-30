@@ -60,6 +60,7 @@ namespace GUI{
         updateMeshItems();
         updateSetupItems();
         updateRunItems();
+        updatePostItems();
 
         //展开全部子集
         setItemsExpandable(true);		
@@ -116,6 +117,7 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_SetupInitialConditions:name = "actionInitialEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupMonitors:name = "actionMonitorsEdit"; break;
         case GUI::MainTreeEnum::MainTree_Run:name = "actionRun"; break;
+        case GUI::MainTreeEnum::MainTree_Post:name = "actionPost"; break;
         }
 
         if (!name.isEmpty()) {
@@ -435,10 +437,19 @@ namespace GUI{
     void TreeWidget::updateRunItems()
     {
         QTreeWidgetItem* runItem = new QTreeWidgetItem();
-        runItem->setText(0, tr("RUN"));
+        runItem->setText(0, tr("Run"));
         runItem->setData(1, 0, -1);
         runItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Run));
         this->addTopLevelItem(runItem);
+    }
+
+    void TreeWidget::updatePostItems()
+    {
+        QTreeWidgetItem* postItem = new QTreeWidgetItem();
+        postItem->setText(0, tr("Post"));
+        postItem->setData(1, 0, -1);
+        postItem->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_Post));
+        this->addTopLevelItem(postItem);
     }
 
     void TreeWidget::updateMeshLocalItems(QTreeWidgetItem* parentItem)

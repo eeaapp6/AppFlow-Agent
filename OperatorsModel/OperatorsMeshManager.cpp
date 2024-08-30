@@ -67,11 +67,11 @@ namespace ModelOper
 
             //清除求解器参数中对应的边界
             auto physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
-            if (physicsData == nullptr)return false;
-            auto boundaryManager = physicsData->getBoundaryManager();
-            if (boundaryManager == nullptr)return false;
-            boundaryManager->clear();
-
+            if (physicsData) {
+                auto boundaryManager = physicsData->getBoundaryManager();
+                if (boundaryManager)boundaryManager->clear();
+            }
+            
             //如果当前界面是求解器边界参数界面，清除界面
             if (_mainWindow == nullptr) return false;
             GUI::BoundaryWidget* boundWidget = dynamic_cast<GUI::BoundaryWidget*>(_mainWindow->getPropertyWidget()->getCurrentWidget());
