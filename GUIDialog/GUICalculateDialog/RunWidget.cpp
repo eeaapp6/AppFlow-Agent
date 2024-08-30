@@ -110,7 +110,7 @@ namespace GUI
             }
             if (_ui) setRunType(_currentPro);
         });
-        _currentPro->start("/bin/bash" + shPath);
+        _currentPro->start("/bin/bash " + shPath);
     }
 
     void RunWidget::initCPU()
