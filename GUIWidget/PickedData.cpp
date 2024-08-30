@@ -34,7 +34,7 @@
 // Filter ( Algorithm )
 #include "FITK_Interface/FITKVTKAlgorithm/FITKShellFeatureEdges.h"
 #include "FITK_Interface/FITKVTKAlgorithm/FITKSurfaceFilter.h"
-#include "FITK_Interface/FITKVTKAlgorithm/FITKDataSetReader.h"
+//#include "FITK_Interface/FITKVTKAlgorithm/FITKDataSetReader.h"
 
 // GUI
 #include "GUIPickInfo.h"
