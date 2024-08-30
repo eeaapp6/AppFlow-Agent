@@ -244,17 +244,17 @@ namespace GUI
             Interface::FITKOFAbsBoundaryType* data = _boundaryObj->getTurbulenceVBType(i);
             if (data == nullptr)continue;
             QStringList options = boundartTypeMan->filterBoundariesType(_physicsData->getSolver()->getSolverType(),
-                _currentType, _boundaryObj->getFlowVariableName(i));
+                _currentType, _boundaryObj->getTurbulenceVariableName(i));
             CompSelectComBoxWidget* w = new CompSelectComBoxWidget(_boundaryObj->getTurbulenceVariableName(i), this);
             w->setData("boundaryID", _boundaryObj->getDataObjectID());
             w->setData("objID", data->getDataObjectID());
-            w->setData("objName", _boundaryObj->getFlowVariableName(i));
+            w->setData("objName", _boundaryObj->getTurbulenceVariableName(i));
             w->setData("index", i);
             w->setSubWidgetData(data->getBoundaryTypePara());
             w->setOptions(options);
             w->setCurrentText(data->getDataObjectName());
             w->setFunction(&getBoundaryTurbulenceSubData);
-            toolBox->addItem(w, _boundaryObj->getFlowVariableName(i));
+            toolBox->addItem(w, _boundaryObj->getTurbulenceVariableName(i));
         }
         layout->addWidget(toolBox);
         widget->setLayout(layout);
@@ -280,17 +280,17 @@ namespace GUI
             Interface::FITKOFAbsBoundaryType* data = _boundaryObj->getPhasesVBType(i);
             if (data == nullptr)continue;
             QStringList options = boundartTypeMan->filterBoundariesType(_physicsData->getSolver()->getSolverType(),
-                _currentType, _boundaryObj->getFlowVariableName(i));
+                _currentType, _boundaryObj->getPhasesVariableName(i));
             CompSelectComBoxWidget* w = new CompSelectComBoxWidget(_boundaryObj->getPhasesVariableName(i), this);
             w->setData("boundaryID", _boundaryObj->getDataObjectID());
             w->setData("objID", data->getDataObjectID());
-            w->setData("objName", _boundaryObj->getFlowVariableName(i));
+            w->setData("objName", _boundaryObj->getPhasesVariableName(i));
             w->setData("index", i);
             w->setSubWidgetData(data->getBoundaryTypePara());
             w->setOptions(options);
             w->setCurrentText(data->getDataObjectName());
             w->setFunction(&getBoundaryPhasesSubData);
-            toolBox->addItem(w, _boundaryObj->getFlowVariableName(i));
+            toolBox->addItem(w, _boundaryObj->getPhasesVariableName(i));
         }
         layout->addWidget(toolBox);
         widget->setLayout(layout);

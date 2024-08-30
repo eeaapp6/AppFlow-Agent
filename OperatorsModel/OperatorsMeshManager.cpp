@@ -48,7 +48,7 @@ namespace ModelOper
             if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
 
             //网格划分路径指定
-            QString meshGenDir = workDir + "/mesh";
+            QString meshGenDir = workDir + "/case";
 
             meshDriver->setValue("WorkDir", meshGenDir);
             meshDriver->setValue("HasGeoMeshSize", manager->getDataCount() > 0);
@@ -106,7 +106,7 @@ namespace ModelOper
         if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
 
         //网格划分路径指定
-        QString meshGenDir = workDir + "/mesh";
+        QString meshGenDir = workDir + "/case";
 
         meshProcessor->setValue("WorkDir", meshGenDir);
         meshProcessor->start();
