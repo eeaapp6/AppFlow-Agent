@@ -99,6 +99,22 @@ namespace GUI
          * @date 2024-05-11
          */
         QAction* createAction(const QString &toolTip, const QString &objectName, const QString &iconPath = "", const QString& iconText = "");
+    signals:
+        ;
+        /**
+         * @brief    mainWindow关闭信号
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-30
+         */
+        void sigMainWindowClose();
+    protected:
+        /**
+         * @brief    关闭事件重写
+         * @param[i] event    事件对象
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-30
+         */
+        virtual void closeEvent(QCloseEvent *event) override;
 	private:
 		/**
 		 * @brief  初始化

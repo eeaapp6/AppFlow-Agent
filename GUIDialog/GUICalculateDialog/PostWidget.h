@@ -33,14 +33,13 @@ namespace GUI
         void on_pushButton_ParaView_clicked();
     private:
         /**
-         * @brief    创建启动脚本
-         * @param[i] workDir   工作路径
-         * @param[i] caseDir   算例路劲
-         * @return   QString   脚本路径
+         * @brief    创建启paraView可以启动openFOAM的结果文件
+         * @param[i] caseDir   算例路径
+         * @return   QString   
          * @author   BaGuijun (baguijun@163.com)
          * @date     2024-08-30
          */
-        QString creatStartParaViewSh(QString workDir, QString caseDir);
+        QString creatStartParaViewFile(QString caseDir);
     private:
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
         Ui::PostWidget* _ui = nullptr;

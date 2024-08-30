@@ -24,6 +24,7 @@ namespace GUI
         void slotProcessOutput();
         void slotProcessOutputError();
         void slotProcessFinish(int exitCode, QProcess::ExitStatus exitStatus);
+        void slotMainwindowClose();
     private:
         QProcess* _process = nullptr;
     };

@@ -25,7 +25,6 @@ HEADERS += \
     $$PWD/RunWidget.h \
     $$PWD/RunProcess.h \
     $$PWD/PostWidget.h \
-    $$PWD/CalculateThread.h \
 
 SOURCES += \
     $$PWD/SetupWidget.cpp \
@@ -53,7 +52,6 @@ SOURCES += \
     $$PWD/RunWidget.cpp \
     $$PWD/RunProcess.cpp \
     $$PWD/PostWidget.cpp \
-    $$PWD/CalculateThread.cpp \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \

@@ -85,6 +85,12 @@ namespace GUI
         return tempAction;
     }
 
+    void MainWindow::closeEvent(QCloseEvent * event)
+    {
+        emit sigMainWindowClose();
+        QMainWindow::closeEvent(event);
+    }
+
     void MainWindow::init()
     {
         m_ActionHandler = new ActionEventHandler;
