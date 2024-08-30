@@ -1,9 +1,11 @@
 ﻿#include "PostWidget.h"
 #include "ui_PostWidget.h"
 #include "RunProcess.h"
+#include "CalculateThread.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
+#include "FITK_Kernel/FITKCore/FITKThreadPool.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -38,14 +40,15 @@ namespace GUI
         QString shPath = creatStartParaViewSh(workDir, caseDir);
 
         //启动进程
-        RunProcess* currentPro = new RunProcess();
-        //进程结束信号处理
-        connect(currentPro, &RunProcess::sigFinish, [=]() {
-            if (currentPro) {
-                delete currentPro;
-            }
-        });
-        currentPro->start(shPath);
+        CalculateThread* thread = new CalculateThread();
+        auto info = thread->getInfo();
+        info->_cmd = QString("/bin/bash %1").arg(shPath);
+
+        //获取线程池
+        Core::FITKThreadPool* pool = Core::FITKThreadPool::getInstance();
+        if (pool) {
+            pool->execTask(thread);
+        }
     }
 
     QString PostWidget::creatStartParaViewSh(QString workDir, QString caseDir)
