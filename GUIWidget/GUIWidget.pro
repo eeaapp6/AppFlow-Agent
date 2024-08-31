@@ -7,7 +7,7 @@ DEFINES     += GUIWidget_API
 
 unix:!mac{ QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN/\'" }
 
-include(./occ.pri)
+#include(./occ.pri)
 include(./vtk.pri)
 include(./GUIWidget.pri)
 

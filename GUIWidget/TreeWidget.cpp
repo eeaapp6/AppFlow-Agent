@@ -436,6 +436,11 @@ namespace GUI{
 
     void TreeWidget::updateRunItems()
     {
+        Interface::FITKOFPhysicsData* physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+        if (physicsData == nullptr)return;
+        Interface::FITKAbstractOFSolver* solverData = physicsData->getSolver();
+        if (solverData == nullptr)return;
+
         QTreeWidgetItem* runItem = new QTreeWidgetItem();
         runItem->setText(0, tr("Run"));
         runItem->setData(1, 0, -1);
