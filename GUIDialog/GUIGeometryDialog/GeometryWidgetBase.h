@@ -47,6 +47,19 @@ namespace GUI
          * @date 2024-08-14
          */
         virtual ~GeometryWidgetBase();
+        /**
+         * @brief    获取Default面组
+         * @return   QList<int>    Default面组ID
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-31
+         */
+        QList<int> getDefaultFaceGroup();
+        /**
+         * @brief    创建Default面组
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-31
+         */
+        void createDefaultFaceGroup();
     protected:
         /**
          * @brief 显示事件

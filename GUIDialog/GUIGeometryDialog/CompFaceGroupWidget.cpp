@@ -1,6 +1,7 @@
 ﻿#include "CompFaceGroupWidget.h"
 #include "ui_CompFaceGroupWidget.h"
 #include "CompFaceGroupSelectWidget.h"
+#include "GeometryWidgetBase.h"
 
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
@@ -34,6 +35,7 @@ namespace GUI
     CompFaceGroupWidget::CompFaceGroupWidget(QWidget* paraent, Interface::FITKAbsGeoCommand* obj, EventOper::ParaWidgetInterfaceOperator* oper) :
         GUIWidgetBase(paraent), _obj(obj), _oper(oper)
     {
+        _parentWidget = dynamic_cast<GeometryWidgetBase*>(paraent);
         init();
     }
 
@@ -104,6 +106,9 @@ namespace GUI
                 }
             }
         }
+
+        //更新default面组id
+        updateDefaultFaceGroupIDs();
     }
 
     Interface::FITKAbsGeoCommand * CompFaceGroupWidget::getCurrentGeoCommand()
@@ -118,12 +123,16 @@ namespace GUI
         if (commanger == nullptr)return;
 
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+            //Default面组不可编辑
+            if (i == 0)continue;
             CompFaceGroupSelectWidget* widget = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(i, 0));
             if (widget == nullptr)return;
             commanger->removeDataByID(widget->data(GeoComObjID).toInt());
         }
 
         clearTableWidget();
+        //Default面组刷新
+        updateDefaultFaceGroupIDs();
         clearGraphHight();
     }
 
@@ -161,6 +170,23 @@ namespace GUI
 
     void CompFaceGroupWidget::slotCellTableClicked(int row, int column)
     {
+        //Default面组不可编辑
+        if (row == 0) {
+            clearGraphHight();
+            //拾取信息设置
+            GUI::GUIPickInfoStru pinfo;
+            pinfo._pickObjType = GUI::GUIPickInfo::PickObjType::POBJNone;
+            pinfo._pickMethod = GUI::GUIPickInfo::PickMethod::PMNone;
+            GUI::GUIPickInfo::SetPickInfo(pinfo);
+            //移除defaultIDs中其他面组的id
+            for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+                CompFaceGroupSelectWidget* otherItem = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(i, 0));
+                if (otherItem == nullptr)continue;
+                otherItem->setSelect(false);
+            }
+            return;
+        }
+
         if (_obj == nullptr)return;
         Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
         if (commanger == nullptr)return;
@@ -280,6 +306,8 @@ namespace GUI
 
         //更新界面中存储的位置
         updateFaceWidgetCurrentPos();
+        //更新default面组id
+        updateDefaultFaceGroupIDs();
         //清除高亮
         clearGraphHight();
 
@@ -332,11 +360,18 @@ namespace GUI
             item->setData(GeoComObjID, geoCom->getDataObjectID());
             item->setCurrentPos(i, 0);
 
-            connect(item, SIGNAL(sigEditNameStart()), this, SLOT(slotEditNameStart()));
-            connect(item, SIGNAL(sigEditNameFinish()), this, SLOT(slotEditNameFinish()));
-            connect(item, SIGNAL(sigOkClicked()), this, SLOT(slotFaceWidgetOkClicked()));
-            connect(item, SIGNAL(sigCancelClicked()), this, SLOT(slotFaceWidgetCancelClicked()));
-            connect(item, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
+            if (i == 0) {
+                //Default面组不可编辑
+                item->setIsEdit(false);
+            }
+            else
+            {
+                connect(item, SIGNAL(sigEditNameStart()), this, SLOT(slotEditNameStart()));
+                connect(item, SIGNAL(sigEditNameFinish()), this, SLOT(slotEditNameFinish()));
+                connect(item, SIGNAL(sigOkClicked()), this, SLOT(slotFaceWidgetOkClicked()));
+                connect(item, SIGNAL(sigCancelClicked()), this, SLOT(slotFaceWidgetCancelClicked()));
+                connect(item, SIGNAL(sigDeleteClicked()), this, SLOT(slotFaceWidgetDeleteClicked()));
+            }
         }
         updateFaceWidgetCurrentPos();
     }
@@ -419,13 +454,47 @@ namespace GUI
     void CompFaceGroupWidget::clearTableWidget()
     {
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+            //Default面组不可编辑
+            if (i == 0)continue;
             QWidget* widget = _ui->tableWidget->cellWidget(i, 0);
             if (widget == nullptr)continue;
             delete widget;
             widget = nullptr;
         }
+        _ui->tableWidget->setRowCount(1);
+    }
 
-        _ui->tableWidget->clear();
-        _ui->tableWidget->setRowCount(0);
+    void CompFaceGroupWidget::updateDefaultFaceGroupIDs()
+    {
+        if (_parentWidget == nullptr)return;
+        CompFaceGroupSelectWidget* widget = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(0, 0));
+        if (widget == nullptr) return;
+        Interface::FITKGeoComponentManager* commanger = _obj->getShapeAgent()->getGeoComponentManager();
+        int objID = widget->data(GeoComObjID).toInt();
+        auto com = commanger->getDataByID(objID);
+        if (com == nullptr)return;
+        QList<int> defaultIDs = _parentWidget->getDefaultFaceGroup();
+
+        //移除defaultIDs中其他面组的id
+        for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {
+            if (i == 0)continue;
+            CompFaceGroupSelectWidget* otherItem = dynamic_cast<CompFaceGroupSelectWidget*>(_ui->tableWidget->cellWidget(i, 0));
+            if (otherItem == nullptr)continue;
+            auto otherObj = commanger->getDataByID(otherItem->data(GeoComObjID).toInt());
+            if (otherObj == nullptr)continue;
+            QList<int> ids = otherObj->getMember();
+            for (auto id : ids)defaultIDs.removeOne(id);
+        }
+        com->setMember(defaultIDs);
+
+        //更新名称
+        QString otherName = com->getDataObjectName();
+        if (defaultIDs.size() == 0) {
+            otherName += tr("(empty)");
+        }
+        else {
+            otherName += tr("(%1 faces)").arg(defaultIDs.size());
+        }
+        widget->setName(otherName);
     }
 }

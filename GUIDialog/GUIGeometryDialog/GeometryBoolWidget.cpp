@@ -135,6 +135,9 @@ namespace GUI
         geoBoolOper->update();
 
         _obj = geoBoolOper;
+
+        //创建Default面组
+        createDefaultFaceGroup();
         //几何关联的网格区域尺寸
         createMeshSizeGeo();
         geometryData->appendDataObj(geoBoolOper);

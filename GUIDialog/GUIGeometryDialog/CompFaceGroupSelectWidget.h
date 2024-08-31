@@ -98,6 +98,13 @@ namespace GUI
          * @date 2024-08-08
          */
         QPair<int, int> getCurrentPos();
+        /**
+         * @brief    设置是否可以编译
+         * @param[i] isEdit    是否可编辑
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-31
+         */
+        void setIsEdit(bool isEdit);
     signals:
         ;
         /**
@@ -149,6 +156,12 @@ namespace GUI
          * @date 2024-08-08
          */
         QPair<int, int> _currentPos;
+        /**
+         * @brief  是否可编译
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-08-31
+         */
+        bool _isEdit = true;
     };
 }
 

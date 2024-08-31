@@ -13,12 +13,7 @@ namespace GUI
         _ui->setupUi(this);
 
         init();
-
-        connect(_ui->lineEdit_Name, SIGNAL(sigEditStart()), this, SIGNAL(sigEditNameStart()));
-        connect(_ui->lineEdit_Name, SIGNAL(sigEditFinish()), this, SIGNAL(sigEditNameFinish()));
-        connect(_ui->pushButton_OK, SIGNAL(clicked()), this, SIGNAL(sigOkClicked()));
-        connect(_ui->pushButton_Cancel, SIGNAL(clicked()), this, SIGNAL(sigCancelClicked()));
-        connect(_ui->pushButton_Delete, SIGNAL(clicked()), this, SIGNAL(sigDeleteClicked()));
+        setIsEdit(true);
     }
 
     GUI::CompFaceGroupSelectWidget::~CompFaceGroupSelectWidget()
@@ -84,6 +79,29 @@ namespace GUI
     QPair<int, int> CompFaceGroupSelectWidget::getCurrentPos()
     {
         return _currentPos;
+    }
+
+    void CompFaceGroupSelectWidget::setIsEdit(bool isEdit)
+    {
+        _isEdit = isEdit;
+        if (_isEdit) {
+            this->setEnabled(true);
+            _ui->pushButton_Delete->show();
+            connect(_ui->lineEdit_Name, SIGNAL(sigEditStart()), this, SIGNAL(sigEditNameStart()));
+            connect(_ui->lineEdit_Name, SIGNAL(sigEditFinish()), this, SIGNAL(sigEditNameFinish()));
+            connect(_ui->pushButton_OK, SIGNAL(clicked()), this, SIGNAL(sigOkClicked()));
+            connect(_ui->pushButton_Cancel, SIGNAL(clicked()), this, SIGNAL(sigCancelClicked()));
+            connect(_ui->pushButton_Delete, SIGNAL(clicked()), this, SIGNAL(sigDeleteClicked()));
+        }
+        else {
+            this->setEnabled(false);
+            _ui->pushButton_Delete->hide();
+            disconnect(_ui->lineEdit_Name, SIGNAL(sigEditStart()), this, SIGNAL(sigEditNameStart()));
+            disconnect(_ui->lineEdit_Name, SIGNAL(sigEditFinish()), this, SIGNAL(sigEditNameFinish()));
+            disconnect(_ui->pushButton_OK, SIGNAL(clicked()), this, SIGNAL(sigOkClicked()));
+            disconnect(_ui->pushButton_Cancel, SIGNAL(clicked()), this, SIGNAL(sigCancelClicked()));
+            disconnect(_ui->pushButton_Delete, SIGNAL(clicked()), this, SIGNAL(sigDeleteClicked()));
+        }
     }
 }
 

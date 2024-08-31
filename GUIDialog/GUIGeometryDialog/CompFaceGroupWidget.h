@@ -29,6 +29,7 @@ namespace EventOper {
 
 namespace GUI
 {
+    class GeometryWidgetBase;
     /**
      * @brief 面组界面
      * @author BaGuijun (baguijun@163.com)
@@ -174,6 +175,12 @@ namespace GUI
          * @date 2024-07-16
          */
         void clearTableWidget();
+        /**
+         * @brief    更新Default面组ID
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-08-31
+         */
+        void updateDefaultFaceGroupIDs();
     private:
         /**
          * @brief geometry data object
@@ -193,6 +200,12 @@ namespace GUI
          * @date 2024-08-14
          */
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
+        /**
+         * @brief  父界面兑现
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-08-31
+         */
+        GeometryWidgetBase* _parentWidget = nullptr;
     };
 }
 

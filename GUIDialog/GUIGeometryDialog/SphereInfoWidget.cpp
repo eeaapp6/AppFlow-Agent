@@ -145,6 +145,8 @@ namespace GUI {
             //几何关联的网格区域尺寸
             createMeshSizeGeo();
 
+            //创建Default面组
+            createDefaultFaceGroup();
             //模式切换
             switchCreateModel(false);
         }
