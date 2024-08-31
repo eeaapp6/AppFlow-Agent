@@ -55,12 +55,11 @@ namespace GUI
     private:
         /**
          * @brief    创建启paraView可以启动openFOAM的结果文件
-         * @param[i] caseDir   算例路径
-         * @return   QString   
+         * @return   QString     创建的文件路劲
          * @author   BaGuijun (baguijun@163.com)
          * @date     2024-08-30
          */
-        QString creatStartParaViewFile(QString caseDir);
+        QString creatStartParaViewFile();
     private:
         /**
          * @brief  操作器对象

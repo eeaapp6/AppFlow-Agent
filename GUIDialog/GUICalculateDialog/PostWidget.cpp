@@ -38,13 +38,17 @@ namespace GUI
         }
         if (_workDir.isEmpty()) _workDir = QApplication::applicationDirPath() + "/../WorkDir";
         _caseDir = _workDir + "/case";
+        Core::CreateDir(_caseDir);
 
         _ui->comboBox_Export->addItem(tr("VTK"), QVariant::fromValue(PostExportType::Post_VTK));
     }
 
     void GUI::PostWidget::on_pushButton_ParaView_clicked()
     {
-        QString foamFile = creatStartParaViewFile(_workDir);
+        //创建paraView打开时间步文件
+        QString foamFile = creatStartParaViewFile();
+        if (foamFile.isEmpty())return;
+
         QString sh = QString("paraview --case %1").arg(foamFile);
 
         //启动进程
@@ -58,12 +62,10 @@ namespace GUI
         currentPro->start(sh);
     }
 
-    QString PostWidget::creatStartParaViewFile(QString caseDir)
+    QString PostWidget::creatStartParaViewFile()
     {
-        Core::CreateDir(caseDir);
-
         //创建case.foam文件用于paraView启动，查看后处理结果
-        QString foamFile = caseDir + "/case.foam";
+        QString foamFile = _caseDir + "/case.foam";
 
         QFile file(foamFile);
         // 打开文件进行写操作
