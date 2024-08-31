@@ -17,7 +17,7 @@ namespace GUI
         WidgetOCCEvent();
         ~WidgetOCCEvent();
 
-        static void getPoint(GraphData::PickedData* data, double* point, bool isOk = true);
+        static bool getPoint(GraphData::PickedData* data, double* point);
 
         static QList<int> getFaces(QList<GraphData::PickedData*> data, bool isOk = true);
     };

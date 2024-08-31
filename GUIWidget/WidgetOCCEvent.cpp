@@ -6,6 +6,8 @@
 #include "FITK_Kernel/FITKCore/FITKDataRepo.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 //#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFHexMeshBaseMeshBox.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
+#include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeomTools.h"
 #include "FITK_Component/FITKGeoCompOCC/FITKAbstractOCCModel.h"
 #include "FITK_Component/FITKGeoCompOCC/FITKOCCModelSimpleShape.h"
 
@@ -25,42 +27,54 @@ namespace GUI
 
     }
 
-    void WidgetOCCEvent::getPoint(GraphData::PickedData* data, double* point, bool isOk)
+    bool WidgetOCCEvent::getPoint(GraphData::PickedData* data, double* point)
     {
         QList<int> ids = data->getPickedIds();
-        int DataObjId = data->getPickedDataObjId();
-        GraphData::PickedDataType type = data->getPickedDataType();
-        if (ids.size() == 0) {
-            isOk = false;
-            return;
+        if (ids.isEmpty()) {
+            return false;
         }
 
-        //数据仓库中获取数据
-        Interface::FITKAbsGeoCommand* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbsGeoCommand>(DataObjId);
-        if (model->getShapeAgent() == nullptr) {
-            isOk = false;
-            return;
-        }
+        Interface::FITKInterfaceGeometryFactory* factory = Interface::FITKInterfaceGeometryFactory::getInstance();
+        if (factory == nullptr)return false;
+        Interface::FITKAbstractGeomToolsCreator* creator =factory->getGeomToolsCreator();
+        if (creator == nullptr)return false;
+        Interface::FITKAbstractGeomPointTool* pointTool = creator->createPointTool();
+        if (pointTool == nullptr)return false;
+        return pointTool->getXYZ(ids[0], point);
 
-        TopoDS_Shape shape;
-        OCC::FITKAbstractOCCModel* OCCModel = dynamic_cast<OCC::FITKAbstractOCCModel*>(model->getShapeAgent());
-        if (OCCModel == nullptr) {
-            isOk = false;
-            return;
-        }
-        shape = OCCModel->getShape(Interface::FITKModelEnum::FMSPoint, ids[0]);
+        //int DataObjId = data->getPickedDataObjId();
+        //GraphData::PickedDataType type = data->getPickedDataType();
+        //if (ids.size() == 0) {
+        //    isOk = false;
+        //    return;
+        //}
 
-        if (shape.IsNull()) {
-            isOk = false;
-            return;
-        }
+        ////数据仓库中获取数据
+        //Interface::FITKAbsGeoCommand* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbsGeoCommand>(DataObjId);
+        //if (model->getShapeAgent() == nullptr) {
+        //    isOk = false;
+        //    return;
+        //}
 
-        TopoDS_Vertex vertex = TopoDS::Vertex(shape);
-        gp_Pnt pt = BRep_Tool::Pnt(vertex);
+        //TopoDS_Shape shape;
+        //OCC::FITKAbstractOCCModel* OCCModel = dynamic_cast<OCC::FITKAbstractOCCModel*>(model->getShapeAgent());
+        //if (OCCModel == nullptr) {
+        //    isOk = false;
+        //    return;
+        //}
+        //shape = OCCModel->getShape(Interface::FITKModelEnum::FMSPoint, ids[0]);
 
-        point[0] = pt.X();
-        point[1] = pt.Y();
-        point[2] = pt.Z();
+        //if (shape.IsNull()) {
+        //    isOk = false;
+        //    return;
+        //}
+
+        //TopoDS_Vertex vertex = TopoDS::Vertex(shape);
+        //gp_Pnt pt = BRep_Tool::Pnt(vertex);
+
+        //point[0] = pt.X();
+        //point[1] = pt.Y();
+        //point[2] = pt.Z();
     }
 
     QList<int> WidgetOCCEvent::getFaces(QList<GraphData::PickedData*> data, bool isOk)

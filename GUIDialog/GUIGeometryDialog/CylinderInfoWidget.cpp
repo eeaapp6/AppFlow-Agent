@@ -107,9 +107,9 @@ namespace GUI {
 
     void CylinderInfoWidget::on_pushButton_OriginPoint_clicked()
     {
-        //if (_oper) {
-        //    _oper->eventProcess(0);
-        //}
+        if (_oper) {
+            _oper->eventProcess(0);
+        }
     }
 
     void CylinderInfoWidget::on_pushButton_Cancel_clicked()
