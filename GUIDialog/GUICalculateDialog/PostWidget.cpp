@@ -9,6 +9,8 @@
 #include <QFile>
 #include <QTextStream>
 
+Q_DECLARE_METATYPE(GUI::PostExportType)
+
 namespace GUI
 {
     PostWidget::PostWidget(EventOper::ParaWidgetInterfaceOperator* oper, QWidget* parent) :
@@ -16,6 +18,8 @@ namespace GUI
     {
         _ui = new Ui::PostWidget();
         _ui->setupUi(this);
+
+        init();
     }
 
     PostWidget::~PostWidget()
@@ -26,17 +30,21 @@ namespace GUI
         }
     }
 
-    void GUI::PostWidget::on_pushButton_ParaView_clicked()
+    void PostWidget::init()
     {
         //工作路径获取
-        QString workDir = "";
         if (FITKAPP->getAppSettings()) {
-            workDir = FITKAPP->getAppSettings()->getWorkingDir();
+            _workDir = FITKAPP->getAppSettings()->getWorkingDir();
         }
-        if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
-        QString caseDir = workDir + "/case";
+        if (_workDir.isEmpty()) _workDir = QApplication::applicationDirPath() + "/../WorkDir";
+        _caseDir = _workDir + "/case";
 
-        QString foamFile = creatStartParaViewFile(caseDir);
+        _ui->comboBox_Export->addItem(tr("VTK"), QVariant::fromValue(PostExportType::Post_VTK));
+    }
+
+    void GUI::PostWidget::on_pushButton_ParaView_clicked()
+    {
+        QString foamFile = creatStartParaViewFile(_workDir);
         QString sh = QString("paraview --case %1").arg(foamFile);
 
         //启动进程
@@ -66,4 +74,31 @@ namespace GUI
         file.close();
         return foamFile;
     }
+}
+
+void GUI::PostWidget::on_pushButton_Post_clicked()
+{
+
+}
+
+void GUI::PostWidget::on_pushButton_Export_clicked()
+{
+    PostExportType type = _ui->comboBox_Export->currentData().value<PostExportType>();
+    QString exportSh = "";
+    switch (type) {
+    case GUI::PostExportType::Post_VTK: {
+        exportSh = QString("foamToVTK -ascii -case %1").arg(_workDir);
+        break;
+    }
+    }
+
+    //启动进程
+    RunProcess* currentPro = new RunProcess();
+    //进程结束信号处理
+    connect(currentPro, &RunProcess::sigFinish, [=]() {
+        if (currentPro) {
+            delete currentPro;
+        }
+    });
+    currentPro->start(exportSh);
 }
