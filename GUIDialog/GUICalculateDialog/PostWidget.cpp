@@ -89,7 +89,7 @@ void GUI::PostWidget::on_pushButton_Export_clicked()
     QString exportSh = "";
     switch (type) {
     case GUI::PostExportType::Post_VTK: {
-        exportSh = QString("foamToVTK -ascii -case %1").arg(_workDir);
+        exportSh = QString("foamToVTK -ascii -case %1").arg(_caseDir);
         break;
     }
     }
