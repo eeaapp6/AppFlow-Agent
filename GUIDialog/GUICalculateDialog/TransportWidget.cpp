@@ -1,11 +1,15 @@
 ﻿#include "TransportWidget.h"
 #include "ui_TransportWidget.h"
 #include "CompTranPhasesWidget.h"
+#include "CompCalLineWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTransportProp.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+
+#include <QToolBox>
 
 namespace GUI
 {
@@ -33,11 +37,23 @@ namespace GUI
         if (_physicsData == nullptr)return;
         _tranData = _physicsData->getTransportProp();
         if (_tranData == nullptr)return;
+        
+        Interface::FITKAbstractParameter* paraData =_tranData->getTransportAdditionalData();
+        if (paraData) {
+            for (auto d : paraData->getParameter()){
+                if (d == nullptr)continue;
+                _ui->verticalLayout->addWidget(new CompCalLineWidget(d, this));
+            }
+        }
+
+        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(this);
         int dataNum = _tranData->getPhasesCount();
         for (int i = 0; i < dataNum; i++) {
+            if (_tranData->getPhase(i) == nullptr)continue;;
             CompTranPhasesWidget* widget = new CompTranPhasesWidget(_tranData->getPhase(i), i, this);
-            _ui->verticalLayout->addWidget(widget);
+            toolBox->addItem(widget, _tranData->getPhase(i)->getPhaseName());
         }
+        _ui->verticalLayout->addWidget(toolBox);
     }
 }
 
