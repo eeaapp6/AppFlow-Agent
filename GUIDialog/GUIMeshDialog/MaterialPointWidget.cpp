@@ -76,7 +76,7 @@ namespace GUI
 
     void MaterialPointWidget::hideEvent(QHideEvent * event)
     {
-        updateGraph(true);
+        updateGraph(false);
         clearGraphHight();
     }
 
