@@ -1,8 +1,14 @@
-﻿#ifndef _RunWidget_H
+﻿/**********************************************************************
+ * @file   RunWidget.h
+ * @brief  求解器运行界面
+ * @author BaGuijun (baguijun@163.com)
+ * @date   2024-09-02
+ *********************************************************************/
+#ifndef _RunWidget_H
 #define _RunWidget_H
 
-#include <QWidget>
 #include "GUICalculateDialogAPI.h"
+#include "GUICalculateWidgetBase.h"
 
 class QAbstractButton;
 
@@ -14,33 +20,123 @@ namespace EventOper {
     class ParaWidgetInterfaceOperator;
 }
 
+namespace Interface {
+    class FITKOFRunControl;
+}
+
 namespace GUI
 {
+    /**
+     * @brief  求解器CPU状态
+     * @author BaGuijun (baguijun@163.com)
+     * @date   2024-09-02
+     */
     enum class RunCPUType {
         Serial,
         Parallel,
     };
 
-    class GUICalculateDialogAPI RunWidget : public QWidget
+    /**
+     * @brief  求解器运行界面
+     * @author BaGuijun (baguijun@163.com)
+     * @date   2024-09-02
+     */
+    class GUICalculateDialogAPI RunWidget : public GUICalculateWidgetBase
     {
         Q_OBJECT;
     public:
+        /**
+         * @brief    构造函数
+         * @param[i] oper      操作器对象
+         * @param[i] parent    父对象
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
         RunWidget(EventOper::ParaWidgetInterfaceOperator* oper, QWidget* parent = nullptr);
+        /**
+         * @brief    析构函数
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
         ~RunWidget();
-
+        /**
+         * @brief    初始化
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
         void init();
+        /**
+         * @brief    显示事件
+         * @param[i] event   事件对象
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
+        void showEvent(QShowEvent * event);
+        /**
+         * @brief    隐藏事件
+         * @param[i] event   事件对象
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
+        void resizeEvent(QResizeEvent * event);
     private slots:
         ;
+        /**
+         * @brief    CPU状态修改事件
+         * @param[i] button    QRadioButton对象
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
         void slotCPUChange(QAbstractButton* button);
+        /**
+         * @brief    进程结束事件
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
         void slotProcessFinish();
+        /**
+         * @brief    CPU核数修改事件
+         * @param[i] arg1 CPU核数
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
         void on_spinBox_NumOfPro_valueChanged(int arg1);
-
+        /**
+         * @brief    停止按钮点击事件
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
         void on_pushButton_Stop_clicked();
+        /**
+         * @brief    运行按钮点击事件
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
         void on_pushButton_Run_clicked();
-
-
     private:
+        /**
+         * @brief    更新时间参数
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
+        void updataTime();
+        /**
+         * @brief    更新输出参数
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
+        void updateOutput();
+        /**
+         * @brief    初始化CPU
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
         void initCPU();
+        /**
+         * @brief    更新CPU
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
         void updateCPU();
         /**
          * @brief    清理算例文件
@@ -67,11 +163,26 @@ namespace GUI
          * @date     2024-08-30
          */
         QString creatStartSh(QString workDir, QString caseDir);
-
+        /**
+         * @brief    设置是否是运行状态
+         * @param[i] isRun    是否是运行状态
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
         void setRunType(bool isRun);
     private:
+        /**
+         * @brief  UI对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-09-02
+         */
         Ui::RunWidget* _ui = nullptr;
-        EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
+        /**
+         * @brief  求解器运行参数对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-09-02
+         */
+        Interface::FITKOFRunControl* _runConObj = nullptr;
     };
 }
 

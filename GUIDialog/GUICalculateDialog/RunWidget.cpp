@@ -1,6 +1,7 @@
 ﻿#include "RunWidget.h"
 #include "ui_RunWidget.h"
 #include "RunProcess.h"
+#include "CompCalLineWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKSignalTransfer.h"
@@ -8,6 +9,9 @@
 #include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
 #include "FITK_Kernel/FITKCore/FITKDirFileTools.h"
 #include "FITK_Component/FITKOFDictWriter/FITKOFDictWriterIO.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKOFRunControl.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
 
 #include <QButtonGroup>
 #include <QProcess>
@@ -24,7 +28,7 @@ namespace GUI
     static RunProcess* _currentPro = nullptr;
 
     RunWidget::RunWidget(EventOper::ParaWidgetInterfaceOperator* oper, QWidget* parent) :
-        QWidget(parent), _oper(oper)
+        GUICalculateWidgetBase(oper,parent)
     {
         _ui = new Ui::RunWidget();
         _ui->setupUi(this);
@@ -42,8 +46,31 @@ namespace GUI
 
     void RunWidget::init()
     {
+        if (_physicsData) {
+            _runConObj = _physicsData->getRunControl();
+        }
+        updataTime();
+        updateOutput();
         initCPU();
         setRunType(_currentPro);
+    }
+
+    void RunWidget::showEvent(QShowEvent * event)
+    {
+        Q_UNUSED(event);
+        int width = _ui->tabWidget->width();
+        int tabCount = _ui->tabWidget->count();
+        int tabWidth = width / tabCount;
+        this->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
+    }
+
+    void RunWidget::resizeEvent(QResizeEvent * event)
+    {
+        Q_UNUSED(event);
+        int width = _ui->tabWidget->width();
+        int tabCount = _ui->tabWidget->count();
+        int tabWidth = width / tabCount;
+        this->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
     }
 
     void RunWidget::slotCPUChange(QAbstractButton * button)
@@ -111,6 +138,34 @@ namespace GUI
             if (_ui) setRunType(_currentPro);
         });
         _currentPro->start("/bin/bash " + shPath);
+    }
+
+    void RunWidget::updataTime()
+    {
+        if (_runConObj == nullptr)return;
+        Interface::FITKAbstractParameter* tiemPara = _runConObj->getTimeControl();
+        for (auto data : tiemPara->getParameter()) {
+            if(data == nullptr)continue;
+            QWidget* widget = new CompCalLineWidget(data, this);
+            _ui->verticalLayout_Time->addWidget(widget);
+        }
+    }
+
+    void RunWidget::updateOutput()
+    {
+        if (_runConObj == nullptr)return;
+        Interface::FITKAbstractParameter* outPara = _runConObj->getOutputControl();
+        for (auto data : outPara->getParameter()) {
+            if (data == nullptr)continue;
+            QWidget* widget = nullptr;
+            if (data->getDataType() == Interface::FlowDataType::FLowDataBoolGroup) {
+                widget = CompCalLineWidget::DataSwitchToWidget(data, this);
+            }
+            else {
+                widget = new CompCalLineWidget(data, this);
+            }
+            _ui->verticalLayout_Output->addWidget(widget);
+        }
     }
 
     void RunWidget::initCPU()
