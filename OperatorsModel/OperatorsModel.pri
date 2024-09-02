@@ -25,6 +25,7 @@ HEADERS += \
     $$PWD/OperatorsInitial.h \
     $$PWD/OperatorsRun.h \
     $$PWD/OperatorsPost.h \
+    $$PWD/OperatorsLicense.h \
 
 
 SOURCES += \
@@ -53,5 +54,6 @@ SOURCES += \
     $$PWD/OperatorsInitial.cpp \
     $$PWD/OperatorsRun.cpp \
     $$PWD/OperatorsPost.cpp \
+    $$PWD/OperatorsLicense.cpp\
 
 FORMS += \

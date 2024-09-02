@@ -237,6 +237,8 @@
         <file>./icons/BoolFause.png</file>
         <file>./icons/BoolCut.png</file>
         <file>./icons/BoolCommon.png</file>
+<!-- APPFlowIcon -->
+        <file>./icons/icoR_license.svg</file>
     </qresource>
 </RCC>
 

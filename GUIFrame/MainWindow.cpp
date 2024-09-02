@@ -347,7 +347,7 @@ namespace GUI
 
         QAction* action = nullptr;
         SARibbonPannel* pannel = gategory->addPannel(tr("Help"));
-        action = createAction(tr("License"), "actionLicense", "", tr("License"));
+        action = createAction(tr("License"), "actionLicense", ":/icons/icoR_license.svg", tr("License"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
     }
 
