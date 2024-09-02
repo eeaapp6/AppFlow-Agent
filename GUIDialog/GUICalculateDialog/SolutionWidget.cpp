@@ -16,6 +16,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolutionSolverManager.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolutionSolver.h"
+#include "FITK_Component/FITKWidget/FITKTabWidget.h"
 
 #include <QToolBox>
 
@@ -90,22 +91,21 @@ namespace GUI
         if (_solValue == nullptr)return;
         int solversNum = _solValue->getSolversCount();
 
-        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(this);
-
+        QTabWidget* tabWidget = new Comp::FITKTabWidget(Comp::FITKTabWidgetType::FITKTab_Auto, this);
         for (int i = 0; i < solversNum; i++) {
             Interface::FITKOFAbsSolutionSolver* solversData = _solValue->getSolverVariablePara(i);
             if(solversData == nullptr)continue;
             QString type = _solValue->getSolverVariableName(i);
             QStringList options = solutionManager->filterSolutionSolvers(type, _physicsData->getSolver()->getSolverType());
-            CompSelectComBoxWidget* comp = new CompSelectComBoxWidget(type, toolBox);
+            CompSelectComBoxWidget* comp = new CompSelectComBoxWidget("Solver", tabWidget);
             comp->setData("index", i);
             comp->setFunction(&solutionGetSubData);
             comp->setOptions(options);
             comp->setCurrentText(solversData->getDataObjectName());
             comp->setSubWidgetData(solversData->getSolverSolutionPara());
-            toolBox->addItem(comp, type);
+            tabWidget->addTab(comp, type);
         }
-        _ui->verticalLayout_Solvers->addWidget(toolBox);
+        _ui->verticalLayout_Solvers->addWidget(tabWidget);
     }
 
     void SolutionWidget::updateSlover()
