@@ -56,7 +56,7 @@ namespace GUI
         if (graph3DVTKWidget != nullptr) {
             graph3DVTKWidget->setIsShowActions(true);
         }
-		auto id = m_MdiArea->addSubWidget(graph3DWidget, "Graph3DWindowVTK");
+		auto id = m_MdiArea->addSubWidget(graph3DWidget, "");
 #endif // OCCRENDERMODE
 
 

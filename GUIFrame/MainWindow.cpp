@@ -46,7 +46,7 @@ namespace GUI
         _ribbonBar->setRibbonStyle(SARibbonBar::RibbonStyleLooseThreeRow);
         _ribbonBar->setFont(_font);
 
-        setWindowTitle("FastCAE");
+        setWindowTitle("FastCAE-Flow");
         _ribbonBar->setWindowTitleTextColor(Qt::black);
 
         init();
