@@ -261,14 +261,14 @@ namespace GUI
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         action = createAction(tr("Create Sphere"), "actionGeoSphereCreate", ":/icons/createsphere.png", tr("Create Sphere"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Cone"), "actionGeoConeCreate", "", tr("Create Cone"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Cirque"), "actionGeoCirqueCreate", "", tr("Create Cirque"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        //action = createAction(tr("Create Cone"), "actionGeoConeCreate", "", tr("Create Cone"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        //action = createAction(tr("Create Cirque"), "actionGeoCirqueCreate", "", tr("Create Cirque"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         action = createAction(tr("Create Cylinder"), "actionGeoCylinderCreate", ":/icons/createcylinder.png", tr("Create Cylinder"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Create Spiral"), "actionGeoSpiralCreate", "", tr("Create Spiral"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        //action = createAction(tr("Create Spiral"), "actionGeoSpiralCreate", "", tr("Create Spiral"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
 
         pannel = gategory->addPannel(tr("calculate"));
         action = createAction(tr("BoolFause"), "actionGeoBoolFause", ":/icons/BoolFause.png", tr("Bool fause"));
@@ -285,40 +285,38 @@ namespace GUI
         SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
         _ribbonBar->raiseCategory(gategory);
 
-
         QAction* action = nullptr;
 
         // 网格导入
         auto pannel = gategory->addPannel(tr("Import Mesh"));
         action = getAction("actionImportMesh");
         if (action) pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        //action = createAction(tr("Tet"), "actionTetMesh", ":/icons/displayedge.png", tr("Cube"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        //action = createAction(tr("Hex"), "actionHexMesh", ":/icons/displayedge.png", tr("Hex"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        //action = createAction(tr("Tri"), "actionTriMesh", ":/icons/displayedge.png", tr("Tri"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
+        //action = createAction(tr("Quad"), "actionQuadMesh", ":/icons/displayedge.png", tr("Quad"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
 
-        action = createAction(tr("Tet"), "actionTetMesh", ":/icons/displayedge.png", tr("Cube"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Hex"), "actionHexMesh", ":/icons/displayedge.png", tr("Hex"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Tri"), "actionTriMesh", ":/icons/displayedge.png", tr("Tri"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-        action = createAction(tr("Quad"), "actionQuadMesh", ":/icons/displayedge.png", tr("Quad"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
-
-        // 网格质量检查
-        pannel = gategory->addPannel(tr("Check Mesh"));
-        action = createAction(tr("Config A"), "actionConfigAMesh", ":/icons/displayedge.png", tr("Config A"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
-        action = createAction(tr("Config B"), "actionConfigBMesh", ":/icons/displayedge.png", tr("Config B"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
-        action = createAction(tr("Statistics"), "actionMeshStat", ":/icons/displayedge.png", tr("Statistics"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        //// 网格质量检查
+        //pannel = gategory->addPannel(tr("Check Mesh"));
+        //action = createAction(tr("Config A"), "actionConfigAMesh", ":/icons/displayedge.png", tr("Config A"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        //action = createAction(tr("Config B"), "actionConfigBMesh", ":/icons/displayedge.png", tr("Config B"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        //action = createAction(tr("Statistics"), "actionMeshStat", ":/icons/displayedge.png", tr("Statistics"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         // 网格操作
         pannel = gategory->addPannel(tr("Oper Mesh"));
         action = createAction(tr("Mesh"), "actionMesh", ":/icons/mesh.png", tr("Mesh"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
-        action = createAction(tr("Extrude"), "action", ":/icons/displayedge.png", tr("Extrude"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
-        action = createAction(tr("Rotate"), "actionHexMesh", ":/icons/displayedge.png", tr("Rotate"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        //action = createAction(tr("Extrude"), "action", ":/icons/displayedge.png", tr("Extrude"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        //action = createAction(tr("Rotate"), "actionHexMesh", ":/icons/displayedge.png", tr("Rotate"));
+        //pannelAddAction(pannel, action, SARibbonPannelItem::Large);
     }
 
     void MainWindow::initSetting()
@@ -327,8 +325,8 @@ namespace GUI
         SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
         _ribbonBar->raiseCategory(gategory);
 
-        QAction* action = nullptr;
-        SARibbonPannel* pannel = gategory->addPannel(tr("calculate setting"));
+        //QAction* action = nullptr;
+        //SARibbonPannel* pannel = gategory->addPannel(tr("calculate setting"));
     }
 
     void MainWindow::initResult()
@@ -337,8 +335,8 @@ namespace GUI
         SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
         _ribbonBar->raiseCategory(gategory);
 
-        QAction* action = nullptr;
-        SARibbonPannel* pannel = gategory->addPannel(tr("Result"));
+        //QAction* action = nullptr;
+        //SARibbonPannel* pannel = gategory->addPannel(tr("Result"));
     }
 
     void MainWindow::initHelp()
@@ -349,6 +347,8 @@ namespace GUI
 
         QAction* action = nullptr;
         SARibbonPannel* pannel = gategory->addPannel(tr("Help"));
+        action = createAction(tr("License"), "actionLicense", "", tr("License"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
     }
 
     bool MainWindow::changeAction(QAction * action, const QString iconPath, const QString & iconText)
