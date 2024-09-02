@@ -21,6 +21,10 @@ namespace EventOper {
 
 namespace Interface {
     class FITKRegionMeshSizeGeom;
+    class FITKRegionGeometryRefine;
+    class FITKRegionMeshSizeManager;
+    class FITKRegionGeometryRefineManager;
+    class FITKAbsGeoCommand;
 }
 
 namespace GUI
@@ -42,20 +46,13 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        MeshGeoSubWidget(int geoID, EventOper::ParaWidgetInterfaceOperator * oper, QWidget* parent = nullptr);
+        MeshGeoSubWidget(Interface::FITKAbsGeoCommand* geoObj, EventOper::ParaWidgetInterfaceOperator * oper, QWidget* parent = nullptr);
         /**
          * @brief Destroy the Mesh Geo Sub Widget object
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
         ~MeshGeoSubWidget();
-        /**
-         * @brief 设置名称
-         * @param[i]  name           名称
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
-         */
-        void setName(const QString& name);
         /**
          * @brief 获取当前的几何id
          * @return int id
@@ -69,6 +66,12 @@ namespace GUI
          * @date 2024-08-14
          */
         void init();
+        /**
+         * @brief    更新界面
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
+        void updateWidget();
     private slots:
         /**
          * @brief 最小细化参数编辑事件
@@ -84,6 +87,23 @@ namespace GUI
          * @date 2024-08-14
          */
         void on_spinBox_Max_valueChanged(int arg1);
+        void on_checkBox_Mesh_clicked();
+
+        void on_checkBox_Refine_clicked();
+
+        void on_checkBox_Limit_clicked();
+
+        void on_comboBox_RefineModel_currentIndexChanged(int index);
+
+        void on_doubleSpinBox_Distance_valueChanged(double arg1);
+
+        void on_spinBox_Level_valueChanged(int arg1);
+
+        void on_comboBox_Gap_currentIndexChanged(int index);
+
+        void on_spinBox_NoCell_valueChanged(int arg1);
+
+        void on_spinBox_MaxGap_valueChanged(int arg1);
     private:
         /**
          * @brief Set the Data To Widget object
@@ -91,13 +111,37 @@ namespace GUI
          * @date 2024-08-14
          */
         void setDataToWidget();
+        /**
+         * @brief    get the data from widget
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-02
+         */
+        void getDataFromWidget();
     private:
+        /**
+         * @brief  几何相关网格局部区域尺寸管理器
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-09-02
+         */
+        Interface::FITKRegionMeshSizeManager* _meshSizeManager = nullptr;
+        /**
+         * @brief  几何划分网格优化区域对象管理器
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-09-02
+         */
+        Interface::FITKRegionGeometryRefineManager* _geoRefineManager = nullptr;
         /**
          * @brief 几何相关网格局部区域尺寸对象
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
         Interface::FITKRegionMeshSizeGeom* _geoMeshSize = nullptr;
+        /**
+         * @brief  几何划分网格优化区域对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-09-02
+         */
+        Interface::FITKRegionGeometryRefine* _geoRefine = nullptr;
         /**
          * @brief 操作器对象
          * @author BaGuijun (baguijun@163.com)
@@ -111,11 +155,11 @@ namespace GUI
          */
         Ui::MeshGeoSubWidget* _ui = nullptr;
         /**
-         * @brief 几何对象id
+         * @brief 几何对象
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-        int _objID = -1;
+        Interface::FITKAbsGeoCommand* _geoObj = nullptr;
     };
 }
 

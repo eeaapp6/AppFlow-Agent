@@ -11,6 +11,8 @@
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractMesherDriver.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKAbstractMeshProcessor.h"
 #include "FITK_Interface/FITKInterfaceMeshGen/FITKGeometryMeshSize.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionMeshSize.h"
+#include "FITK_Interface/FITKInterfaceMeshGen/FITKRegionGeometryRefine.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
@@ -40,6 +42,14 @@ namespace ModelOper
             auto meshDriver = meshGen->getMesherDriver();
             if (meshDriver == nullptr) return false;
 
+            auto regionManager = meshGen->getRegionMeshSizeMgr();
+            auto regionGeoRefManager = meshGen->getRegionGeometryRefineManager();
+            bool runSnappy = false;
+            if (regionManager && regionGeoRefManager) {
+                runSnappy = (!(regionManager->getRigonByType(Interface::FITKAbstractRegionMeshSize::RegionType::RigonGeom).isEmpty()))
+                    || regionGeoRefManager->getDataCount();
+            }
+            
             //工作路径获取
             QString workDir = "";
             if (FITKAPP->getAppSettings()) {
@@ -51,7 +61,7 @@ namespace ModelOper
             QString meshGenDir = workDir + "/case";
 
             meshDriver->setValue("WorkDir", meshGenDir);
-            meshDriver->setValue("HasGeoMeshSize", manager->getDataCount() > 0);
+            meshDriver->setValue("HasGeoMeshSize", runSnappy);
             meshDriver->startMesher();
             connect(meshDriver, &Interface::FITKAbstractMesherDriver::mesherFinished, [this] {
                 readMesh();

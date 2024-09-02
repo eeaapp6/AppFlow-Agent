@@ -82,16 +82,16 @@ namespace GUI
 
     void GeometryWidgetBase::createMeshSizeGeo()
     {
-        auto meshSizeGen = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
-        auto meshSizeManager = Interface::FITKMeshGenInterface::getInstance()->getRegionMeshSizeMgr();
-        if (meshSizeGen&&meshSizeManager) {
-            auto meshSizeGeo = dynamic_cast<Interface::FITKRegionMeshSizeGeom*>
-                (meshSizeGen->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionType::RigonGeom));
-            if (meshSizeGeo) {
-                meshSizeGeo->setGeomID(_obj->getDataObjectID());
-                meshSizeManager->appendDataObj(meshSizeGeo);
-            }
-        }
+        //auto meshSizeGen = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
+        //auto meshSizeManager = Interface::FITKMeshGenInterface::getInstance()->getRegionMeshSizeMgr();
+        //if (meshSizeGen&&meshSizeManager) {
+        //    auto meshSizeGeo = dynamic_cast<Interface::FITKRegionMeshSizeGeom*>
+        //        (meshSizeGen->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionType::RigonGeom));
+        //    if (meshSizeGeo) {
+        //        meshSizeGeo->setGeomID(_obj->getDataObjectID());
+        //        meshSizeManager->appendDataObj(meshSizeGeo);
+        //    }
+        //}
     }
 }
 

@@ -28,6 +28,7 @@ SOURCES += \
     $$PWD/CompBaseBoundary.cpp \
 
 FORMS += \
+    $$PWD/MeshGeoWidget.ui \
     $$PWD/MeshGeoSubWidget.ui \
     $$PWD/MeshBaseWidget.ui \
     $$PWD/MeshBaseTypeBoxWidget.ui \

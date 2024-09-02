@@ -14,6 +14,10 @@
 
 class QVBoxLayout;
 
+namespace Ui {
+    class MeshGeoWidget;
+}
+
 namespace EventOper {
     class ParaWidgetInterfaceOperator;
 }
@@ -49,12 +53,6 @@ namespace GUI
          * @date 2024-08-14
          */
         void init();
-        /**
-         * @brief 更新子界面
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
-         */
-        void updateSubWidget();
     private:
         /**
          * @brief 操作器对象
@@ -63,11 +61,11 @@ namespace GUI
          */
         EventOper::ParaWidgetInterfaceOperator* _oper = nullptr;
         /**
-         * @brief 界垂直面布局对象
+         * @brief  ui
          * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
+         * @date   2024-09-02
          */
-        QVBoxLayout* _subWidgetLayout = nullptr;
+        Ui::MeshGeoWidget* _ui = nullptr;
     };
 }
 
