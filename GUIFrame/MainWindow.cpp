@@ -112,8 +112,12 @@ namespace GUI
         spliterLayout->setMouseTracking(true);
         spliterLayout->setHandleWidth(5);
 
+        int mainWindSize = QMainWindow::width();
         _treeWidget = new MainTreeWidget(this);
+        _treeWidget->setMinimumWidth(mainWindSize * 0.4);
+        _treeWidget->setMaximumWidth(mainWindSize * 0.4);
         m_PropertyWidget = new PropertyWidget(this);
+        m_PropertyWidget->setMinimumWidth(mainWindSize * 0.65);
         m_RenderWidget = new RenderWidget(this);
         _tabWidgete = new TabWidget(this);
         //m_GroupPropertyWidget = new GroupPropertyWidget(this);
