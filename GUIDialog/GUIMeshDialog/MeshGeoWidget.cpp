@@ -30,6 +30,20 @@ namespace GUI
 
     void MeshGeoWidget::init()
     {
+        updateWidget();
+    }
+
+    void MeshGeoWidget::updateWidget()
+    {
+        //清除全部子界面
+        QLayoutItem* item;
+        while ((item = _ui->verticalLayout->takeAt(0)) != nullptr) {
+            if (QWidget* widget = item->widget()) {
+                widget->deleteLater(); // 推荐使用 deleteLater，以确保小部件在适当时机被删除
+            }
+            delete item; // 删除布局项
+        }
+
         Comp::FITKTabWidget* tabWidget = new Comp::FITKTabWidget(Comp::FITKTabWidgetType::FITKTab_Auto, this);
         Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
         if (geometryData == nullptr) return;

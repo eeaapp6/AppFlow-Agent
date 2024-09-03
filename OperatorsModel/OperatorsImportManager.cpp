@@ -2,7 +2,10 @@
 
 #include "OperatorsInterface/TreeEventOperator.h"
 #include "OperatorsInterface/GraphEventOperator.h"
+#include "GUIFrame/MainWindow.h"
+#include "GUIFrame/PropertyWidget.h"
 #include "GUIDialog/GUIGeometryDialog/GeometryWidgetBase.h"
+#include "GUIDialog/GUIMeshDialog/MeshGeoWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -146,6 +149,13 @@ namespace ModelOper {
 
         //默认添加Default面组
         GUI::GeometryWidgetBase::createDefaultFaceGroup(geometryData->getDataByID(objID));
+
+        //更新网格划分区域界面
+        GUI::MainWindow* mainWin = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWin) {
+            GUI::MeshGeoWidget* widget = dynamic_cast<GUI::MeshGeoWidget*>(mainWin->getPropertyWidget()->getCurrentWidget());
+            if (widget)widget->updateWidget();
+        }
 
         //获取模型树控制器
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");

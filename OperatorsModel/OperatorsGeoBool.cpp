@@ -10,6 +10,7 @@
 #include "GUIDialog/GUIGeometryDialog/GeometryBoolWidget.h"
 #include "GUIDialog/GUIGeometryDialog/BoolInfoWidget.h"
 #include "GUIDialog/GUIGeometryDialog/GeometryDeleteDialog.h"
+#include "GUIDialog/GUIMeshDialog/MeshGeoWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -79,7 +80,16 @@ namespace ModelOper {
         if (treeOper == nullptr) return false;
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return false;
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return false;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return false;
 
+        if (_senderName == "actionGeoBoolOrImportDelete") {
+            //更新网格划分区域界面
+            GUI::MeshGeoWidget* widget = dynamic_cast<GUI::MeshGeoWidget*>(propertyWidget->getCurrentWidget());
+            if (widget)widget->updateWidget();
+        }
         _mainWindow->getPropertyWidget()->init();
 
         int objID, geo1ObjID, geo2ObjID = -1;

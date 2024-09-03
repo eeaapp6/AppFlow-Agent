@@ -11,6 +11,7 @@
 #include "OperatorsInterface/GraphInteractionOperator.h"
 #include "GUIDialog/GUIGeometryDialog/CudeInfoWidget.h"
 #include "GUIDialog/GUIGeometryDialog/GeometryDeleteDialog.h"
+#include "GUIDialog/GUIMeshDialog/MeshGeoWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -90,11 +91,12 @@ namespace ModelOper
         this->argValue("objID", objID);
 
         switch (_operType) {
-        case ModelOper::OperManagerBase::Create:
+        case ModelOper::OperManagerBase::Create: {
             graphOper->updateGraph(objID);
             treeOper->updateTree();
-			graphOper->reRender(true);
+            graphOper->reRender(true);
             break;
+        }
         case ModelOper::OperManagerBase::Edit:
             graphOper->updateGraph(objID);
             treeOper->updateTree();
@@ -102,11 +104,16 @@ namespace ModelOper
             break;
         case ModelOper::OperManagerBase::Copy:
             break;
-        case ModelOper::OperManagerBase::Delete:
+        case ModelOper::OperManagerBase::Delete: {
             graphOper->updateGraph(objID);
             treeOper->updateTree();
             graphOper->reRender(true);
+
+            //更新网格划分区域界面
+            GUI::MeshGeoWidget* widget = dynamic_cast<GUI::MeshGeoWidget*>(propertyWidget->getCurrentWidget());
+            if (widget)widget->updateWidget();
             break;
+        }
         case ModelOper::OperManagerBase::Rename:
             break;
         }

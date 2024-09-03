@@ -53,6 +53,12 @@ namespace GUI
          * @date 2024-08-14
          */
         void init();
+        /**
+         * @brief    更新界面
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-03
+         */
+        void updateWidget();
     private:
         /**
          * @brief 操作器对象
