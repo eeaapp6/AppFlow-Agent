@@ -32,10 +32,12 @@ namespace GUI
 
         int index = widget->getData("index").toInt();
         phyFactory->setSolutionSolver(index, type);
-        Interface::FITKOFAbsSolutionSolver* solution = phyData->getSolution()->getSolverVariablePara(index);
+        Interface::FITKOFAlgebraicEquationsPara* solution = phyData->getSolution()->getSolverVariablePara(index);
         if (solution == nullptr)return nullptr;
+        Interface::FITKOFAbsSolutionSolver* solver = solution->getSolutionSolver();
+        if (solver == nullptr)return nullptr;
 
-        return solution->getSolverSolutionPara();
+        return solver->getSolverSolutionPara();
     }
 
     SolutionWidget::SolutionWidget(EventOper::ParaWidgetInterfaceOperator * oper, QWidget * parent) :
@@ -93,17 +95,33 @@ namespace GUI
 
         QTabWidget* tabWidget = new Comp::FITKTabWidget(Comp::FITKTabWidgetType::FITKTab_Auto, this);
         for (int i = 0; i < solversNum; i++) {
-            Interface::FITKOFAbsSolutionSolver* solversData = _solValue->getSolverVariablePara(i);
+            Interface::FITKOFAlgebraicEquationsPara* solversData = _solValue->getSolverVariablePara(i);
             if(solversData == nullptr)continue;
-            QString type = _solValue->getSolverVariableName(i);
-            QStringList options = solutionManager->filterSolutionSolvers(type, _physicsData->getSolver()->getSolverType());
-            CompSelectComBoxWidget* comp = new CompSelectComBoxWidget("Solver", tabWidget);
-            comp->setData("index", i);
-            comp->setFunction(&solutionGetSubData);
-            comp->setOptions(options);
-            comp->setCurrentText(solversData->getDataObjectName());
-            comp->setSubWidgetData(solversData->getSolverSolutionPara());
-            tabWidget->addTab(comp, type);
+            QString type = solversData->getVariableName();
+            QList<QWidget*> widgetList = {};
+            //其余数据添加
+            Interface::FITKAbstractParameter* solverOther = solversData->getSolverAdditionalPara();
+            if(solverOther){
+                for (auto d : solverOther->getParameter()) {
+                    if (d == nullptr)continue;
+                    QWidget* w = new CompCalLineWidget(d, this);
+                    widgetList.append(w);
+                }
+            }
+            //Solver数据添加
+            Interface::FITKOFAbsSolutionSolver* solver = solversData->getSolutionSolver();
+            if (solver) {
+                QStringList options = solutionManager->filterSolutionSolvers(type, _physicsData->getSolver()->getSolverType());
+                CompSelectComBoxWidget* comp = new CompSelectComBoxWidget("Solver", tabWidget);
+                comp->setData("index", i);
+                comp->setFunction(&solutionGetSubData);
+                comp->setOptions(options);
+                comp->setCurrentText(solver->getDataObjectName());
+                comp->setSubWidgetData(solver->getSolverSolutionPara());
+                widgetList.append(comp);
+            }
+            CompVBoxWidget* widget = new CompVBoxWidget(widgetList, this);
+            tabWidget->addTab(widget, type);
         }
         _ui->verticalLayout_Solvers->addWidget(tabWidget);
     }
