@@ -70,7 +70,7 @@ namespace GUI
         int width = _ui->tabWidget->width();
         int tabCount = _ui->tabWidget->count();
         int tabWidth = width / tabCount;
-        this->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
+        _ui->tabWidget->tabBar()->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
     }
 
     void SolutionWidget::resizeEvent(QResizeEvent * event)
@@ -79,7 +79,7 @@ namespace GUI
         int width = _ui->tabWidget->width();
         int tabCount = _ui->tabWidget->count();
         int tabWidth = width / tabCount;
-        this->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
+        _ui->tabWidget->tabBar()->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
     }
 
     void SolutionWidget::updateSlovers()

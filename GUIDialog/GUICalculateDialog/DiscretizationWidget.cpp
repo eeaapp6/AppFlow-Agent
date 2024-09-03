@@ -10,6 +10,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
 
 #include <QToolBox>
+#include <QTabBar>
 
 namespace GUI
 {
@@ -51,7 +52,7 @@ namespace GUI
         int width = _ui->tabWidget->width();
         int tabCount = _ui->tabWidget->count();
         int tabWidth = width / tabCount;
-        this->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
+        _ui->tabWidget->tabBar()->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
     }
 
     void DiscretizationWidget::resizeEvent(QResizeEvent * event)
@@ -60,7 +61,7 @@ namespace GUI
         int width = _ui->tabWidget->width();
         int tabCount = _ui->tabWidget->count();
         int tabWidth = width / tabCount;
-        this->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
+        _ui->tabWidget->tabBar()->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
     }
 
     void DiscretizationWidget::updateTimeWidget()
