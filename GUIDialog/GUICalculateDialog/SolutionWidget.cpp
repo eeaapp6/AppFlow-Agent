@@ -130,8 +130,7 @@ namespace GUI
     {
         if (_solValue == nullptr)return;
 
-        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(this);
-
+        Comp::FITKTabWidget* tabWidget = new Comp::FITKTabWidget(Comp::FITKTabWidgetType::FITKTab_Auto, this);
         int resNum = _solValue->getResidualsCount();
         for (int i = 0; i < resNum; i++) {
             QString name = _solValue->getResidualVariableName(i);
@@ -143,10 +142,9 @@ namespace GUI
                 widgets.append(widget);
             }
             CompVBoxWidget* VBoxWidget = new CompVBoxWidget(widgets, this);
-            toolBox->addItem(VBoxWidget, name);
+            tabWidget->addTab(VBoxWidget, name);
         }
-
-        _ui->verticalLayout_Residuals->addWidget(toolBox);
+        _ui->verticalLayout_Residuals->addWidget(tabWidget);
     }
 
     void SolutionWidget::updateRelaxation()

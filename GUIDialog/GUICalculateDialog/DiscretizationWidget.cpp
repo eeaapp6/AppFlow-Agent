@@ -8,6 +8,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFDiscretization.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Component/FITKWidget/FITKTabWidget.h"
 
 #include <QToolBox>
 #include <QTabBar>
@@ -81,8 +82,8 @@ namespace GUI
     void DiscretizationWidget::updateConvectionWidget()
     {
         if (_disValue == nullptr)return;
-        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(this);
 
+        Comp::FITKTabWidget* tabWidget = new Comp::FITKTabWidget(Comp::FITKTabWidgetType::FITKTab_Auto, this);
         int conNum = _disValue->getConvectionCount();
         for (int i = 0; i < conNum; i++) {
             auto conValue = _disValue->getConvectionVPara(i);
@@ -92,11 +93,11 @@ namespace GUI
             for (auto subValue : conValue->getParameter()){
                 if (subValue == nullptr)continue;
                 QWidget* widget = CompCalLineWidget::DataSwitchToWidget(subValue, this);
-                toolBox->addItem(widget, conName);
+                tabWidget->addTab(widget, conName);
             }
         }
 
-        _ui->verticalLayout_Convection->addWidget(toolBox);
+        _ui->verticalLayout_Convection->addWidget(tabWidget);
     }
 
     void DiscretizationWidget::updateGradientsWidget()
@@ -105,15 +106,14 @@ namespace GUI
         auto gradValue = _disValue->getGradients();
         if (gradValue == nullptr)return;
 
-        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(this);
-
+        Comp::FITKTabWidget* tabWidget = new Comp::FITKTabWidget(Comp::FITKTabWidgetType::FITKTab_Auto, this);
         for (auto value : gradValue->getParameter()) {
             if (value == nullptr)continue;
             QWidget* widget = CompCalLineWidget::DataSwitchToWidget(value, this);
-            toolBox->addItem(widget, value->getDataObjectName());
+            tabWidget->addTab(widget, value->getDataObjectName());
         }
 
-        _ui->verticalLayout_Gradients->addWidget(toolBox);
+        _ui->verticalLayout_Gradients->addWidget(tabWidget);
     }
 
     void DiscretizationWidget::updateInterpolationWidget()

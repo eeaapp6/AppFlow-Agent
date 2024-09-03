@@ -8,6 +8,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTransportProp.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Component/FITKWidget/FITKTabWidget.h"
 
 #include <QToolBox>
 
@@ -46,14 +47,14 @@ namespace GUI
             }
         }
 
-        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(this);
+        Comp::FITKTabWidget* tabWidget = new Comp::FITKTabWidget(Comp::FITKTabWidgetType::FITKTab_Auto, this);
         int dataNum = _tranData->getPhasesCount();
         for (int i = 0; i < dataNum; i++) {
             if (_tranData->getPhase(i) == nullptr)continue;;
             CompTranPhasesWidget* widget = new CompTranPhasesWidget(_tranData->getPhase(i), i, this);
-            toolBox->addItem(widget, _tranData->getPhase(i)->getPhaseName());
+            tabWidget->addTab(widget, _tranData->getPhase(i)->getPhaseName());
         }
-        _ui->verticalLayout->addWidget(toolBox);
+        _ui->verticalLayout->addWidget(tabWidget);
     }
 }
 
