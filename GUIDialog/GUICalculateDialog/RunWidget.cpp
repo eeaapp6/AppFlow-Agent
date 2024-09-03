@@ -147,7 +147,13 @@ namespace GUI
         Interface::FITKAbstractParameter* tiemPara = _runConObj->getTimeControl();
         for (auto data : tiemPara->getParameter()) {
             if(data == nullptr)continue;
-            QWidget* widget = new CompCalLineWidget(data, this);
+            QWidget* widget = nullptr;
+            if (data->getDataType() == Interface::FlowDataType::FLowDataBoolGroup) {
+                widget = CompCalLineWidget::DataSwitchToWidget(data, this);
+            }
+            else {
+                widget = new CompCalLineWidget(data, this);
+            }
             _ui->verticalLayout_Time->addWidget(widget);
         }
     }
