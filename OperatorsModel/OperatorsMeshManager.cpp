@@ -63,7 +63,8 @@ namespace ModelOper
             meshDriver->setValue("WorkDir", meshGenDir);
             meshDriver->setValue("HasGeoMeshSize", runSnappy);
             meshDriver->startMesher();
-            connect(meshDriver, &Interface::FITKAbstractMesherDriver::mesherFinished, [this] {
+            connect(meshDriver, &Interface::FITKAbstractMesherDriver::mesherFinished, [this,meshDriver] {
+                disconnect(meshDriver, &Interface::FITKAbstractMesherDriver::mesherFinished, nullptr, nullptr);
                 readMesh();
             });
         }
