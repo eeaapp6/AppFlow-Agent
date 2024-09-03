@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>460</width>
-    <height>544</height>
+    <width>464</width>
+    <height>553</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -267,7 +267,20 @@
             </widget>
            </item>
            <item>
-            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_X0"/>
+            <widget class="GUI::CompBaseBoundaryLineEdit" name="lineEdit_X0">
+             <property name="minimumSize">
+              <size>
+               <width>210</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>210</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -295,7 +308,20 @@
             </widget>
            </item>
            <item>
-            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_X1"/>
+            <widget class="GUI::CompBaseBoundaryLineEdit" name="lineEdit_X1">
+             <property name="minimumSize">
+              <size>
+               <width>210</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>210</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -323,7 +349,20 @@
             </widget>
            </item>
            <item>
-            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Y0"/>
+            <widget class="GUI::CompBaseBoundaryLineEdit" name="lineEdit_Y0">
+             <property name="minimumSize">
+              <size>
+               <width>210</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>210</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -351,7 +390,20 @@
             </widget>
            </item>
            <item>
-            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Y1"/>
+            <widget class="GUI::CompBaseBoundaryLineEdit" name="lineEdit_Y1">
+             <property name="minimumSize">
+              <size>
+               <width>210</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>210</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -379,7 +431,20 @@
             </widget>
            </item>
            <item>
-            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Z0"/>
+            <widget class="GUI::CompBaseBoundaryLineEdit" name="lineEdit_Z0">
+             <property name="minimumSize">
+              <size>
+               <width>210</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>210</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -407,7 +472,20 @@
             </widget>
            </item>
            <item>
-            <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Z1"/>
+            <widget class="GUI::CompBaseBoundaryLineEdit" name="lineEdit_Z1">
+             <property name="minimumSize">
+              <size>
+               <width>210</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>210</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -426,9 +504,9 @@
    <header>CompBaseBoundary.h</header>
   </customwidget>
   <customwidget>
-   <class>GUI::CompBaseBoundaryComboBox</class>
-   <extends>QComboBox</extends>
-   <header>CompBaseBoundary.h</header>
+   <class>GUI::CompBaseBoundaryLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>CompBaseBoundaryLineEdit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -12,6 +12,7 @@ HEADERS += \
     $$PWD/CompMaterialPointWidget.h \
     $$PWD/LocalGroupDeleteDialog.h \
     $$PWD/CompBaseBoundary.h \
+    $$PWD/CompBaseBoundaryLineEdit.h \
 
 SOURCES += \
     $$PWD/MeshGeoWidget.cpp \
@@ -26,6 +27,7 @@ SOURCES += \
     $$PWD/CompMaterialPointWidget.cpp \
     $$PWD/LocalGroupDeleteDialog.cpp \
     $$PWD/CompBaseBoundary.cpp \
+    $$PWD/CompBaseBoundaryLineEdit.cpp \
 
 FORMS += \
     $$PWD/MeshGeoWidget.ui \

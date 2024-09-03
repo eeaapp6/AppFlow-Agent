@@ -51,21 +51,6 @@ namespace GUI
 
     void MeshBaseTypeCylinderWidget::init()
     {
-        _ui->comboBox_FirstDisk->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
-        _ui->comboBox_FirstDisk->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
-        _ui->comboBox_FirstDisk->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
-        _ui->comboBox_FirstDisk->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
-
-        _ui->comboBox_SecondDisk->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
-        _ui->comboBox_SecondDisk->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
-        _ui->comboBox_SecondDisk->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
-        _ui->comboBox_SecondDisk->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
-
-        _ui->comboBox_Cylinder->addItem(tr("Patch"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTPatch);
-        _ui->comboBox_Cylinder->addItem(tr("Wall"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTWall);
-        _ui->comboBox_Cylinder->addItem(tr("Sym"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTSymmetry);
-        _ui->comboBox_Cylinder->addItem(tr("Empty"), Interface::FITKAbstractRegionMeshSize::BoundaryType::BTEmpty);
-
         connect(_ui->lineEdit_OriginPoint1, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
         connect(_ui->lineEdit_OriginPoint2, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
         connect(_ui->lineEdit_OriginPoint3, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
@@ -86,15 +71,15 @@ namespace GUI
         _ui->label_FirstDisk->setPos(0);
         _ui->label_SecondDisk->setPos(1);
         _ui->label_Cylinder->setPos(2);
-        connect(_ui->comboBox_FirstDisk, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
-        connect(_ui->comboBox_SecondDisk, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
-        connect(_ui->comboBox_Cylinder, SIGNAL(activated(int)), this, SLOT(slotSaveValue()));
-        connect(_ui->comboBox_FirstDisk, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
-        connect(_ui->comboBox_SecondDisk, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
-        connect(_ui->comboBox_Cylinder, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
-        _ui->comboBox_FirstDisk->setPos(0);
-        _ui->comboBox_SecondDisk->setPos(1);
-        _ui->comboBox_Cylinder->setPos(2);
+        connect(_ui->lineEdit_FirstDisk, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_SecondDisk, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_Cylinder, SIGNAL(editingFinished()), this, SLOT(slotSaveValue()));
+        connect(_ui->lineEdit_FirstDisk, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->lineEdit_SecondDisk, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        connect(_ui->lineEdit_Cylinder, SIGNAL(sigMouseMove()), this, SLOT(slotMouseMove()));
+        _ui->lineEdit_FirstDisk->setPos(0);
+        _ui->lineEdit_SecondDisk->setPos(1);
+        _ui->lineEdit_Cylinder->setPos(2);
     }
 
     bool MeshBaseTypeCylinderWidget::checkValue()
@@ -150,9 +135,9 @@ namespace GUI
         _ui->lineEdit_Grading1->setText(QString::number(cylinderObj->getGrading(0)));
         _ui->lineEdit_Grading2->setText(QString::number(cylinderObj->getGrading(1)));
 
-        _ui->comboBox_FirstDisk->setCurrentIndex(_ui->comboBox_FirstDisk->findData(cylinderObj->getBoundary(0)));
-        _ui->comboBox_SecondDisk->setCurrentIndex(_ui->comboBox_SecondDisk->findData(cylinderObj->getBoundary(1)));
-        _ui->comboBox_Cylinder->setCurrentIndex(_ui->comboBox_Cylinder->findData(cylinderObj->getBoundary(2)));
+        _ui->lineEdit_FirstDisk->setText(cylinderObj->getFaceName(0));
+        _ui->lineEdit_SecondDisk->setText(cylinderObj->getFaceName(1));
+        _ui->lineEdit_Cylinder->setText(cylinderObj->getFaceName(2));
 
         this->blockSignals(false);
         return true;
@@ -186,12 +171,9 @@ namespace GUI
         cylinderObj->setGrading(0, _ui->lineEdit_Grading1->text().toDouble());
         cylinderObj->setGrading(1, _ui->lineEdit_Grading2->text().toDouble());
 
-        auto type = _ui->comboBox_FirstDisk->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>();
-        cylinderObj->insertBoundary(0, type);
-        type = _ui->comboBox_SecondDisk->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>();
-        cylinderObj->insertBoundary(1, type);
-        type = _ui->comboBox_Cylinder->currentData().value<Interface::FITKAbstractRegionMeshSize::BoundaryType>();
-        cylinderObj->insertBoundary(2, type);
+        cylinderObj->insertFaceName(0, _ui->lineEdit_FirstDisk->text());
+        cylinderObj->insertFaceName(1, _ui->lineEdit_SecondDisk->text());
+        cylinderObj->insertFaceName(2, _ui->lineEdit_Cylinder->text());
         return true;
     }
 

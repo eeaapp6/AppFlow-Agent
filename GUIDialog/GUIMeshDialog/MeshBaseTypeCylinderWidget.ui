@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>570</width>
+    <width>479</width>
     <height>692</height>
    </rect>
   </property>
@@ -308,7 +308,20 @@
           </widget>
          </item>
          <item>
-          <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_FirstDisk"/>
+          <widget class="GUI::CompBaseBoundaryLineEdit" name="lineEdit_FirstDisk">
+           <property name="minimumSize">
+            <size>
+             <width>210</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>210</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -348,7 +361,20 @@
           </widget>
          </item>
          <item>
-          <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_SecondDisk"/>
+          <widget class="GUI::CompBaseBoundaryLineEdit" name="lineEdit_SecondDisk">
+           <property name="minimumSize">
+            <size>
+             <width>210</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>210</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -388,7 +414,20 @@
           </widget>
          </item>
          <item>
-          <widget class="GUI::CompBaseBoundaryComboBox" name="comboBox_Cylinder"/>
+          <widget class="GUI::CompBaseBoundaryLineEdit" name="lineEdit_Cylinder">
+           <property name="minimumSize">
+            <size>
+             <width>210</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>210</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -418,9 +457,9 @@
    <header>CompBaseBoundary.h</header>
   </customwidget>
   <customwidget>
-   <class>GUI::CompBaseBoundaryComboBox</class>
-   <extends>QComboBox</extends>
-   <header>CompBaseBoundary.h</header>
+   <class>GUI::CompBaseBoundaryLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>CompBaseBoundaryLineEdit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

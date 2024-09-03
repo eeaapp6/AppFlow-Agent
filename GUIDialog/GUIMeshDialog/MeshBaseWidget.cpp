@@ -49,9 +49,6 @@ namespace GUI
         if (!_currentObj) {
 			auto meshGenerator = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
 			_currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionBox);
-            //数据是新创建时，设置默认参数
-            MeshBaseTypeBoxWidget widget(this);
-            widget.getDataFromWidget(_currentObj);
             _meshSizeManager->insertDataObj(0, _currentObj);
         }
         else {
@@ -69,9 +66,6 @@ namespace GUI
             case Interface::FITKAbstractRegionMeshSize::RegionUserDef5: {
                 auto meshGenerator = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
                 _currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionBox);
-                //数据是新创建时，设置默认参数
-                MeshBaseTypeBoxWidget widget(this);
-                widget.getDataFromWidget(_currentObj);
                 _meshSizeManager->insertDataObj(0, _currentObj);
             }
             }
@@ -115,9 +109,6 @@ namespace GUI
             else
             {
 				_currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionBox);
-                //数据是新创建时，设置默认参数
-                MeshBaseTypeBoxWidget widget(this);
-                widget.getDataFromWidget(_currentObj);
             }
 			//插入到首位
 			_meshSizeManager->insertDataObj(0, _currentObj);
@@ -135,9 +126,6 @@ namespace GUI
             else
             {
                 _currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionCylinder);
-                //数据是新创建时，设置默认参数
-                MeshBaseTypeCylinderWidget widget(this);
-                widget.getDataFromWidget(_currentObj);
             }
 			//插入到首位
 			_meshSizeManager->insertDataObj(0, _currentObj);
