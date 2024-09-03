@@ -473,7 +473,7 @@ namespace GUI
         int objID = widget->data(GeoComObjID).toInt();
         auto com = commanger->getDataByID(objID);
         if (com == nullptr)return;
-        QList<int> defaultIDs = _parentWidget->getDefaultFaceGroup();
+        QList<int> defaultIDs = _parentWidget->getDefaultFaceGroup(_obj);
 
         //移除defaultIDs中其他面组的id
         for (int i = 0; i < _ui->tableWidget->rowCount(); i++) {

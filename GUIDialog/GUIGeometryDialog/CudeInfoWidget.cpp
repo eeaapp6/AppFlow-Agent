@@ -153,7 +153,7 @@ namespace GUI {
             createMeshSizeGeo();
 
             //创建Default面组
-            createDefaultFaceGroup();
+            createDefaultFaceGroup(_obj);
             //切换为编辑模式
             switchCreateModel(false);
         }

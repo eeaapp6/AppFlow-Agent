@@ -26,11 +26,11 @@ namespace GUI
 
     }
 
-    QList<int> GeometryWidgetBase::getDefaultFaceGroup()
+    QList<int> GeometryWidgetBase::getDefaultFaceGroup(Interface::FITKAbsGeoCommand* geoObj)
     {
         QList<int> defaultFaceIDs = {};
-        if (_obj == nullptr)return defaultFaceIDs;
-        Interface::FITKAbsGeoShapeAgent* geoShapeAgent = _obj->getShapeAgent();
+        if (geoObj == nullptr)return defaultFaceIDs;
+        Interface::FITKAbsGeoShapeAgent* geoShapeAgent = geoObj->getShapeAgent();
         if (geoShapeAgent == nullptr)return defaultFaceIDs;
         Interface::FITKVirtualTopoManager* geoTopoManager = geoShapeAgent->getVirtualTopoManager();
         if (geoTopoManager == nullptr)return defaultFaceIDs;
@@ -45,15 +45,15 @@ namespace GUI
         return defaultFaceIDs;
     }
 
-    void GeometryWidgetBase::createDefaultFaceGroup()
+    void GeometryWidgetBase::createDefaultFaceGroup(Interface::FITKAbsGeoCommand* geoObj)
     {
-        if (_obj == nullptr)return;
-        Interface::FITKAbsGeoShapeAgent* geoShapeAgent = _obj->getShapeAgent();
+        if (geoObj == nullptr)return;
+        Interface::FITKAbsGeoShapeAgent* geoShapeAgent = geoObj->getShapeAgent();
         if (geoShapeAgent == nullptr)return;
         Interface::FITKGeoComponentManager* commanger = geoShapeAgent->getGeoComponentManager();
         if (commanger == nullptr)return;
 
-        QList<int> defaultFaceIDs = getDefaultFaceGroup();
+        QList<int> defaultFaceIDs = getDefaultFaceGroup(geoObj);
         //创建面组对象
         Interface::FITKGeoComponent* geoCom = new Interface::FITKGeoComponent(Interface::FITKModelEnum::FITKModelSetType::FMSSurface);
         geoCom->setDataObjectName("Default");

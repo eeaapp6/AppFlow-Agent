@@ -2,6 +2,7 @@
 
 #include "OperatorsInterface/TreeEventOperator.h"
 #include "OperatorsInterface/GraphEventOperator.h"
+#include "GUIDialog/GUIGeometryDialog/GeometryWidgetBase.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -140,18 +141,13 @@ namespace ModelOper {
         if (result == false)return;
         if (objID < 0)return;
 
-        auto meshSizeGen = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
-        auto meshSizeManager = Interface::FITKMeshGenInterface::getInstance()->getRegionMeshSizeMgr();
-        if (meshSizeGen && meshSizeManager) {
-            auto meshSizeGeo = dynamic_cast<Interface::FITKRegionMeshSizeGeom*>
-                (meshSizeGen->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionType::RigonGeom));
-            if (meshSizeGeo) {
-                meshSizeGeo->setGeomID(objID);
-                meshSizeManager->appendDataObj(meshSizeGeo);
-            }
-        }
+        Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
+        if (geometryData == nullptr) return;
 
-        // 获取模型树控制器
+        //默认添加Default面组
+        GUI::GeometryWidgetBase::createDefaultFaceGroup(geometryData->getDataByID(objID));
+
+        //获取模型树控制器
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
         if (treeOper == nullptr) return;
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");

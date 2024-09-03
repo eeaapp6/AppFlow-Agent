@@ -53,13 +53,13 @@ namespace GUI
          * @author   BaGuijun (baguijun@163.com)
          * @date     2024-08-31
          */
-        QList<int> getDefaultFaceGroup();
+        static QList<int> getDefaultFaceGroup(Interface::FITKAbsGeoCommand* geoObj);
         /**
          * @brief    创建Default面组
          * @author   BaGuijun (baguijun@163.com)
          * @date     2024-08-31
          */
-        void createDefaultFaceGroup();
+        static void createDefaultFaceGroup(Interface::FITKAbsGeoCommand* geoObj);
     protected:
         /**
          * @brief 显示事件
