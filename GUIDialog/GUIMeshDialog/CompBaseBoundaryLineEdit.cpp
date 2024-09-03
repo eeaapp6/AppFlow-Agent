@@ -25,7 +25,7 @@ namespace GUI {
 
     void CompBaseBoundaryLineEdit::mouseMoveEvent(QMouseEvent* event)
     {
-        QLineEdit::mouseMoveEvent(event);
         emit sigMouseMove();
+        QLineEdit::mouseMoveEvent(event);
     }
 }

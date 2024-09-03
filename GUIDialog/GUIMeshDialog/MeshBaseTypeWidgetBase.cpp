@@ -1,6 +1,7 @@
 ﻿#include "MeshBaseTypeWidgetBase.h"
 #include "MeshBaseWidget.h"
 #include "CompBaseBoundary.h"
+#include "CompBaseBoundaryLineEdit.h"
 
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "GUIFrame/MainWindow.h"
@@ -33,6 +34,7 @@ namespace GUI
         int rowIndex = -1;
         CompBaseBoundaryLabel* label = dynamic_cast<CompBaseBoundaryLabel*>(sender());
         CompBaseBoundaryComboBox* comBox = dynamic_cast<CompBaseBoundaryComboBox*>(sender());
+        CompBaseBoundaryLineEdit* lineEdit = dynamic_cast<CompBaseBoundaryLineEdit*>(sender());
         QWidget* comParent = nullptr;
         if (label) {
             rowIndex = label->getPos();
@@ -41,6 +43,10 @@ namespace GUI
         else if (comBox) {
             rowIndex = comBox->getPos();
             comParent = dynamic_cast<QWidget*>(comBox->parent());
+        }
+        else if (lineEdit) {
+            rowIndex = lineEdit->getPos();
+            comParent = dynamic_cast<QWidget*>(lineEdit->parent());
         }
 
         if (comParent) {

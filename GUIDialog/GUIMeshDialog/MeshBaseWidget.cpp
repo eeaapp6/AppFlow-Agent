@@ -95,6 +95,7 @@ namespace GUI
 
     void MeshBaseWidget::on_comboBox_Type_activated(int index)
     {
+        Q_UNUSED(index);
         Interface::FITKAbstractRegionMeshSize::RegionType type = _ui->comboBox_Type->currentData().value<Interface::FITKAbstractRegionMeshSize::RegionType>();
 		auto meshGenerator = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
 
