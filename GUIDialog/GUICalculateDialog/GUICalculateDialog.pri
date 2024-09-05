@@ -27,6 +27,7 @@ HEADERS += \
     $$PWD/PostWidget.h \
     $$PWD/InitialCreatePatchDialog.h \
     $$PWD/OperatingConditionWidget.h \
+    $$PWD/CalculateDriver.h \
 
 SOURCES += \
     $$PWD/SetupWidget.cpp \
@@ -56,6 +57,7 @@ SOURCES += \
     $$PWD/PostWidget.cpp \
     $$PWD/InitialCreatePatchDialog.cpp \
     $$PWD/OperatingConditionWidget.cpp \
+    $$PWD/CalculateDriver.cpp \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \

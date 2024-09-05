@@ -2,13 +2,16 @@
 #include "ui_RunWidget.h"
 #include "RunProcess.h"
 #include "CompCalLineWidget.h"
+#include "CalculateDriver.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKSignalTransfer.h"
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
+#include "FITK_Kernel/FITKAppFramework/FITKProgramTaskManager.h"
 #include "FITK_Kernel/FITKCore/FITKDirFileTools.h"
 #include "FITK_Component/FITKOFDictWriter/FITKOFDictWriterIO.h"
+#include "FITK_Component/FITKOFDriver/FITKOFInputInfo.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFRunControl.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
@@ -123,6 +126,15 @@ namespace GUI
         QString shPath = creatStartSh(workDir, caseDir);
         if (shPath.isEmpty())return;
 
+        //auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
+        //auto proGramManager = app->getProgramTaskManager();
+        //AppFrame::FITKProgramInputInfo* info = new FoamDriver::FITKOFInputInfo();
+        //QStringList args;
+        //args << "/bin/bash " << shPath;
+        //info->setArgs(args);
+        //auto progam = proGramManager->createProgram(1, "CalculateDriver", info);
+        //if (!progam) return;
+        //progam->start();
         //启动进程
         if (_currentPro) {
             _currentPro->kill();
