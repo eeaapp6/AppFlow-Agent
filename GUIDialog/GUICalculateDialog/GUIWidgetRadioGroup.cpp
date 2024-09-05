@@ -99,7 +99,22 @@ namespace GUI
 
         for (auto subData : subDataList) {
             if (subData == nullptr)continue;
-            QWidget* widget = CompCalLineWidget::DataSwitchToWidget(subData, this, subData->getDataObjectName());
+            auto subDataType = subData->getDataType();
+            QWidget* widget = nullptr;
+            switch (subDataType){
+            case Interface::FlowDataType::FLowDataInt:
+            case Interface::FlowDataType::FLowDataDouble:
+            case Interface::FlowDataType::FLowDataString:
+            case Interface::FlowDataType::FLowDataComBox:
+            case Interface::FlowDataType::FLowDataDoubleList: {
+               widget = new CompCalLineWidget(subData, this);
+                break;
+            }
+            case Interface::FlowDataType::FLowDataBool: {
+                widget = CompCalLineWidget::DataSwitchToWidget(subData, this, subData->getDataObjectName());
+                break;
+            }
+            }
             if (widget == nullptr)continue;
             _ui->verticalLayout->addWidget(widget);
             _subWidget.append(widget);

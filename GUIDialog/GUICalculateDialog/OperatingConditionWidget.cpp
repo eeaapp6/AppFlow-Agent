@@ -77,7 +77,7 @@ namespace GUI
                }
                default:widget = new CompCalLineWidget(d, this); break;
                }
-               _ui->verticalLayout_GraAcc->addWidget(widget);
+               _ui->verticalLayout_RefPre->addWidget(widget);
            }
        }
     }
