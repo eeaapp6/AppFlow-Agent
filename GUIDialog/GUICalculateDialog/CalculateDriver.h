@@ -36,14 +36,14 @@ namespace GUI
 
         /**
         * @brief 启动程序
-        * @author libaojun (libaojunqd@Foxmail.com)
-        * @date 2024-06-09
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-09-05
         */
         void start() override;
         /**
          * @brief 终止程序运行
-         * @author libaojun (libaojunqd@foxmail.com)
-         * @date 2024-08-19
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-09-05
          */
         void stop() override;
     private slots:
