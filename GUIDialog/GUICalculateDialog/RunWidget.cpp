@@ -85,10 +85,7 @@ namespace GUI
 
     void RunWidget::slotProcessFinish()
     {
-        auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
-        auto proGramManager = app->getProgramTaskManager();
-        if(proGramManager)
-        setRunType(proGramManager->getDataByID(_currentDriverID));
+        setRunType(false);
     }
 
     void RunWidget::on_spinBox_NumOfPro_valueChanged(int arg1)
@@ -105,7 +102,7 @@ namespace GUI
         if (driver) {
             driver->stop();
         }
-        setRunType(driver);
+        setRunType(false);
     }
 
     void RunWidget::on_pushButton_Run_clicked()
@@ -140,16 +137,14 @@ namespace GUI
             _currentDriverID = calDriver->getDataObjectID();
         }
         //启动进程
-        connect(progam, &CalculateDriver::sig_Finish, [=]() {
+        connect(progam, SIGNAL(sig_Finish()), this, SLOT(slotProcessFinish()));
+        connect(progam, &CalculateDriver::sig_Finish, []() {
             auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
             auto proGramManager = app->getProgramTaskManager();
             if (proGramManager)proGramManager->removeDataByID(_currentDriverID);
-            if (_ui) {
-                setRunType(false);
-            }
         });
 
-        setRunType(progam);
+        setRunType(true);
         progam->start();
     }
 
@@ -203,14 +198,7 @@ namespace GUI
         auto progam = proGramManager->getDataByID(_currentDriverID);
         if (progam) {
             //启动进程
-            connect(progam, &CalculateDriver::sig_Finish, [=]() {
-                auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
-                auto proGramManager = app->getProgramTaskManager();
-                if (proGramManager)proGramManager->removeDataByID(_currentDriverID);
-                if (_ui) {
-                    setRunType(false);
-                }
-            });
+            connect(progam, SIGNAL(sig_Finish()), this, SLOT(slotProcessFinish()));
         }
         setRunType(progam);
     }
