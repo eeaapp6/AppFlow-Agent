@@ -60,6 +60,13 @@ namespace GUI
          * @date     2024-08-31
          */
         static void createDefaultFaceGroup(Interface::FITKAbsGeoCommand* geoObj);
+        /**
+         * @brief 获取当前模型数据对象
+         * @return Interface::FITKAbsGeoCommand*
+         * @author BaGuijun (baguijun@163.com)
+         * @date 2024-08-08
+         */
+        Interface::FITKAbsGeoCommand* getCurrentGeoCommand();
     protected:
         /**
          * @brief 显示事件

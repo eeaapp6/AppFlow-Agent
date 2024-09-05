@@ -71,11 +71,6 @@ namespace GUI
         _faceGroupWidget->setFaceGroupValue(rowIndex, facesId);
     }
 
-    Interface::FITKAbsGeoCommand * BoolInfoWidget::getCurrentGeoCommand()
-    {
-        return _obj;
-    }
-
     void BoolInfoWidget::closeEvent(QCloseEvent * event)
     {
         GeometryWidgetBase::closeEvent(event);

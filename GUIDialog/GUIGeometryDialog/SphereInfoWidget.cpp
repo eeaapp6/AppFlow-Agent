@@ -90,11 +90,6 @@ namespace GUI {
         _faceGroupWidget->setFaceGroupValue(rowIndex, facesId);
     }
 
-    Interface::FITKAbsGeoCommand * SphereInfoWidget::getCurrentGeoCommand()
-    {
-        return _obj;
-    }
-
     void SphereInfoWidget::closeEvent(QCloseEvent * event)
     {
         GeometryWidgetBase::closeEvent(event);

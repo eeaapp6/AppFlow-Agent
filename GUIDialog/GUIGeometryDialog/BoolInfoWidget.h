@@ -67,13 +67,6 @@ namespace GUI
          * @date 2024-08-08
          */
         void setFaceGroupValue(int rowIndex, QList<int> facesId);
-        /**
-         * @brief 获取当前模型数据对象
-         * @return Interface::FITKAbsGeoCommand* 
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-08
-         */
-        Interface::FITKAbsGeoCommand* getCurrentGeoCommand();
     protected:
         /**
          * @brief 关闭事件重写

@@ -82,13 +82,6 @@ namespace GUI
          * @date 2024-08-14
          */
         void setFaceGroupValue(int rowIndex, QList<int> facesId);
-        /**
-         * @brief get current geometry object
-         * @return Interface::FITKAbsGeoCommand* 
-         * @author BaGuijun (baguijun@163.com)
-         * @date 2024-08-14
-         */
-        Interface::FITKAbsGeoCommand* getCurrentGeoCommand();
     protected:
         /**
          * @brief close event override

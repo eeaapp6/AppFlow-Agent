@@ -94,11 +94,6 @@ namespace GUI {
         _faceGroupWidget->setFaceGroupValue(rowIndex, facesId);
     }
 
-    Interface::FITKAbsGeoCommand * CylinderInfoWidget::getCurrentGeoCommand()
-    {
-        return _obj;
-    }
-
     void CylinderInfoWidget::closeEvent(QCloseEvent * event)
     {
         GeometryWidgetBase::closeEvent(event);

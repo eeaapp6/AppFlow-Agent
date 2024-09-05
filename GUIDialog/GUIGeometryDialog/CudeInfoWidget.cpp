@@ -97,11 +97,6 @@ namespace GUI {
         _faceGroupWidget->setFaceGroupValue(rowIndex, facesId);
     }
 
-    Interface::FITKAbsGeoCommand * CudeInfoWidget::getCurrentGeoCommand()
-    {
-        return _obj;
-    }
-
     void CudeInfoWidget::closeEvent(QCloseEvent * event)
     {
         GeometryWidgetBase::closeEvent(event);

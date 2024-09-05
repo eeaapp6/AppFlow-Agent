@@ -61,6 +61,11 @@ namespace GUI
         commanger->appendDataObj(geoCom);
     }
 
+    Interface::FITKAbsGeoCommand * GeometryWidgetBase::getCurrentGeoCommand()
+    {
+        return _obj;
+    }
+
     void GeometryWidgetBase::showEvent(QShowEvent * event)
     {
         transparency();

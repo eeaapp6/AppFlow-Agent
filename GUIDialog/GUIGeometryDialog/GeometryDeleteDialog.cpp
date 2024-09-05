@@ -54,52 +54,18 @@ namespace GUI
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
         if (propertyWidget == nullptr)return;
 
-        auto type = _obj->getGeometryCommandType();
-        QWidget* widget = nullptr;
-        int objID = -1;
-        switch (type){
-        case Interface::FITKGeoEnum::FGTBox: {
-            GUI::CudeInfoWidget* cudeWidget = dynamic_cast<GUI::CudeInfoWidget*>(propertyWidget->getCurrentWidget());
-            if (cudeWidget == nullptr)break;
-            if (cudeWidget->getCurrentGeoCommand()) {
-                objID = cudeWidget->getCurrentGeoCommand()->getDataObjectID();
-                widget = cudeWidget;
-            }
-            break;
-        }
-        case Interface::FITKGeoEnum::FGTCylinder: {
-            GUI::CylinderInfoWidget* cudeWidget = dynamic_cast<GUI::CylinderInfoWidget*>(propertyWidget->getCurrentWidget());
-            if (cudeWidget == nullptr)break;
-            if (cudeWidget->getCurrentGeoCommand()) {
-                objID = cudeWidget->getCurrentGeoCommand()->getDataObjectID();
-                widget = cudeWidget;
-            }
-            break;
-        }
-        case Interface::FITKGeoEnum::FGTSphere: {
-            GUI::SphereInfoWidget* cudeWidget = dynamic_cast<GUI::SphereInfoWidget*>(propertyWidget->getCurrentWidget());
-            if (cudeWidget == nullptr)break;
-            if (cudeWidget->getCurrentGeoCommand()) {
-                objID = cudeWidget->getCurrentGeoCommand()->getDataObjectID();
-                widget = cudeWidget;
-            }
-            break;
-        }
-        case Interface::FITKGeoEnum::FGTBool:
-        case Interface::FITKGeoEnum::FGTImport:{
-            GUI::BoolInfoWidget* cudeWidget = dynamic_cast<GUI::BoolInfoWidget*>(propertyWidget->getCurrentWidget());
-            if (cudeWidget == nullptr)break;
-            if (cudeWidget->getCurrentGeoCommand()) {
-                objID = cudeWidget->getCurrentGeoCommand()->getDataObjectID();
-                widget = cudeWidget;
-            }
-            break;
-        }
-        }
+        //所要删除的几何对象ID
+        int deleteObjId = _obj->getDataObjectID();
 
-        //如果删除的数据是当前界面,删除当前界面
-        if (objID == _obj->getDataObjectID() && widget) {
-            propertyWidget->init();
+        //获取当前的几何界面与几何id
+        GUI::GeometryWidgetBase* currentWidget = dynamic_cast<GUI::GeometryWidgetBase*>(propertyWidget->getCurrentWidget());
+        if (currentWidget) {
+            //当前显示界面几何id
+            int CurrentWidgetGeoID = currentWidget->getCurrentGeoCommand()->getDataObjectID();
+            //如果删除的数据是当前界面,删除当前界面
+            if (CurrentWidgetGeoID == _obj->getDataObjectID()) {
+                propertyWidget->init();
+            }
         }
 
         //清除与当前几何相关的网格边界参数类
@@ -114,7 +80,6 @@ namespace GUI
         for (int id : meshSizeIds) {
             meshSizeManager->removeDataByID(id);
         }
-
         
         //清除当前几何关联的网格区域尺寸
         auto RegionMeshSizeManager = Interface::FITKMeshGenInterface::getInstance()->getRegionMeshSizeMgr();
@@ -128,19 +93,29 @@ namespace GUI
             }
         }
 
-        //清除几何对象
-        geometryData->removeDataByID(_obj->getDataObjectID());
-        _oper->execProfession();
-
         //刷新几何关联的网格区域尺寸界面
         EventOper::ParaWidgetInterfaceOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::ParaWidgetInterfaceOperator>("actionMeshGeoDelete");
         if (graphOper) {
             QObject* object = new QObject();
             object->setObjectName("actionMeshGeoDelete");
             graphOper->setEmitter(object);
+            graphOper->setArgs("objID", deleteObjId);
             graphOper->actionTriggered();
         }
 
+        //刷求解器中对应几何的patch节点
+        graphOper = FITKOPERREPO->getOperatorT<EventOper::ParaWidgetInterfaceOperator>("actionInitialDeleteGeo");
+        if (graphOper) {
+            QObject* object = new QObject();
+            object->setObjectName("actionInitialDeleteGeo");
+            graphOper->setEmitter(object);
+            graphOper->setArgs("objID", deleteObjId);
+            graphOper->actionTriggered();
+        }
+
+        //清除几何对象
+        geometryData->removeDataByID(deleteObjId);
+        _oper->execProfession();
         this->accept();
     }
 

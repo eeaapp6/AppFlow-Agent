@@ -34,8 +34,10 @@ namespace ModelOper
         }
         else if(_senderName == "actionMeshGeoDelete")
         {
-            GUI::MeshGeoWidget* widget = new GUI::MeshGeoWidget(this);
-            propertyWidget->setWidget(widget);
+            GUI::MeshGeoWidget* widget = dynamic_cast<GUI::MeshGeoWidget*>(propertyWidget);
+            if (widget) {
+                widget->updateWidget();
+            }
         }
         
         return true;
@@ -43,6 +45,18 @@ namespace ModelOper
 
     bool OperatorsMeshGeoManager::execProfession()
     {
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return false;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return false;
+
+        if (_senderName == "actionMeshGeoEdit") {
+
+        }
+        else if (_senderName == "actionMeshGeoDelete")
+        {
+
+        }
         return true;
     }
 }
