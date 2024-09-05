@@ -26,6 +26,7 @@ namespace EventOper {
 
 namespace GUI
 {
+    class InitialCreatePatchDialog;
     /**
      * @brief 求解器初始化参数界面
      * @author BaGuijun (baguijun@163.com)
@@ -55,6 +56,20 @@ namespace GUI
          * @date 2024-08-14
          */
         void init();
+        /**
+         * @brief    更新界面
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-04
+         */
+        void updateWidget();
+    private slots:
+        ;
+        /**
+         * @brief    patch添加
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-04
+         */
+        void on_pushButton_PatchAdd_clicked();
     private:
         /**
          * @brief    更新Basic界面
@@ -62,6 +77,12 @@ namespace GUI
          * @date     2024-08-23
          */
         void updateBasicWidget();
+        /**
+         * @brief    更新Patch界面
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-05
+         */
+        void updatePatchWidget();
     private:
         /**
          * @brief ui
