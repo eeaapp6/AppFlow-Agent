@@ -1,6 +1,5 @@
 ﻿#include "RunWidget.h"
 #include "ui_RunWidget.h"
-#include "RunProcess.h"
 #include "CompCalLineWidget.h"
 #include "CalculateDriver.h"
 
@@ -15,6 +14,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFRunControl.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
 
 #include <QButtonGroup>
 #include <QProcess>
@@ -29,7 +29,7 @@ namespace GUI
 {
     static RunCPUType _currentCUPType = RunCPUType::Serial;
     static int _currentCUPNum = 4;
-    static RunProcess* _currentPro = nullptr;
+    static int _currentDriverID = -1;
 
     RunWidget::RunWidget(EventOper::ParaWidgetInterfaceOperator* oper, QWidget* parent) :
         GUICalculateWidgetBase(oper,parent)
@@ -56,7 +56,6 @@ namespace GUI
         updataTime();
         updateOutput();
         initCPU();
-        setRunType(_currentPro);
     }
 
     void RunWidget::showEvent(QShowEvent * event)
@@ -86,12 +85,10 @@ namespace GUI
 
     void RunWidget::slotProcessFinish()
     {
-        if (_currentPro) {
-            delete _currentPro;
-            _currentPro = nullptr;
-        }
-
-        setRunType(_currentPro);
+        auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
+        auto proGramManager = app->getProgramTaskManager();
+        if(proGramManager)
+        setRunType(proGramManager->getDataByID(_currentDriverID));
     }
 
     void RunWidget::on_spinBox_NumOfPro_valueChanged(int arg1)
@@ -102,10 +99,13 @@ namespace GUI
 
     void RunWidget::on_pushButton_Stop_clicked()
     {
-        if (_currentPro) {
-            _currentPro->kill();
+        auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
+        auto proGramManager = app->getProgramTaskManager();
+        auto driver = proGramManager->getDataByID(_currentDriverID);
+        if (driver) {
+            driver->stop();
         }
-        slotProcessFinish();
+        setRunType(driver);
     }
 
     void RunWidget::on_pushButton_Run_clicked()
@@ -126,31 +126,31 @@ namespace GUI
         QString shPath = creatStartSh(workDir, caseDir);
         if (shPath.isEmpty())return;
 
-        //auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
-        //auto proGramManager = app->getProgramTaskManager();
-        //AppFrame::FITKProgramInputInfo* info = new FoamDriver::FITKOFInputInfo();
-        //QStringList args;
-        //args << "/bin/bash " << shPath;
-        //info->setArgs(args);
-        //auto progam = proGramManager->createProgram(1, "CalculateDriver", info);
-        //if (!progam) return;
-        //progam->start();
-        //启动进程
-        if (_currentPro) {
-            _currentPro->kill();
+        auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
+        auto proGramManager = app->getProgramTaskManager();
+        AppFrame::FITKProgramInputInfo* info = new FoamDriver::FITKOFInputInfo();
+        QStringList args;
+        args << shPath;
+        info->setArgs(args);
+        auto progam = proGramManager->createProgram(1, "CalculateDriver", info);
+        if (!progam) return;
+        CalculateDriver* calDriver = dynamic_cast<CalculateDriver*>(progam);
+        if (calDriver) {
+            calDriver->setExecProgram("/bin/bash");
+            _currentDriverID = calDriver->getDataObjectID();
         }
-        _currentPro = new RunProcess();
-        setRunType(_currentPro);
-
-        //进程结束信号处理
-        connect(_currentPro, &RunProcess::sigFinish, [=]() {
-            if (_currentPro) {
-                delete _currentPro;
-                _currentPro = nullptr;
+        //启动进程
+        connect(progam, &CalculateDriver::sig_Finish, [=]() {
+            auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
+            auto proGramManager = app->getProgramTaskManager();
+            if (proGramManager)proGramManager->removeDataByID(_currentDriverID);
+            if (_ui) {
+                setRunType(false);
             }
-            if (_ui) setRunType(_currentPro);
         });
-        _currentPro->start("/bin/bash " + shPath);
+
+        setRunType(progam);
+        progam->start();
     }
 
     void RunWidget::updataTime()
@@ -196,6 +196,23 @@ namespace GUI
         group->addButton(_ui->radioButton_parallel);
         connect(group, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(slotCPUChange(QAbstractButton*)));
         updateCPU();
+
+        //线程事件未结束，重新绑定结束事件与设置界面
+        auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
+        auto proGramManager = app->getProgramTaskManager();
+        auto progam = proGramManager->getDataByID(_currentDriverID);
+        if (progam) {
+            //启动进程
+            connect(progam, &CalculateDriver::sig_Finish, [=]() {
+                auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
+                auto proGramManager = app->getProgramTaskManager();
+                if (proGramManager)proGramManager->removeDataByID(_currentDriverID);
+                if (_ui) {
+                    setRunType(false);
+                }
+            });
+        }
+        setRunType(progam);
     }
 
     void RunWidget::updateCPU()
@@ -251,8 +268,10 @@ namespace GUI
 
     QString RunWidget::creatStartSh(QString workDir, QString caseDir)
     {
-        //脚本生成
+        if (_factoryData == nullptr)return "";
+        bool isSetFields = _factoryData->isExecuteSetFields();
         QString sh = "";
+        //脚本生成
         switch (_currentCUPType) {
         case GUI::RunCPUType::Serial:break;
         case GUI::RunCPUType::Parallel: {
@@ -269,6 +288,10 @@ namespace GUI
         // 创建一个 QTextStream 对象来写入文本
         QTextStream out(&file);
         // 写入字符串到文件
+        if (isSetFields) {
+            out << "setFields";
+            out << QStringLiteral("\n");
+        }
         out << sh;
         // 关闭文件
         file.close();

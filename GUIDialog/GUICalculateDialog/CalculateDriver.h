@@ -7,16 +7,64 @@
 #include "FITK_Kernel/FITKAppFramework/FITKExecProgramDriver.h"
 #include "FITK_Kernel/FITKAppFramework/FITKProgramDriverFactory.h"
 
+#include <QProcess>
+
 namespace GUI
 {
-    class CalculateDriver : public AppFrame::FITKExecProgramDriver
+    class CalculateDriver : public AppFrame::FITKAbstractProgramerDriver
     {
         Q_OBJECT;
     public:
         CalculateDriver();
         ~CalculateDriver();
+        /**
+         * @brief  设置可执行程序的名称
+         * @param[i]  program       程序的路径和名称
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-09-05
+         */
+        void setExecProgram(const QString & program);
+        /**
+         * @brief  获取可执行程序的名称
+         * @return QString      程序路径和名称
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-09-05
+         */
+        QString getExecProgram() const;
         virtual int getProgramType() override;
         virtual QString getProgramName() override;
+
+        /**
+        * @brief 启动程序
+        * @author libaojun (libaojunqd@Foxmail.com)
+        * @date 2024-06-09
+        */
+        void start() override;
+        /**
+         * @brief 终止程序运行
+         * @author libaojun (libaojunqd@foxmail.com)
+         * @date 2024-08-19
+         */
+        void stop() override;
+    private slots:
+        ;
+        void slotProcessOutput();
+        void slotProcessOutputError();
+        void slotProcessFinish(int exitCode, QProcess::ExitStatus exitStatus);
+        void slotMainwindowClose();
+    private:
+        /**
+         * @brief 可执行程序名称与路径
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-09-05
+         */
+        QString _program{};
+        /**
+         * @brief 进程对象
+         * @author BaGuijun (baguijun@163.com)
+         * @date   2024-09-05
+         */
+        QProcess* _process{};
     };
 
     Register2FITKProgramDriverFactory(1, CalculateDriver, CalculateDriver)

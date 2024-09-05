@@ -1,10 +1,12 @@
 ﻿#include "PostWidget.h"
 #include "ui_PostWidget.h"
-#include "RunProcess.h"
+#include "CalculateDriver.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
+#include "FITK_Kernel/FITKAppFramework/FITKProgramTaskManager.h"
 #include "FITK_Kernel/FITKCore/FITKDirFileTools.h"
+#include "FITK_Component/FITKOFDriver/FITKOFInputInfo.h"
 
 #include <QFile>
 #include <QTextStream>
@@ -49,17 +51,18 @@ namespace GUI
         QString foamFile = creatStartParaViewFile();
         if (foamFile.isEmpty())return;
 
-        QString sh = QString("paraview --case %1").arg(foamFile);
-
+        auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
+        auto proGramManager = app->getProgramTaskManager();
+        AppFrame::FITKProgramInputInfo* info = new FoamDriver::FITKOFInputInfo();
+        QStringList args;
+        args << "--case" << foamFile;
+        info->setArgs(args);
+        auto progam = proGramManager->createProgram(1, "CalculateDriver", info);
+        if (!progam) return;
+        CalculateDriver* calDriver = dynamic_cast<CalculateDriver*>(progam);
+        if (calDriver)calDriver->setExecProgram("paraview");
         //启动进程
-        RunProcess* currentPro = new RunProcess();
-        //进程结束信号处理
-        connect(currentPro, &RunProcess::sigFinish, [=]() {
-            if (currentPro) {
-                delete currentPro;
-            }
-        });
-        currentPro->start(sh);
+        progam->start();
     }
 
     QString PostWidget::creatStartParaViewFile()
@@ -85,22 +88,24 @@ void GUI::PostWidget::on_pushButton_Post_clicked()
 
 void GUI::PostWidget::on_pushButton_Export_clicked()
 {
-    PostExportType type = _ui->comboBox_Export->currentData().value<PostExportType>();
-    QString exportSh = "";
-    switch (type) {
-    case GUI::PostExportType::Post_VTK: {
-        exportSh = QString("foamToVTK -ascii -case %1").arg(_caseDir);
-        break;
-    }
-    }
-
-    //启动进程
-    RunProcess* currentPro = new RunProcess();
-    //进程结束信号处理
-    connect(currentPro, &RunProcess::sigFinish, [=]() {
-        if (currentPro) {
-            delete currentPro;
+    auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
+    auto proGramManager = app->getProgramTaskManager();
+    AppFrame::FITKProgramInputInfo* info = new FoamDriver::FITKOFInputInfo();
+    QStringList args;
+    args << "-ascii" << "-case" << _caseDir;
+    info->setArgs(args);
+    auto progam = proGramManager->createProgram(1, "CalculateDriver", info);
+    if (!progam) return;
+    CalculateDriver* calDriver = dynamic_cast<CalculateDriver*>(progam);
+    if (calDriver) {
+        PostExportType type = _ui->comboBox_Export->currentData().value<PostExportType>();
+        switch (type) {
+        case GUI::PostExportType::Post_VTK: {
+            calDriver->setExecProgram("foamToVTK");
+            break;
         }
-    });
-    currentPro->start(exportSh);
+        }
+    }
+    //启动进程
+    progam->start();
 }
