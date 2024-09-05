@@ -111,7 +111,7 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_SetupDiscretization:name = "actionDiscretizationEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupSolution:name = "actionSolutionEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupPassiveScalars:name = "actionPassiveScalarsEdit"; break;
-        case GUI::MainTreeEnum::MainTree_SetupOperatingConditions:name = "actionOperatingEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupOperatingConditions:name = "actionOperConditionEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupCellZones:name = "actionCellZonesEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupBoundaryConditionsItem:name = "actionBoundaryConditionsEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupInitialConditions:name = "actionInitialEdit"; break;
@@ -408,6 +408,14 @@ namespace GUI{
             item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupSolution));
             setupItem->addChild(item);
         }
+
+        if (physicsData->getOperatingConditions()) {
+            item = new QTreeWidgetItem();
+            item->setText(0, tr("Operating Conditions"));
+            item->setData(1, 0, -1);
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupOperatingConditions));
+            setupItem->addChild(item);
+        } 
 
         item = new QTreeWidgetItem();
         item->setText(0, tr("Boundary Conditions"));

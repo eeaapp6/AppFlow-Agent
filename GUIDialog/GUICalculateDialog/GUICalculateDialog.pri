@@ -26,6 +26,7 @@ HEADERS += \
     $$PWD/RunProcess.h \
     $$PWD/PostWidget.h \
     $$PWD/InitialCreatePatchDialog.h \
+    $$PWD/OperatingConditionWidget.h \
 
 SOURCES += \
     $$PWD/SetupWidget.cpp \
@@ -54,6 +55,7 @@ SOURCES += \
     $$PWD/RunProcess.cpp \
     $$PWD/PostWidget.cpp \
     $$PWD/InitialCreatePatchDialog.cpp \
+    $$PWD/OperatingConditionWidget.cpp \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \
@@ -75,6 +77,7 @@ FORMS += \
     $$PWD/RunWidget.ui \
     $$PWD/PostWidget.ui \
     $$PWD/InitialCreatePatchDialog.ui \
+    $$PWD/OperatingConditionWidget.ui \
 
  RESOURCES += \
     $$PWD/../../Resources/Resources.qrc
