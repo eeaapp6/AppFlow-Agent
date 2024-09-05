@@ -53,52 +53,15 @@ namespace ModelOper {
         if (_senderName == "actionImportGeometry") {
             fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Geometry"), workDir, tr("File(*.brep ; *.stp ; *.step ; *.igs ; *.stl)"));
             if (fileName.isEmpty())return false;
-
-//             ImportReadThread* importThread = new ImportReadThread();
-//             importThread->_type = ImportType::ImportGeo;
-//             importThread->_fileName = fileName;
-//             pool->execTask(importThread);
-//             connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotGeoImportFinish(bool, int)));
         }
         else  if (_senderName == "actionImportMesh") {
             fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Mesh"), workDir);
             if (fileName.isEmpty())return false;
-
-//             ImportReadThread* importThread = new ImportReadThread();
-//             importThread->_type = ImportType::ImportMesh;
-//             importThread->_fileName = fileName;
-//             pool->execTask(importThread);
-//             connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotMeshImportFinish(bool, int)));
-
-            //        //工作路径获取
-            //QString workDir = "";
-            //if (FITKAPP->getAppSettings()) {
-            //    workDir = FITKAPP->getAppSettings()->getWorkingDir();
-            //}
-            //if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
-
-            //// 获取单例
-            //auto meshGen = Interface::FITKMeshGenInterface::getInstance();
-            //// 读取网格
-            //auto meshProcessor = meshGen->getMeshProcessor();
-            //if (meshProcessor == nullptr) return false;
-            ////网格划分路径指定
-            //QString meshGenDir = workDir + "/mesh";
-
-            //meshProcessor->setValue("WorkDir", meshGenDir);
-            //meshProcessor->start();
-            ////刷新渲染窗口
-            //EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-            //if (graphOper == nullptr)return false;
-            //// 网格对象
-            //auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
-            //graphOper->updateGraph(mesh->getDataObjectID());
-
-            //// 获取模型树控制器
-            //auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
-            //if (treeOper == nullptr) return false;
-            //treeOper->updateTree();
         }
+        else if (_senderName == "actionImportOpenFoamMesh") {
+            fileName = fileDialog.getExistingDirectory(_mainWindow, tr("Import OpenFoam Mesh"), workDir);
+            if (fileName.isEmpty())return false;
+        }        
         this->setArgs("FileName", fileName);
         this->setArgs("SenderName", _senderName);
 
@@ -128,13 +91,20 @@ namespace ModelOper {
         }
         else  if (senderName == "actionImportMesh") 
         {
-            
             ImportReadThread* importThread = new ImportReadThread();
             importThread->_type = ImportType::ImportMesh;
             importThread->_fileName = fileName;
             connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotMeshImportFinish(bool, int)));
             pool->execTask(importThread);
         }
+        else if (_senderName == "actionImportOpenFoamMesh") {
+            ImportReadThread* importThread = new ImportReadThread();
+            importThread->_type = ImportType::ImportOpenFoamMesh;
+            importThread->_fileName = fileName;
+            connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotFoamMeshInportFinish()));
+            pool->execTask(importThread);
+        }
+
         this->clearArgs();
         return true;
     }
@@ -184,9 +154,24 @@ namespace ModelOper {
         graphOper->reRender(true);
     }
 
+    void OperatorsImportManager::slotFoamMeshInportFinish()
+    {
+        //刷新渲染窗口
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
+        // 网格对象
+        auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
+        graphOper->updateGraph(mesh->getDataObjectID());
+
+        // 获取模型树控制器
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return;
+        treeOper->updateTree();
+    }
+
     void ImportReadThread::run()
     {
-        switch (_type){
+        switch (_type) {
         case ModelOper::ImportType::ImportGeo: {
             Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
             if (geometryData == nullptr) return;
@@ -196,7 +181,7 @@ namespace ModelOper {
             auto geoObj = geoFactory->createCommandT<Interface::FITKAbsGeoModelImport>(Interface::FITKGeoEnum::FITKGeometryComType::FGTImport);
             if (geoObj == nullptr)return;
             geoObj->setFileName(_fileName);
-            
+
 
             if (geoObj->getDataObjectName().isEmpty()) {
                 QFileInfo fileInfo(_fileName);
@@ -205,13 +190,25 @@ namespace ModelOper {
                 geoObj->setDataObjectName(name);
             }
             geometryData->appendDataObj(geoObj);
-			bool result = geoObj->update();
+            bool result = geoObj->update();
 
             emit sigImportFinish(result, geoObj->getDataObjectID());
             break;
         }
         case ModelOper::ImportType::ImportMesh:
             break;
+        case ModelOper::ImportType::ImportOpenFoamMesh:{
+            // 获取单例
+            auto meshGen = Interface::FITKMeshGenInterface::getInstance();
+            // 读取网格
+            auto meshProcessor = meshGen->getMeshProcessor();
+            if (meshProcessor == nullptr) return;
+            meshProcessor->setValue("WorkDir", _fileName);
+            meshProcessor->start();
+            bool result = true;
+            emit sigImportFinish(true, -1);
+            break;
+        }
         }
     }
 

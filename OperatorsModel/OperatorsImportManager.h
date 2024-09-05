@@ -20,9 +20,10 @@ namespace ModelOper
      * @date 2024-08-14
      */
     enum class ImportType {
-        ImportNone,        ///空
-        ImportGeo,         ///几何
-        ImportMesh,        ///网格
+        ImportNone,                ///空
+        ImportGeo,                 ///几何
+        ImportMesh,                ///网格
+        ImportOpenFoamMesh,        ///OpenFoam网格
     };
     /**
      * @brief 文件导入操作器
@@ -79,6 +80,12 @@ namespace ModelOper
          * @date 2024-08-14
          */
         void slotMeshImportFinish(bool result, int objID);
+        /**
+         * @brief    OpenFoam网格文件导入槽函数
+         * @author   BaGuijun (baguijun@163.com)
+         * @date     2024-09-05
+         */
+        void slotFoamMeshInportFinish();
     };
 
     /**
@@ -134,6 +141,7 @@ namespace ModelOper
     // 按钮注册相关操作
     Register2FITKOPeratorRepo(actionImportGeometry, OperatorsImportManager);
     Register2FITKOPeratorRepo(actionImportMesh, OperatorsImportManager);
+    Register2FITKOPeratorRepo(actionImportOpenFoamMesh, OperatorsImportManager);
 }
 
 #endif

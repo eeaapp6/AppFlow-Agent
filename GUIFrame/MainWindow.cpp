@@ -167,6 +167,11 @@ namespace GUI
         action->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+M", nullptr));
         fileAppButton->addAction(action);
 
+        //导入OpenFoam网格文件
+        action = createAction(tr("import OpenFoam mesh"), "actionImportOpenFoamMesh", ":/icons/importMesh.png");
+        action->setShortcut(QCoreApplication::translate("MainWindow", "", nullptr));
+        fileAppButton->addAction(action);
+
         //工作目录
         action = createAction(tr("Working Dir"), "actionWorkingDir");
         fileAppButton->addAction(action);
@@ -200,8 +205,9 @@ namespace GUI
         pannel = gategory->addPannel(tr("Model"));
         action = getAction("actionImportGeometry");
         if (action) pannelAddAction(pannel, action, SARibbonPannelItem::Large);
-
         action = getAction("actionImportMesh");
+        if (action) pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = getAction("actionImportOpenFoamMesh");
         if (action) pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         //三维交互
@@ -294,6 +300,8 @@ namespace GUI
         // 网格导入
         auto pannel = gategory->addPannel(tr("Import Mesh"));
         action = getAction("actionImportMesh");
+        if (action) pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+        action = getAction("actionImportOpenFoamMesh");
         if (action) pannelAddAction(pannel, action, SARibbonPannelItem::Large);
         //action = createAction(tr("Tet"), "actionTetMesh", ":/icons/displayedge.png", tr("Cube"));
         //pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
