@@ -110,6 +110,11 @@ namespace GUI
                widget = new CompCalLineWidget(subData, this);
                 break;
             }
+            case Interface::FlowDataType::FLowDataRadioGroup: 
+            case Interface::FlowDataType::FLowDataBoolGroup: {
+                widget = CompCalLineWidget::DataSwitchToWidget(subData, this);
+                break;
+            }
             case Interface::FlowDataType::FLowDataBool: {
                 widget = CompCalLineWidget::DataSwitchToWidget(subData, this, subData->getDataObjectName());
                 break;
