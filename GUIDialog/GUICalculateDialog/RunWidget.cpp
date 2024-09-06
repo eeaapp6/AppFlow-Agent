@@ -14,6 +14,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFRunControl.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractOFSolver.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
 
 #include <QButtonGroup>
@@ -116,12 +117,21 @@ namespace GUI
         QString caseDir = workDir + "/case";
 
         //清理字典文件
-        if (!clearCasePath(caseDir))return;
+        if (!clearCasePath(caseDir)) {
+            emit FITKAPP->getSignalTransfer()->outputMessageSig(3, tr("Clear failed!"));
+            return;
+        }
         //写出字典文件
-        if (!writeCase(caseDir))return;
+        if (!writeCase(caseDir)) {
+            emit FITKAPP->getSignalTransfer()->outputMessageSig(3, tr("Write failed!"));
+            return;
+        }
         //写出启动脚本
         QString shPath = creatStartSh(workDir, caseDir);
-        if (shPath.isEmpty())return;
+        if (shPath.isEmpty()) {
+            emit FITKAPP->getSignalTransfer()->outputMessageSig(3, tr("Create sh failed!"));
+            return;
+        }
 
         auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
         auto proGramManager = app->getProgramTaskManager();
@@ -256,18 +266,23 @@ namespace GUI
 
     QString RunWidget::creatStartSh(QString workDir, QString caseDir)
     {
+        QString foamRun, foamName;
         if (_factoryData == nullptr)return "";
         bool isSetFields = _factoryData->isExecuteSetFields();
-        QString sh = "";
+        Interface::FITKAbstractOFSolver* curSolver = _physicsData->getSolver();
+        if (curSolver) {
+            foamName = curSolver->getSolverCommand();
+        }
+        
         //脚本生成
         switch (_currentCUPType) {
         case GUI::RunCPUType::Serial:break;
         case GUI::RunCPUType::Parallel: {
-            sh += QString("mpirun -np %1 ").arg(_currentCUPNum);
+            foamRun += QString("mpirun -np %1 ").arg(_currentCUPNum);
             break;
         }
         }
-        sh += QString("simpleFoam -case %1").arg(caseDir);
+        foamRun += QString("%1 -case %2").arg(foamName).arg(caseDir);
 
         QString shFilePath = workDir + "/startOpenFoam.sh";
         QFile file(shFilePath);
@@ -277,10 +292,10 @@ namespace GUI
         QTextStream out(&file);
         // 写入字符串到文件
         if (isSetFields) {
-            out << "setFields";
+            out << QString("setFields -case %1").arg(caseDir);
             out << QStringLiteral("\n");
         }
-        out << sh;
+        out << foamRun;
         // 关闭文件
         file.close();
         return shFilePath;
