@@ -5,7 +5,6 @@ SUBDIRS += \
     $$PWD/FITKAppFramework \
     $$PWD/FITKPython \
     $$PWD/FITKAdaptor \
-  
- 
+    $$PWD/FITKEasyParam \
 
 CONFIG += ordered

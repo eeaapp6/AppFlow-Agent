@@ -67,3 +67,9 @@
 [submodule "FITK_Component/FITKFluidVTKGraphAdaptor"]
 	path = FITK_Component/FITKFluidVTKGraphAdaptor
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKFluidVTKGraphAdaptor.git
+[submodule "FITK_Component/FITKPlotWindow"]
+	path = FITK_Component/FITKPlotWindow
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKPlotWindow.git
+[submodule "FITK_Kernel/FITKEasyParam"]
+	path = FITK_Kernel/FITKEasyParam
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKEasyParam.git
