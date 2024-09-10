@@ -1,13 +1,13 @@
 ﻿#include "TransportWidget.h"
 #include "ui_TransportWidget.h"
 #include "CompTranPhasesWidget.h"
-#include "CompCalLineWidget.h"
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetComLine.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTransportProp.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
 #include "FITK_Component/FITKWidget/FITKTabWidget.h"
 
 #include <QToolBox>
@@ -39,11 +39,11 @@ namespace GUI
         _tranData = _physicsData->getTransportProp();
         if (_tranData == nullptr)return;
         
-        Interface::FITKAbstractParameter* paraData =_tranData->getTransportAdditionalData();
+        Core::FITKParameter* paraData =_tranData->getTransportAdditionalData();
         if (paraData) {
             for (auto d : paraData->getParameter()){
                 if (d == nullptr)continue;
-                _ui->verticalLayout->addWidget(new CompCalLineWidget(d, this));
+                _ui->verticalLayout->addWidget(new Core::FITKWidgetComLine(d, this));
             }
         }
 

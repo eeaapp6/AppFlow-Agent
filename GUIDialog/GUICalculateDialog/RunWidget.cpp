@@ -1,6 +1,5 @@
 ﻿#include "RunWidget.h"
 #include "ui_RunWidget.h"
-#include "CompCalLineWidget.h"
 #include "CalculateDriver.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
@@ -9,11 +8,13 @@
 #include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
 #include "FITK_Kernel/FITKAppFramework/FITKProgramTaskManager.h"
 #include "FITK_Kernel/FITKCore/FITKDirFileTools.h"
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetComLine.h"
+#include "FITK_Kernel/FITKEasyParam/FITKEasyParamWidgetFactory.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
 #include "FITK_Component/FITKOFDictWriter/FITKOFDictWriterIO.h"
 #include "FITK_Component/FITKOFDriver/FITKOFInputInfo.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFRunControl.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractOFSolver.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
 
@@ -161,15 +162,15 @@ namespace GUI
     void RunWidget::updataTime()
     {
         if (_runConObj == nullptr)return;
-        Interface::FITKAbstractParameter* tiemPara = _runConObj->getTimeControl();
+        Core::FITKParameter* tiemPara = _runConObj->getTimeControl();
         for (auto data : tiemPara->getParameter()) {
             if(data == nullptr)continue;
             QWidget* widget = nullptr;
-            if (data->getDataType() == Interface::FlowDataType::FLowDataBoolGroup) {
-                widget = CompCalLineWidget::DataSwitchToWidget(data, this);
+            if (data->getParamType() == Core::FITKAbstractEasyParam::FITKEasyParamType::FEPBoolGroup) {
+                widget = Core::FITKEasyParamWidgetFactory::createWidget(data, this);
             }
             else {
-                widget = new CompCalLineWidget(data, this);
+                widget = new Core::FITKWidgetComLine(data, this);
             }
             _ui->verticalLayout_Time->addWidget(widget);
         }
@@ -178,15 +179,15 @@ namespace GUI
     void RunWidget::updateOutput()
     {
         if (_runConObj == nullptr)return;
-        Interface::FITKAbstractParameter* outPara = _runConObj->getOutputControl();
+        Core::FITKParameter* outPara = _runConObj->getOutputControl();
         for (auto data : outPara->getParameter()) {
             if (data == nullptr)continue;
             QWidget* widget = nullptr;
-            if (data->getDataType() == Interface::FlowDataType::FLowDataBoolGroup) {
-                widget = CompCalLineWidget::DataSwitchToWidget(data, this);
+            if (data->getParamType() == Core::FITKAbstractEasyParam::FITKEasyParamType::FEPBoolGroup) {
+                widget = Core::FITKEasyParamWidgetFactory::createWidget(data, this);
             }
             else {
-                widget = new CompCalLineWidget(data, this);
+                widget = new Core::FITKWidgetComLine(data, this);
             }
             _ui->verticalLayout_Output->addWidget(widget);
         }

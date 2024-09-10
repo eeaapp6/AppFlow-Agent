@@ -1,17 +1,18 @@
 ﻿#include "SolutionWidget.h"
 #include "ui_SolutionWidget.h"
-#include "CompCalLineWidget.h"
-#include "CompVBoxWidget.h"
 #include "CompSelectComBoxWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetComLine.h"
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetVBox.h"
+#include "FITK_Kernel/FITKEasyParam/FITKEasyParamWidgetFactory.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractOFSolver.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolution.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsManager.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFSolutionSolverManager.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
@@ -22,7 +23,7 @@
 
 namespace GUI
 {
-    Interface::FITKAbstractParameter* solutionGetSubData(const QString & type, CompSelectComBoxWidget* widget)
+    Core::FITKParameter* solutionGetSubData(const QString & type, CompSelectComBoxWidget* widget)
     {
         if (widget == nullptr)return nullptr;
         auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
@@ -100,11 +101,11 @@ namespace GUI
             QString type = solversData->getVariableName();
             QList<QWidget*> widgetList = {};
             //其余数据添加
-            Interface::FITKAbstractParameter* solverOther = solversData->getSolverAdditionalPara();
+            Core::FITKParameter* solverOther = solversData->getSolverAdditionalPara();
             if(solverOther){
                 for (auto d : solverOther->getParameter()) {
                     if (d == nullptr)continue;
-                    QWidget* w = new CompCalLineWidget(d, this);
+                    QWidget* w = new Core::FITKWidgetComLine(d, this);
                     widgetList.append(w);
                 }
             }
@@ -120,7 +121,7 @@ namespace GUI
                 comp->setSubWidgetData(solver->getSolverSolutionPara());
                 widgetList.append(comp);
             }
-            CompVBoxWidget* widget = new CompVBoxWidget(widgetList, this);
+            Core::FITKWidgetVBox* widget = new Core::FITKWidgetVBox(widgetList, this);
             tabWidget->addTab(widget, type);
         }
         _ui->verticalLayout_Solvers->addWidget(tabWidget);
@@ -139,7 +140,7 @@ namespace GUI
         
         for (auto value : solverValue->getParameter()) {
             if (value == nullptr)continue;
-            QWidget* widget = new CompCalLineWidget(value, this);
+            QWidget* widget = new Core::FITKWidgetComLine(value, this);
             _ui->verticalLayout_Solver->addWidget(widget);
         }
     }
@@ -156,10 +157,10 @@ namespace GUI
             QList<QWidget*> widgets = {};
             for (auto v : value->getParameter()) {
                 if (v == nullptr)return;
-                QWidget* widget = new CompCalLineWidget(v, this);
+                QWidget* widget = new Core::FITKWidgetComLine(v, this);
                 widgets.append(widget);
             }
-            CompVBoxWidget* VBoxWidget = new CompVBoxWidget(widgets, this);
+            Core::FITKWidgetVBox* VBoxWidget = new Core::FITKWidgetVBox(widgets, this);
             tabWidget->addTab(VBoxWidget, name);
         }
         _ui->verticalLayout_Residuals->addWidget(tabWidget);
@@ -173,7 +174,7 @@ namespace GUI
 
         for (auto v : relValue->getParameter()) {
             if (v == nullptr)continue;
-            QWidget* widget = new CompCalLineWidget(v, this);
+            QWidget* widget = new Core::FITKWidgetComLine(v, this);
             _ui->verticalLayout_Relaxation->addWidget(widget);
         }
     }
@@ -186,7 +187,7 @@ namespace GUI
 
         for (auto v : limValue->getParameter()) {
             if (v == nullptr)continue;
-            QWidget* widget = CompCalLineWidget::DataSwitchToWidget(v, this);
+            QWidget* widget = Core::FITKEasyParamWidgetFactory::createWidget(v, this);
             _ui->verticalLayout_Limits->addWidget(widget);
         }
     }

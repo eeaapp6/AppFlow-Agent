@@ -1,10 +1,10 @@
 ﻿#include "TurbulenceWidget.h"
 #include "ui_TurbulenceWidget.h"
-#include "CompCalLineWidget.h"
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetComLine.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractOFSolver.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTurbulenceManager.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsManager.h"
@@ -84,7 +84,7 @@ namespace GUI
             for (int i = 0; i < turData->getTurbulenceParams()->getParameterCount(); i++) {
                 auto dataBase = turData->getTurbulenceParams()->getParameterAt(i);
                 if (dataBase == nullptr)continue;
-                _ui->verticalLayout_ModelSub->addWidget(new CompCalLineWidget(dataBase, this));
+                _ui->verticalLayout_ModelSub->addWidget(new Core::FITKWidgetComLine(dataBase, this));
             }
         }
         //if (turData->getDeltaData(turData->getCurrentDeltaType())) {
@@ -92,7 +92,7 @@ namespace GUI
         //    for (int i = 0; i < deltaData->getParameterCount(); i++) {
         //        auto dataBase = deltaData->getParameterAt(i);
         //        if (dataBase == nullptr)continue;
-        //        _ui->verticalLayout_DeltaSub->addWidget(new compCalLineWidget(dataBase, this));
+        //        _ui->verticalLayout_DeltaSub->addWidget(new Core::FITKWidgetComLine(dataBase, this));
         //    }
         //}
     }

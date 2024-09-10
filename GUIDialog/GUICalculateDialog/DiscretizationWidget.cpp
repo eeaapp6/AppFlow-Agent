@@ -1,13 +1,14 @@
 ﻿#include "DiscretizationWidget.h"
 #include "ui_DiscretizationWidget.h"
-#include "CompCalLineWidget.h"
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetComLine.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFDiscretization.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
+#include "FITK_Kernel/FITKEasyParam/FITKEasyParamWidgetFactory.h"
 #include "FITK_Component/FITKWidget/FITKTabWidget.h"
 
 #include <QToolBox>
@@ -74,7 +75,7 @@ namespace GUI
         for (auto dataBase : timeValue->getParameter())
         {
             if (dataBase == nullptr)continue;
-            QWidget* widget = CompCalLineWidget::DataSwitchToWidget(dataBase, this);
+            QWidget* widget = Core::FITKEasyParamWidgetFactory::createWidget(dataBase, this);
             _ui->verticalLayout_Time->addWidget(widget);
         }
     }
@@ -92,7 +93,7 @@ namespace GUI
 
             for (auto subValue : conValue->getParameter()){
                 if (subValue == nullptr)continue;
-                QWidget* widget = CompCalLineWidget::DataSwitchToWidget(subValue, this);
+                QWidget* widget = Core::FITKEasyParamWidgetFactory::createWidget(subValue, this);
                 tabWidget->addTab(widget, conName);
             }
         }
@@ -109,7 +110,7 @@ namespace GUI
         Comp::FITKTabWidget* tabWidget = new Comp::FITKTabWidget(Comp::FITKTabWidgetType::FITKTab_Auto, this);
         for (auto value : gradValue->getParameter()) {
             if (value == nullptr)continue;
-            QWidget* widget = CompCalLineWidget::DataSwitchToWidget(value, this);
+            QWidget* widget = Core::FITKEasyParamWidgetFactory::createWidget(value, this);
             tabWidget->addTab(widget, value->getDataObjectName());
         }
 
@@ -123,7 +124,7 @@ namespace GUI
         if (intValue == nullptr)return;
 
         for (auto value : intValue->getParameter()) {
-            QWidget* widget = new CompCalLineWidget(value, this);
+            QWidget* widget = new Core::FITKWidgetComLine(value, this);
             _ui->verticalLayout_Interpolation->addWidget(widget);
         }
     }

@@ -1,8 +1,9 @@
 ﻿#include "OperatingConditionWidget.h"
 #include "ui_OperatingConditionWidget.h"
-#include "CompCalLineWidget.h"
 
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetComLine.h"
+#include "FITK_Kernel/FITKEasyParam/FITKEasyParamWidgetFactory.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFOperatingConditions.h"
 
@@ -52,30 +53,30 @@ namespace GUI
             delete item; // 删除布局项
         }
 
-       Interface::FITKAbstractParameter* graAccData = _operCondition->getGravitationalAcceleration();
+       Core::FITKParameter* graAccData = _operCondition->getGravitationalAcceleration();
        if (graAccData) {
            if (graAccData->getParameterCount() > 0)_ui->groupBox_GraAcc->show();
            for (auto d : graAccData->getParameter()) {
                if (d == nullptr)continue;
-               QWidget* widget = new CompCalLineWidget(d, this);
+               QWidget* widget = new Core::FITKWidgetComLine(d, this);
                _ui->verticalLayout_GraAcc->addWidget(widget);
            }
        }
 
-       Interface::FITKAbstractParameter* refPreData = _operCondition->getReferencePressure();
+       Core::FITKParameter* refPreData = _operCondition->getReferencePressure();
        if (refPreData) {
            if (refPreData->getParameterCount() > 0)_ui->groupBox_RefPre->show();
            for (auto d : refPreData->getParameter()) {
                if (d == nullptr)continue;
                QWidget* widget = nullptr;
-               auto type = d->getDataType();
+               auto type = d->getParamType();
                switch (type){
-               case Interface::FlowDataType::FLowDataRadioGroup:
-               case Interface::FlowDataType::FLowDataBoolGroup: {
-                   widget = CompCalLineWidget::DataSwitchToWidget(d, this); break;
+               case Core::FITKAbstractEasyParam::FITKEasyParamType::FEPRadioGroup:
+               case Core::FITKAbstractEasyParam::FITKEasyParamType::FEPBoolGroup: {
+                   widget = Core::FITKEasyParamWidgetFactory::createWidget(d, this); break;
                    break;
                }
-               default:widget = new CompCalLineWidget(d, this); break;
+               default:widget = new Core::FITKWidgetComLine(d, this); break;
                }
                _ui->verticalLayout_RefPre->addWidget(widget);
            }

@@ -1,8 +1,8 @@
 ﻿#include "CompSelectComBoxWidget.h"
 #include "ui_CompSelectComBoxWidget.h"
-#include "CompCalLineWidget.h"
 
-#include <FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h>
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetComLine.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
 
 namespace GUI
 {
@@ -33,7 +33,7 @@ namespace GUI
         if (_myFunction == nullptr)return;
         QString currentOption = _ui->comboBox->currentText();
         if (currentOption.isEmpty())return;
-        Interface::FITKAbstractParameter* subData = _myFunction(currentOption, this);
+        Core::FITKParameter* subData = _myFunction(currentOption, this);
         if (subData == nullptr)return;
 
         //清除全部子界面
@@ -47,7 +47,7 @@ namespace GUI
 
         for (auto data : subData->getParameter()) {
             if (data == nullptr)continue;
-            QWidget* w = new CompCalLineWidget(data, this);
+            QWidget* w = new Core::FITKWidgetComLine(data, this);
             if (w == nullptr)continue;
             _ui->verticalLayout_Sub->addWidget(w);
         }
@@ -74,7 +74,7 @@ namespace GUI
         _ui->comboBox->blockSignals(false);
     }
 
-    void CompSelectComBoxWidget::setSubWidgetData(Interface::FITKAbstractParameter * data)
+    void CompSelectComBoxWidget::setSubWidgetData(Core::FITKParameter* data)
     {
         if (data == nullptr)return;
         //清除全部子界面
@@ -88,7 +88,7 @@ namespace GUI
 
         for (auto d : data->getParameter()) {
             if (d == nullptr)continue;
-            QWidget* w = new CompCalLineWidget(d, this);
+            QWidget* w = new Core::FITKWidgetComLine(d, this);
             if (w == nullptr)continue;
             _ui->verticalLayout_Sub->addWidget(w);
         }

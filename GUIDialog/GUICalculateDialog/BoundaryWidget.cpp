@@ -1,7 +1,6 @@
 ﻿#include "BoundaryWidget.h"
 #include "ui_BoundaryWidget.h"
 #include "CompSelectComBoxWidget.h"
-#include "CompCalLineWidget.h"
 
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
@@ -10,16 +9,17 @@
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetComLine.h"
+#include "FITK_Kernel/FITKEasyParam/FITKEasyParamWidgetFactory.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFBoundary.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFBoundaryType.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFBoundaryTypeManager.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsManager.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractOFSolver.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
 
 #include <QTabBar>
 #include <QToolBox>
@@ -30,11 +30,11 @@ namespace GUI
      * @brief    FLow子数据回调函数
      * @param[i] type 类型
      * @param[i] widget 对应的界面
-     * @return   Interface::FITKAbstractParameter* 子数据对象
+     * @return   Core::FITKParameter* 子数据对象
      * @author   BaGuijun (baguijun@163.com)
      * @date     2024-08-27
      */
-    Interface::FITKAbstractParameter* getBoundaryFlowSubData(const QString& type, CompSelectComBoxWidget* widget)
+    Core::FITKParameter* getBoundaryFlowSubData(const QString& type, CompSelectComBoxWidget* widget)
     {
         if (widget == nullptr)return nullptr;
         auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
@@ -57,11 +57,11 @@ namespace GUI
      * @brief   Turbulence子数据回调函数
      * @param[i] type 类型
      * @param[i] widget 对应的界面
-     * @return   Interface::FITKAbstractParameter* 子数据对象
+     * @return   Core::FITKParameter* 子数据对象
      * @author   BaGuijun (baguijun@163.com)
      * @date     2024-08-27
      */
-    Interface::FITKAbstractParameter* getBoundaryTurbulenceSubData(const QString& type, CompSelectComBoxWidget* widget)
+    Core::FITKParameter* getBoundaryTurbulenceSubData(const QString& type, CompSelectComBoxWidget* widget)
     {
         if (widget == nullptr)return nullptr;
         auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
@@ -83,11 +83,11 @@ namespace GUI
      * @brief    Phases子数据回调函数
      * @param[i] type 类型
      * @param[i] widget 对应的界面
-     * @return   Interface::FITKAbstractParameter* 子数据对象
+     * @return   Core::FITKParameter* 子数据对象
      * @author   BaGuijun (baguijun@163.com)
      * @date     2024-08-27
      */
-    Interface::FITKAbstractParameter* getBoundaryPhasesSubData(const QString& type, CompSelectComBoxWidget* widget)
+    Core::FITKParameter* getBoundaryPhasesSubData(const QString& type, CompSelectComBoxWidget* widget)
     {
         if (widget == nullptr)return nullptr;
         auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
@@ -204,7 +204,7 @@ namespace GUI
 
         QWidget* widget = new QWidget(this);
         QVBoxLayout* layout = new QVBoxLayout();
-        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(widget);
+        QToolBox* toolBox = Core::FITKWidgetComLine::CreateToolBox(widget);
         for (int i = 0; i < num; i++) {
             Interface::FITKOFAbsBoundaryType* data = _boundaryObj->getFlowVBType(i);
             if (data == nullptr)continue;
@@ -239,7 +239,7 @@ namespace GUI
 
         QWidget* widget = new QWidget(this);
         QVBoxLayout* layout = new QVBoxLayout();
-        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(widget);
+        QToolBox* toolBox = Core::FITKWidgetComLine::CreateToolBox(widget);
         for (int i = 0; i < num; i++) {
             Interface::FITKOFAbsBoundaryType* data = _boundaryObj->getTurbulenceVBType(i);
             if (data == nullptr)continue;
@@ -275,7 +275,7 @@ namespace GUI
 
         QWidget* widget = new QWidget(this);
         QVBoxLayout* layout = new QVBoxLayout();
-        QToolBox* toolBox = CompCalLineWidget::CreateToolBox(widget);
+        QToolBox* toolBox = Core::FITKWidgetComLine::CreateToolBox(widget);
         for (int i = 0; i < num; i++) {
             Interface::FITKOFAbsBoundaryType* data = _boundaryObj->getPhasesVBType(i);
             if (data == nullptr)continue;

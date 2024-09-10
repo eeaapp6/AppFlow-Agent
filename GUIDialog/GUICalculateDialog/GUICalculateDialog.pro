@@ -32,6 +32,7 @@ win32{
         -lFITKOFDictWriter \
         -lFITKInterfaceGeometry \
         -lFITKOFDriver \
+        -lFITKEasyParam \
    
 
 
@@ -54,6 +55,7 @@ win32{
         -lFITKOFDictWriter \
         -lFITKInterfaceGeometry \
         -lFITKOFDriver \
+        -lFITKEasyParam \
      
 
 
@@ -85,6 +87,7 @@ unix{
         -lFITKOFDictWriter \
         -lFITKInterfaceGeometry \
         -lFITKOFDriver \
+        -lFITKEasyParam \
        
 
     message("Linux GUICalculateDialog generated")
