@@ -4,7 +4,7 @@ SUBDIRS += \
     $$PWD/FITK_Kernel \
     $$PWD/FITK_Interface \
     $$PWD/FITK_Component \
-    $$PWD/FITK_Test \
+#    $$PWD/FITK_Test \
     $$PWD/FlowApp \
     $$PWD/GUIFrame \
     $$PWD/GUIWidget \

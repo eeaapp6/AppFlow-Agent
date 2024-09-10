@@ -4,6 +4,7 @@
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
+#include "FITK_Kernel/FITKAppFramework/FITKWorkBenchHandler.h"
 #include "FITK_Kernel/FITKAppFramework/FITKProgramTaskManager.h"
 #include "FITK_Kernel/FITKCore/FITKDirFileTools.h"
 #include "FITK_Component/FITKOFDriver/FITKOFInputInfo.h"
@@ -52,7 +53,7 @@ namespace GUI
         if (foamFile.isEmpty())return;
 
         auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
-        auto proGramManager = app->getProgramTaskManager();
+        auto proGramManager = FITKAPP->getProgramTaskManager();
         AppFrame::FITKProgramInputInfo* info = new FoamDriver::FITKOFInputInfo();
         QStringList args;
         args << "--case" << foamFile;
@@ -108,4 +109,16 @@ void GUI::PostWidget::on_pushButton_Export_clicked()
     }
     //启动进程
     progam->start();
+    //写出到wb配置文件
+    connect(progam, &AppFrame::FITKAbstractProgramerDriver::sig_Finish, this, [&] {
+        if (!FITKAPP->workingInWorkBench()) return;
+        AppFrame::FITKWorkBenchHandler* h = FITKAPP->getWorkBenchHandler();
+        h->clearOutputInfo();
+        AppFrame::IOFileInfo info;
+        info._name = "case_*.vtk";
+        info._path = _caseDir;
+        info._suffix = "vtk";
+        h->appendOutputInfo(info);
+    });
+
 }
