@@ -73,3 +73,6 @@
 [submodule "FITK_Kernel/FITKEasyParam"]
 	path = FITK_Kernel/FITKEasyParam
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKEasyParam.git
+[submodule "FITK_Component/FITKFlowOFIOHDF5"]
+	path = FITK_Component/FITKFlowOFIOHDF5
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKFlowOFIOHDF5.git

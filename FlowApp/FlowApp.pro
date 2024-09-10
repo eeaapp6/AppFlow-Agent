@@ -40,7 +40,8 @@ win32{
         -lFITKWidget \
         -lFITKOFDictWriter \
         -lFITKOFMeshIO \
-    
+        -lFITKFlowOFIOHDF5 \
+
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
     Debug:MOC_DIR         = ../generate/FlowApp/debug/moc
@@ -66,6 +67,7 @@ win32{
         -lFITKWidget \
         -lFITKOFDictWriter \
         -lFITKOFMeshIO \
+        -lFITKFlowOFIOHDF5 \
 
 Debug:LIBS +=  -L$$PWD/../Tools/Win64/SARibbon/libd/  \                                  
                -lSARibbonBard  \
@@ -111,7 +113,8 @@ unix{
         -lSARibbonBar \
         -lFITKOFDictWriter \
         -lFITKOFMeshIO \
-       
+        -lFITKFlowOFIOHDF5 \
+
 
     message("Linux FlowApp generated")
 }

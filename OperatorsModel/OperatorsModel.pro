@@ -41,6 +41,7 @@ win32{
         -lFITKInterfaceGeometry \
         -lFITKWidget \
         -lFITKInterfaceFlowOF \
+        -lFITKFlowOFIOHDF5 \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -69,6 +70,7 @@ win32{
         -lFITKInterfaceGeometry \
         -lFITKWidget \
         -lFITKInterfaceFlowOF \
+        -lFITKFlowOFIOHDF5 \
 
     message("Windows OperatorsModel generated")
 }
@@ -107,7 +109,8 @@ unix{
         -lFITKInterfaceGeometry \
         -lFITKWidget \
         -lFITKInterfaceFlowOF \
-        
+        -lFITKFlowOFIOHDF5 \
+
     message("Linux OperatorsModel generated")
 }
 

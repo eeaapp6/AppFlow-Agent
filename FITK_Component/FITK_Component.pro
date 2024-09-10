@@ -11,5 +11,6 @@ SUBDIRS += \
     $$PWD/FITKOFDictWriter \
     $$PWD/FITKOFDriver \
     $$PWD/FITKOFMeshIO \
+    $$PWD/FITKFlowOFIOHDF5 \
 
 CONFIG += ordered

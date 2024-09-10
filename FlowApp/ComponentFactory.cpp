@@ -12,6 +12,7 @@
 #include "FITK_Component/FITKGeoCompOCC/FITKGeoCompOCCInterface.h"
 #include "FITK_Component/FITKMeshGenOF/FITKMeshGenOFInterface.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
+#include "FITK_Component/FITKFlowOFIOHDF5/FITKFlowOFIOHDF5Interface.h"
 #include "FITK_Component/FITKOFDictWriter/FITKOFDictWriterIO.h"
 #include "FITK_Component/FITKOFMeshIO/FITKOFMeshReader.h"
 #include "OperatorsModel/OpersModelInterface.h"
@@ -41,8 +42,11 @@ QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
     componentList << new IO::FITKOFMeshReader;
     // 物理场数据工厂组件
     componentList << new Interface::FITKFlowPhysicsHandlerFactory;
+    // hdf5接口组件
+    componentList << new IO::FITKFlowOFIOHDF5Interface;
+
     // VTK窗口初始化器
     compVTKrender->addInitializer(1, new PreWindowInitializer);
-
+   
     return componentList;
 }
