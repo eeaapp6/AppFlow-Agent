@@ -52,6 +52,10 @@ private:
       * @date 2024-08-26
       */
     void importGeoFile(const QString & fileName);
+
+    void openProjectFile(const QString & fileName);
+
+    void saveProjectFile();
 };
 
 
