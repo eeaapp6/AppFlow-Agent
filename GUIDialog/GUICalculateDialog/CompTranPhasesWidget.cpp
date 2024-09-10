@@ -1,12 +1,12 @@
 ﻿#include "CompTranPhasesWidget.h"
 #include "ui_CompTranPhasesWidget.h"
 #include "CompSelectComBoxWidget.h"
-#include "CompCalLineWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetComLine.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTransportProp.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFTransportModel.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
@@ -18,7 +18,7 @@
 
 namespace GUI 
 {
-    Interface::FITKAbstractParameter* getTranPhasesData(const QString& type, CompSelectComBoxWidget* widget)
+    Core::FITKParameter* getTranPhasesData(const QString& type, CompSelectComBoxWidget* widget)
     {
         if (widget == nullptr)return nullptr;
         auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
@@ -54,11 +54,11 @@ namespace GUI
         auto tranManager = _physicsManager->getTransportModelManager();
         if (tranManager == nullptr)return;
         
-        Interface::FITKAbstractParameter* otherData = _phaseData->getPhaseAdditionalData();
+        Core::FITKParameter* otherData = _phaseData->getPhaseAdditionalData();
         if (otherData) {
             for (auto data : otherData->getParameter()) {
                 if (data == nullptr)continue;
-                QWidget* widget = new CompCalLineWidget(data, this);
+                QWidget* widget = new Core::FITKWidgetComLine(data, this);
                 _ui->verticalLayout_Sub->addWidget(widget);
             }
         }

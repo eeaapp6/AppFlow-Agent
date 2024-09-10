@@ -14,8 +14,8 @@ namespace Ui {
     class CompSelectComBoxWidget;
 }
 
-namespace Interface {
-    class FITKAbstractParameter;
+namespace Core {
+    class FITKParameter;
 }
 
 namespace GUI {
@@ -25,7 +25,7 @@ namespace GUI {
      * @date   2024-08-26
      */
     class CompSelectComBoxWidget;
-    typedef Interface::FITKAbstractParameter* (*getSubDataFormText)(const QString&, CompSelectComBoxWidget*);
+    typedef Core::FITKParameter* (*getSubDataFormText)(const QString&, CompSelectComBoxWidget*);
 
     /**
      * @brief  comBox选择组件界面
@@ -92,7 +92,7 @@ namespace GUI {
          * @author   BaGuijun (baguijun@163.com)
          * @date     2024-08-26
          */
-        void setSubWidgetData(Interface::FITKAbstractParameter* data);
+        void setSubWidgetData(Core::FITKParameter* data);
         /**
          * @brief    设置信息
          * @param[i] name 名称

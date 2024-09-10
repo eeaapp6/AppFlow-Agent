@@ -1,17 +1,18 @@
 ﻿#include "InitialWidget.h"
 #include "ui_InitialWidget.h"
-#include "CompCalLineWidget.h"
 #include "InitialCreatePatchDialog.h"
-#include "CompVBoxWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetComLine.h"
+#include "FITK_Kernel/FITKEasyParam/FITKWidgetVBox.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParamString.h"
 #include "FITK_Component/FITKWidget/FITKTabWidget.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFInitialConditions.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractParameter.h"
-#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowDataString.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
+#include "FITK_Kernel/FITKEasyParam/FITKParamString.h"
 
 #include <QLabel>
 
@@ -70,7 +71,7 @@ namespace GUI
 
         for (auto v : basicValue->getParameter()) {
             if (v == nullptr)continue;
-            QWidget* widget = new CompCalLineWidget(v, this);
+            QWidget* widget = new Core::FITKWidgetComLine(v, this);
             _ui->verticalLayout_Basic->addWidget(widget);
         }
     }
@@ -103,15 +104,15 @@ namespace GUI
             case Interface::FITKOFSolverInitialEnum::Faces:applyType = "Faces"; break;
             case Interface::FITKOFSolverInitialEnum::Both:applyType = "Both"; break;
             }
-            Interface::FITKFlowDataString titleData;
+            Core::FITKParamString titleData;
             titleData.setDataObjectName("Apply To");
             titleData.setValue(applyType);
-            CompCalLineWidget* titleWidget = new CompCalLineWidget(&titleData, this);
+            Core::FITKWidgetComLine* titleWidget = new Core::FITKWidgetComLine(&titleData, this);
             titleWidget->setEnabled(false);
             widgets.append(titleWidget);
             for (auto para : pathData->getFieldPara()->getParameter()) {
                 if (para == nullptr)continue;
-                CompCalLineWidget* w = new CompCalLineWidget(para, this);
+                Core::FITKWidgetComLine* w = new Core::FITKWidgetComLine(para, this);
                 widgets.append(w);
             }
             QPushButton* removeButton = new QPushButton(this);
@@ -122,7 +123,7 @@ namespace GUI
                 updatePatchWidget();
             });
             widgets.append(removeButton);
-            CompVBoxWidget* widget = new CompVBoxWidget(widgets, this);
+            Core::FITKWidgetVBox* widget = new Core::FITKWidgetVBox(widgets, this);
             tabWidget->addTab(widget, pathData->getGeometryModel()->getDataObjectName());
         }
         _ui->verticalLayout_Patch->addWidget(tabWidget);
