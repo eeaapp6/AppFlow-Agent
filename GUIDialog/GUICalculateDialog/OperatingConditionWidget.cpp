@@ -55,7 +55,7 @@ namespace GUI
 
        Core::FITKParameter* graAccData = _operCondition->getGravitationalAcceleration();
        if (graAccData) {
-           if (graAccData->getParameterCount() > 0)_ui->groupBox_GraAcc->show();
+           if (graAccData->getDataCount() > 0)_ui->groupBox_GraAcc->show();
            for (auto d : graAccData->getParameter()) {
                if (d == nullptr)continue;
                QWidget* widget = new Core::FITKWidgetComLine(d, this);
@@ -65,7 +65,7 @@ namespace GUI
 
        Core::FITKParameter* refPreData = _operCondition->getReferencePressure();
        if (refPreData) {
-           if (refPreData->getParameterCount() > 0)_ui->groupBox_RefPre->show();
+           if (refPreData->getDataCount() > 0)_ui->groupBox_RefPre->show();
            for (auto d : refPreData->getParameter()) {
                if (d == nullptr)continue;
                QWidget* widget = nullptr;

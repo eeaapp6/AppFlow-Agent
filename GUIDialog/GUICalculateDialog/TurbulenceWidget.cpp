@@ -81,8 +81,8 @@ namespace GUI
 
         //重新添加子参数
         if (turData->getTurbulenceParams()) {
-            for (int i = 0; i < turData->getTurbulenceParams()->getParameterCount(); i++) {
-                auto dataBase = turData->getTurbulenceParams()->getParameterAt(i);
+            for (int i = 0; i < turData->getTurbulenceParams()->getDataCount(); i++) {
+                auto dataBase = turData->getTurbulenceParams()->getDataByIndex(i);
                 if (dataBase == nullptr)continue;
                 _ui->verticalLayout_ModelSub->addWidget(new Core::FITKWidgetComLine(dataBase, this));
             }
