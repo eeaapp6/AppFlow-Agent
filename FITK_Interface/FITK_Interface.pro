@@ -10,5 +10,6 @@ SUBDIRS += \
     $$PWD/FITKInterfaceGeometry \
     $$PWD/FITKVTKAlgorithm \
     $$PWD/FITKInterfaceIOHDF5 \
+    $$PWD/FITKInterfaceGeoIOHDF5 \
 
 CONFIG += ordered
