@@ -85,3 +85,6 @@
 [submodule "FITK_Component/FITKCGNSIO"]
 	path = FITK_Component/FITKCGNSIO
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKCGNSIO.git
+[submodule "FITK_Component/FITKGeoOCCIOHDF5"]
+	path = FITK_Component/FITKGeoOCCIOHDF5
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKGeoOCCIOHDF5.git
