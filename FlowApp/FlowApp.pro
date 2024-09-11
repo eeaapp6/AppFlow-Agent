@@ -28,6 +28,7 @@ win32{
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
         -lFITKInterfaceFlowOF \
+        -lFITKInterfaceFlowPHengLEI \
         -lFITKInterfaceModel \
         -lFITKInterfaceMesh \
         -lFITKInterfaceGeometry \
@@ -41,6 +42,7 @@ win32{
         -lFITKOFDictWriter \
         -lFITKOFMeshIO \
         -lFITKFlowOFIOHDF5 \
+        
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -55,6 +57,7 @@ win32{
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
         -lFITKInterfaceFlowOF \
+        -lFITKInterfaceFlowPHengLEI \
         -lFITKInterfaceModel \ 
         -lFITKInterfaceGeometry \
         -lFITKGeoCompOCC \
@@ -98,6 +101,7 @@ unix{
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
         -lFITKInterfaceFlowOF \
+        -lFITKFITKInterfaceFlowPHengLEI \
         -lFITKInterfaceModel \
         -lFITKInterfaceMesh \
         -lFITKInterfaceGeometry \

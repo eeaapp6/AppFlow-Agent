@@ -2,7 +2,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFGeometryData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
-
+#include "FITK_Interface/FITKInterfaceFlowPHengLEI/FITKPHengLEIData.h"
 
 Core::FITKAbstractDataObject *GlobalDataFactory::createMeshData()
 {
@@ -18,7 +18,8 @@ Core::FITKAbstractDataObject* GlobalDataFactory::createGeoData()
 Core::FITKAbstractDataObject *GlobalDataFactory::createPhysicsData()
 {
     // 创建算例求解的物理场数据
-    return new Interface::FITKOFPhysicsData;
+    //return new Interface::FITKOFPhysicsData;
+    return new Interface::FITKPHengLEIData;
 }
 
 Core::FITKAbstractDataObject *GlobalDataFactory::createPostData()
