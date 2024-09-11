@@ -28,7 +28,7 @@ win32{
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
         -lFITKInterfaceFlowOF \
-        -lFITKInterfaceFlowPHengLEI \
+#        -lFITKInterfaceFlowPHengLEI \
         -lFITKInterfaceModel \
         -lFITKInterfaceMesh \
         -lFITKInterfaceGeometry \
@@ -57,7 +57,7 @@ win32{
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
         -lFITKInterfaceFlowOF \
-        -lFITKInterfaceFlowPHengLEI \
+#        -lFITKInterfaceFlowPHengLEI \
         -lFITKInterfaceModel \ 
         -lFITKInterfaceGeometry \
         -lFITKGeoCompOCC \
@@ -101,7 +101,7 @@ unix{
         -lFITKCompMessageWidget \
         -lFITKRenderWindowVTK \
         -lFITKInterfaceFlowOF \
-        -lFITKFITKInterfaceFlowPHengLEI \
+#        -lFITKFITKInterfaceFlowPHengLEI \
         -lFITKInterfaceModel \
         -lFITKInterfaceMesh \
         -lFITKInterfaceGeometry \

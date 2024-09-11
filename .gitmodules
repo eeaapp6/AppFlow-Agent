@@ -79,9 +79,6 @@
 [submodule "FITK_Interface/FITKInterfaceGeoIOHDF5"]
 	path = FITK_Interface/FITKInterfaceGeoIOHDF5
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceGeoIOHDF5.git
-[submodule "FITK_Interface/FITKInterfaceFlowPHengLEI"]
-	path = FITK_Interface/FITKInterfaceFlowPHengLEI
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceFlowPHengLEI.git
 [submodule "FITK_Component/FITKCGNSIO"]
 	path = FITK_Component/FITKCGNSIO
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKCGNSIO.git
