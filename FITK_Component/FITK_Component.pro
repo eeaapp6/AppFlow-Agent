@@ -12,6 +12,7 @@ SUBDIRS += \
     $$PWD/FITKOFDriver \
     $$PWD/FITKOFMeshIO \
     $$PWD/FITKPlotWindow \
+    $$PWD/FITKGeoOCCIOHDF5 \
     $$PWD/FITKFlowOFIOHDF5 \
 
 CONFIG += ordered
