@@ -79,3 +79,6 @@
 [submodule "FITK_Interface/FITKInterfaceGeoIOHDF5"]
 	path = FITK_Interface/FITKInterfaceGeoIOHDF5
 	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceGeoIOHDF5.git
+[submodule "FITK_Component/FITKGeoOCCIOHDF5"]
+	path = FITK_Component/FITKGeoOCCIOHDF5
+	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKGeoOCCIOHDF5.git
