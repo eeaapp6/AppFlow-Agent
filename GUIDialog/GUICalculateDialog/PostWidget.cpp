@@ -118,7 +118,7 @@ void GUI::PostWidget::on_pushButton_Export_clicked()
         info._name = "case_";
         info._path = _caseDir;
         info._suffix = "vtk";
-        info._describe = "OpenFOAM Result";
+        info._describe = "OpenFOAM_Result";
         info._isFile = false;
         h->appendOutputInfo(info);
     });
