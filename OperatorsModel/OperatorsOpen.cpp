@@ -11,6 +11,8 @@
 #include "OperatorsInterface/TreeEventOperator.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoCommandList.h"
 #include "OperatorsInterface/GraphEventOperator.h"
+#include "GUIDialog/GUIMeshDialog/MeshGeoWidget.h"
+#include "GUIFrame/PropertyWidget.h"
 
 namespace ModelOper
 {
@@ -124,6 +126,14 @@ namespace ModelOper
             if (geoData == nullptr)continue;
             graphOper->updateGraph(geoData->getDataObjectID());
         }
+
+        //更新网格划分区域界面
+        GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        if (mainWindow == nullptr)return;
+        GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+        if (propertyWidget == nullptr)return;
+        GUI::MeshGeoWidget* widget = dynamic_cast<GUI::MeshGeoWidget*>(propertyWidget->getCurrentWidget());
+        if (widget)widget->updateWidget();
     }
 }
 
