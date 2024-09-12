@@ -52,9 +52,18 @@ private:
       * @date 2024-08-26
       */
     void importGeoFile(const QString & fileName);
-
+    /**
+    * @brief 打开工程文件
+    * @param[i]  fileName       文件名称
+    * @author libaojun (libaojunqd@foxmail.com)
+    * @date 2024-08-26
+    */
     void openProjectFile(const QString & fileName);
-
+    /**
+    * @brief 保存工程文件
+    * @author libaojun (libaojunqd@foxmail.com)
+    * @date 2024-08-26
+    */
     void saveProjectFile();
 };
 

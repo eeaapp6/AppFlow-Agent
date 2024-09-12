@@ -115,9 +115,11 @@ void GUI::PostWidget::on_pushButton_Export_clicked()
         AppFrame::FITKWorkBenchHandler* h = FITKAPP->getWorkBenchHandler();
         h->clearOutputInfo();
         AppFrame::IOFileInfo info;
-        info._name = "case_*.vtk";
+        info._name = "case_";
         info._path = _caseDir;
         info._suffix = "vtk";
+        info._describe = "OpenFOAM Result";
+        info._isFile = false;
         h->appendOutputInfo(info);
     });
 
