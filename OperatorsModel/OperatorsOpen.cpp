@@ -73,7 +73,13 @@ namespace ModelOper
         //AbaqusData::FITKAbaqusData* abaData = AbaqusData::FITKAbaqusData::GetDataFromAppFrame();
         //if (!abaData) return false;
 
-
+        //清理几何数据
+        Interface::FITKGeoCommandList* geoCommList = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
+        if (!geoCommList)return false;
+        geoCommList->clear();
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return false;
+        graphOper->reRender();
         //获取读取组件
         IO::FITKFlowOFIOHDF5Interface* fitkAbaIO = FITKAPP->getComponents()->getComponentTByName<IO::FITKFlowOFIOHDF5Interface>("FITKFlowOFHDF5IO");
         if (fitkAbaIO == nullptr) return false;
@@ -92,20 +98,8 @@ namespace ModelOper
         QString fileName;
         bool ok = this->argValue<QString>("FileName", fileName);
         this->clearArgs();
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
-        //清理几何数据
-        Interface::FITKGeoCommandList* geoCommList = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
-        if (!geoCommList)return;
-        for (int i = geoCommList->getDataCount() - 1; i >= 0; --i)
-        {
-            auto geoComm = geoCommList->getDataByIndex(i);
-            if (!geoCommList)continue;
-            int geoId = geoComm->getDataObjectID();
-            geoCommList->removeDataObj(geoComm);
-            graphOper->updateGraph(geoId);
-        }
-        geoCommList->clear();
+        
+        
 
         auto fitkAbaIO = FITKAPP->getComponents()->getComponentTByName<IO::FITKFlowOFIOHDF5Interface>("FITKFlowOFHDF5IO");
         if (fitkAbaIO == nullptr) return;
@@ -133,6 +127,8 @@ namespace ModelOper
         //更新几何界面显示
         Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
         if (geometryData == nullptr) return;
+        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr)return;
         for (int i = 0; i < geometryData->getDataCount(); i++) {
             auto geoData = geometryData->getDataByIndex(i);
             if (geoData == nullptr)continue;
