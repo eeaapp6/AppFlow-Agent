@@ -10,6 +10,7 @@
 #include "FITK_Component/FITKFlowOFIOHDF5/FITKFlowOFIOHDF5Interface.h"
 #include "OperatorsInterface/TreeEventOperator.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoCommandList.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "GUIDialog/GUIMeshDialog/MeshGeoWidget.h"
 #include "GUIFrame/PropertyWidget.h"
@@ -77,6 +78,11 @@ namespace ModelOper
         Interface::FITKGeoCommandList* geoCommList = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
         if (!geoCommList)return false;
         geoCommList->clear();
+        //清理网格
+        Interface::FITKUnstructuredFluidMeshVTK* meshData = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
+        if (!meshData)return false;
+        meshData->clearMesh();
+
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return false;
         graphOper->reRender();
@@ -134,6 +140,11 @@ namespace ModelOper
             if (geoData == nullptr)continue;
             graphOper->updateGraph(geoData->getDataObjectID());
         }
+
+        //更新网格
+        Interface::FITKUnstructuredFluidMeshVTK* meshData = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
+        if (!meshData)return;
+        graphOper->updateGraph(meshData->getDataObjectID());
 
         //更新网格划分区域界面
         GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
