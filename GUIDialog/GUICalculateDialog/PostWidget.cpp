@@ -116,7 +116,7 @@ void GUI::PostWidget::on_pushButton_Export_clicked()
         h->clearOutputInfo();
         AppFrame::IOFileInfo info;
         info._name = "case_";
-        info._path = _caseDir;
+        info._path = _caseDir+"/VTK";
         info._suffix = "vtk";
         info._describe = "OpenFOAM_Result";
         info._isFile = false;
