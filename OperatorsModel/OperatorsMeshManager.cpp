@@ -22,6 +22,10 @@
 #include "OperatorsInterface/GraphEventOperator.h"
 #include "OperatorsInterface/TreeEventOperator.h"
 
+#include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
+
 namespace ModelOper
 {
     bool OperatorsMeshManager::execGUI()
@@ -127,6 +131,10 @@ namespace ModelOper
         // 网格对象
         auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
         graphOper->updateGraph(mesh->getDataObjectID());
+        //更新边界与边界网格的对应关系
+        Interface::FITKFlowPhysicsHandlerFactory* factoryData = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
+        if (!factoryData) return;
+        factoryData->resetBoundaryMesh();
 
         // 获取模型树控制器
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
