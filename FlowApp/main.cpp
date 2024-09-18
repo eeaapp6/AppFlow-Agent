@@ -6,6 +6,7 @@
 #include "SignalProcessor.h"
 #include "FlowAPPSettings.h"
 #include "WorkBenchHandler.h"
+#include "SystemChecker.h"
 
 #ifdef Q_OS_WIN
 #include <Windows.h>
@@ -45,7 +46,7 @@ int main(int argc, char *argv[])
     pythonPaths << app.applicationDirPath() + "/../Python37/lib/python3.7/lib-dynload";
     qputenv("PYTHONPATH", pythonPaths.join(":").toUtf8());
 #endif
-
+    app.checkSystem(new SystemChecker);
    // 注册程序的主要组件和设置
     app.regMainWindowGenerator(new MainWindowGenerator); // 注册主窗口生成器
     app.regGlobalDataFactory(new GlobalDataFactory);     // 注册全局数据工厂
