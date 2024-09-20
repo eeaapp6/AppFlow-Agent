@@ -15,6 +15,7 @@
 #include "FITK_Component/FITKFlowOFIOHDF5/FITKFlowOFIOHDF5Interface.h"
 #include "FITK_Component/FITKOFDictWriter/FITKOFDictWriterIO.h"
 #include "FITK_Component/FITKOFMeshIO/FITKOFMeshReader.h"
+#include "FITK_Component/FITKCGNSIO/FITKCGNSIOInterface.h"
 #include "OperatorsModel/OpersModelInterface.h"
 #include "OperatorsGUI/OpersGUIInterface.h"
 #include "PreWindowInitializer.h"
@@ -44,6 +45,8 @@ QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
     componentList << new Interface::FITKFlowPhysicsHandlerFactory;
     // hdf5接口组件
     componentList << new IO::FITKFlowOFIOHDF5Interface;
+    // CGNS接口组件
+    componentList << new IO::FITKCGNSIOInterface;
 
     // VTK窗口初始化器
     compVTKrender->addInitializer(1, new PreWindowInitializer);
