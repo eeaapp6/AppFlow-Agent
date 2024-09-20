@@ -14,5 +14,6 @@ SUBDIRS += \
     $$PWD/FITKPlotWindow \
     $$PWD/FITKGeoOCCIOHDF5 \
     $$PWD/FITKFlowOFIOHDF5 \
+    $$PWD/FITKCGNSIO \
 
 CONFIG += ordered
