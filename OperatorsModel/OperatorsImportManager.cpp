@@ -9,6 +9,7 @@
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
 #include "FITK_Kernel/FITKCore/FITKThreadPool.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
@@ -195,8 +196,19 @@ namespace ModelOper {
             emit sigImportFinish(result, geoObj->getDataObjectID());
             break;
         }
-        case ModelOper::ImportType::ImportMesh:
+        case ModelOper::ImportType::ImportMesh: {
+            // 获取单例
+            auto meshGen = Interface::FITKMeshGenInterface::getInstance();
+            // 读取网格
+            auto meshProcessor = meshGen->getMeshProcessor();
+            if (meshProcessor == nullptr) return;
+            meshProcessor->setValue("MeshFile", _fileName);
+            meshProcessor->start();
+            bool result = true;
+            auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
+            emit sigImportFinish(true, mesh->getDataObjectID());
             break;
+        }
         case ModelOper::ImportType::ImportOpenFoamMesh:{
             // 获取单例
             auto meshGen = Interface::FITKMeshGenInterface::getInstance();
