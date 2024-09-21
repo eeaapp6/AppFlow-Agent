@@ -197,16 +197,6 @@ namespace ModelOper {
             break;
         }
         case ModelOper::ImportType::ImportMesh: {
-            // 获取单例
-            auto meshGen = Interface::FITKMeshGenInterface::getInstance();
-            // 读取网格
-            auto meshProcessor = meshGen->getMeshProcessor();
-            if (meshProcessor == nullptr) return;
-            meshProcessor->setValue("MeshFile", _fileName);
-            meshProcessor->start();
-            bool result = true;
-            auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
-            emit sigImportFinish(true, mesh->getDataObjectID());
             break;
         }
         case ModelOper::ImportType::ImportOpenFoamMesh:{
