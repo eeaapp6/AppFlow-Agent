@@ -190,15 +190,12 @@ namespace GUI
         SARibbonPannel* pannel = gategory->addPannel(tr("Object"));
 
         action = createAction(tr("New"), "actionNew", ":/icons/createNew.png");
-        changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         action = createAction(tr("Open"), "actionOpen", ":/icons/open.png");
-        changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         action = createAction(tr("Save"), "actionSave", ":/icons/save.png");
-        changeAction(action, "");
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         //模型结构
