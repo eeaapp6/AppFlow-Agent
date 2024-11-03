@@ -147,7 +147,7 @@ namespace GUIOper
 
     };
 
-    Register2FITKOPeratorRepo(GraphPreprocess, OperGraphPreprocess);
+    Register2FITKOperatorRepo(GraphPreprocess, OperGraphPreprocess);
 
 }  // namespace GUIOper
 

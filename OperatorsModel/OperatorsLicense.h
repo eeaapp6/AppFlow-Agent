@@ -16,7 +16,7 @@ namespace ModelOper
         bool execGUI() override;
     private:
     };
-    Register2FITKOPeratorRepo(actionLicense, OperatorsLicense);
+    Register2FITKOperatorRepo(actionLicense, OperatorsLicense);
 }
 
 

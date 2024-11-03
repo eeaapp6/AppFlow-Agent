@@ -139,9 +139,9 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionImportGeometry, OperatorsImportManager);
-    Register2FITKOPeratorRepo(actionImportMesh, OperatorsImportManager);
-    Register2FITKOPeratorRepo(actionImportOpenFoamMesh, OperatorsImportManager);
+    Register2FITKOperatorRepo(actionImportGeometry, OperatorsImportManager);
+    Register2FITKOperatorRepo(actionImportMesh, OperatorsImportManager);
+    Register2FITKOperatorRepo(actionImportOpenFoamMesh, OperatorsImportManager);
 }
 
 #endif

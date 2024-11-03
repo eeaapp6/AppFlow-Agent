@@ -47,7 +47,7 @@ namespace ModelOper
     };
 
     // 注册
-    Register2FITKOPeratorRepo(actionWorkingDir, OperatorsWorkingDir);
+    Register2FITKOperatorRepo(actionWorkingDir, OperatorsWorkingDir);
 } // namespace GUIOper
 
 #endif

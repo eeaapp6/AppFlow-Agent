@@ -53,9 +53,9 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionBoundaryConditionsCreate, OperatorsBoundaryConditions);
-    Register2FITKOPeratorRepo(actionBoundaryConditionsDelete, OperatorsBoundaryConditions);
-    Register2FITKOPeratorRepo(actionBoundaryConditionsEdit, OperatorsBoundaryConditions);
+    Register2FITKOperatorRepo(actionBoundaryConditionsCreate, OperatorsBoundaryConditions);
+    Register2FITKOperatorRepo(actionBoundaryConditionsDelete, OperatorsBoundaryConditions);
+    Register2FITKOperatorRepo(actionBoundaryConditionsEdit, OperatorsBoundaryConditions);
 }
 
 #endif

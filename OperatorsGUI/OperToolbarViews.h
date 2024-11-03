@@ -105,17 +105,17 @@ namespace GUIOper
     };
 
     //根据按钮的ObjectName进行注册按钮事件
-    Register2FITKOPeratorRepo(actionViewFront, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewBack, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewTop, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewBottom, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewLeft, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewRight, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewIso, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewAuto, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionSaveImage, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewParallel, OperToolbarViews);
-    Register2FITKOPeratorRepo(actionViewPerspective, OperToolbarViews);
+    Register2FITKOperatorRepo(actionViewFront, OperToolbarViews);
+    Register2FITKOperatorRepo(actionViewBack, OperToolbarViews);
+    Register2FITKOperatorRepo(actionViewTop, OperToolbarViews);
+    Register2FITKOperatorRepo(actionViewBottom, OperToolbarViews);
+    Register2FITKOperatorRepo(actionViewLeft, OperToolbarViews);
+    Register2FITKOperatorRepo(actionViewRight, OperToolbarViews);
+    Register2FITKOperatorRepo(actionViewIso, OperToolbarViews);
+    Register2FITKOperatorRepo(actionViewAuto, OperToolbarViews);
+    Register2FITKOperatorRepo(actionSaveImage, OperToolbarViews);
+    Register2FITKOperatorRepo(actionViewParallel, OperToolbarViews);
+    Register2FITKOperatorRepo(actionViewPerspective, OperToolbarViews);
 
 }  // namespace GUIOper
 

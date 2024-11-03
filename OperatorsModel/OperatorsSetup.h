@@ -53,7 +53,7 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionSetupEdit, OperatorsSetup);
+    Register2FITKOperatorRepo(actionSetupEdit, OperatorsSetup);
 }
 
 #endif

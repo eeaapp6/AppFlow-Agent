@@ -49,7 +49,7 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionOperConditionEdit, OperatorsOperCondition);
+    Register2FITKOperatorRepo(actionOperConditionEdit, OperatorsOperCondition);
 }
 
 #endif

@@ -133,7 +133,7 @@ namespace GUIOper
         GraphData::PickedDataProvider* m_pickedProvider{ nullptr };
     };
 
-    Register2FITKOPeratorRepo(GraphPick, OperGraphPick);
+    Register2FITKOperatorRepo(GraphPick, OperGraphPick);
 
 }  // namespace GUIOper
 

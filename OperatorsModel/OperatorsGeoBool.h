@@ -69,11 +69,11 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionGeoBoolFause, OperatorsGeoBool);
-    Register2FITKOPeratorRepo(actionGeoBoolCut, OperatorsGeoBool);
-    Register2FITKOPeratorRepo(actionGeoBoolCommon, OperatorsGeoBool);
-    Register2FITKOPeratorRepo(actionGeoBoolOrImportEdit, OperatorsGeoBool);
-    Register2FITKOPeratorRepo(actionGeoBoolOrImportDelete, OperatorsGeoBool);
+    Register2FITKOperatorRepo(actionGeoBoolFause, OperatorsGeoBool);
+    Register2FITKOperatorRepo(actionGeoBoolCut, OperatorsGeoBool);
+    Register2FITKOperatorRepo(actionGeoBoolCommon, OperatorsGeoBool);
+    Register2FITKOperatorRepo(actionGeoBoolOrImportEdit, OperatorsGeoBool);
+    Register2FITKOperatorRepo(actionGeoBoolOrImportDelete, OperatorsGeoBool);
 }
 
 #endif

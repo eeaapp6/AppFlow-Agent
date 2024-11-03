@@ -75,10 +75,10 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionGeoSphereCreate, OperatorsGeoSphereManager);
-    Register2FITKOPeratorRepo(actionGeoSphereEdit, OperatorsGeoSphereManager);
-    Register2FITKOPeratorRepo(actionGeoSphereDelete, OperatorsGeoSphereManager);
-    Register2FITKOPeratorRepo(actionGeoSphereRename, OperatorsGeoSphereManager);
+    Register2FITKOperatorRepo(actionGeoSphereCreate, OperatorsGeoSphereManager);
+    Register2FITKOperatorRepo(actionGeoSphereEdit, OperatorsGeoSphereManager);
+    Register2FITKOperatorRepo(actionGeoSphereDelete, OperatorsGeoSphereManager);
+    Register2FITKOperatorRepo(actionGeoSphereRename, OperatorsGeoSphereManager);
 }
 
 #endif

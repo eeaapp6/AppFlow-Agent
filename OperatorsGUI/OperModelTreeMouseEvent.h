@@ -28,7 +28,7 @@ namespace GUIOper
         virtual void moveProcessToStep(int step, void *addInfo = nullptr) override;
     };
 
-    Register2FITKOPeratorRepo(ModelTreeEvent, OperModelTreeMouseEvent);
+    Register2FITKOperatorRepo(ModelTreeEvent, OperModelTreeMouseEvent);
 
 }  // namespace GUIOper
 

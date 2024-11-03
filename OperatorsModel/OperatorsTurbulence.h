@@ -53,7 +53,7 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionTurbulenceEdit, OperatorsTurbulence);
+    Register2FITKOperatorRepo(actionTurbulenceEdit, OperatorsTurbulence);
 }
 
 #endif

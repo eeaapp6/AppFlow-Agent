@@ -53,8 +53,8 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionInitialEdit, OperatorsInitial);
-    Register2FITKOPeratorRepo(actionInitialDeleteGeo, OperatorsInitial);
+    Register2FITKOperatorRepo(actionInitialEdit, OperatorsInitial);
+    Register2FITKOperatorRepo(actionInitialDeleteGeo, OperatorsInitial);
 }
 
 #endif

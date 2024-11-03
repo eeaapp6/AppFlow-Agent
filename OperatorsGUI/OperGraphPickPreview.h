@@ -104,7 +104,7 @@ namespace GUIOper
 
     };
 
-    Register2FITKOPeratorRepo(GraphPickPreview, OperGraphPickPreview);
+    Register2FITKOperatorRepo(GraphPickPreview, OperGraphPickPreview);
 
 }  // namespace GUIOper
 

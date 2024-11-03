@@ -61,9 +61,9 @@ namespace ModelOper
     };
 
     // 按钮注册相关操作
-    Register2FITKOPeratorRepo(actionMeshLocalSelectGroup, OperatorsMeshLocalManager);
-    Register2FITKOPeratorRepo(actionMeshLocalEdit, OperatorsMeshLocalManager);
-    Register2FITKOPeratorRepo(actionMeshLocalDelete, OperatorsMeshLocalManager);
+    Register2FITKOperatorRepo(actionMeshLocalSelectGroup, OperatorsMeshLocalManager);
+    Register2FITKOperatorRepo(actionMeshLocalEdit, OperatorsMeshLocalManager);
+    Register2FITKOperatorRepo(actionMeshLocalDelete, OperatorsMeshLocalManager);
 }
 #endif
 
