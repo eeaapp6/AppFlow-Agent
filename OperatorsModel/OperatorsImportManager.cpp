@@ -52,7 +52,7 @@ namespace ModelOper {
         QString fileName;
         QFileDialog fileDialog;
         if (_senderName == "actionImportGeometry") {
-            fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Geometry"), workDir, tr("File(*.brep ; *.stp ; *.step ; *.igs ; *.stl)"));
+            fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Geometry"), workDir, tr("File(*.brep ; *.stp ; *.step ; *.igs)"));
             if (fileName.isEmpty())return false;
         }
         else  if (_senderName == "actionImportMesh") {

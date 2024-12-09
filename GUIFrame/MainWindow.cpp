@@ -163,9 +163,9 @@ namespace GUI
         fileAppButton->addAction(action);
 
         //导入网格文件
-        action = createAction(tr("import mesh"), "actionImportMesh", ":/icons/importMesh.png");
-        action->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+M", nullptr));
-        fileAppButton->addAction(action);
+        //action = createAction(tr("import mesh"), "actionImportMesh", ":/icons/importMesh.png");
+        //action->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+M", nullptr));
+        //fileAppButton->addAction(action);
 
         //导入OpenFoam网格文件
         action = createAction(tr("import OpenFoam mesh"), "actionImportOpenFoamMesh", ":/icons/importMesh.png");
