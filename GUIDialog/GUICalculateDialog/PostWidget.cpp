@@ -11,6 +11,7 @@
 
 #include <QFile>
 #include <QTextStream>
+#include <QMessageBox>
 
 Q_DECLARE_METATYPE(GUI::PostExportType)
 
@@ -52,8 +53,8 @@ namespace GUI
         QString foamFile = creatStartParaViewFile();
         if (foamFile.isEmpty())return;
 
-        auto app = dynamic_cast<AppFrame::FITKApplication*>(qApp);
-        auto proGramManager = FITKAPP->getProgramTaskManager();
+        AppFrame::FITKProgramTaskManeger* proGramManager = FITKAPP->getProgramTaskManager();
+        if (proGramManager == nullptr)return;
         AppFrame::FITKProgramInputInfo* info = new FoamDriver::FITKOFInputInfo();
         QStringList args;
         args << "--case" << foamFile;
@@ -84,7 +85,31 @@ namespace GUI
 
 void GUI::PostWidget::on_pushButton_Post_clicked()
 {
-
+    AppFrame::FITKProgramTaskManeger* proGramManager = FITKAPP->getProgramTaskManager();
+    AppFrame::FITKAppSettings* appSetting = FITKAPP->getAppSettings();
+    if (proGramManager == nullptr || appSetting == nullptr)return;
+    QString casePath = appSetting->getWorkingDir() + "/case/VTK";
+    QString postExePath = appSetting->getValue<QString>("CFDPostPath");
+    if (postExePath.isEmpty()) {
+        QMessageBox::warning(this, tr("Warning"), tr("CFDPostPath is empty!"), QMessageBox::Ok);
+        return;
+    }
+    AppFrame::FITKProgramInputInfo* info = new FoamDriver::FITKOFInputInfo();
+    QStringList args;
+    auto progam = proGramManager->createProgram(1, "CalculateDriver", info);
+    if (!progam) return;
+    CalculateDriver* calDriver = dynamic_cast<CalculateDriver*>(progam);
+    if (calDriver == nullptr)return;
+#ifdef Q_OS_WIN64 
+    args << "-i" << casePath;
+    info->setArgs(args);
+#endif
+#ifdef Q_OS_LINUX
+    
+#endif
+    calDriver->setExecProgram(postExePath);
+    //启动进程
+    progam->start();
 }
 
 void GUI::PostWidget::on_pushButton_Export_clicked()

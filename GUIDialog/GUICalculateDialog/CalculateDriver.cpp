@@ -90,7 +90,8 @@ namespace GUI
 
     void CalculateDriver::slotProcessOutputError()
     {
-
+        QString message = _process->readAllStandardOutput();
+        emit FITKAPP->getSignalTransfer()->outputMessageSig(3, message);
     }
 
     void CalculateDriver::slotProcessFinish(int exitCode, QProcess::ExitStatus exitStatus)
