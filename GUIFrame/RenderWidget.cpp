@@ -54,6 +54,7 @@ namespace GUI
 		QWidget *graph3DWidget = graph3DComp->getWidget(1);
         Comp::FITKGraph3DWindowVTK* graph3DVTKWidget = dynamic_cast<Comp::FITKGraph3DWindowVTK*>(graph3DWidget);
         if (graph3DVTKWidget != nullptr) {
+            graph3DVTKWidget->SetGlobalWarningDisplay(false);
             graph3DVTKWidget->setIsShowActions(true);
         }
 		auto id = m_MdiArea->addSubWidget(graph3DWidget, "");
