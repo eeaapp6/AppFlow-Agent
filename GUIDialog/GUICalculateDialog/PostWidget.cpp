@@ -114,9 +114,9 @@ void GUI::PostWidget::on_pushButton_Post_clicked()
     }
 
     QTextStream out(&file);
-    out << "export MESA_GL_VERSION_OVERRIDE = 4.5";
-    out << "export MESA_GLSL_VERSION_OVERRIDE = 450";
-    out << QString("export LD_LIBRARY_PATH=%1:$LD_LIBRARY_PATH").arg(postExePath);
+    out << "export MESA_GL_VERSION_OVERRIDE=4.5" << Qt::endl;
+    out << "export MESA_GLSL_VERSION_OVERRIDE=450" << Qt::endl;
+    out << QString("export LD_LIBRARY_PATH=%1:$LD_LIBRARY_PATH").arg(postExePath) << Qt::endl;
     out << "./CFDPostAPP";
     file.close();
 
