@@ -220,19 +220,19 @@ namespace GUI
             changeAction(action, ":FITKIcons/icoR_viewLeft.svg", tr("X forward"));
             pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         }
-       
+
         action = getAction("actionViewRight");
         if (action) {
             changeAction(action, ":FITKIcons/icoR_viewRight.svg", tr("X negative"));
             pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         }
-        
+
         action = getAction("actionViewTop");
-        if(action){
+        if (action) {
             changeAction(action, ":FITKIcons/icoR_viewTop.svg", tr("Y forward"));
             pannelAddAction(pannel, action, SARibbonPannelItem::Medium);
         }
-        
+
         action = getAction("actionViewBottom");
         if (action) {
             changeAction(action, ":FITKIcons/icoR_viewBottom.svg", tr("Y negative"));

@@ -14,8 +14,8 @@ include(./GUIFrame.pri)
 win32{
 
     INCLUDEPATH    +=  ./   \
-                       ../  \
-                       ../Tools/Win64/SARibbon/include/SARibbon-2.0.1/  \
+                            ../  \
+                             ../Tools/Win64/SARibbon/include/SARibbon-2.0.1/  \
 
     Release:DESTDIR         = ../output/bin
     Release:MOC_DIR         = ../generate/GUIFrame/release/moc
@@ -29,8 +29,8 @@ win32{
         -lFITKPython \
         -lFITKCompMessageWidget \
         -lFITKWidget \
-        -lFITKRenderWindowVTK \
         -lGUIWidget \
+        -lFITKRenderWindowVTK \
 
 
 
@@ -47,9 +47,9 @@ win32{
         -lFITKPython \
         -lFITKCompMessageWidget \
         -lFITKWidget \
-        -lFITKRenderWindowVTK \
         -lGUIWidget \
-    
+        -lFITKRenderWindowVTK \
+
 Debug:LIBS +=  -L$$PWD/../Tools/Win64/SARibbon/libd/  \                                  
                -lSARibbonBard  \
 
@@ -78,11 +78,14 @@ unix{
         -lFITKPython \
         -lFITKCompMessageWidget \
         -lFITKWidget \
-        -lFITKRenderWindowVTK \
         -lGUIWidget \
+        -lFITKRenderWindowVTK \
         -L$$PWD/../Tools/Linux64/SARibbon/lib/  \
         -lSARibbonBar \
 
     message("Linux GUIFrame generated")
 }
+
+RESOURCES += \
+    ../Resources/Resources.qrc
 

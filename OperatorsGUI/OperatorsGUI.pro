@@ -14,7 +14,8 @@ win32{
 
     INCLUDEPATH    +=  ./   \
                        ../  \
-                       ../FITK_Kernal  \
+                       ../../ \
+                       ../Tools/Win64/SARibbon/include/SARibbon-2.0.1/  \
 
     Release:DESTDIR         = ../output/bin
     Release:MOC_DIR         = ../generate/OperatorsGUI/release/moc
@@ -64,9 +65,10 @@ win32{
 
 unix{
 
-    INCLUDEPATH    +=   ./  \
-                        ../ \
-                        ../FITK_Kernal \
+    INCLUDEPATH    +=  ./   \
+                       ../  \
+                       ../../ \
+                       ../Tools/Linux64/SARibbon/include/  \
 
     CONFIG          += console
     CONFIG          += plugin

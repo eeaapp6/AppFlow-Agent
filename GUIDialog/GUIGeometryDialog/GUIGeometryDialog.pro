@@ -12,7 +12,9 @@ include(./GUIGeometryDialog.pri)
 win32{
 
     INCLUDEPATH    +=  ./   \
-                       ../../  \
+                       ../  \
+                       ../../ \
+                       ../../Tools/Win64/SARibbon/include/SARibbon-2.0.1/  \
 
     Release:DESTDIR         = ../../output/bin
     Release:MOC_DIR         = ../../generate/GUIGeometryDialog/release/moc
@@ -60,8 +62,10 @@ win32{
 
 unix{
 
-    INCLUDEPATH    +=   ./  \
-                        ../../ \
+    INCLUDEPATH    +=  ./   \
+                       ../  \
+                       ../../ \
+                       ../../Tools/Linux64/SARibbon/include/  \
 
     CONFIG          += console
     CONFIG          += plugin

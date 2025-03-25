@@ -14,6 +14,7 @@ win32{
     INCLUDEPATH    +=  ./   \
                        ../  \
                        ../../ \
+                       ../Tools/Win64/SARibbon/include/SARibbon-2.0.1/  \
                        
     Release:CONFIG            +=  console
     Release:DESTDIR         = ../output/bin
@@ -82,9 +83,10 @@ Release:LIBS +=  -L$$PWD/../Tools/Win64/SARibbon/lib/  \
 
 unix{
 
-    INCLUDEPATH    +=   ./  \
-                        ../ \
-                        ../../ \
+    INCLUDEPATH    +=  ./   \
+                       ../  \
+                       ../../ \
+                       ../Tools/Linux64/SARibbon/include/  \
 
     CONFIG          += console
     CONFIG          += plugin
