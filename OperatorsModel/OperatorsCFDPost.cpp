@@ -25,6 +25,7 @@ namespace ModelOper
         }
 
         settings->setValue("CFDPostPath", dirPath);
+        settings->write();
 
         return true;
     }

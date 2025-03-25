@@ -175,6 +175,10 @@ namespace GUI
         //工作目录
         action = createAction(tr("Working Dir"), "actionWorkingDir");
         fileAppButton->addAction(action);
+
+        //后处理路径
+        action = createAction(tr("CFDPost Dir"), "actionCFDPostPath");
+        fileAppButton->addAction(action);
     }
 
     void MainWindow::initHome()
@@ -333,11 +337,6 @@ namespace GUI
         QString type = tr("Setting");
         SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
         _ribbonBar->raiseCategory(gategory);
-
-        QAction* action = nullptr;
-        SARibbonPannel* pannel = gategory->addPannel(tr("post setting"));
-        action = createAction(tr("CFDPost Path"), "actionCFDPostPath", "", tr("CFDPost Path"));
-        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
     }
 
     void MainWindow::initResult()
