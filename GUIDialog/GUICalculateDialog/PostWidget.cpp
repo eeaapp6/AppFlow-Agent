@@ -103,11 +103,25 @@ void GUI::PostWidget::on_pushButton_Post_clicked()
 #ifdef Q_OS_WIN64 
     args << "-i" << casePath;
     info->setArgs(args);
+    postExePath = postExePath + "/" + "CFDPostAPP.exe";
+    calDriver->setExecProgram(postExePath);
 #endif
 #ifdef Q_OS_LINUX
-    
+    QString startCFDPostShFile = postExePath + "/startCFDPost.sh";
+    QFile file(startCFDPostShFile);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return;
+    }
+
+    QTextStream out(&file);
+    out << "export MESA_GL_VERSION_OVERRIDE = 4.5";
+    out << "export MESA_GLSL_VERSION_OVERRIDE = 450";
+    out << QString("export LD_LIBRARY_PATH=%1:$LD_LIBRARY_PATH").arg(postExePath);
+    out << "./CFDPostAPP";
+    file.close();
+
+    calDriver->setExecProgram(startCFDPostShFile);
 #endif
-    calDriver->setExecProgram(postExePath);
     //启动进程
     progam->start();
 }

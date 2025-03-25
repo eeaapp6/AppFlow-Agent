@@ -27,6 +27,7 @@ HEADERS += \
     $$PWD/OperatorsPost.h \
     $$PWD/OperatorsLicense.h \
     $$PWD/OperatorsOperCondition.h \
+    $$PWD/OperatorsCFDPost.h \
 
 
 SOURCES += \
@@ -57,5 +58,6 @@ SOURCES += \
     $$PWD/OperatorsPost.cpp \
     $$PWD/OperatorsLicense.cpp\
     $$PWD/OperatorsOperCondition.cpp\
+    $$PWD/OperatorsCFDPost.cpp\
 
 FORMS += \

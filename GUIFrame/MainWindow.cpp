@@ -334,8 +334,10 @@ namespace GUI
         SARibbonCategory* gategory = _ribbonBar->addCategoryPage(type);
         _ribbonBar->raiseCategory(gategory);
 
-        //QAction* action = nullptr;
-        //SARibbonPannel* pannel = gategory->addPannel(tr("calculate setting"));
+        QAction* action = nullptr;
+        SARibbonPannel* pannel = gategory->addPannel(tr("post setting"));
+        action = createAction(tr("CFDPost Path"), "actionCFDPostPath", "", tr("CFDPost Path"));
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
     }
 
     void MainWindow::initResult()
