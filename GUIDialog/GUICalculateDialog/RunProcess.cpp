@@ -64,7 +64,8 @@ namespace GUI
 
     void RunProcess::slotProcessOutputError()
     {
-
+        QString message = _process->readAllStandardOutput();
+        emit FITKAPP->getSignalTransfer()->outputMessageSig(3, message);
     }
 
     void RunProcess::slotProcessFinish(int exitCode, QProcess::ExitStatus exitStatus)

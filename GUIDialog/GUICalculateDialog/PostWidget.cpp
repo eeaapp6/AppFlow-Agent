@@ -120,7 +120,7 @@ void GUI::PostWidget::on_pushButton_Post_clicked()
     out << "./CFDPostAPP";
     file.close();
 
-    calDriver->setExecProgram(startCFDPostShFile);
+    calDriver->setExecProgram("sh " + startCFDPostShFile);
 #endif
     //启动进程
     progam->start();

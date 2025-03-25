@@ -50,6 +50,7 @@ namespace GUI
         ;
         void slotProcessOutput();
         void slotProcessOutputError();
+        void slotProcessError(QProcess::ProcessError error);
         void slotProcessFinish(int exitCode, QProcess::ExitStatus exitStatus);
         void slotMainwindowClose();
     private:

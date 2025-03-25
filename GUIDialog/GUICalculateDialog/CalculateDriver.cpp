@@ -18,6 +18,7 @@ namespace GUI
         MainWindow* mianWindow = dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
         connect(_process, SIGNAL(readyReadStandardOutput()), this, SLOT(slotProcessOutput()));
         connect(_process, SIGNAL(readyReadStandardError()), this, SLOT(slotProcessOutputError()));
+        connect(_process, SIGNAL(error(QProcess::ProcessError)), this, SLOT(slotProcessError(QProcess::ProcessError)));
         connect(_process, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(slotProcessFinish(int, QProcess::ExitStatus)));
         connect(mianWindow, SIGNAL(sigMainWindowClose()), this, SLOT(slotMainwindowClose()));
     }
@@ -90,7 +91,13 @@ namespace GUI
 
     void CalculateDriver::slotProcessOutputError()
     {
-        QString message = _process->readAllStandardOutput();
+        QString message = _process->readAllStandardError();
+        emit FITKAPP->getSignalTransfer()->outputMessageSig(3, message);
+    }
+
+    void CalculateDriver::slotProcessError(QProcess::ProcessError error)
+    {
+        QString message = _process->readAllStandardError();
         emit FITKAPP->getSignalTransfer()->outputMessageSig(3, message);
     }
 
