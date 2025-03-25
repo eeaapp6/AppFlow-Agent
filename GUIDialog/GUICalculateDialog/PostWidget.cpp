@@ -120,7 +120,7 @@ void GUI::PostWidget::on_pushButton_Post_clicked()
     out << QString("%1/CFDPostAPP").arg(postExePath);
     file.close();
     
-    args << "startCFDPostShFile";
+    args << startCFDPostShFile;
     info->setArgs(args);
 
     calDriver->setExecProgram("sh");
