@@ -6,7 +6,6 @@
 
 // Graph
 #include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObject3D.h"
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObjectModel.h"
 
 // Adaptor
 #include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKViewAdaptorBase.h"
@@ -73,7 +72,7 @@ namespace GraphData
         }
 
         // 模型可视化对象。
-        obj = getGraphObject("GeoModel", m_modelObjHash, model);
+        obj = getGraphObject("GeoModelShape", m_modelObjHash, model->getShapeAgent());
 
         return obj;
     }
