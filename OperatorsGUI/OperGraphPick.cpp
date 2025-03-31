@@ -6,7 +6,6 @@
 
 // Graph
 #include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObject3D.h"
-#include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObjectModel.h"
 #include "FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObjectPick.h"
 
 // Render
