@@ -40,7 +40,7 @@ namespace GUI
         if (creator == nullptr)return false;
         Interface::FITKAbstractGeomPointTool* pointTool = creator->createPointTool();
         if (pointTool == nullptr)return false;
-        return pointTool->getXYZ(ids[0], point);
+        return pointTool->getXYZByID(ids[0], point);
 
         //int DataObjId = data->getPickedDataObjId();
         //GraphData::PickedDataType type = data->getPickedDataType();
