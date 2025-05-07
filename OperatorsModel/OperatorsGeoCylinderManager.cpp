@@ -99,7 +99,7 @@ namespace ModelOper
         case ModelOper::OperManagerBase::Edit:
             graphOper->updateGraph(objID);
             treeOper->updateTree();
-			graphOper->reRender(true);
+            graphOper->reRender(true);
             break;
         case ModelOper::OperManagerBase::Copy:
             break;
@@ -135,7 +135,7 @@ namespace ModelOper
             GraphData::PickedDataProvider* pickD = GraphData::PickedDataProvider::getInstance();
             if (pickD == nullptr) return;
             connect(pickD, SIGNAL(sig_dataPicked()), this, SLOT(slotReselectOriginPoint()));
-        }        
+        }
         //面组选择
         else if (index == 1) {
             int objID = -1;

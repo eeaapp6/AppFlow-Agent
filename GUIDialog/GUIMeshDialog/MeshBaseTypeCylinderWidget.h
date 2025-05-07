@@ -1,10 +1,10 @@
 ﻿/**
- * 
+ *
  * @file MeshBaseTypeCylinderWidget.h
  * @brief 圆柱型局部区域尺寸
  * @author BaGuijun (baguijun@163.com)
  * @date 2024-08-14
- * 
+ *
  */
 #ifndef _MeshBaseTypeCylinderWidget_H
 #define _MeshBaseTypeCylinderWidget_H
@@ -101,7 +101,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-		void slotSaveValue();
+        void slotSaveValue();
     private:
         /**
          * @brief ui对象

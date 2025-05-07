@@ -13,22 +13,22 @@
 
 namespace GUIOper
 {
-	class OperatorsGUIAPI OperatorsGUIInterface : public AppFrame::FITKComponentInterface
-	{
-	public:
-		explicit OperatorsGUIInterface() = default;
-		virtual ~OperatorsGUIInterface() = default;
+    class OperatorsGUIAPI OperatorsGUIInterface : public AppFrame::FITKComponentInterface
+    {
+    public:
+        explicit OperatorsGUIInterface() = default;
+        virtual ~OperatorsGUIInterface() = default;
 
-		void init() override;
-		/**
-		 * @brief  获取部件名称
-		 * @return 部件名称
-		 * @author YanZhiHui (chanyuantiandao@126.com)
-		 * @data   2024-03-26
-		 */
-		virtual QString getComponentName() override;
+        void init() override;
+        /**
+         * @brief  获取部件名称
+         * @return 部件名称
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @data   2024-03-26
+         */
+        virtual QString getComponentName() override;
 
-	};
+    };
 
 
 }

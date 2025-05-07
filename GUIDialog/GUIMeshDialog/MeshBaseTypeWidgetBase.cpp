@@ -16,8 +16,8 @@ namespace GUI
     MeshBaseTypeWidgetBase::MeshBaseTypeWidgetBase(QWidget* parent) :
         Core::FITKWidget(parent)
     {
-		_meshBaseWidget = dynamic_cast<MeshBaseWidget*>(parent);
-		_mainWin = dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+        _meshBaseWidget = dynamic_cast<MeshBaseWidget*>(parent);
+        _mainWin = dynamic_cast<MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
     }
 
     MeshBaseTypeWidgetBase::~MeshBaseTypeWidgetBase()

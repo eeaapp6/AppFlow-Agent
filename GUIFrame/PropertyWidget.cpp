@@ -11,11 +11,11 @@
 
 namespace GUI
 {
-	PropertyWidget::PropertyWidget(MainWindow *mainWindow) : PanelWidgetBase(mainWindow)
-	{
-		this->setTitle(tr("Property Area"));
+    PropertyWidget::PropertyWidget(MainWindow *mainWindow) : PanelWidgetBase(mainWindow)
+    {
+        this->setTitle(tr("Property Area"));
         init();
-	}
+    }
 
     void PropertyWidget::init()
     {

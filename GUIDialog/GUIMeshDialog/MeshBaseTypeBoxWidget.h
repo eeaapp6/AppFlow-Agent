@@ -1,10 +1,10 @@
 ﻿/**
- * 
+ *
  * @file MeshBaseTypeBoxWidget.h
  * @brief 立方体型局部区域尺寸编辑界面
  * @author BaGuijun (baguijun@163.com)
  * @date 2024-08-14
- * 
+ *
  */
 #ifndef _MeshBaseTypeBoxWidget_H
 #define _MeshBaseTypeBoxWidget_H
@@ -101,7 +101,7 @@ namespace GUI
          * @author BaGuijun (baguijun@163.com)
          * @date 2024-08-14
          */
-		void slotSaveValue();
+        void slotSaveValue();
     private:
         /**
          * @brief ui对象

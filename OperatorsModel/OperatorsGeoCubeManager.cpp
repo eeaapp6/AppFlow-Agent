@@ -46,7 +46,7 @@ namespace ModelOper
         int objID = -1;
         this->argValue("objID", objID);
 
-        switch (_operType){
+        switch (_operType) {
         case ModelOper::OperManagerBase::Create:
             widget = new GUI::CudeInfoWidget(this);
             break;
@@ -100,7 +100,7 @@ namespace ModelOper
         case ModelOper::OperManagerBase::Edit:
             graphOper->updateGraph(objID);
             treeOper->updateTree();
-			graphOper->reRender(true);
+            graphOper->reRender(true);
             break;
         case ModelOper::OperManagerBase::Copy:
             break;

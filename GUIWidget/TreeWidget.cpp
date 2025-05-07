@@ -32,7 +32,7 @@
 
 Q_DECLARE_METATYPE(GUI::MainTreeEnum)
 
-namespace GUI{
+namespace GUI {
 
     // TreeWidget类构造函数
     TreeWidget::TreeWidget(QWidget* parent) :
@@ -63,7 +63,7 @@ namespace GUI{
         updatePostItems();
 
         //展开全部子集
-        setItemsExpandable(true);		
+        setItemsExpandable(true);
         expandAll();
 
         QList<CompTreeItem*> compWidgets = this->findChildren<CompTreeItem*>();
@@ -79,7 +79,7 @@ namespace GUI{
         if (treeOper == nullptr) return;
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return;
-		graphOper->clearHighlight();
+        graphOper->clearHighlight();
 
         if (item == nullptr)return;
         int objID = item->data(1, 0).toInt();
@@ -156,8 +156,8 @@ namespace GUI{
         case GUI::MainTreeEnum::MainTree_Geomety: break;
         case GUI::MainTreeEnum::MainTree_GeometyBoxItem: {
             //addMenuActions(menu, "actionRenameCube", "Cube rename"); 
-            addMenuActions(menu, "actionGeoCubeDelete", tr("Delete")); 
-            break; 
+            addMenuActions(menu, "actionGeoCubeDelete", tr("Delete"));
+            break;
         }
         case GUI::MainTreeEnum::MainTree_GeometyCylinderItem: {
             //addMenuActions(menu, "actionRenameCylinder", "Cylinder rename");
@@ -230,7 +230,7 @@ namespace GUI{
         int objID = item->data(1, 0).toInt();
         GUI::MainTreeEnum type = item->data(2, 0).value<GUI::MainTreeEnum>();
 
-        switch (type){
+        switch (type) {
         case GUI::MainTreeEnum::MainTree_GeometyBoxItem:
         case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:
         case GUI::MainTreeEnum::MainTree_GeometySphereItem:
@@ -240,8 +240,8 @@ namespace GUI{
             Interface::FITKGeoCommandList* geometryData = FITKAPP->getGlobalData()->getGeometryData<Interface::FITKGeoCommandList>();
             if (geometryData == nullptr) break;
             auto geoObj = geometryData->getDataByID(objID);
-            if(geoObj == nullptr)break;
-            if (geoObj->isEnable()){
+            if (geoObj == nullptr)break;
+            if (geoObj->isEnable()) {
                 geoObj->enable(false);
                 senderWidget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
             }
@@ -415,7 +415,7 @@ namespace GUI{
             item->setData(1, 0, -1);
             item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupOperatingConditions));
             setupItem->addChild(item);
-        } 
+        }
 
         item = new QTreeWidgetItem();
         item->setText(0, tr("Boundary Conditions"));

@@ -1,10 +1,10 @@
 ﻿/**
- * 
+ *
  * @file MeshBaseTypeWidgetBase.h
- * @brief 局部区域尺寸界面基类 
+ * @brief 局部区域尺寸界面基类
  * @author BaGuijun (baguijun@163.com)
  * @date 2024-08-14
- * 
+ *
  */
 #ifndef _MeshBaseTypeWidgetBase_H
 #define _MeshBaseTypeWidgetBase_H
@@ -15,13 +15,13 @@ namespace Interface {
     class FITKAbstractRegionMeshSize;
 }
 
-namespace GUI 
+namespace GUI
 {
     class MeshBaseWidget;
     class MainWindow;
 
     /**
-     * @brief 局部区域尺寸界面基类 
+     * @brief 局部区域尺寸界面基类
      * @author BaGuijun (baguijun@163.com)
      * @date 2024-08-14
      */
@@ -89,7 +89,7 @@ namespace GUI
          * @date 2024-08-14
          */
         virtual void clearBoundaryBackgroudColor() = 0;
-	protected:
+    protected:
         /**
          * @brief 主窗口对象
          * @author BaGuijun (baguijun@163.com)

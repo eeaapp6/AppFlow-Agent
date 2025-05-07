@@ -1,10 +1,10 @@
 ﻿/**
- * 
+ *
  * @file MeshBaseWidget.h
  * @brief 局部区域尺寸设置主界面
  * @author BaGuijun (baguijun@163.com)
  * @date 2024-08-14
- * 
+ *
  */
 #ifndef _MeshBaseWidget_H
 #define _MeshBaseWidget_H
@@ -16,7 +16,7 @@ namespace Ui {
     class MeshBaseWidget;
 }
 
-namespace Interface{
+namespace Interface {
     class FITKRegionMeshSizeManager;
     class FITKAbstractRegionMeshSize;
 }

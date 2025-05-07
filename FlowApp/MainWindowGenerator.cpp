@@ -3,11 +3,11 @@
 
 MainWindowGenerator::MainWindowGenerator()
 {
-	//    this->setStyle("://Structural.qss");
-	//    this->showMaximize(false);
+    //    this->setStyle("://Structural.qss");
+    //    this->showMaximize(false);
 }
 
 QWidget * MainWindowGenerator::genMainWindow()
 {
-	return new GUI::MainWindow;
+    return new GUI::MainWindow;
 }

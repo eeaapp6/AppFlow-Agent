@@ -14,29 +14,29 @@
   */
 namespace GUI
 {
-	class MainWindow;
-	/**
-	 * @brief  控制面板子部件类
-	 * @author YanZhiHui (chanyuantiandao@126.com)
-	 * @date   2024-06-11
-	 */
-	class ControlPanelWidget : public PanelWidgetBase
-	{
-		Q_OBJECT
-	public:
-		/**
-		 * @brief  构造函数
-		 * @author YanZhiHui (chanyuantiandao@126.com)
-		 * @date   2024-06-11
-		 */
-		ControlPanelWidget(MainWindow *mainWindow);
-		/**
-		 * @brief  析构函数
-		 * @author YanZhiHui (chanyuantiandao@126.com)
-		 * @date   2024-06-11
-		 */
-		~ControlPanelWidget();
+    class MainWindow;
+    /**
+     * @brief  控制面板子部件类
+     * @author YanZhiHui (chanyuantiandao@126.com)
+     * @date   2024-06-11
+     */
+    class ControlPanelWidget : public PanelWidgetBase
+    {
+        Q_OBJECT
+    public:
+        /**
+         * @brief  构造函数
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-06-11
+         */
+        ControlPanelWidget(MainWindow *mainWindow);
+        /**
+         * @brief  析构函数
+         * @author YanZhiHui (chanyuantiandao@126.com)
+         * @date   2024-06-11
+         */
+        ~ControlPanelWidget();
 
-	};
+    };
 }
 #endif // !__CONTROLPANELWINDOW_H__

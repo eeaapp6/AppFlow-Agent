@@ -25,7 +25,7 @@ namespace GUI
         _ui = new Ui::MeshBaseWidget();
         _ui->setupUi(this);
         _meshSizeManager = Interface::FITKMeshGenInterface::getInstance()->getRegionMeshSizeMgr();
-        
+
         init();
     }
 
@@ -47,8 +47,8 @@ namespace GUI
         //获取第一位数据
         _currentObj = _meshSizeManager->getDataByIndex(0);
         if (!_currentObj) {
-			auto meshGenerator = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
-			_currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionBox);
+            auto meshGenerator = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
+            _currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionBox);
             _meshSizeManager->insertDataObj(0, _currentObj);
         }
         else {
@@ -71,9 +71,9 @@ namespace GUI
             }
         }
 
-		type = _currentObj->getRegionType();
+        type = _currentObj->getRegionType();
 
-        switch (type){
+        switch (type) {
         case Interface::FITKAbstractRegionMeshSize::RegionBox: _subWidget = new MeshBaseTypeBoxWidget(this); break;
         case Interface::FITKAbstractRegionMeshSize::RegionCylinder:_subWidget = new MeshBaseTypeCylinderWidget(this); break;
         case Interface::FITKAbstractRegionMeshSize::RegionSphere:break;
@@ -87,32 +87,32 @@ namespace GUI
         _ui->gridLayout_SubWidget->addWidget(_subWidget);
     }
 
-	void MeshBaseWidget::saveValue()
-	{
-		if (_subWidget == nullptr)return;
-		_subWidget->getDataFromWidget(_currentObj);
-	}
+    void MeshBaseWidget::saveValue()
+    {
+        if (_subWidget == nullptr)return;
+        _subWidget->getDataFromWidget(_currentObj);
+    }
 
     void MeshBaseWidget::on_comboBox_Type_activated(int index)
     {
         Q_UNUSED(index);
         Interface::FITKAbstractRegionMeshSize::RegionType type = _ui->comboBox_Type->currentData().value<Interface::FITKAbstractRegionMeshSize::RegionType>();
-		auto meshGenerator = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
+        auto meshGenerator = Interface::FITKMeshGenInterface::getInstance()->getMeshSizeGenerator();
 
-        switch (type){
+        switch (type) {
         case Interface::FITKAbstractRegionMeshSize::RegionBox: {
             QList<Interface::FITKAbstractRegionMeshSize*> meshSizeList = _meshSizeManager->getRigonByType(Interface::FITKAbstractRegionMeshSize::RegionType::RegionBox);
             if (meshSizeList.size() != 0) {
                 _currentObj = meshSizeList[0];
-				//移除对象但不释放内存
-				_meshSizeManager->removeDataObjWithoutRelease(_currentObj);
+                //移除对象但不释放内存
+                _meshSizeManager->removeDataObjWithoutRelease(_currentObj);
             }
             else
             {
-				_currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionBox);
+                _currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionBox);
             }
-			//插入到首位
-			_meshSizeManager->insertDataObj(0, _currentObj);
+            //插入到首位
+            _meshSizeManager->insertDataObj(0, _currentObj);
             //重新添加界面
             updateWidget(new MeshBaseTypeBoxWidget(this));
             break;
@@ -121,25 +121,25 @@ namespace GUI
             QList<Interface::FITKAbstractRegionMeshSize*> meshSizeList = _meshSizeManager->getRigonByType(Interface::FITKAbstractRegionMeshSize::RegionType::RegionCylinder);
             if (meshSizeList.size() != 0) {
                 _currentObj = meshSizeList[0];
-				//移除对象但不释放内存
-				_meshSizeManager->removeDataObjWithoutRelease(_currentObj);
+                //移除对象但不释放内存
+                _meshSizeManager->removeDataObjWithoutRelease(_currentObj);
             }
             else
             {
                 _currentObj = meshGenerator->createRegionMeshSize(Interface::FITKAbstractRegionMeshSize::RegionCylinder);
             }
-			//插入到首位
-			_meshSizeManager->insertDataObj(0, _currentObj);
+            //插入到首位
+            _meshSizeManager->insertDataObj(0, _currentObj);
             //重新添加界面
-			updateWidget(new MeshBaseTypeCylinderWidget(this));
+            updateWidget(new MeshBaseTypeCylinderWidget(this));
             break;
         }
         case Interface::FITKAbstractRegionMeshSize::RegionSphere: {
             QList<Interface::FITKAbstractRegionMeshSize*> meshSizeList = _meshSizeManager->getRigonByType(Interface::FITKAbstractRegionMeshSize::RegionType::RegionSphere);
             if (meshSizeList.size() != 0) {
                 _currentObj = meshSizeList[0];
-				//移除对象但不释放内存
-				_meshSizeManager->removeDataObjWithoutRelease(_currentObj);
+                //移除对象但不释放内存
+                _meshSizeManager->removeDataObjWithoutRelease(_currentObj);
             }
             else
             {
