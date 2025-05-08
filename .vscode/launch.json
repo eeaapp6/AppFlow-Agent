@@ -5,25 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "g++.exe - 生成和调试可执行文件",
-            "type": "cppdbg",
+            "name": "Debug (MSVC)",
+            "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/TT.exe",
+            "program": "${workspaceFolder}/output/bin_d/FlowApp.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "C:\\Qt\\Qt5.14.2\\Tools\\mingw730_64\\bin",
+            "cwd": "${workspaceFolder}",
             "environment": [],
-            "console": "externalTerminal",
-            "MIMode": "gdb",
-            "miDebuggerPath": "C:\\Qt\\Qt5.14.2\\Tools\\mingw730_64\\bin\\gdb.exe",
-            "setupCommands": [
-                {
-                    "description": "为 gdb 启用整齐打印",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            //  "preLaunchTask": "Build my project"
+            "console": false,
+            "visualizerFile": "C:/Qt/Qt5.14.2/qt5.natvis",
+            "showDisplayString": true,
         }
     ]
 }
