@@ -43,6 +43,7 @@ win32{
         -lFITKOFDictWriter \
         -lFITKOFMeshIO \
         -lFITKFlowOFIOHDF5 \
+        -lFITKGeoOCCIOHDF5 \
 
     Debug:CONFIG            +=  console
     Debug:DESTDIR         = ../output/bin_d
@@ -71,6 +72,7 @@ win32{
         -lFITKOFDictWriter \
         -lFITKOFMeshIO \
         -lFITKFlowOFIOHDF5 \
+        -lFITKGeoOCCIOHDF5 \
 
 Debug:LIBS +=  -L$$PWD/../Tools/Win64/SARibbon/libd/  \                                  
                -lSARibbonBard  \
@@ -119,6 +121,7 @@ unix{
         -lFITKOFDictWriter \
         -lFITKOFMeshIO \
         -lFITKFlowOFIOHDF5 \
+        -lFITKGeoOCCIOHDF5 \
 
     message("Linux FlowApp generated")
 }
