@@ -185,9 +185,30 @@ namespace GUI
         auto limValue = _solValue->getLimits();
         if (limValue == nullptr)return;
 
-        for (auto v : limValue->getParameter()) {
+        for (Core::FITKAbstractEasyParam* v : limValue->getParameter()) {
             if (v == nullptr)continue;
-            QWidget* widget = Core::FITKEasyParamWidgetFactory::createWidget(v, this);
+            QWidget* widget = nullptr;
+            switch (v->getParamType()){
+            case Core::FITKAbstractEasyParam::FEPBool:
+            case Core::FITKAbstractEasyParam::FEPCombox:
+            case Core::FITKAbstractEasyParam::FEPDouble:
+            case Core::FITKAbstractEasyParam::FEPInt:
+            case Core::FITKAbstractEasyParam::FEPLabel:
+            case Core::FITKAbstractEasyParam::FEPString: {
+                widget = Core::FITKEasyParamWidgetFactory::createWidget(v, this, v->getDataObjectName());
+                break;
+            }
+            case Core::FITKAbstractEasyParam::FEPBoolGroup:
+            case Core::FITKAbstractEasyParam::FEPComboxVector:
+            case Core::FITKAbstractEasyParam::FEPDoubleList:
+            case Core::FITKAbstractEasyParam::FEPRadioGroup: {
+                widget = Core::FITKEasyParamWidgetFactory::createWidget(v, this);
+                break;
+            }
+            }
+            if (widget == nullptr) {
+                continue;
+            }
             _ui->verticalLayout_Limits->addWidget(widget);
         }
     }
