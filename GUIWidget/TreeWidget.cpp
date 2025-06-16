@@ -94,7 +94,7 @@ namespace GUI {
         case GUI::MainTreeEnum::MainTree_GeometyCylinderItem:name = "actionGeoCylinderEdit"; break;
         case GUI::MainTreeEnum::MainTree_GeometySphereItem:name = "actionGeoSphereEdit"; break;
         case GUI::MainTreeEnum::MainTree_GeometyBoolOrImportItem:name = "actionGeoBoolOrImportEdit"; break;
-        case GUI::MainTreeEnum::MainTree_Mesh: break;
+        case GUI::MainTreeEnum::MainTree_Mesh: name = "actionMeshEdit"; break;
         case GUI::MainTreeEnum::MainTree_MeshGeometry:name = "actionMeshGeoEdit"; break;
         case GUI::MainTreeEnum::MainTree_MeshBase: name = "actionMeshBaseEdit"; break;
         case GUI::MainTreeEnum::MainTree_MeshLocal: name = "actionMeshLocalSelectGroup"; break;
@@ -491,29 +491,35 @@ namespace GUI {
         if (globalData == nullptr)return;
         Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
         if (meshData == nullptr)return;
-        Interface::FITKBoundaryMeshVTKManager* boundMeshManager = meshData->getBoundaryMeshManager();
-        if (boundMeshManager == nullptr)return;
 
-        for (int i = 0; i < boundMeshManager->getDataCount(); i++) {
-            Interface::FITKBoundaryMeshVTK* boundMesh = boundMeshManager->getDataByIndex(i);
-            if (boundMesh == nullptr)continue;
+        int count = meshData->getDataCount();
+        for (int i = 0; i < count; ++i)
+        {
+            Interface::FITKBoundaryMeshVTKManager* boundMeshManager = meshData->getBoundaryMeshManager(i);
+            if (boundMeshManager == nullptr)continue;
 
-            QTreeWidgetItem* item = new QTreeWidgetItem();
-            item->setData(1, 0, boundMesh->getDataObjectID());
-            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshBoundaryItem));
-            parentItem->addChild(item);
+            for (int i = 0; i < boundMeshManager->getDataCount(); i++) {
+                Interface::FITKBoundaryMeshVTK* boundMesh = boundMeshManager->getDataByIndex(i);
+                if (boundMesh == nullptr)continue;
 
-            CompTreeItem* widget = new CompTreeItem(item, this);
-            if (boundMesh->FITKAbstractNDataObject::isEnable()) {
-                widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
+                QTreeWidgetItem* item = new QTreeWidgetItem();
+                item->setData(1, 0, boundMesh->getDataObjectID());
+                item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_MeshBoundaryItem));
+                parentItem->addChild(item);
+
+                CompTreeItem* widget = new CompTreeItem(item, this);
+                if (boundMesh->FITKAbstractNDataObject::isEnable()) {
+                    widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogApplyButton));
+                }
+                else {
+                    widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
+                }
+
+                widget->setText(boundMesh->getDataObjectName());
+                this->setItemWidget(item, 0, widget);
             }
-            else {
-                widget->setButtonIcon(QApplication::style()->standardIcon(QStyle::SP_DialogCancelButton));
-            }
-
-            widget->setText(boundMesh->getDataObjectName());
-            this->setItemWidget(item, 0, widget);
         }
+        
     }
 
     void TreeWidget::addMenuActions(QMenu & menu, QString actions, QString objectName)

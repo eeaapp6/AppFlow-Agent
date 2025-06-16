@@ -3,6 +3,7 @@
 #include "GUIFrame/MainWindow.h"
 #include "GUIFrame/PropertyWidget.h"
 #include "GUIDialog/GUICalculateDialog/BoundaryWidget.h"
+#include "GUIDialog/GUIMeshDialog/MeshInfoWidget.h"
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
@@ -71,6 +72,15 @@ namespace ModelOper
                 disconnect(meshDriver, &Interface::FITKAbstractMesherDriver::mesherFinished, nullptr, nullptr);
                 readMesh();
             });
+        }
+        else if (actionName == "actionMeshEdit") {
+            //网格编辑
+            GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
+            if (mainWindow == nullptr)return false;
+            GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
+            if (propertyWidget == nullptr)return false;
+            GUI::MeshInfoWidget* widget = new GUI::MeshInfoWidget(this);
+            propertyWidget->setWidget(widget);
         }
         else if (actionName == "actionClearMesh") {
             //清除网格数据

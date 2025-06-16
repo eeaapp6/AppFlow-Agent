@@ -28,6 +28,7 @@ win32{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
+        -lFITKWidget \
         -lOperatorsInterface \
         -lFITKFluidVTKGraphAdaptor \
         -lFITKVTKAlgorithm \
@@ -49,6 +50,7 @@ win32{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
+        -lFITKWidget \
         -lOperatorsInterface \
         -lFITKFluidVTKGraphAdaptor \
         -lFITKVTKAlgorithm \
@@ -81,6 +83,7 @@ unix{
         -lFITKAppFramework \
         -lFITKPython \
         -lFITKCore \
+        -lFITKWidget \
         -lOperatorsInterface \
         -lFITKFluidVTKGraphAdaptor \
         -lFITKVTKAlgorithm \

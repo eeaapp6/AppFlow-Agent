@@ -33,7 +33,7 @@ win32{
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceMeshGen \
-   
+        -lFITKInterfaceMesh \
 
 
     Debug:CONFIG            +=  console
@@ -54,6 +54,7 @@ win32{
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceMeshGen \
+        -lFITKInterfaceMesh \
      
 
 
@@ -86,6 +87,7 @@ unix{
         -lFITKInterfaceFlowOF \
         -lFITKInterfaceModel \
         -lFITKInterfaceMeshGen \
+        -lFITKInterfaceMesh \
        
 
     message("Linux GUIMeshDialog generated")

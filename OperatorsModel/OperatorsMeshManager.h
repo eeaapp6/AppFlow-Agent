@@ -62,6 +62,7 @@ namespace ModelOper
     // 按钮注册相关操作
     Register2FITKOperatorRepo(actionClearMesh, OperatorsMeshManager);
     Register2FITKOperatorRepo(actionMesh, OperatorsMeshManager);
+    Register2FITKOperatorRepo(actionMeshEdit, OperatorsMeshManager);
 }
 
 #endif

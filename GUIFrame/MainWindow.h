@@ -118,11 +118,12 @@ namespace GUI
         virtual void closeEvent(QCloseEvent *event) override;
     private:
         /**
-         * @brief  初始化
-         * @author YanZhiHui (chanyuantiandao@126.com)
-         * @date   2024-06-11
+         * @brief    初始化Ribbon页面
+         * @return   void
+         * @author   liuzhonghua (liuzhonghuaszch@163.com)
+         * @date     2025-06-13
          */
-        void init();
+        void initRibbonBar();
         /**
          * @brief  初始化中间部件
          * @author YanZhiHui (chanyuantiandao@126.com)

@@ -36,27 +36,19 @@ namespace GUI
         _currentWidget = new QWidget(this);
 
         _ribbonBar = this->ribbonBar();
-
-        //使用Office2013风格
-        sa_set_ribbon_theme(_ribbonBar, SARibbonTheme::RibbonThemeOffice2013);
-
-        //设置顶部线条颜色
-        _ribbonBar->setTabBarBaseLineColor(QColor(186, 201, 219));
-
-        _ribbonBar->setRibbonStyle(SARibbonBar::RibbonStyleLooseThreeRow);
-        _ribbonBar->setFont(_font);
-
-        setWindowTitle("FastCAE-Flow");
-        _ribbonBar->setWindowTitleTextColor(Qt::black);
-
-        init();
-
+        //初始化中心窗口和工具栏
+        this->initCentralWidget();
+        initRibbonBar();
+        //连接信号槽
+        m_ActionHandler = new ActionEventHandler;
         QList<QAction*> actionList = this->findChildren<QAction*>();
         for (QAction* action : actionList) {
             if (action == nullptr)continue;
             connect(action, SIGNAL(triggered()), this->getActionEventHandle(), SLOT(execOperator()));
         }
 
+        //初始化窗口
+        setWindowTitle("FastCAE-Flow");
         _ribbonBar->setCurrentIndex(0);
     }
 
@@ -91,11 +83,18 @@ namespace GUI
         QMainWindow::closeEvent(event);
     }
 
-    void MainWindow::init()
+    void MainWindow::initRibbonBar()
     {
-        m_ActionHandler = new ActionEventHandler;
-        initCentralWidget();
+        //初始化界面风格
+        //使用Office2013风格
+        sa_set_ribbon_theme(_ribbonBar, SARibbonTheme::RibbonThemeOffice2013);
+        //设置顶部线条颜色
+        _ribbonBar->setTabBarBaseLineColor(QColor(186, 201, 219));
 
+        _ribbonBar->setRibbonStyle(SARibbonBar::RibbonStyleLooseThreeRow);
+        _ribbonBar->setFont(_font);
+        _ribbonBar->setWindowTitleTextColor(Qt::black);
+        //初始化RibbonBar界面工具栏
         initApplicationButton();
         initHome();
         initGeometry();
