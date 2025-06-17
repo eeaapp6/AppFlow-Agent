@@ -71,6 +71,20 @@
        </item>
       </layout>
      </widget>
+     <widget class="QWidget" name="tab_Regions">
+      <attribute name="title">
+       <string>Regions</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QTabWidget" name="tabWidget_Regions">
+         <property name="currentIndex">
+          <number>-1</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
   </layout>

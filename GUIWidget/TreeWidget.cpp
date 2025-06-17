@@ -377,11 +377,28 @@ namespace GUI {
         if (solverData == nullptr)return;
 
         QTreeWidgetItem* item = nullptr;
+
+        if (physicsData->getRadiation()) {
+            item = new QTreeWidgetItem();
+            item->setText(0, tr("Radiation"));
+            item->setData(1, 0, -1);
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupRadiation));
+            setupItem->addChild(item);
+        }
+
         if (physicsData->isEnableTurbulenceEqu()) {
             item = new QTreeWidgetItem();
             item->setText(0, tr("Turbulence"));
             item->setData(1, 0, -1);
             item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupTurbulence));
+            setupItem->addChild(item);
+        }
+
+        if (physicsData->getThermo()) {
+            item = new QTreeWidgetItem();
+            item->setText(0, tr("Thermo"));
+            item->setData(1, 0, -1);
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupThermo));
             setupItem->addChild(item);
         }
 

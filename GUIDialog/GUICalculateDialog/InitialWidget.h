@@ -83,6 +83,13 @@ namespace GUI
          * @date     2024-09-05
          */
         void updatePatchWidget();
+        /**
+         * @brief    更新Regions界面
+         * @return   void
+         * @author   liuzhonghua (liuzhonghuaszch@163.com)
+         * @date     2025-06-17
+         */
+        void updateRegions();
     private:
         /**
          * @brief ui

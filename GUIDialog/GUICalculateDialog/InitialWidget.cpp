@@ -13,6 +13,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
 #include "FITK_Kernel/FITKEasyParam/FITKParamString.h"
+#include "FITK_Kernel/FITKCore/FITKEnumTransformer.hpp"
 
 #include <QLabel>
 
@@ -43,8 +44,21 @@ namespace GUI
 
     void InitialWidget::updateWidget()
     {
-        updateBasicWidget();
-        updatePatchWidget();
+        if (_initValue == nullptr) return;
+        if (_initValue->getInitPropRegions())
+        {
+            //初始化区域属性界面
+            _ui->tabWidget->removeTab(1);
+            _ui->tabWidget->removeTab(0);
+            updateRegions();
+        }
+        else
+        {
+            //初始化条件数据界面
+            _ui->tabWidget->removeTab(2);
+            updateBasicWidget();
+            updatePatchWidget();
+        }
     }
 
     void InitialWidget::on_pushButton_PatchAdd_clicked()
@@ -127,6 +141,37 @@ namespace GUI
             tabWidget->addTab(widget, pathData->getGeometryModel()->getDataObjectName());
         }
         _ui->verticalLayout_Patch->addWidget(tabWidget);
+    }
+
+    void InitialWidget::updateRegions()
+    {
+        if (_initValue == nullptr)return;
+
+        QList<Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType> types = _initValue->getInitPropRegionsType();
+        for (Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType t : types)
+        {
+            Interface::FITKOFInitPropRegions * region = _initValue->getInitPropRegionByType(t);
+            if (!region) continue;
+            Core::FITKParameter * paraRegion = region->getRegionPara();
+            if (!paraRegion) continue;
+            bool isOK = false;
+            Core::FITKEnumTransfer<Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType> enumTransfer;
+            QString strEnum = enumTransfer.toString(t, isOK);
+            if (!isOK) continue;
+            //创建窗口和垂直分布
+            QWidget* w = new QWidget(this);
+            _ui->tabWidget_Regions->addTab(w, strEnum);
+            QVBoxLayout* pLayout = new QVBoxLayout(w);
+            w->setLayout(pLayout);
+
+            for (auto v : paraRegion->getParameter()) {
+                if (v == nullptr)continue;
+                QWidget* widget = new Core::FITKWidgetComLine(v, this);
+                pLayout->addWidget(widget);
+            }
+            QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+            pLayout->addItem(spacer);
+        }
     }
 }
 
