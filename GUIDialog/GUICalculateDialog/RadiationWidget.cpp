@@ -151,9 +151,6 @@ namespace GUI
         initRadiationPara();
         initModels();
         initSolarLoad();
-
-        QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
-        _ui->verticalLayout_widget->addItem(spacer);
     }
 
     void RadiationWidget::showEvent(QShowEvent * event)

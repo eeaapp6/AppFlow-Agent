@@ -94,10 +94,16 @@ namespace GUI
             for (auto subValue : conValue->getParameter()){
                 if (subValue == nullptr)continue;
                 QWidget* widget = Core::FITKEasyParamWidgetFactory::createWidget(subValue, this);
+                if (widget == nullptr) {
+                    continue;
+                }
+                //添加弹簧
+                QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+                widget->layout()->addItem(spacer);
                 tabWidget->addTab(widget, conName);
             }
         }
-
+        //添加界面
         _ui->verticalLayout_Convection->addWidget(tabWidget);
     }
 
@@ -111,9 +117,15 @@ namespace GUI
         for (auto value : gradValue->getParameter()) {
             if (value == nullptr)continue;
             QWidget* widget = Core::FITKEasyParamWidgetFactory::createWidget(value, this);
+            if (widget == nullptr) {
+                continue;
+            }
+            //添加弹簧
+            QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+            widget->layout()->addItem(spacer);
             tabWidget->addTab(widget, value->getDataObjectName());
         }
-
+        //添加界面
         _ui->verticalLayout_Gradients->addWidget(tabWidget);
     }
 

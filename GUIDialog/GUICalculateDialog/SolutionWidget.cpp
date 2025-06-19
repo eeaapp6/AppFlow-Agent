@@ -122,8 +122,15 @@ namespace GUI
                 widgetList.append(comp);
             }
             Core::FITKWidgetVBox* widget = new Core::FITKWidgetVBox(widgetList, this);
+            if (widget == nullptr) {
+                continue;
+            }
+            //添加弹簧
+            QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+            widget->layout()->addItem(spacer);
             tabWidget->addTab(widget, type);
         }
+        //添加界面
         _ui->verticalLayout_Solvers->addWidget(tabWidget);
     }
 
@@ -161,8 +168,15 @@ namespace GUI
                 widgets.append(widget);
             }
             Core::FITKWidgetVBox* VBoxWidget = new Core::FITKWidgetVBox(widgets, this);
+            if (VBoxWidget == nullptr) {
+                continue;
+            }
+            //添加弹簧
+            QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+            VBoxWidget->layout()->addItem(spacer);
             tabWidget->addTab(VBoxWidget, name);
         }
+        //添加界面
         _ui->verticalLayout_Residuals->addWidget(tabWidget);
     }
 

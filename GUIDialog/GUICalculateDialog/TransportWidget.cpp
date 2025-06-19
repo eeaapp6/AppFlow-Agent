@@ -52,6 +52,13 @@ namespace GUI
         for (int i = 0; i < dataNum; i++) {
             if (_tranData->getPhase(i) == nullptr)continue;;
             CompTranPhasesWidget* widget = new CompTranPhasesWidget(_tranData->getPhase(i), i, this);
+            if (widget == nullptr) {
+                continue;
+            }
+            //添加弹簧
+            QSpacerItem* spacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+            widget->layout()->addItem(spacer);
+
             tabWidget->addTab(widget, _tranData->getPhase(i)->getPhaseName());
         }
         _ui->verticalLayout->addWidget(tabWidget);
