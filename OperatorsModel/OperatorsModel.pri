@@ -28,6 +28,8 @@ HEADERS += \
     $$PWD/OperatorsLicense.h \
     $$PWD/OperatorsOperCondition.h \
     $$PWD/OperatorsCFDPost.h \
+    $$PWD/OperatorsRadiation.h \
+    $$PWD/OperatorsThermo.h \
 
 
 SOURCES += \
@@ -59,5 +61,7 @@ SOURCES += \
     $$PWD/OperatorsLicense.cpp\
     $$PWD/OperatorsOperCondition.cpp\
     $$PWD/OperatorsCFDPost.cpp\
+    $$PWD/OperatorsRadiation.cpp \
+    $$PWD/OperatorsThermo.cpp \
 
 FORMS += \

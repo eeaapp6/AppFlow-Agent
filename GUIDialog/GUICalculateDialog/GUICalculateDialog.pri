@@ -18,6 +18,8 @@ HEADERS += \
     $$PWD/InitialCreatePatchDialog.h \
     $$PWD/OperatingConditionWidget.h \
     $$PWD/CalculateDriver.h \
+    $$PWD/RadiationWidget.h \
+    $$PWD/ThermoWidget.h \
 
 SOURCES += \
     $$PWD/SetupWidget.cpp \
@@ -38,6 +40,8 @@ SOURCES += \
     $$PWD/InitialCreatePatchDialog.cpp \
     $$PWD/OperatingConditionWidget.cpp \
     $$PWD/CalculateDriver.cpp \
+    $$PWD/RadiationWidget.cpp \
+    $$PWD/ThermoWidget.cpp \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \
@@ -55,6 +59,8 @@ FORMS += \
     $$PWD/PostWidget.ui \
     $$PWD/InitialCreatePatchDialog.ui \
     $$PWD/OperatingConditionWidget.ui \
+    $$PWD/RadiationWidget.ui \
+    $$PWD/ThermoWidget.ui \
 
  RESOURCES += \
     $$PWD/../../Resources/Resources.qrc

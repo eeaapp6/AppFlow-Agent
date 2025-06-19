@@ -106,6 +106,8 @@ namespace GUI {
             break;
         }
         case GUI::MainTreeEnum::MainTree_Setup:name = "actionSetupEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupRadiation:name = "actionRadiationEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupThermo:name = "actionThermoEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupTurbulence:name = "actionTurbulenceEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupTransportProperties:name = "actionTransportEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupDiscretization:name = "actionDiscretizationEdit"; break;
