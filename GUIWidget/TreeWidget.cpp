@@ -106,6 +106,7 @@ namespace GUI {
             break;
         }
         case GUI::MainTreeEnum::MainTree_Setup:name = "actionSetupEdit"; break;
+        case GUI::MainTreeEnum::MainTree_SetupRegionMesh:name = "actionRegionMeshEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupRadiation:name = "actionRadiationEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupThermo:name = "actionThermoEdit"; break;
         case GUI::MainTreeEnum::MainTree_SetupTurbulence:name = "actionTurbulenceEdit"; break;
@@ -374,11 +375,20 @@ namespace GUI {
         this->addTopLevelItem(setupItem);
 
         Interface::FITKOFPhysicsData* physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
-        if (physicsData == nullptr)return;
+        Interface::FITKUnstructuredFluidMeshVTK* meshData = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
+        if (physicsData == nullptr || meshData == nullptr)return;
         Interface::FITKAbstractOFSolver* solverData = physicsData->getSolver();
         if (solverData == nullptr)return;
 
         QTreeWidgetItem* item = nullptr;
+
+        if (meshData->getDataCount() > 1) {
+            item = new QTreeWidgetItem();
+            item->setText(0, tr("Region Mesh"));
+            item->setData(1, 0, -1);
+            item->setData(2, 0, QVariant::fromValue(GUI::MainTreeEnum::MainTree_SetupRegionMesh));
+            setupItem->addChild(item);
+        }
 
         if (physicsData->getRadiation()) {
             item = new QTreeWidgetItem();

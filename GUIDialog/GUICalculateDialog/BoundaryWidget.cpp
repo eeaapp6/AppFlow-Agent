@@ -105,6 +105,32 @@ namespace GUI
         phyFactory->setVariableBoundaryType(boundaryID, objName, type);
         return boundary->getPhasesVBType(index)->getBoundaryTypePara();
     }
+    /**
+     * @brief    Thermal子数据回调函数
+     * @param[i] type 类型
+     * @param[i] widget 对应的界面
+     * @return   Core::FITKParameter* 子数据对象
+     * @author   BaGuijun (baguijun@163.com)
+     * @date     2024-08-27
+     */
+    Core::FITKParameter* getBoundaryThermalSubData(const QString& type, CompSelectComBoxWidget* widget)
+    {
+        if (widget == nullptr)return nullptr;
+        auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
+        if (phyFactory == nullptr)return nullptr;
+        auto phyData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+        if (phyData == nullptr)return nullptr;
+
+        int objID = widget->getData("objID").toInt();
+        QString objName = widget->getData("objName").toString();
+        int index = widget->getData("index").toInt();
+        int boundaryID = widget->getData("boundaryID").toInt();
+        auto boundary = phyData->getBoundaryManager()->getDataByID(boundaryID);
+        if (boundary == nullptr)return nullptr;
+
+        phyFactory->setVariableBoundaryType(boundaryID, objName, type);
+        return boundary->getThermalVBType(index)->getBoundaryTypePara();
+    }
 
     BoundaryWidget::BoundaryWidget(Interface::FITKOFBoundary* boundaryObj, EventOper::ParaWidgetInterfaceOperator * oper, QWidget * parent) :
         GUICalculateWidgetBase(oper, parent), _boundaryObj(boundaryObj)
@@ -150,6 +176,7 @@ namespace GUI
         case Interface::FITKOFSolverTypeEnum::BOutflow:typeName = tr("Outflow"); break;
         case Interface::FITKOFSolverTypeEnum::BSymmetry:typeName = tr("Symmetry"); break;
         case Interface::FITKOFSolverTypeEnum::BWedge:typeName = tr("Wedge"); break;
+        case Interface::FITKOFSolverTypeEnum::BMappedWall:typeName = tr("Mapped Wall"); break;
         }
         _ui->lineEdit_Type->setText(typeName);
         _ui->lineEdit_Type->setEnabled(false);
@@ -164,6 +191,7 @@ namespace GUI
         updateFlow();
         updateTurbulence();
         updatePhases();
+        updateThermal();
     }
 
     Interface::FITKOFBoundary * BoundaryWidget::getCurrentObj()
@@ -295,6 +323,42 @@ namespace GUI
         layout->addWidget(toolBox);
         widget->setLayout(layout);
         _ui->tabWidget->addTab(widget, tr("Phases"));
+    }
+
+    void BoundaryWidget::updateThermal()
+    {
+        if (_boundaryObj == nullptr)return;
+        if (_physicsManager == nullptr)return;
+        auto boundartTypeMan = _physicsManager->getBoundaryTypeManager();
+        if (boundartTypeMan == nullptr)return;
+        int num = _boundaryObj->getThermalCount();
+        if (num == 0) {
+            _ui->tabWidget->removeTab(2);
+            return;
+        }
+
+        QWidget* widget = new QWidget(this);
+        QVBoxLayout* layout = new QVBoxLayout();
+        QToolBox* toolBox = Core::FITKWidgetComLine::CreateToolBox(widget);
+        for (int i = 0; i < num; i++) {
+            Interface::FITKOFAbsBoundaryType* data = _boundaryObj->getThermalVBType(i);
+            if (data == nullptr)continue;
+            QStringList options = boundartTypeMan->filterBoundariesType(_physicsData->getSolver()->getSolverType(),
+                _currentType, _boundaryObj->getThermalVariableName(i));
+            CompSelectComBoxWidget* w = new CompSelectComBoxWidget(_boundaryObj->getThermalVariableName(i), this);
+            w->setData("boundaryID", _boundaryObj->getDataObjectID());
+            w->setData("objID", data->getDataObjectID());
+            w->setData("objName", _boundaryObj->getThermalVariableName(i));
+            w->setData("index", i);
+            w->setSubWidgetData(data->getBoundaryTypePara());
+            w->setOptions(options);
+            w->setCurrentText(data->getDataObjectName());
+            w->setFunction(&getBoundaryPhasesSubData);
+            toolBox->addItem(w, _boundaryObj->getThermalVariableName(i));
+        }
+        layout->addWidget(toolBox);
+        widget->setLayout(layout);
+        _ui->tabWidget->addTab(widget, tr("Thermal"));
     }
 }
 

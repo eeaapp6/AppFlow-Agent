@@ -20,6 +20,7 @@ HEADERS += \
     $$PWD/CalculateDriver.h \
     $$PWD/RadiationWidget.h \
     $$PWD/ThermoWidget.h \
+    $$PWD/RegionMeshWidget.h \
 
 SOURCES += \
     $$PWD/SetupWidget.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
     $$PWD/CalculateDriver.cpp \
     $$PWD/RadiationWidget.cpp \
     $$PWD/ThermoWidget.cpp \
+    $$PWD/RegionMeshWidget.cpp \
 
 FORMS += \ 
     $$PWD/SetupWidget.ui \
@@ -61,6 +63,7 @@ FORMS += \
     $$PWD/OperatingConditionWidget.ui \
     $$PWD/RadiationWidget.ui \
     $$PWD/ThermoWidget.ui \
+    $$PWD/RegionMeshWidget.ui \
 
  RESOURCES += \
     $$PWD/../../Resources/Resources.qrc

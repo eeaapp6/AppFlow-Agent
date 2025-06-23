@@ -30,15 +30,25 @@
       <string>Mesh Boundary</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
+      <item row="1" column="1">
+       <widget class="QComboBox" name="comboBox_Boundary"/>
+      </item>
+      <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
          <string>Boundary:</string>
         </property>
        </widget>
       </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Mesh Region</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
-       <widget class="QComboBox" name="comboBox_Boundary"/>
+       <widget class="QComboBox" name="comboBox_MeshRegion"/>
       </item>
      </layout>
     </widget>

@@ -17,6 +17,7 @@ namespace Ui {
 namespace Interface {
     class FITKOFPhysicsData;
     class FITKFlowPhysicsHandlerFactory;
+    class FITKUnstructuredFluidMeshVTK;
 }
 
 namespace EventOper {
@@ -72,10 +73,20 @@ namespace GUI
         ;
         void on_comboBox_Boundary_activated(int index);
 
+        void on_comboBox_MeshRegion_activated(int index);
+
         void on_pushButton_OK_clicked();
 
         void on_pushButton_Cancel_clicked();
     private:
+        /**
+         * @brief    初始化边界下拉框
+         * @return   void
+         * @author   liuzhonghua (liuzhonghuaszch@163.com)
+         * @date     2025-06-23
+         */
+        void initBoundaryComboBox();
+
         /**
          * @brief    高亮网格边界
          * @param[i] meshBoundID   网格边界id
@@ -108,6 +119,12 @@ namespace GUI
          * @date   2024-08-21
          */
         Interface::FITKFlowPhysicsHandlerFactory* _factoryData = nullptr;
+        /**
+         * @brief  网格数据
+         * @author liuzhonghua (liuzhonghuaszch@163.com)
+         * @date   2025-06-23
+         */
+        Interface::FITKUnstructuredFluidMeshVTK* _meshData = nullptr;
     };
 }
 

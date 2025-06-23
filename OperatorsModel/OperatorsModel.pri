@@ -30,6 +30,7 @@ HEADERS += \
     $$PWD/OperatorsCFDPost.h \
     $$PWD/OperatorsRadiation.h \
     $$PWD/OperatorsThermo.h \
+    $$PWD/OperatorsRegionMesh.h \
 
 
 SOURCES += \
@@ -63,5 +64,6 @@ SOURCES += \
     $$PWD/OperatorsCFDPost.cpp\
     $$PWD/OperatorsRadiation.cpp \
     $$PWD/OperatorsThermo.cpp \
+    $$PWD/OperatorsRegionMesh.cpp \
 
 FORMS += \

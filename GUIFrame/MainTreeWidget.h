@@ -27,6 +27,7 @@ namespace GUI
         MainTree_MeshBoundaryItem,
 
         MainTree_Setup,
+        MainTree_SetupRegionMesh,
         MainTree_SetupRadiation,
         MainTree_SetupTurbulence,
         MainTree_SetupThermo,

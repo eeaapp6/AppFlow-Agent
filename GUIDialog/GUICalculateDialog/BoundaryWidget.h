@@ -103,6 +103,13 @@ namespace GUI
          * @date     2024-08-28
          */
         void updatePhases();
+        /**
+         * @brief    更新Thermal
+         * @return   void
+         * @author   liuzhonghua (liuzhonghuaszch@163.com)
+         * @date     2025-06-23
+         */
+        void updateThermal();
     private:
         /**
          * @brief ui
