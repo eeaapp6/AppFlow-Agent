@@ -156,19 +156,11 @@ namespace GUI
     void RadiationWidget::showEvent(QShowEvent * event)
     {
         Q_UNUSED(event);
-        //int width = _ui->tabWidget->width();
-        //int tabCount = _ui->tabWidget->count();
-        //int tabWidth = width / tabCount;
-        //_ui->tabWidget->tabBar()->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
     }
 
     void RadiationWidget::resizeEvent(QResizeEvent * event)
     {
         Q_UNUSED(event);
-        //int width = _ui->tabWidget->width();
-        //int tabCount = _ui->tabWidget->count();
-        //int tabWidth = width / tabCount;
-        //_ui->tabWidget->tabBar()->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
     }
 
     void RadiationWidget::initRadiationPara()
