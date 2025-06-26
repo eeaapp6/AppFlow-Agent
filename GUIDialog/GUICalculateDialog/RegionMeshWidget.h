@@ -59,8 +59,6 @@ namespace GUI
          */
         void closeEvent(QCloseEvent *event) override;
 
-    private slots:
-        void setDataFormWidgetSlot(int index);
 
     private:
         /**

@@ -111,16 +111,18 @@ namespace GUI
 
     void BoundaryCreateDialog::on_pushButton_OK_clicked()
     {
-        if (_ui->comboBox_Boundary->count() == 0)return;
-
-        if (_physicsData == nullptr)return;
+        if (_ui->comboBox_Boundary->count() == 0 || _physicsData == nullptr || _factoryData == nullptr || _meshData == nullptr)return;
+        //获取边界管理器
         auto boundManager = _physicsData->getBoundaryManager();
         if (boundManager == nullptr)return;
-        if (_factoryData == nullptr)return;
-
+        //获取边界网格管理器
+        int regionMeshID = _ui->comboBox_MeshRegion->currentData().toInt();
+        Interface::FITKFluidRegionsMesh* region = _meshData->getDataByID(regionMeshID);//获取区域数据
+        if (!region) return;
+        //获取区域类型
         QString name = _ui->lineEdit_Name->text();
         _factoryData->setBoundary(_ui->comboBox_Boundary->currentData().toInt(), 
-            _ui->comboBox_Type->currentData().value<Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType>());
+            _ui->comboBox_Type->currentData().value<Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType>(), _physicsData->getRegionMeshType(region->getDataObjectID()));
         auto boundary = boundManager->getBoundary(_ui->comboBox_Boundary->currentData().toInt());
         if (boundary) {
             boundary->setDataObjectName(name);

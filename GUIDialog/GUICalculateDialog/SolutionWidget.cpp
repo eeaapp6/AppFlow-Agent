@@ -139,7 +139,7 @@ namespace GUI
         if (_physicsData == nullptr)return;
         auto solver = _physicsData->getSolver();
         if (solver == nullptr)return;
-        _ui->tabWidget->setTabText(1, solver->getDataObjectName());
+        _ui->tabWidget->setTabText(1, _solValue->getSolverSpeciallyDataName());
         if (_solValue == nullptr)return;
 
         auto solverValue = _solValue->getSolverSpeciallyDataPara();

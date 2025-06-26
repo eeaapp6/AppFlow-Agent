@@ -3,15 +3,33 @@
 
 #include "FITK_Kernel/FITKAppFramework/FITKAppFramework.h"
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
+#include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFEnum.hpp"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
+#include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
 
 #include <QComboBox>
 
 #define MeshObjID Qt::UserRole
 
 namespace GUI {
+    /**
+     * @brief    设置区域网格类型数据
+     * @param[i] regionMeshID 
+     * @param[i] regionMeshtype 
+     * @return   void
+     * @author   liuzhonghua (liuzhonghuaszch@163.com)
+     * @date     2025-06-24
+     */
+    void setRegionMeshTypeData(int regionMeshID, Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType regionMeshType)
+    {
+        //获取物理数据搬运工厂
+        auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
+        if (phyFactory == nullptr)return;
+        //设置区域网格类型
+        phyFactory->setRegionMeshType(regionMeshID, regionMeshType);
+    }
 
     RegionMeshWidget::RegionMeshWidget(EventOper::ParaWidgetInterfaceOperator * oper) :
         Core::FITKWidget(FITKAPP->getGlobalData()->getMainWindow()),
@@ -55,12 +73,13 @@ namespace GUI {
         for (int i = 0; i < count; i++) {
             Interface::FITKFluidRegionsMesh* mesh = meshData->getDataByIndex(i);
             if (!mesh) continue;
+            int regionMeshID = mesh->getDataObjectID();
             QString meshName = mesh->getDataObjectName();
             if (meshName.isEmpty()) continue;
             int type = physicsData->getRegionMeshType(mesh->getDataObjectID());
             _ui->tableWidget_Mesh->setColumnCount(2);
             QTableWidgetItem* item = new QTableWidgetItem(meshName);
-            item->setData(MeshObjID, mesh->getDataObjectID());
+            item->setData(MeshObjID, regionMeshID);
             _ui->tableWidget_Mesh->setItem(i, 0, item);
 
             QComboBox* comboBox_Region = new QComboBox;
@@ -69,7 +88,10 @@ namespace GUI {
             comboBox_Region->setCurrentIndex(comboBox_Region->findData(type));
             if (count == 1)
                 comboBox_Region->setEnabled(false);
-            connect(comboBox_Region, SIGNAL(activated(int)), this, SLOT(setDataFormWidgetSlot(int)));
+            connect(comboBox_Region, QOverload<int>::of(&QComboBox::activated), [comboBox_Region, regionMeshID](int index) {
+                Q_UNUSED(index);
+                setRegionMeshTypeData(regionMeshID, (Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType)comboBox_Region->currentData().toInt());
+            });
             _ui->tableWidget_Mesh->setCellWidget(i, 1, comboBox_Region);
         }
     }
@@ -79,25 +101,4 @@ namespace GUI {
         Core::FITKWidget::closeEvent(event);
     }
 
-    void RegionMeshWidget::setDataFormWidgetSlot(int index)
-    {
-        Q_UNUSED(index);
-        //获取网格数据和物理数据
-        auto globalData = FITKAPP->getGlobalData();
-        if (globalData == nullptr)return;
-        Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
-        Interface::FITKOFPhysicsData* physicsData = globalData->getPhysicsData<Interface::FITKOFPhysicsData>();
-        if (meshData == nullptr || physicsData == nullptr)return;
-        //获取界面数据更新数据层
-        int rowCount = _ui->tableWidget_Mesh->rowCount();
-        for (int iRow = 0; iRow < rowCount; ++iRow)
-        {
-            QTableWidgetItem* item = _ui->tableWidget_Mesh->item(iRow, 0);
-            QComboBox* comboBox_Region = dynamic_cast<QComboBox*>(_ui->tableWidget_Mesh->cellWidget(iRow, 1));
-            if (!item || !comboBox_Region) continue;
-            int id = item->data(MeshObjID).toInt();
-            Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType type = (Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType)comboBox_Region->currentData().toInt();
-            physicsData->setRegionMeshType(id, type);
-        }
-    }
 }

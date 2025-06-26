@@ -158,9 +158,9 @@ namespace GUI
         Interface::FITKOFAbsThermoPhysicalThermodynamics * thermodynamics = thermoPhyProp->getThermodynamicsPara();
         Interface::FITKOFAbsThermoPhysicalTransport * transport = thermoPhyProp->getTransportPara();
         if (equationofState == nullptr || thermodynamics == nullptr || transport == nullptr) return;
-        QStringList equationOfStateOptions = thermoPropMgr->filterEquationOfState(_physicsData->getSolver()->getSolverType());
-        QStringList thermodynamicsOptions = thermoPropMgr->filterThermodynamics(equationofState->getDataObjectName(), _physicsData->getSolver()->getSolverType());
-        QStringList transportOptions = thermoPropMgr->filterTransport(equationofState->getDataObjectName(), thermodynamics->getDataObjectName(), _physicsData->getSolver()->getSolverType());
+        QStringList equationOfStateOptions = thermoPropMgr->filterEquationOfState(_physicsData->getSolver()->getSolverType(), Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType(type));
+        QStringList thermodynamicsOptions = thermoPropMgr->filterThermodynamics(equationofState->getDataObjectName(), _physicsData->getSolver()->getSolverType(), Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType(type));
+        QStringList transportOptions = thermoPropMgr->filterTransport(equationofState->getDataObjectName(), thermodynamics->getDataObjectName(), _physicsData->getSolver()->getSolverType(), Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType(type));
         //初始化界面
         QVBoxLayout* pLayout = new QVBoxLayout(w);
         w->setLayout(pLayout);
