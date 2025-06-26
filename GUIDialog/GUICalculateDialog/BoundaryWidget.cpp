@@ -148,12 +148,6 @@ namespace GUI
     void BoundaryWidget::init()
     {
         if (_boundaryObj == nullptr)return;
-        auto globalData = FITKAPP->getGlobalData();
-        if (globalData == nullptr)return;
-        Interface::FITKUnstructuredFluidMeshVTK* meshData = globalData->getMeshData< Interface::FITKUnstructuredFluidMeshVTK>();
-        if (meshData == nullptr)return;
-        Interface::FITKBoundaryMeshVTKManager* boundMeshManager = meshData->getBoundaryMeshManager();
-        if (boundMeshManager == nullptr)return;
 
         //名称设置
         QString name = _boundaryObj->getDataObjectName();
@@ -161,7 +155,7 @@ namespace GUI
         _ui->lineEdit_Name->setEnabled(false);
 
         //网格边界名称设置
-        auto meshBoundary = boundMeshManager->getDataByID(_boundaryObj->getMeshBoundaryID());
+        auto meshBoundary = _boundaryObj->getMeshBoundary();
         _ui->lineEdit_Boundary->setEnabled(false);
         if (meshBoundary)_ui->lineEdit_Boundary->setText(meshBoundary->getDataObjectName());
 

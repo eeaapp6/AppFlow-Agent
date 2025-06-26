@@ -46,14 +46,14 @@ namespace GUI
         if (boundaryManager == nullptr)return;
 
         //界面名称添加
-        _ui->lineEdit_Name->setText(boundaryManager->checkName("Boundary-0"));
+        _ui->lineEdit_Name->setText(boundaryManager->checkName("Boundary-1"));
 
         //初始化网格区域下拉框
         int count = _meshData->getDataCount();
         for (int i = 0; i < count; ++i)
         {
             Interface::FITKFluidRegionsMesh* region = _meshData->getDataByIndex(i);
-            if (!region) continue;
+            if (!region || _physicsData->getRegionMeshType(region->getDataObjectID()) == Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType::None) continue;
             _ui->comboBox_MeshRegion->addItem(region->getDataObjectName(), region->getDataObjectID());
         }
         //初始化边界域下拉框
@@ -121,7 +121,7 @@ namespace GUI
         if (!region) return;
         //获取区域类型
         QString name = _ui->lineEdit_Name->text();
-        _factoryData->setBoundary(_ui->comboBox_Boundary->currentData().toInt(), 
+        _factoryData->setBoundary(regionMeshID, _ui->comboBox_Boundary->currentData().toInt(),
             _ui->comboBox_Type->currentData().value<Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType>(), _physicsData->getRegionMeshType(region->getDataObjectID()));
         auto boundary = boundManager->getBoundary(_ui->comboBox_Boundary->currentData().toInt());
         if (boundary) {

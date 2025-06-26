@@ -8,6 +8,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFEnum.hpp"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
+#include "OperatorsInterface/ParaWidgetInterfaceOperator.h"
 
 #include <QComboBox>
 
@@ -83,14 +84,19 @@ namespace GUI {
             _ui->tableWidget_Mesh->setItem(i, 0, item);
 
             QComboBox* comboBox_Region = new QComboBox;
+            comboBox_Region->addItem(tr("None"), (int)Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType::None);
             comboBox_Region->addItem(tr("Fluid"), (int)Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType::Fluid);
             comboBox_Region->addItem(tr("Solid"), (int)Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType::Solid);
             comboBox_Region->setCurrentIndex(comboBox_Region->findData(type));
             if (count == 1)
                 comboBox_Region->setEnabled(false);
-            connect(comboBox_Region, QOverload<int>::of(&QComboBox::activated), [comboBox_Region, regionMeshID](int index) {
+            connect(comboBox_Region, QOverload<int>::of(&QComboBox::activated), [this, comboBox_Region, regionMeshID](int index) {
                 Q_UNUSED(index);
-                setRegionMeshTypeData(regionMeshID, (Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType)comboBox_Region->currentData().toInt());
+                Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType regionType = (Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType)comboBox_Region->currentData().toInt();
+                setRegionMeshTypeData(regionMeshID, regionType);
+                //类型为空时会更新setUp树节点
+                if (Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType::None == regionType && _oper)
+                    _oper->execProfession();
             });
             _ui->tableWidget_Mesh->setCellWidget(i, 1, comboBox_Region);
         }

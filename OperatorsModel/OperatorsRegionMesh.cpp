@@ -34,6 +34,9 @@ namespace ModelOper
 
     bool OperatorsRegionMesh::execProfession()
     {
+        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        if (treeOper == nullptr) return false;
+        treeOper->updateTree();
         return true;
     }
 }
