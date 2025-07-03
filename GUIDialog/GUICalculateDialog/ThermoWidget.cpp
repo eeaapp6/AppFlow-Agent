@@ -24,6 +24,7 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFThermoPhysicalEquationOfState.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFThermoPhysicalTransport.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFThermoPhysicalThermodynamics.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 
 #include <QButtonGroup>
 #include <QProcess>
@@ -38,52 +39,52 @@
 
 namespace GUI
 {
-    Core::FITKParameter* equationofStateModelGetSubData(const QString & test, int type)
+    Core::FITKParameter* equationofStateModelGetSubData(const QString & test, int regionMeshID)
     {
         auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
         if (phyFactory == nullptr)return nullptr;
         auto phyData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
         if (phyData == nullptr)return nullptr;
         //工厂动作
-        phyFactory->setThermoEquationOfState(type, test);
+        phyFactory->setThermoEquationOfState(regionMeshID, test);
         //获取辐射模型数据
         Interface::FITKOFThermo* thermo = phyData->getThermo();
         if (thermo == nullptr) return nullptr;
-        Interface::FITKOFThermoPhysicalProp * thermoPhysicalProp = thermo->getThermoPropRegionByType(Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType(type));
+        Interface::FITKOFThermoPhysicalProp * thermoPhysicalProp = thermo->getThermoPropRegionByRegionMeshID(regionMeshID);
         if (thermoPhysicalProp == nullptr) return nullptr;
         Interface::FITKOFAbsThermoPhysicalEquationOfState * equationOfState = thermoPhysicalProp->getEquationOfStatePara();
         return equationOfState->getEquationOfStatePara();
     }
 
-    Core::FITKParameter* thermodynamicsModelGetSubData(const QString & test, int type)
+    Core::FITKParameter* thermodynamicsModelGetSubData(const QString & test, int regionMeshID)
     {
         auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
         if (phyFactory == nullptr)return nullptr;
         auto phyData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
         if (phyData == nullptr)return nullptr;
         //工厂动作
-        phyFactory->setThermoThermodynamics(type, test);
+        phyFactory->setThermoThermodynamics(regionMeshID, test);
         //获取辐射模型数据
         Interface::FITKOFThermo* thermo = phyData->getThermo();
         if (thermo == nullptr) return nullptr;
-        Interface::FITKOFThermoPhysicalProp * thermoPhysicalProp = thermo->getThermoPropRegionByType(Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType(type));
+        Interface::FITKOFThermoPhysicalProp * thermoPhysicalProp = thermo->getThermoPropRegionByRegionMeshID(regionMeshID);
         if (thermoPhysicalProp == nullptr) return nullptr;
         Interface::FITKOFAbsThermoPhysicalThermodynamics * thermodynamics = thermoPhysicalProp->getThermodynamicsPara();
         return thermodynamics->getThermodynamicsPara();
     }
 
-    Core::FITKParameter* transportModelGetSubData(const QString & test, int type)
+    Core::FITKParameter* transportModelGetSubData(const QString & test, int regionMeshID)
     {
         auto phyFactory = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
         if (phyFactory == nullptr)return nullptr;
         auto phyData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
         if (phyData == nullptr)return nullptr;
         //工厂动作
-        phyFactory->setThermoTransport(type, test);
+        phyFactory->setThermoTransport(regionMeshID, test);
         //获取辐射模型数据
         Interface::FITKOFThermo* thermo = phyData->getThermo();
         if (thermo == nullptr) return nullptr;
-        Interface::FITKOFThermoPhysicalProp * thermoPhysicalProp = thermo->getThermoPropRegionByType(Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType(type));
+        Interface::FITKOFThermoPhysicalProp * thermoPhysicalProp = thermo->getThermoPropRegionByRegionMeshID(regionMeshID);
         if (thermoPhysicalProp == nullptr) return nullptr;
         Interface::FITKOFAbsThermoPhysicalTransport * transport = thermoPhysicalProp->getTransportPara();
         return transport->getTransportPara();
@@ -112,17 +113,17 @@ namespace GUI
     {
         if (_thermoObj == nullptr) return;
         //初始化热物理属性
-        Core::FITKEnumTransfer<Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType> enumTransfer;
-        QList<Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType> typeList = _thermoObj->getThermoPropRegionsType();
-        for (Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType t : typeList)
+        int count = _thermoObj->getThermoPropRegionCount();
+        for (int i = 0; i < count; ++i)
         {
-            bool isOK = false;
-            QString strEnum = enumTransfer.toString(t, isOK);
-            if (!isOK) continue;
+            Interface::FITKOFThermoPhysicalProp * region = _thermoObj->getThermoPropRegionByIndex(i);
+            if (!region) continue;
+            Interface::FITKFluidRegionsMesh* regionMesh = region->getRegionMeshObj();
+            if (!regionMesh) continue;
             //创建窗口和垂直分布
             QWidget* w = new QWidget(this);
-            _ui->tabWidget_thermo->addTab(w, strEnum);
-            this->initTabWidget(w, t);
+            _ui->tabWidget_thermo->addTab(w, regionMesh->getDataObjectName());
+            this->initTabWidget(w, region);
         }
         _ui->tabWidget_thermo->setCurrentIndex(0);
     }
@@ -145,22 +146,22 @@ namespace GUI
         //_ui->tabWidget->tabBar()->setStyleSheet(QString("QTabBar::tab{width:%1px;height:30px;}").arg(tabWidth));
     }
 
-    void ThermoWidget::initTabWidget(QWidget * w, int type)
+    void ThermoWidget::initTabWidget(QWidget * w, Interface::FITKOFThermoPhysicalProp* thermoPhyProp)
     {
-        if (!_physicsManager || !_thermoObj) return;
+        if (!_physicsManager || !_thermoObj || !thermoPhyProp) return;
+        //获取管理器和类型
+        int regionMeshID = thermoPhyProp->getRegionMeshID();
+        Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType type = thermoPhyProp->getRegionType();
         Interface::FITKOFThermoPropManager * thermoPropMgr = _physicsManager->getThermoPropManager();
         if (!thermoPropMgr) return;
-        //获取模型数据
-        Interface::FITKOFThermoPhysicalProp * thermoPhyProp = _thermoObj->getThermoPropRegionByType(Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType(type));
-        if (!thermoPhyProp) return;
         Core::FITKParameter * speciePara = thermoPhyProp->getSpeciePara();
         Interface::FITKOFAbsThermoPhysicalEquationOfState * equationofState = thermoPhyProp->getEquationOfStatePara();
         Interface::FITKOFAbsThermoPhysicalThermodynamics * thermodynamics = thermoPhyProp->getThermodynamicsPara();
         Interface::FITKOFAbsThermoPhysicalTransport * transport = thermoPhyProp->getTransportPara();
         if (equationofState == nullptr || thermodynamics == nullptr || transport == nullptr) return;
-        QStringList equationOfStateOptions = thermoPropMgr->filterEquationOfState(_physicsData->getSolver()->getSolverType(), Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType(type));
-        QStringList thermodynamicsOptions = thermoPropMgr->filterThermodynamics(equationofState->getDataObjectName(), _physicsData->getSolver()->getSolverType(), Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType(type));
-        QStringList transportOptions = thermoPropMgr->filterTransport(equationofState->getDataObjectName(), thermodynamics->getDataObjectName(), _physicsData->getSolver()->getSolverType(), Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType(type));
+        QStringList equationOfStateOptions = thermoPropMgr->filterEquationOfState(_physicsData->getSolver()->getSolverType(), type);
+        QStringList thermodynamicsOptions = thermoPropMgr->filterThermodynamics(equationofState->getDataObjectName(), _physicsData->getSolver()->getSolverType(), type);
+        QStringList transportOptions = thermoPropMgr->filterTransport(equationofState->getDataObjectName(), thermodynamics->getDataObjectName(), _physicsData->getSolver()->getSolverType(), type);
         //初始化界面
         QVBoxLayout* pLayout = new QVBoxLayout(w);
         w->setLayout(pLayout);
@@ -174,9 +175,9 @@ namespace GUI
         comboBox->addItems(equationOfStateOptions);
         comboBox->setCurrentText(equationofState->getDataObjectName());
         comboBoxLayout->addWidget(comboBox);
-        connect(comboBox, &QComboBox::currentTextChanged, [type, this](QString text) {
-            Core::FITKParameter * para = equationofStateModelGetSubData(text, type);
-            this->initLayout(type, 2, para);
+        connect(comboBox, &QComboBox::currentTextChanged, [w, regionMeshID, this](QString text) {
+            Core::FITKParameter * para = equationofStateModelGetSubData(text, regionMeshID);
+            this->initLayout(w, 2, para);
         });
         pLayout->addLayout(comboBoxLayout);
         //Thermodynamics 下拉框
@@ -189,8 +190,9 @@ namespace GUI
         comboBox->addItems(thermodynamicsOptions);
         comboBox->setCurrentText(thermodynamics->getDataObjectName());
         comboBoxLayout->addWidget(comboBox);
-        connect(comboBox, &QComboBox::currentTextChanged, [type, this](QString text) {
-
+        connect(comboBox, &QComboBox::currentTextChanged, [w, regionMeshID, this](QString text) {
+            Core::FITKParameter * para = equationofStateModelGetSubData(text, regionMeshID);
+            this->initLayout(w, 1, para);
         });
         pLayout->addLayout(comboBoxLayout);
         //Transport 下拉框
@@ -203,27 +205,28 @@ namespace GUI
         comboBox->addItems(transportOptions);
         comboBox->setCurrentText(transport->getDataObjectName());
         comboBoxLayout->addWidget(comboBox);
-        connect(comboBox, &QComboBox::currentTextChanged, [type, this](QString text) {
-            
+        connect(comboBox, &QComboBox::currentTextChanged, [w, regionMeshID, this](QString text) {
+            Core::FITKParameter * para = equationofStateModelGetSubData(text, regionMeshID);
+            this->initLayout(w, 0, para);
         });
         pLayout->addLayout(comboBoxLayout);
         //Specie
         this->initSpecieWidget(speciePara, pLayout);
         //Thermodynamics
         QVBoxLayout* layoutNew = new QVBoxLayout(this);
-        _thermodynamicsVBoxLayout.insert(type, layoutNew);
+        _thermodynamicsVBoxLayout.insert(w, layoutNew);
         pLayout->addLayout(layoutNew);
-        this->initLayout(type, 0, thermodynamics->getThermodynamicsPara());
+        this->initLayout(w, 0, thermodynamics->getThermodynamicsPara());
         //Transport
         layoutNew = new QVBoxLayout(this);
-        _transportVBoxLayout.insert(type, layoutNew);
+        _transportVBoxLayout.insert(w, layoutNew);
         pLayout->addLayout(layoutNew);
-        this->initLayout(type, 1, transport->getTransportPara());
+        this->initLayout(w, 1, transport->getTransportPara());
         //Equation of State
         layoutNew = new QVBoxLayout(this);
-        _equationOfStateVBoxLayout.insert(type, layoutNew);
+        _equationOfStateVBoxLayout.insert(w, layoutNew);
         pLayout->addLayout(layoutNew);
-        this->initLayout(type, 2, equationofState->getEquationOfStatePara());
+        this->initLayout(w, 2, equationofState->getEquationOfStatePara());
         QSpacerItem* verticalSpacer = new QSpacerItem(20, 45, QSizePolicy::Minimum, QSizePolicy::Expanding);
         pLayout->addItem(verticalSpacer);
     }
@@ -248,24 +251,25 @@ namespace GUI
         }
     }
 
-    void ThermoWidget::initLayout(int type, int modelType, Core::FITKParameter * para)
+    void ThermoWidget::initLayout(QWidget* w, int modelType, Core::FITKParameter * para)
     {
+        if (!w) return;
         //获取分布数据
         QString modelName;
         QVBoxLayout* layout = nullptr;
         if (modelType == 0)
         {
-            layout = _thermodynamicsVBoxLayout[type];
+            layout = _thermodynamicsVBoxLayout[w];
             modelName = "Thermodynamics";
         }
         else if (modelType == 1)
         {
-            layout = _transportVBoxLayout[type];
+            layout = _transportVBoxLayout[w];
             modelName = "Transport";
         }
         else if (modelType == 2)
         {
-            layout = _equationOfStateVBoxLayout[type];
+            layout = _equationOfStateVBoxLayout[w];
             modelName = "Equation of State";
         }
         if (layout == nullptr) return;

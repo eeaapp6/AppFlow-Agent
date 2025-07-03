@@ -22,6 +22,7 @@ namespace EventOper {
 
 namespace Interface {
     class FITKOFThermo;
+    class FITKOFThermoPhysicalProp;
 }
 
 namespace Core {
@@ -80,12 +81,12 @@ namespace GUI
         /**
          * @brief    初始化tab界面
          * @param[i] w 
-         * @param[i] type 
+         * @param[i] thermoPhyProp 
          * @return   void
          * @author   liuzhonghua (liuzhonghuaszch@163.com)
          * @date     2025-06-20
          */
-        void initTabWidget(QWidget* w, int type);
+        void initTabWidget(QWidget* w, Interface::FITKOFThermoPhysicalProp* thermoPhyProp);
         /**
          * @brief    初始化Specie
          * @param[i] para 
@@ -97,14 +98,14 @@ namespace GUI
         void initSpecieWidget(Core::FITKParameter * para, QVBoxLayout* pLayout);
         /**
          * @brief    初始化Layout数据
-         * @param[i] type 区域类型
+         * @param[i] w 页的窗口
          * @param[i] modelType 模型类型 0:Thermodynamics 1:Transport 2:Equation Of State
          * @param[i] para 参数数据
          * @return   void
          * @author   liuzhonghua (liuzhonghuaszch@163.com)
          * @date     2025-06-20
          */
-        void initLayout(int type, int modelType, Core::FITKParameter *para);
+        void initLayout(QWidget* w, int modelType, Core::FITKParameter *para);
 
     private:
         /**
@@ -119,42 +120,24 @@ namespace GUI
          * @date   2024-09-02
          */
         Interface::FITKOFThermo* _thermoObj = nullptr;
-        ///**
-        // * @brief  Equation Of State下拉框
-        // * @author liuzhonghua (liuzhonghuaszch@163.com)
-        // * @date   2025-06-20
-        // */
-        //QComboBox* _equationOfStateComboBox = nullptr;
-        ///**
-        // * @brief  Thermodynamics下拉框
-        // * @author liuzhonghua (liuzhonghuaszch@163.com)
-        // * @date   2025-06-20
-        // */
-        //QComboBox* _thermodynamicsComboBox = nullptr;
-        ///**
-        // * @brief  Transport下拉框
-        // * @author liuzhonghua (liuzhonghuaszch@163.com)
-        // * @date   2025-06-20
-        // */
-        //QComboBox* _transportComboBox = nullptr;
         /**
          * @brief  Thermodynamics垂直布局
          * @author liuzhonghua (liuzhonghuaszch@163.com)
          * @date   2025-06-20
          */
-        QHash<int, QVBoxLayout*> _thermodynamicsVBoxLayout{};
+        QHash<QWidget*, QVBoxLayout*> _thermodynamicsVBoxLayout{};
         /**
          * @brief  Transport垂直布局
          * @author liuzhonghua (liuzhonghuaszch@163.com)
          * @date   2025-06-20
          */
-        QHash<int, QVBoxLayout*> _transportVBoxLayout{};
+        QHash<QWidget*, QVBoxLayout*> _transportVBoxLayout{};
         /**
          * @brief  Equation Of State垂直布局
          * @author liuzhonghua (liuzhonghuaszch@163.com)
          * @date   2025-06-20
          */
-        QHash<int, QVBoxLayout*> _equationOfStateVBoxLayout{};
+        QHash<QWidget*, QVBoxLayout*> _equationOfStateVBoxLayout{};
     };
 }
 
