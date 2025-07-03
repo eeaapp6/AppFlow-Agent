@@ -10,6 +10,7 @@
 #include "FITK_Component/FITKWidget/FITKTabWidget.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoCommand.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFInitialConditions.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFPhysicsData.h"
 #include "FITK_Kernel/FITKEasyParam/FITKParameter.h"
 #include "FITK_Kernel/FITKEasyParam/FITKParamString.h"
@@ -147,20 +148,19 @@ namespace GUI
     {
         if (_initValue == nullptr)return;
 
-        QList<Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType> types = _initValue->getInitPropRegionsType();
-        for (Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType t : types)
+        int count = _initValue->getInitPropRegionCount();
+
+        for (int i = 0; i < count; ++i)
         {
-            Interface::FITKOFInitPropRegions * region = _initValue->getInitPropRegionByType(t);
+            Interface::FITKOFInitPropRegions * region = _initValue->getInitPropRegionByIndex(i);
             if (!region) continue;
             Core::FITKParameter * paraRegion = region->getRegionPara();
             if (!paraRegion) continue;
-            bool isOK = false;
-            Core::FITKEnumTransfer<Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType> enumTransfer;
-            QString strEnum = enumTransfer.toString(t, isOK);
-            if (!isOK) continue;
+            Interface::FITKFluidRegionsMesh* regionMesh = region->getRegionMeshObj();
+            if (!regionMesh) continue;
             //创建窗口和垂直分布
             QWidget* w = new QWidget(this);
-            _ui->tabWidget_Regions->addTab(w, strEnum);
+            _ui->tabWidget_Regions->addTab(w, regionMesh->getDataObjectName());
             QVBoxLayout* pLayout = new QVBoxLayout(w);
             w->setLayout(pLayout);
 
