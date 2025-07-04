@@ -64,6 +64,8 @@ namespace GUI
             if (_ui->comboBox_Boundary->count() > 0)
                 break;
         }
+        this->initInterfaceMeshRegionComboBox();
+        this->initInterfaceBoundaryComboBox();
         
         //边界类型添加
         _ui->comboBox_Type->addItem(tr("Wall"), Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BWall);
@@ -74,6 +76,12 @@ namespace GUI
         _ui->comboBox_Type->addItem(tr("Symmetry"), Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BSymmetry);
         _ui->comboBox_Type->addItem(tr("Wedge"), Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BWedge);
         _ui->comboBox_Type->addItem(tr("Mapped Wall"), Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BMappedWall);
+
+        if (_ui->comboBox_Type->currentData().toInt() != Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BMappedWall)
+        {
+            _ui->comboBox_InterMeshRegion->setEnabled(false);
+            _ui->comboBox_InterBoundary->setEnabled(false);
+        }
     }
 
     void BoundaryCreateDialog::hideEvent(QHideEvent * event)
@@ -105,8 +113,40 @@ namespace GUI
         Q_UNUSED(index);
         //更新ComboBox_boundary组件
         this->initBoundaryComboBox();
+        this->initInterfaceMeshRegionComboBox();
+        this->initInterfaceBoundaryComboBox();
         if (_ui->comboBox_Boundary->count() > 0)
             highlightMeshBoundary(_ui->comboBox_Boundary->currentData().toInt());
+    }
+
+    void BoundaryCreateDialog::on_comboBox_InterBoundary_activated(int index)
+    {
+        Q_UNUSED(index);
+        highlightMeshBoundary(_ui->comboBox_InterBoundary->currentData().toInt());
+    }
+
+    void BoundaryCreateDialog::on_comboBox_InterMeshRegion_activated(int index)
+    {
+        Q_UNUSED(index);
+        //更新ComboBox_boundary组件
+        this->initInterfaceBoundaryComboBox();
+        if (_ui->comboBox_InterBoundary->count() > 0)
+            highlightMeshBoundary(_ui->comboBox_Boundary->currentData().toInt());
+    }
+
+    void BoundaryCreateDialog::on_comboBox_Type_activated(int index)
+    {
+        Q_UNUSED(index);
+        if (_ui->comboBox_Type->currentData().toInt() != Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BMappedWall)
+        {
+            _ui->comboBox_InterMeshRegion->setEnabled(false);
+            _ui->comboBox_InterBoundary->setEnabled(false);
+        }
+        else
+        {
+            _ui->comboBox_InterMeshRegion->setEnabled(true);
+            _ui->comboBox_InterBoundary->setEnabled(true);
+        }
     }
 
     void BoundaryCreateDialog::on_pushButton_OK_clicked()
@@ -117,15 +157,25 @@ namespace GUI
         if (boundManager == nullptr)return;
         //获取边界网格管理器
         int regionMeshID = _ui->comboBox_MeshRegion->currentData().toInt();
+        int meshBoundaryID = _ui->comboBox_Boundary->currentData().toInt();
+        int regionMeshID2 = _ui->comboBox_InterMeshRegion->currentData().toInt();
+        int meshBoundaryID2 = _ui->comboBox_InterBoundary->currentData().toInt();
         Interface::FITKFluidRegionsMesh* region = _meshData->getDataByID(regionMeshID);//获取区域数据
         if (!region) return;
+        Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType type = _ui->comboBox_Type->currentData().value<Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType>();
         //获取区域类型
         QString name = _ui->lineEdit_Name->text();
-        _factoryData->setBoundary(regionMeshID, _ui->comboBox_Boundary->currentData().toInt(),
-            _ui->comboBox_Type->currentData().value<Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType>(), _physicsData->getRegionMeshType(region->getDataObjectID()));
-        auto boundary = boundManager->getBoundary(_ui->comboBox_Boundary->currentData().toInt());
+        if (type == Interface::FITKOFSolverTypeEnum::FITKOFBoundaryType::BMappedWall)
+            _factoryData->setMappedWallBoundary(regionMeshID, meshBoundaryID, regionMeshID2, meshBoundaryID2);
+        else
+            _factoryData->setBoundary(regionMeshID, meshBoundaryID, type, _physicsData->getRegionMeshType(region->getDataObjectID()));
+        auto boundary = boundManager->getBoundary(meshBoundaryID);
+        auto boundary2 = boundManager->getBoundary(meshBoundaryID2);
         if (boundary) {
             boundary->setDataObjectName(name);
+        }
+        if (boundary2) {
+            boundary2->setDataObjectName(QString("%1-Mapped").arg(name));
         }
         
         if (_oper) {
@@ -161,6 +211,46 @@ namespace GUI
             _ui->comboBox_Boundary->addItem(boundMesh->getDataObjectName(), boundMesh->getDataObjectID());
         }
         _ui->comboBox_Boundary->setCurrentIndex(0);
+    }
+
+    void BoundaryCreateDialog::initInterfaceBoundaryComboBox()
+    {
+        _ui->comboBox_InterBoundary->clear();
+        if (_physicsData == nullptr || _meshData == nullptr)return;
+        //获取已存在的边界属性数据管理器
+        Interface::FITKOFBoundaryManager* boundaryManager = _physicsData->getBoundaryManager();
+        if (boundaryManager == nullptr)return;
+        //获取边界网格管理器
+        int regionMeshID = _ui->comboBox_InterMeshRegion->currentData().toInt();
+        Interface::FITKFluidRegionsMesh* region = _meshData->getDataByID(regionMeshID);//获取区域数据
+        if (!region) return;
+        Interface::FITKBoundaryMeshVTKManager* boundMeshManager = region->getBoundaryMeshManager();
+        if (boundMeshManager == nullptr)return;
+        //初始化边界下拉框
+        for (int i = 0; i < boundMeshManager->getDataCount(); i++) {
+            Interface::FITKBoundaryMeshVTK* boundMesh = boundMeshManager->getDataByIndex(i);
+            if (boundMesh == nullptr)continue;
+            if (boundaryManager->getBoundary(boundMesh->getDataObjectID()))continue;
+            _ui->comboBox_InterBoundary->addItem(boundMesh->getDataObjectName(), boundMesh->getDataObjectID());
+        }
+        _ui->comboBox_InterBoundary->setCurrentIndex(0);
+    }
+
+    void BoundaryCreateDialog::initInterfaceMeshRegionComboBox()
+    {
+        _ui->comboBox_InterMeshRegion->clear();
+        if (_physicsData == nullptr || _meshData == nullptr)return;
+        //初始化网格区域下拉框
+        int count = _meshData->getDataCount();
+        int regionMeshID = _ui->comboBox_MeshRegion->currentData().toInt();
+        for (int i = 0; i < count; ++i)
+        {
+            Interface::FITKFluidRegionsMesh* region = _meshData->getDataByIndex(i);
+            if (!region || _physicsData->getRegionMeshType(region->getDataObjectID()) == Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType::None) continue;
+            if (regionMeshID == region->getDataObjectID()) continue;
+            _ui->comboBox_InterMeshRegion->addItem(region->getDataObjectName(), region->getDataObjectID());
+        }
+        _ui->comboBox_InterMeshRegion->setCurrentIndex(0);
     }
 
     void BoundaryCreateDialog::highlightMeshBoundary(int meshBoundID)

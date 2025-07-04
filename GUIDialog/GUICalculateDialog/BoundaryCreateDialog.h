@@ -75,6 +75,12 @@ namespace GUI
 
         void on_comboBox_MeshRegion_activated(int index);
 
+        void on_comboBox_InterBoundary_activated(int index);
+
+        void on_comboBox_InterMeshRegion_activated(int index);
+
+        void on_comboBox_Type_activated(int index);
+
         void on_pushButton_OK_clicked();
 
         void on_pushButton_Cancel_clicked();
@@ -86,6 +92,20 @@ namespace GUI
          * @date     2025-06-23
          */
         void initBoundaryComboBox();
+        /**
+         * @brief    初始化区域接口边界下拉框
+         * @return   void
+         * @author   liuzhonghua (liuzhonghuaszch@163.com)
+         * @date     2025-07-04
+         */
+        void initInterfaceBoundaryComboBox();
+        /**
+         * @brief    初始化区域接口下拉框
+         * @return   void
+         * @author   liuzhonghua (liuzhonghuaszch@163.com)
+         * @date     2025-07-04
+         */
+        void initInterfaceMeshRegionComboBox();
 
         /**
          * @brief    高亮网格边界
