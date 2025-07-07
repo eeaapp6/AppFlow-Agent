@@ -303,8 +303,8 @@ namespace GUI
         //写出特定区域处理
         QStringList regionScriptCommand = this->getRegionTouch(caseDir);
         for (QString strCommand : regionScriptCommand)
-            out << strCommand;
-        out << foamRun;
+            out << strCommand << endl;
+        out << foamRun << endl;
         // 关闭文件
         file.close();
         return shFilePath;
@@ -341,8 +341,8 @@ namespace GUI
             {
                 auto regionMesh = meshData->getDataByIndex(i);
                 if (!regionMesh) continue;
-                auto region = regionMesh->getFieldMesh();
-                QString name = region->getDataObjectName();
+                if (physicsData->getRegionMeshType(regionMesh->getDataObjectID()) == Interface::FITKOFSolverTypeEnum::FITKOFRegionMeshType::None) continue;
+                QString name = regionMesh->getDataObjectName();
                 script << QString("paraFoam -case %1 -region %2 -touch").arg(caseDir).arg(name);
             }
         }
