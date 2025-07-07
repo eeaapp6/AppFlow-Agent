@@ -170,6 +170,14 @@ namespace GUI
          * @date     2024-09-02
          */
         void setRunType(bool isRun);
+        /**
+         * @brief    获取特定区域处理命令
+         * @return   QStringList
+         * @author   liuzhonghua (liuzhonghuaszch@163.com)
+         * @date     2025-07-07
+         */
+        QStringList getRegionTouch(QString caseDir);
+
     private:
         /**
          * @brief  UI对象

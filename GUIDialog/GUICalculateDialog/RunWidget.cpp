@@ -6,6 +6,7 @@
 #include "FITK_Kernel/FITKAppFramework/FITKSignalTransfer.h"
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
+#include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKAppFramework/FITKProgramTaskManager.h"
 #include "FITK_Kernel/FITKCore/FITKDirFileTools.h"
 #include "FITK_Kernel/FITKEasyParam/FITKWidgetComLine.h"
@@ -17,6 +18,8 @@
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKOFRunControl.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKAbstractOFSolver.h"
 #include "FITK_Interface/FITKInterfaceFlowOF/FITKFlowPhysicsHandlerFactory.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredFluidMeshVTK.h"
+#include "FITK_Interface/FITKInterfaceMesh/FITKUnstructuredMeshVTK.h"
 
 #include <QButtonGroup>
 #include <QProcess>
@@ -296,6 +299,11 @@ namespace GUI
             out << QString("setFields -case %1").arg(caseDir);
             out << QStringLiteral("\n");
         }
+
+        //写出特定区域处理
+        QStringList regionScriptCommand = this->getRegionTouch(caseDir);
+        for (QString strCommand : regionScriptCommand)
+            out << strCommand;
         out << foamRun;
         // 关闭文件
         file.close();
@@ -315,5 +323,30 @@ namespace GUI
             _ui->pushButton_Run->setEnabled(true);
             _ui->pushButton_Stop->setEnabled(false);
         }
+    }
+
+    QStringList RunWidget::getRegionTouch(QString caseDir)
+    {
+        Interface::FITKOFPhysicsData* physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
+        Interface::FITKUnstructuredFluidMeshVTK* meshData = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
+        if (!physicsData || !meshData) return QStringList();
+        Interface::FITKAbstractOFSolver* solver = physicsData->getSolver();
+        if (!solver) return QStringList();
+        Interface::FITKOFSolverTypeEnum::FITKOFSolverType solverType = solver->getSolverType();
+        QStringList script;
+        if (solverType == Interface::FITKOFSolverTypeEnum::FITKOFSolverType::CHT_MULTI_REGION)
+        {
+            int count = meshData->getDataCount();
+            for (int i = 0; i < count; ++i)
+            {
+                auto regionMesh = meshData->getDataByIndex(i);
+                if (!regionMesh) continue;
+                auto region = regionMesh->getFieldMesh();
+                QString name = region->getDataObjectName();
+                script << QString("paraFoam -case %1 -region %2 -touch").arg(caseDir).arg(name);
+            }
+        }
+
+        return script;
     }
 }
