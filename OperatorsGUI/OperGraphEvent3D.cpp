@@ -127,8 +127,14 @@ namespace GUIOper
             return objs;
         }
 
+        Core::FITKAbstractDataObject* dataObj = FITKDATAREPO->getDataByID(dataObjId);
+        if (!dataObj)
+        {
+            return objs;
+        }
+
         // 检查数据ID是否为模型。
-        Interface::FITKAbsGeoCommand* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbsGeoCommand>(dataObjId);
+        Interface::FITKAbsGeoCommand* model = dynamic_cast<Interface::FITKAbsGeoCommand*>(dataObj);
         if (model && !isValid)
         {
             obj = modelProvider->getModelGraphObject(dataObjId);
@@ -136,7 +142,7 @@ namespace GUIOper
         }
 
         // 检查数据ID是否为流体网格。
-        Interface::FITKUnstructuredFluidMeshVTK* fluidMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKUnstructuredFluidMeshVTK>(dataObjId);
+        Interface::FITKUnstructuredFluidMeshVTK* fluidMesh = dynamic_cast<Interface::FITKUnstructuredFluidMeshVTK*>(dataObj);
         if (fluidMesh && !isValid)
         {
             objs = modelProvider->getFuildBoundMeshGraphObjects(dataObjId);
@@ -144,7 +150,7 @@ namespace GUIOper
         }
 
         // 检查数据ID是否为边界网格。
-        Interface::FITKBoundaryMeshVTK* boundMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKBoundaryMeshVTK>(dataObjId);
+        Interface::FITKBoundaryMeshVTK* boundMesh = dynamic_cast<Interface::FITKBoundaryMeshVTK*>(dataObj);
         if (boundMesh && !isValid)
         {
             obj = modelProvider->getBoundMeshGraphObject(dataObjId);
@@ -152,7 +158,7 @@ namespace GUIOper
         }     
 
         // 检查数据ID是否为流体域形状数据。
-        Interface::FITKAbstractRegionMeshSize* regionMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractRegionMeshSize>(dataObjId);
+        Interface::FITKAbstractRegionMeshSize* regionMesh = dynamic_cast<Interface::FITKAbstractRegionMeshSize*>(dataObj);
         if (regionMesh && !isValid)
         {
             obj = modelProvider->getRegionMeshGraphObject(dataObjId);
@@ -160,8 +166,8 @@ namespace GUIOper
         }
 
         // 检查数据ID是否为材料点数据。
-        Interface::FITKZonePointManager* matPtsMgr = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKZonePointManager>(dataObjId);
-        Interface::FITKZonePoint* matPt = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKZonePoint>(dataObjId);
+        Interface::FITKZonePointManager* matPtsMgr = dynamic_cast<Interface::FITKZonePointManager*>(dataObj);
+        Interface::FITKZonePoint* matPt = dynamic_cast<Interface::FITKZonePoint*>(dataObj);
         if ((matPtsMgr || matPt) && !isValid)
         {
             obj = markProvider->getMaterialPointsGraphObject();

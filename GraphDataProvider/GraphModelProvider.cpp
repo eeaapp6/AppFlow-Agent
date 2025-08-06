@@ -65,7 +65,7 @@ namespace GraphData
         Exchange::FITKFluidVTKGraphObject3D* obj{ nullptr };
 
         // 检查数据ID。
-        Interface::FITKAbsGeoCommand* model = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbsGeoCommand>(dataObjId);
+        Interface::FITKAbsGeoCommand* model = FITKDATAREPO->getTDataByID<Interface::FITKAbsGeoCommand>(dataObjId);
         if (!model)
         {
             return obj;
@@ -91,7 +91,7 @@ namespace GraphData
         Exchange::FITKFluidVTKGraphObject3D* obj{ nullptr };
 
         // 检查数据ID。
-        Interface::FITKBoundaryMeshVTK* boundMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKBoundaryMeshVTK>(dataObjId);
+        Interface::FITKBoundaryMeshVTK* boundMesh = FITKDATAREPO->getTDataByID<Interface::FITKBoundaryMeshVTK>(dataObjId);
         if (!boundMesh)
         {
             return obj;
@@ -160,7 +160,7 @@ namespace GraphData
         Exchange::FITKFluidVTKGraphObject3D* obj{ nullptr };
 
         // 检查数据ID。
-        Interface::FITKAbstractRegionMeshSize* regionMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKAbstractRegionMeshSize>(dataObjId);
+        Interface::FITKAbstractRegionMeshSize* regionMesh = FITKDATAREPO->getTDataByID<Interface::FITKAbstractRegionMeshSize>(dataObjId);
         if (!regionMesh)
         {
             return obj;
