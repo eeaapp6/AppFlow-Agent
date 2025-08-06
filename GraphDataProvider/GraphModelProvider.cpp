@@ -109,35 +109,40 @@ namespace GraphData
         QList<Exchange::FITKFluidVTKGraphObject3D*> objs;
 
         // 检查数据ID。
-        Interface::FITKUnstructuredFluidMeshVTK* fluidMesh = Core::FITKDataRepo::getInstance()->getTDataByID<Interface::FITKUnstructuredFluidMeshVTK>(dataObjId);
+        Interface::FITKUnstructuredFluidMeshVTK* fluidMesh = FITKDATAREPO->getTDataByID<Interface::FITKUnstructuredFluidMeshVTK>(dataObjId);
         if (!fluidMesh)
         {
             return objs;
         }
 
-        // 获取边界网格管理器。
-        Interface::FITKBoundaryMeshVTKManager* bdMeshMgr = fluidMesh->getBoundaryMeshManager();
-        if (!bdMeshMgr)
+        // 遍历网格区域。
+        int nRegions = fluidMesh->getDataCount();
+        for (int i = 0; i < nRegions; i++)
         {
-            return objs;
-        }
-
-        // 生成可视化对象。
-        int nBdMesh = bdMeshMgr->getDataCount();
-
-        for (int i = 0; i < nBdMesh; i++)
-        {
-            Interface::FITKBoundaryMeshVTK* bdMesh = bdMeshMgr->getDataByIndex(i);
-            if (!bdMesh)
+            // 获取边界网格管理器。
+            Interface::FITKBoundaryMeshVTKManager* bdMeshMgr = fluidMesh->getBoundaryMeshManager(i);
+            if (!bdMeshMgr)
             {
                 continue;
             }
 
-            int bdMeshId = bdMesh->getDataObjectID();
-            Exchange::FITKFluidVTKGraphObject3D* obj = getBoundMeshGraphObject(bdMeshId);
-            if (obj)
+            // 生成可视化对象。
+            int nBdMesh = bdMeshMgr->getDataCount();
+
+            for (int j = 0; j < nBdMesh; j++)
             {
-                objs.push_back(obj);
+                Interface::FITKBoundaryMeshVTK* bdMesh = bdMeshMgr->getDataByIndex(j);
+                if (!bdMesh)
+                {
+                    continue;
+                }
+
+                int bdMeshId = bdMesh->getDataObjectID();
+                Exchange::FITKFluidVTKGraphObject3D* obj = getBoundMeshGraphObject(bdMeshId);
+                if (obj)
+                {
+                    objs.push_back(obj);
+                }
             }
         }
 
