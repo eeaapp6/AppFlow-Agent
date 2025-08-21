@@ -48,6 +48,9 @@ QList<AppFrame::FITKComponentInterface *> ComponentFactory::createComponents()
     componentList << new IO::FITKOCCIOHDF5Interface;
     // VTK窗口初始化器
     compVTKrender->addInitializer(1, new PreWindowInitializer);
-   
+
+    // 开启拓扑偏移。
+    Comp::FITKGraph3DWindowInterface::SetResolveCoincidentType(Comp::ResolveCoincidentType::RCT_PolygonOffset);
+
     return componentList;
 }
