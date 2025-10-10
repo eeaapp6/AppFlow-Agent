@@ -1,81 +1,81 @@
 [submodule "Tools"]
 	path = Tools
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/Tools.git
+	url = https://atomgit.com/fastcaecodebase/Tools.git
 [submodule "FITK_Kernel/FITKCore"]
 	path = FITK_Kernel/FITKCore
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKCore.git
+	url = https://atomgit.com/fastcaecodebase/FITKCore.git
 [submodule "FITK_Kernel/FITKAppFramework"]
 	path = FITK_Kernel/FITKAppFramework
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKAppFramework.git
+	url = https://atomgit.com/fastcaecodebase/FITKAppFramework.git
 [submodule "FITK_Kernel/FITKAdaptor"]
 	path = FITK_Kernel/FITKAdaptor
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKAdaptor.git
+	url = https://atomgit.com/fastcaecodebase/FITKAdaptor.git
 [submodule "FITK_Kernel/FITKPython"]
 	path = FITK_Kernel/FITKPython
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKPython.git
+	url = https://atomgit.com/fastcaecodebase/FITKPython.git
 [submodule "FITK_Interface/FITKInterfaceFlowOF"]
 	path = FITK_Interface/FITKInterfaceFlowOF
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceFlowOF.git
+	url = https://atomgit.com/fastcaecodebase/FITKInterfaceFlowOF.git
 [submodule "FITK_Interface/FITKInterfaceGeometry"]
 	path = FITK_Interface/FITKInterfaceGeometry
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceGeometry.git
+	url = https://atomgit.com/fastcaecodebase/FITKInterfaceGeometry.git
 [submodule "FITK_Interface/FITKInterfaceModel"]
 	path = FITK_Interface/FITKInterfaceModel
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceModel.git
+	url = https://atomgit.com/fastcaecodebase/FITKInterfaceModel.git
 [submodule "FITK_Interface/FITKInterfaceIO"]
 	path = FITK_Interface/FITKInterfaceIO
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceIO.git
+	url = https://atomgit.com/fastcaecodebase/FITKInterfaceIO.git
 [submodule "FITK_Interface/FITKInterfaceMesh"]
 	path = FITK_Interface/FITKInterfaceMesh
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceMesh.git
+	url = https://atomgit.com/fastcaecodebase/FITKInterfaceMesh.git
 [submodule "FITK_Interface/FITKInterfaceMeshGen"]
 	path = FITK_Interface/FITKInterfaceMeshGen
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceMeshGen.git
+	url = https://atomgit.com/fastcaecodebase/FITKInterfaceMeshGen.git
 [submodule "FITK_Interface/FITKInterfacePhysics"]
 	path = FITK_Interface/FITKInterfacePhysics
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfacePhysics.git
+	url = https://atomgit.com/fastcaecodebase/FITKInterfacePhysics.git
 [submodule "FITK_Interface/FITKVTKAlgorithm"]
 	path = FITK_Interface/FITKVTKAlgorithm
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKVTKAlgorithm.git
+	url = https://atomgit.com/fastcaecodebase/FITKVTKAlgorithm.git
 [submodule "FITK_Component/FITKGeoCompOCC"]
 	path = FITK_Component/FITKGeoCompOCC
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKGeoCompOCC.git
+	url = https://atomgit.com/fastcaecodebase/FITKGeoCompOCC.git
 [submodule "FITK_Component/FITKRenderWindowVTK"]
 	path = FITK_Component/FITKRenderWindowVTK
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKRenderWindowVTK.git
+	url = https://atomgit.com/fastcaecodebase/FITKRenderWindowVTK.git
 [submodule "FITK_Component/FITKWidget"]
 	path = FITK_Component/FITKWidget
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKWidget.git
+	url = https://atomgit.com/fastcaecodebase/FITKWidget.git
 [submodule "FITK_Component/FITKCompMessageWidget"]
 	path = FITK_Component/FITKCompMessageWidget
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKCompMessageWidget.git
+	url = https://atomgit.com/fastcaecodebase/FITKCompMessageWidget.git
 [submodule "FITK_Component/FITKMeshGenOF"]
 	path = FITK_Component/FITKMeshGenOF
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKMeshGenOF.git
+	url = https://atomgit.com/fastcaecodebase/FITKMeshGenOF.git
 [submodule "FITK_Component/FITKOFDictWriter"]
 	path = FITK_Component/FITKOFDictWriter
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKOFDictWriter.git
+	url = https://atomgit.com/fastcaecodebase/FITKOFDictWriter.git
 [submodule "FITK_Component/FITKOFDriver"]
 	path = FITK_Component/FITKOFDriver
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKOFDriver.git
+	url = https://atomgit.com/fastcaecodebase/FITKOFDriver.git
 [submodule "FITK_Component/FITKOFMeshIO"]
 	path = FITK_Component/FITKOFMeshIO
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKOFMeshIO.git
+	url = https://atomgit.com/fastcaecodebase/FITKOFMeshIO.git
 [submodule "FITK_Interface/FITKInterfaceIOHDF5"]
 	path = FITK_Interface/FITKInterfaceIOHDF5
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceIOHDF5.git
+	url = https://atomgit.com/fastcaecodebase/FITKInterfaceIOHDF5.git
 [submodule "FITK_Component/FITKFluidVTKGraphAdaptor"]
 	path = FITK_Component/FITKFluidVTKGraphAdaptor
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKFluidVTKGraphAdaptor.git
+	url = https://atomgit.com/fastcaecodebase/FITKFluidVTKGraphAdaptor.git
 [submodule "FITK_Kernel/FITKEasyParam"]
 	path = FITK_Kernel/FITKEasyParam
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Kernel/FITKEasyParam.git
+	url = https://atomgit.com/fastcaecodebase/FITKEasyParam.git
 [submodule "FITK_Component/FITKFlowOFIOHDF5"]
 	path = FITK_Component/FITKFlowOFIOHDF5
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKFlowOFIOHDF5.git
+	url = https://atomgit.com/fastcaecodebase/FITKFlowOFIOHDF5.git
 [submodule "FITK_Interface/FITKInterfaceGeoIOHDF5"]
 	path = FITK_Interface/FITKInterfaceGeoIOHDF5
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Interface/FITKInterfaceGeoIOHDF5.git
+	url = https://atomgit.com/fastcaecodebase/FITKInterfaceGeoIOHDF5.git
 [submodule "FITK_Component/FITKGeoOCCIOHDF5"]
 	path = FITK_Component/FITKGeoOCCIOHDF5
-	url = https://codeup.aliyun.com/64fad925ce01efaafef1e9f3/FastCAE_IntTK/FITK_Component/FITKGeoOCCIOHDF5.git
+	url = https://atomgit.com/fastcaecodebase/FITKGeoOCCIOHDF5.git
