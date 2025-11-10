@@ -1,4 +1,4 @@
-FastCAE is provided under the terms of the BSD 3-Clause License,HOWEVER, some libraries can only be used under the GPL License. For more information, see see http://www.fastcae.com/
+FastCAE is provided under the terms of the BSD 3-Clause License For more information, see see http://www.fastcae.com/
 
 Program: FastCAE—AppFlow
 License: BSD 3-Clause License
