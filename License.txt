@@ -3,7 +3,7 @@ FastCAE is provided under the terms of the BSD 3-Clause License,HOWEVER, some li
 Program: FastCAE—AppFlow
 License: BSD 3-Clause License
 
-Copyright (c) 2020-2024, Qingdao Digital Intelligent Ship & Ocean Technology Co., Ltd.(青岛数智船海科技有限公司)
+Copyright (c) 2020-2025, Qingdao Digital Intelligent Ship & Ocean Technology Co., Ltd.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

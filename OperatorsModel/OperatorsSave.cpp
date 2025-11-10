@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2020-2024, Qingdao Digital Intelligent Ship & Ocean Technology Co., Ltd.
+ * Copyright (c) 2020-2025, Qingdao Digital Intelligent Ship & Ocean Technology Co., Ltd.
  * All rights reserved.
  *
  * This file is part of FastCAE and is distributed under the terms of the
