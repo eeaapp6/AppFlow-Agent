@@ -16,6 +16,7 @@ BSD 3-Clause License. See the LICENSE file in the project root for details.
 #include "ActionEventHandler.h"
 #include "MainTreeWidget.h"
 #include "TabWidget.h"
+#include "AgentPanelWidget.h"
 
 #include <SARibbonBar.h>
 #include <SARibbonApplicationButton.h>
@@ -35,6 +36,7 @@ BSD 3-Clause License. See the LICENSE file in the project root for details.
 #include <QGridLayout>
 #include <QStatusBar>
 #include <QLabel>
+#include <QDockWidget>
 
 
 namespace GUI
@@ -179,6 +181,10 @@ namespace GUI
         action->setShortcut(QCoreApplication::translate("MainWindow", "", nullptr));
         fileAppButton->addAction(action);
 
+        //导入Agent结果清单
+        action = createAction(tr("Import Agent Result"), "actionLoadAgentManifest", ":/icons/importMesh.png");
+        fileAppButton->addAction(action);
+
         //工作目录
         action = createAction(tr("Working Dir"), "actionWorkingDir");
         fileAppButton->addAction(action);
@@ -207,6 +213,10 @@ namespace GUI
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         action = createAction(tr("Save"), "actionSave", ":/icons/save.png");
+        pannelAddAction(pannel, action, SARibbonPannelItem::Large);
+
+        pannel = gategory->addPannel(tr("AI Agent"));
+        action = createAction(tr("Foam Agent"), "actionFoamAgentPanel", ":/icons/agent.png", tr("Foam Agent"));
         pannelAddAction(pannel, action, SARibbonPannelItem::Large);
 
         //模型结构
@@ -421,6 +431,26 @@ namespace GUI
     GroupPropertyWidget * MainWindow::getGroupPropertyWidget() const
     {
         return m_GroupPropertyWidget;
+    }
+
+    void MainWindow::showAgentPanel()
+    {
+        if (_agentDockWidget == nullptr) {
+            _agentDockWidget = new QDockWidget(tr("Foam Agent"), this);
+            _agentDockWidget->setObjectName("FoamAgentDockWidget");
+            _agentDockWidget->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+            _agentDockWidget->setFeatures(QDockWidget::DockWidgetClosable |
+                QDockWidget::DockWidgetMovable |
+                QDockWidget::DockWidgetFloatable);
+
+            _agentPanelWidget = new AgentPanelWidget(_agentDockWidget);
+            _agentDockWidget->setWidget(_agentPanelWidget);
+            this->addDockWidget(Qt::RightDockWidgetArea, _agentDockWidget);
+        }
+
+        _agentDockWidget->show();
+        _agentDockWidget->raise();
+        _agentDockWidget->activateWindow();
     }
 
 }

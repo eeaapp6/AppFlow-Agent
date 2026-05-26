@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "phenglei_minimal_case_001",
+    "status": "succeeded"
+  },
+  "solver": {
+    "family": "phenglei"
+  },
+  "artifacts": {
+    "case_dir": "D:/work/phenglei_case_001/case"
+  }
+}

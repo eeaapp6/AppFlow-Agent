@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "minimal_case_001",
+    "status": "succeeded"
+  },
+  "solver": {
+    "family": "openfoam"
+  },
+  "artifacts": {
+    "case_dir": "D:/work/minimal_case_001/case"
+  }
+}

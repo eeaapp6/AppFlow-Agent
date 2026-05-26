@@ -106,7 +106,7 @@ namespace ModelOper {
             connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotMeshImportFinish(bool, int)));
             pool->execTask(importThread);
         }
-        else if (_senderName == "actionImportOpenFoamMesh") {
+		else if (senderName == "actionImportOpenFoamMesh" || _senderName == "actionImportOpenFoamMesh") {
             ImportReadThread* importThread = new ImportReadThread();
             importThread->_type = ImportType::ImportOpenFoamMesh;
             importThread->_fileName = fileName;

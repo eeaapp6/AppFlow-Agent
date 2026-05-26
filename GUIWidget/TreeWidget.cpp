@@ -484,7 +484,7 @@ namespace GUI {
         Interface::FITKOFPhysicsData* physicsData = FITKAPP->getGlobalData()->getPhysicsData<Interface::FITKOFPhysicsData>();
         if (physicsData == nullptr)return;
         Interface::FITKAbstractOFSolver* solverData = physicsData->getSolver();
-        if (solverData == nullptr)return;
+        if (solverData == nullptr && physicsData->getRunControl() == nullptr)return;
 
         QTreeWidgetItem* runItem = new QTreeWidgetItem();
         runItem->setText(0, tr("Run"));

@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "task",
+    "status": "succeeded",
+    "created_at": "2026-05-17T07:40:14",
+    "updated_at": "2026-05-17T07:40:56",
+    "run": {
+      "status": "run_completed",
+      "reason": "blockMesh and icoFoam completed successfully."
+    }
+  },
+  "solver": {
+    "family": "openfoam",
+    "command": "simpleFoam",
+    "case_type": "steady_incompressible"
+  },
+  "artifacts": {
+    "case_dir": "D:/work/demo_case_003/case",
+    "mesh_dir": "D:/work/demo_case_003/case/constant/polyMesh",
+    "result_dir": "D:/work/demo_case_003/case/VTK",
+    "logs": [
+      {
+        "type": "blockMesh",
+        "name": "blockMesh",
+        "path": "D:/work/demo_case_003/logs/blockMesh.log"
+      },
+      {
+        "type": "icoFoam",
+        "name": "icoFoam",
+        "path": "D:/work/demo_case_003/logs/icoFoam.log"
+      }
+    ]
+  },
+  "case_summary": {
+    "case_name": "cavity",
+    "mesh_format": "openfoam_polyMesh",
+    "fields": [
+      "U",
+      "p"
+    ],
+    "boundaries": [
+      {
+        "name": "movingWall",
+        "type": "wall"
+      },
+      {
+        "name": "fixedWalls",
+        "type": "wall"
+      },
+      {
+        "name": "frontAndBack",
+        "type": "empty"
+      }
+    ],
+    "description": "2D lid-driven cavity case with top wall moving at 1 m/s, kinematic viscosity nu=0.01, run from t=0 to t=0.5 with time step deltaT=0.005, using icoFoam. Mesh generation and solution are performed after case setup."
+  },
+  "solver_settings": {
+    "time": {
+      "end_time": "0.5",
+      "delta_t": "0.005",
+      "write_interval": "1"
+    },
+    "physics": {
+      "nu": "0.01"
+    },
+    "numerics": {
+      "solver": "simpleFoam"
+    }
+  },
+  "appflow_hints": {
+    "import_mesh": true,
+    "show_logs": true,
+    "show_results": true,
+    "preferred_result_format": "vtk",
+    "open_paraview": true,
+    "paraview_open_mode": "openfoam_case",
+    "run_foam_to_vtk": true,
+    "export_vtk": false,
+    "foam_to_vtk_backend": "docker",
+    "docker_image": "leoyue123/foamagent:latest",
+    "docker_case_dir": "/case"
+  }
+}

@@ -27,6 +27,7 @@ BSD 3-Clause License. See the LICENSE file in the project root for details.
 
 class SARibbonBar;
 class SARibbonPannel;
+class QDockWidget;
 
 namespace Ui {
     class MainWindow;
@@ -40,6 +41,7 @@ namespace GUI
     class PropertyWidget;
     class GroupPropertyWidget;
     class ActionEventHandler;
+    class AgentPanelWidget;
 
     class MainTreeWidget;
     class TabWidget;
@@ -108,6 +110,12 @@ namespace GUI
          * @date 2024-05-11
          */
         QAction* createAction(const QString &toolTip, const QString &objectName, const QString &iconPath = "", const QString& iconText = "");
+        /**
+         * @brief  Show Foam Agent panel.
+         * @author OpenAI
+         * @date   2026-05-17
+         */
+        void showAgentPanel();
     signals:
         ;
         /**
@@ -227,6 +235,8 @@ namespace GUI
          * @date 2024-05-30
          */
         QFont _font = QFont("Arial", 9);
+        QDockWidget* _agentDockWidget = nullptr;
+        AgentPanelWidget* _agentPanelWidget = nullptr;
 
     };
 }

@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "workflow": {
+    "id": "demo_case_001",
+    "status": "succeeded",
+    "created_at": "2026-05-16T14:30:00+08:00"
+  },
+  "solver": {
+    "family": "openfoam",
+    "command": "simpleFoam",
+    "case_type": "steady_incompressible"
+  },
+  "artifacts": {
+    "case_dir": "D:/work/demo_case_001/case",
+    "mesh_dir": "D:/work/demo_case_001/case/constant/polyMesh",
+    "result_dir": "D:/work/demo_case_001/case/VTK",
+    "logs": [
+      {
+        "type": "solver",
+        "path": "D:/work/demo_case_001/case/log.simpleFoam"
+      },
+      {
+        "type": "mesh_check",
+        "path": "D:/work/demo_case_001/case/log.checkMesh"
+      }
+    ]
+  },
+  "case_summary": {
+    "case_name": "demo_case_001",
+    "mesh_format": "openfoam_polyMesh",
+    "fields": [
+      "U",
+      "p"
+    ],
+    "boundaries": [
+      {
+        "name": "inlet",
+        "type": "velocityInlet"
+      },
+      {
+        "name": "outlet",
+        "type": "pressureOutlet"
+      },
+      {
+        "name": "walls",
+        "type": "wall"
+      }
+    ],
+    "description": "Demo manifest for APPFlow AgentBridge stage 1."
+  },
+  "appflow_hints": {
+    "import_mesh": true,
+    "show_logs": true,
+    "show_results": true,
+    "preferred_result_format": "vtk",
+    "open_paraview": true,
+    "paraview_open_mode": "first_vtk",
+    "export_vtk": false
+  }
+}

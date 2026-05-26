@@ -2,7 +2,7 @@ TEMPLATE    =   lib
 CONFIG      +=  c++11
 CONFIG      +=  qt
 TARGET      =   GUIFrame
-QT          +=  core widgets gui
+QT          +=  core widgets gui network
 DEFINES     += GUIFrame_API
 
 unix:!mac{ QMAKE_LFLAGS += "-Wl,-rpath,\'\$$ORIGIN/\'" }

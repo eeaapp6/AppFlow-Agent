@@ -25,6 +25,14 @@ HEADERS += \
     $$PWD/OperatorsInitial.h \
     $$PWD/OperatorsRun.h \
     $$PWD/OperatorsPost.h \
+    $$PWD/OperatorsAgentPanel.h \
+    $$PWD/OperatorsAgentManifest.h \
+    $$PWD/AgentBridgeMessage.h \
+    $$PWD/AgentLogPreview.h \
+    $$PWD/AgentManifestData.h \
+    $$PWD/AgentSolverSettingsApplier.h \
+    $$PWD/AgentSolverSettingsPreview.h \
+    $$PWD/OpenFoamAgentAdapter.h \
     $$PWD/OperatorsLicense.h \
     $$PWD/OperatorsOperCondition.h \
     $$PWD/OperatorsCFDPost.h \
@@ -59,6 +67,14 @@ SOURCES += \
     $$PWD/OperatorsInitial.cpp \
     $$PWD/OperatorsRun.cpp \
     $$PWD/OperatorsPost.cpp \
+    $$PWD/OperatorsAgentPanel.cpp \
+    $$PWD/OperatorsAgentManifest.cpp \
+    $$PWD/AgentBridgeMessage.cpp \
+    $$PWD/AgentLogPreview.cpp \
+    $$PWD/AgentManifestData.cpp \
+    $$PWD/AgentSolverSettingsApplier.cpp \
+    $$PWD/AgentSolverSettingsPreview.cpp \
+    $$PWD/OpenFoamAgentAdapter.cpp \
     $$PWD/OperatorsLicense.cpp\
     $$PWD/OperatorsOperCondition.cpp\
     $$PWD/OperatorsCFDPost.cpp\
