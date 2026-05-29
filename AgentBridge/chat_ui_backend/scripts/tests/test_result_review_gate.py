@@ -57,6 +57,70 @@ class ResultReviewGateTests(unittest.TestCase):
         self.assertEqual("failed", result.status)
         self.assertEqual(["result.run_incomplete"], [issue.code for issue in result.issues])
 
+    def test_failed_run_uses_run_diagnostics_before_generic_incomplete_issue(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+
+            result = review_run_results(
+                task,
+                {
+                    "status": "run_failed",
+                    "reason": "solver failed",
+                    "diagnostics": {
+                        "severity": "failed",
+                        "summary": "Solver log contains nan or inf.",
+                        "items": [
+                            {
+                                "code": "result.residual_nan",
+                                "severity": "error",
+                                "category": "numerics",
+                                "message": "Solver log contains nan or inf.",
+                                "source": "solver",
+                                "log_file": "logs/icoFoam.log",
+                                "matched_line": "ExecutionTime = nan s",
+                            }
+                        ],
+                        "metrics": {"has_nan_or_inf": True},
+                    },
+                },
+            )
+
+        self.assertEqual("failed", result.status)
+        self.assertEqual(["result.residual_nan"], [issue.code for issue in result.issues])
+        self.assertTrue(result.metadata["diagnostics"]["metrics"]["has_nan_or_inf"])
+
+    def test_run_diagnostics_warning_marks_result_review_warning(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            (Path(task.case_dir) / "0.5").mkdir(parents=True)
+
+            result = review_run_results(
+                task,
+                {
+                    "status": "run_completed",
+                    "outputs": {"results": {"latest_path": "case/0.5"}},
+                    "diagnostics": {
+                        "severity": "warning",
+                        "summary": "OpenFOAM log contains a warning.",
+                        "items": [
+                            {
+                                "code": "result.log_warning",
+                                "severity": "warning",
+                                "category": "runtime",
+                                "message": "OpenFOAM log contains a warning.",
+                                "source": "solver",
+                                "log_file": "logs/icoFoam.log",
+                                "matched_line": "--> FOAM Warning",
+                            }
+                        ],
+                        "metrics": {},
+                    },
+                },
+            )
+
+        self.assertEqual("warning", result.status)
+        self.assertEqual(["result.log_warning"], [issue.code for issue in result.issues])
+
     def test_fails_when_latest_result_dir_is_missing(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             task = make_task(Path(tmp))

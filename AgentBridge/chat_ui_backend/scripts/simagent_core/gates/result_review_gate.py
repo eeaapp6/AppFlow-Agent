@@ -55,6 +55,9 @@ def review_run_results(task: TaskContext, run_result: dict[str, Any]) -> GateRes
     result = GateResult("result_review")
     status = str(run_result.get("status", "")).strip()
     if status != "run_completed":
+        if _review_run_diagnostics(run_result, result):
+            _attach_diagnostics(result)
+            return result
         reason = str(run_result.get("reason", "")).strip() or "Run did not complete."
         _add_error(
             result,
@@ -65,10 +68,39 @@ def review_run_results(task: TaskContext, run_result: dict[str, Any]) -> GateRes
         _attach_diagnostics(result)
         return result
 
-    _review_logs(task, run_result, result)
+    if not _review_run_diagnostics(run_result, result):
+        _review_logs(task, run_result, result)
     _review_latest_result_path(task, run_result, result)
     _attach_diagnostics(result)
     return result
+
+
+def _review_run_diagnostics(run_result: dict[str, Any], result: GateResult) -> bool:
+    diagnostics = run_result.get("diagnostics", {})
+    if not isinstance(diagnostics, dict):
+        return False
+
+    items = diagnostics.get("items", [])
+    if not isinstance(items, list) or not items:
+        _record_metrics(result, _diagnostic_metrics(diagnostics))
+        return False
+
+    for item in items:
+        if not isinstance(item, dict):
+            continue
+        code = str(item.get("code", "")).strip()
+        message = str(item.get("message", "")).strip()
+        if not code or not message:
+            continue
+        severity = str(item.get("severity", "")).strip()
+        evidence = _diagnostic_evidence(item)
+        if severity == "warning":
+            _add_warning(result, code, message, evidence)
+        else:
+            _add_error(result, code, message, evidence)
+
+    _record_metrics(result, _diagnostic_metrics(diagnostics))
+    return bool(result.issues)
 
 
 def _review_logs(task: TaskContext, run_result: dict[str, Any], result: GateResult) -> None:
@@ -283,10 +315,20 @@ def _primary_issue(result: GateResult):
 def _category_for_issue(code: str) -> str:
     if code.startswith("result.mesh_"):
         return "mesh"
-    if code.startswith("result.residual_"):
+    if code.startswith("result.residual_") or code in {"result.courant_high", "result.divergence"}:
         return "numerics"
-    if code in {"result.log_fatal", "result.run_incomplete", "result.no_execution_time"}:
+    if code in {
+        "result.log_fatal",
+        "result.log_warning",
+        "result.run_incomplete",
+        "result.no_execution_time",
+        "result.command_nonzero",
+        "result.command_timeout",
+        "result.runtime_unavailable",
+    }:
         return "runtime"
+    if code in {"result.missing_boundary_field", "result.unknown_patch"}:
+        return "boundary"
     if code.startswith("result.missing_latest_"):
         return "output"
     return "result"
@@ -356,7 +398,48 @@ def _clean_metrics(metrics: dict[str, Any]) -> dict[str, Any]:
             items = [str(item).strip() for item in value if str(item).strip()]
             if items:
                 cleaned[key] = items
+        elif isinstance(value, dict):
+            dict_value = _clean_metric_dict(value)
+            if dict_value:
+                cleaned[key] = dict_value
     return cleaned
+
+
+def _clean_metric_dict(value: dict[str, Any]) -> dict[str, Any]:
+    cleaned: dict[str, Any] = {}
+    for key, item in value.items():
+        key_text = str(key).strip()
+        if not key_text:
+            continue
+        if isinstance(item, list):
+            entries = [str(entry).strip() for entry in item if str(entry).strip()]
+            if entries:
+                cleaned[key_text] = entries
+        elif isinstance(item, (str, int, float, bool)):
+            item_text = str(item).strip()
+            if item_text:
+                cleaned[key_text] = item
+    return cleaned
+
+
+def _diagnostic_metrics(diagnostics: dict[str, Any]) -> dict[str, Any]:
+    metrics = diagnostics.get("metrics", {})
+    return metrics if isinstance(metrics, dict) else {}
+
+
+def _diagnostic_evidence(item: dict[str, Any]) -> dict[str, Any]:
+    evidence = {
+        "log_path": str(item.get("log_file", "")).strip(),
+        "command": str(item.get("source", "")).strip(),
+        "excerpt": str(item.get("matched_line", "")).strip(),
+        "line": item.get("line", 0),
+        "marker": str(item.get("code", "")).strip(),
+        "field": str(item.get("field", "")).strip(),
+        "patch": str(item.get("patch", "")).strip(),
+        "max_courant": item.get("max_courant", ""),
+        "return_code": item.get("return_code", ""),
+    }
+    return {key: value for key, value in evidence.items() if str(value).strip()}
 
 
 def _merge_metrics(target: dict[str, Any], incoming: dict[str, Any]) -> None:
@@ -373,6 +456,7 @@ def _merge_metrics(target: dict[str, Any], incoming: dict[str, Any]) -> None:
         if key in {
             "max_initial_residual",
             "max_final_residual",
+            "max_courant",
             "max_non_orthogonality",
             "max_skewness",
             "max_aspect_ratio",
@@ -390,6 +474,19 @@ def _merge_metrics(target: dict[str, Any], incoming: dict[str, Any]) -> None:
             existing = target.get(key, [])
             existing = existing if isinstance(existing, list) else []
             target[key] = sorted({*existing, *value})
+            continue
+        if key == "missing_boundary_fields" and isinstance(value, dict):
+            existing = target.get(key, {})
+            existing = existing if isinstance(existing, dict) else {}
+            for field_name, patch_names in value.items():
+                current = existing.get(field_name, [])
+                current = current if isinstance(current, list) else []
+                incoming_items = patch_names if isinstance(patch_names, list) else [patch_names]
+                existing[field_name] = sorted({
+                    *[str(item) for item in current if str(item).strip()],
+                    *[str(item) for item in incoming_items if str(item).strip()],
+                })
+            target[key] = existing
             continue
         if key == "has_nan_or_inf":
             target[key] = bool(target.get(key, False)) or bool(value)

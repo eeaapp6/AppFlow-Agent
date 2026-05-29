@@ -26,11 +26,14 @@ class FakeRunner:
     def run_step(self, command: list[str], case_dir: Path, log_path: Path, timeout_seconds: int) -> dict:
         self.commands.append(command)
         log_path.parent.mkdir(parents=True, exist_ok=True)
-        log_path.write_text(f"{command[0]} log\n", encoding="utf-8")
         if self.timeout:
+            log_path.write_text(f"{command[0]} log\n", encoding="utf-8")
             raise subprocess.TimeoutExpired(command, timeout_seconds)
         if self.results:
-            return self.results.pop(0)
+            result = self.results.pop(0)
+            log_path.write_text(str(result.pop("log_content", f"{command[0]} log\n")), encoding="utf-8")
+            return result
+        log_path.write_text(f"{command[0]} log\n", encoding="utf-8")
         return {
             "command": " ".join(command),
             "return_code": 0,
@@ -220,6 +223,8 @@ class OpenFOAMRuntimeTests(unittest.TestCase):
         self.assertIn("return code 2", result["reason"])
         self.assertEqual("blockMesh.log", result["logs"][0]["path"].split("/")[-1])
         self.assertEqual("blockMesh", result["steps"][0]["command"])
+        self.assertEqual("failed", result["diagnostics"]["severity"])
+        self.assertIn("result.command_nonzero", [item["code"] for item in result["diagnostics"]["items"]])
 
     def test_run_failed_when_command_times_out(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -238,6 +243,105 @@ class OpenFOAMRuntimeTests(unittest.TestCase):
         self.assertEqual("run_failed", result["status"])
         self.assertIn("timed out after 3 seconds", result["reason"])
         self.assertEqual("logs/blockMesh.log", result["logs"][0]["path"])
+        self.assertEqual("result.command_timeout", result["diagnostics"]["items"][0]["code"])
+
+    def test_run_failed_when_solver_log_contains_divergence_even_with_zero_return_code(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            plan = make_plan()
+            write_required_case_files(task, plan)
+            runner = FakeRunner([
+                {
+                    "command": "blockMesh",
+                    "return_code": 0,
+                    "log": "blockMesh.log",
+                    "log_path": str(Path(task.logs_dir) / "blockMesh.log"),
+                    "log_content": "blockMesh OK\n",
+                },
+                {
+                    "command": "icoFoam",
+                    "return_code": 0,
+                    "log": "icoFoam.log",
+                    "log_path": str(Path(task.logs_dir) / "icoFoam.log"),
+                    "log_content": "solution diverged\nExecutionTime = nan s\n",
+                },
+            ])
+
+            result = run_openfoam_case(task, plan, runtime_info=available_runtime_info(), runner=runner)
+
+        self.assertEqual("run_failed", result["status"])
+        codes = [item["code"] for item in result["diagnostics"]["items"]]
+        self.assertIn("result.divergence", codes)
+        self.assertIn("result.residual_nan", codes)
+
+    def test_warning_only_diagnostics_do_not_block_success(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            plan = make_plan()
+            write_required_case_files(task, plan)
+            (Path(task.case_dir) / "0.5").mkdir(parents=True)
+            runner = FakeRunner([
+                {
+                    "command": "blockMesh",
+                    "return_code": 0,
+                    "log": "blockMesh.log",
+                    "log_path": str(Path(task.logs_dir) / "blockMesh.log"),
+                    "log_content": "blockMesh OK\n",
+                },
+                {
+                    "command": "icoFoam",
+                    "return_code": 0,
+                    "log": "icoFoam.log",
+                    "log_path": str(Path(task.logs_dir) / "icoFoam.log"),
+                    "log_content": "--> FOAM Warning : optional model warning\nEnd\n",
+                },
+            ])
+
+            result = run_openfoam_case(task, plan, runtime_info=available_runtime_info(), runner=runner)
+
+        self.assertEqual("run_completed", result["status"])
+        self.assertEqual("warning", result["diagnostics"]["severity"])
+        self.assertEqual("result.log_warning", result["diagnostics"]["items"][0]["code"])
+
+    def test_local_and_docker_backend_diagnostics_use_same_shape(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            plan = make_plan()
+            write_required_case_files(task, plan)
+            local_runner = FakeRunner([
+                {
+                    "command": "blockMesh",
+                    "return_code": 2,
+                    "log": "blockMesh.log",
+                    "log_path": str(Path(task.logs_dir) / "blockMesh.log"),
+                    "log_content": "***Error in blockMeshDict\n",
+                }
+            ])
+            local_result = run_openfoam_case(task, plan, runtime_info=available_runtime_info(), runner=local_runner)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            plan = make_plan()
+            write_required_case_files(task, plan)
+            docker_runner = FakeRunner([
+                {
+                    "command": "blockMesh",
+                    "return_code": 2,
+                    "log": "blockMesh.log",
+                    "log_path": str(Path(task.logs_dir) / "blockMesh.log"),
+                    "backend": "docker",
+                    "docker_image": "foam:test",
+                    "log_content": "***Error in blockMeshDict\n",
+                }
+            ])
+            docker_result = run_openfoam_case(task, plan, runtime_info=available_docker_runtime_info(), runner=docker_runner)
+
+        for result in (local_result, docker_result):
+            self.assertEqual("run_failed", result["status"])
+            self.assertIn("diagnostics", result)
+            self.assertIn("severity", result["diagnostics"])
+            self.assertIn("items", result["diagnostics"])
+            self.assertIn("metrics", result["diagnostics"])
 
     def test_docker_runtime_detection_reports_available_without_wm_project_dir(self) -> None:
         runtime = detect_openfoam_runtime(

@@ -45,6 +45,10 @@ class ManifestWriter:
             "status": status,
             "reason": run_result.get("reason", ""),
         }
+        diagnostics = run_result.get("diagnostics", {})
+        diagnostics = diagnostics if isinstance(diagnostics, dict) else {}
+        if diagnostics:
+            manifest["workflow"]["run"]["diagnostics"] = self._run_diagnostics_for_manifest(diagnostics)
         runtime_info = run_result.get("runtime_info", {})
         runtime_info = runtime_info if isinstance(runtime_info, dict) else {}
         if isinstance(runtime_info, dict) and runtime_info:
@@ -71,6 +75,11 @@ class ManifestWriter:
         if runtime_info:
             manifest["appflow_hints"]["runtime_backend"] = str(runtime_info.get("backend", "")).strip()
             manifest["appflow_hints"]["runtime_available"] = bool(runtime_info.get("available", False))
+        if diagnostics:
+            manifest["appflow_hints"]["run_diagnostics_summary"] = str(diagnostics.get("summary", "")).strip()
+            manifest["appflow_hints"]["run_diagnostics_severity"] = str(diagnostics.get("severity", "")).strip()
+            manifest["appflow_hints"]["has_run_diagnostics"] = bool(diagnostics.get("items"))
+        manifest["appflow_hints"]["has_suggested_repair_actions"] = self._has_suggested_repair_action(task)
         return self._write(task, manifest)
 
     def _base_manifest(
@@ -233,6 +242,33 @@ class ManifestWriter:
             "docker_case_dir": str(runtime_info.get("docker_case_dir", "")).strip(),
         }
 
+    def _run_diagnostics_for_manifest(self, diagnostics: dict) -> dict:
+        items = diagnostics.get("items", [])
+        normalized_items = []
+        if isinstance(items, list):
+            for item in items[:20]:
+                if not isinstance(item, dict):
+                    continue
+                normalized_items.append({
+                    "code": str(item.get("code", "")).strip(),
+                    "severity": str(item.get("severity", "")).strip(),
+                    "category": str(item.get("category", "")).strip(),
+                    "message": str(item.get("message", "")).strip(),
+                    "source": str(item.get("source", "")).strip(),
+                    "log_file": str(item.get("log_file", "")).strip(),
+                    "matched_line": str(item.get("matched_line", "")).strip(),
+                    "repair_hint": str(item.get("repair_hint", "")).strip(),
+                    "repair_action_input": item.get("repair_action_input", {})
+                    if isinstance(item.get("repair_action_input", {}), dict)
+                    else {},
+                })
+        return {
+            "severity": str(diagnostics.get("severity", "")).strip(),
+            "summary": str(diagnostics.get("summary", "")).strip(),
+            "items": normalized_items,
+            "metrics": diagnostics.get("metrics", {}) if isinstance(diagnostics.get("metrics", {}), dict) else {},
+        }
+
     def _gate_summary(self, task: TaskContext) -> dict:
         reviews = [item for item in task.gate_reviews if isinstance(item, dict)]
         summaries = [self._gate_review_summary(item) for item in reviews]
@@ -287,6 +323,10 @@ class ManifestWriter:
         if isinstance(review.get("next_repair_action"), dict):
             summary["next_repair_action"] = review["next_repair_action"]
         return summary
+
+    def _has_suggested_repair_action(self, task: TaskContext) -> bool:
+        reviews = task.gate_reviews if isinstance(task.gate_reviews, list) else []
+        return any(isinstance(item, dict) and isinstance(item.get("next_repair_action"), dict) for item in reviews)
 
     def _has_vtk_result(self, task: TaskContext) -> bool:
         vtk_dir = Path(task.case_dir) / "VTK"

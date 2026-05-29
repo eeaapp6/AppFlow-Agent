@@ -51,7 +51,7 @@ def repair_action_for_gate_review(gate_review: dict[str, Any]) -> dict[str, Any]
 
 def _repair_action_for_issue_code(code: str, gate_review: dict[str, Any]) -> dict[str, Any]:
     gate_name = str(gate_review.get("gate", "")).strip()
-    if code in {"execution.not_ready", "result.run_incomplete"}:
+    if code in {"execution.not_ready", "result.run_incomplete", "result.runtime_unavailable"}:
         return _action(
             "configure_openfoam_runtime",
             "Configure OpenFOAM runtime",
@@ -69,6 +69,8 @@ def _repair_action_for_issue_code(code: str, gate_review: dict[str, Any]) -> dic
         "validation.empty_boundary_field",
         "validation.dictionary_error",
         "validation.failed",
+        "result.missing_boundary_field",
+        "result.unknown_patch",
     } or (gate_name == "static_validation" and code.startswith("boundary.")):
         return _action(
             "repair_case_dictionaries",
@@ -82,7 +84,7 @@ def _repair_action_for_issue_code(code: str, gate_review: dict[str, Any]) -> dic
             "Review solver logs",
             "The run completed but no usable result time directory was found. Inspect solver logs and rerun if needed.",
         )
-    if code in {"result.residual_nan", "result.residual_high"}:
+    if code in {"result.residual_nan", "result.residual_high", "result.courant_high", "result.divergence"}:
         return _solver_numerics_action(code, gate_review)
     if code in {"result.mesh_quality_failed", "result.mesh_quality_warning"}:
         return _mesh_quality_action(gate_review)
@@ -97,6 +99,12 @@ def _repair_action_for_issue_code(code: str, gate_review: dict[str, Any]) -> dic
             "inspect_fatal_log",
             "Inspect fatal log",
             "A solver log contains a fatal marker. Open the log, identify the failing command, then repair the case.",
+        )
+    if code in {"result.command_nonzero", "result.command_timeout", "result.log_warning"}:
+        return _action(
+            "review_solver_logs",
+            "Review solver logs",
+            "OpenFOAM run diagnostics reported a command or log issue. Inspect the relevant log before rerunning.",
         )
     if code in {"manifest.missing_field", "manifest.missing_path", "manifest.invalid"}:
         return _action(
@@ -253,6 +261,10 @@ def _dictionary_repair_patches(gate_review: dict[str, Any]) -> list[dict[str, An
     validation = validation if isinstance(validation, dict) else {}
     missing_boundary_fields = validation.get("missing_boundary_fields", {})
     missing_boundary_fields = missing_boundary_fields if isinstance(missing_boundary_fields, dict) else {}
+    if not missing_boundary_fields:
+        metrics = _diagnostic_metrics(gate_review)
+        metric_missing = metrics.get("missing_boundary_fields", {})
+        missing_boundary_fields = metric_missing if isinstance(metric_missing, dict) else {}
     mesh_patch_types = validation.get("mesh_patch_types", {})
     mesh_patch_types = mesh_patch_types if isinstance(mesh_patch_types, dict) else {}
 

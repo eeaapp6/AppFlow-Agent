@@ -278,6 +278,59 @@ class AppFlowManifestWriterTests(unittest.TestCase):
             self.assertEqual("/case", manifest["appflow_hints"]["docker_case_dir"])
             self.assertTrue(manifest["appflow_hints"]["show_results"])
 
+    def test_run_manifest_includes_run_diagnostics_and_repair_hint_flag(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = make_task(root)
+            task.gate_reviews = [
+                {
+                    "gate": "result_review",
+                    "status": "failed",
+                    "issues": [{"code": "result.courant_high", "message": "max Co high", "severity": "error"}],
+                    "next_repair_action": {
+                        "id": "stabilize_time_step",
+                        "label": "Stabilize time step",
+                        "description": "test",
+                        "automatic": False,
+                    },
+                }
+            ]
+
+            manifest = ManifestWriter().write_run_result(
+                task,
+                make_plan(),
+                {
+                    "status": "run_failed",
+                    "reason": "OpenFOAM run completed with error diagnostics.",
+                    "logs": [{"path": "logs/icoFoam.log", "role": "icoFoam", "format": "text"}],
+                    "diagnostics": {
+                        "severity": "failed",
+                        "summary": "Maximum Courant number 3.2 is above 1.",
+                        "items": [
+                            {
+                                "code": "result.courant_high",
+                                "severity": "error",
+                                "category": "numerics",
+                                "message": "Maximum Courant number 3.2 is above 1.",
+                                "source": "solver",
+                                "log_file": "logs/icoFoam.log",
+                                "matched_line": "Courant Number mean: 0.2 max: 3.2",
+                                "repair_hint": "Enable adjustTimeStep or reduce deltaT before rerunning.",
+                            }
+                        ],
+                        "metrics": {"max_courant": 3.2},
+                    },
+                },
+            )
+
+        run = manifest["workflow"]["run"]
+        self.assertEqual("failed", run["diagnostics"]["severity"])
+        self.assertEqual("result.courant_high", run["diagnostics"]["items"][0]["code"])
+        self.assertEqual(3.2, run["diagnostics"]["metrics"]["max_courant"])
+        self.assertEqual("failed", manifest["appflow_hints"]["run_diagnostics_severity"])
+        self.assertTrue(manifest["appflow_hints"]["has_run_diagnostics"])
+        self.assertTrue(manifest["appflow_hints"]["has_suggested_repair_actions"])
+
 
 if __name__ == "__main__":
     unittest.main()

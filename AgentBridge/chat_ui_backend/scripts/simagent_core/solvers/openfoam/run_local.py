@@ -14,6 +14,7 @@ from .run_pipeline import (
     prepare_executable_pipeline,
     run_pipeline_mode,
 )
+from .run_diagnostics import diagnostics_for_steps, runtime_blocked_diagnostics
 from .runtime import DockerOpenFOAMRunner, OpenFOAMRunner, detect_openfoam_runtime
 from .validate import required_openfoam_files
 
@@ -148,8 +149,9 @@ def _run_failure(
     runtime_info: dict[str, Any],
     logs: list[dict] | None = None,
     status: str = "run_failed",
+    diagnostics: dict[str, Any] | None = None,
 ) -> dict:
-    return {
+    result = {
         "status": status,
         "reason": reason,
         "steps": steps,
@@ -159,6 +161,9 @@ def _run_failure(
         "wm_project_dir": runtime_info.get("wm_project_dir", ""),
         "runtime_info": runtime_info,
     }
+    if diagnostics:
+        result["diagnostics"] = diagnostics
+    return result
 
 
 def run_openfoam_case(
@@ -190,6 +195,10 @@ def run_openfoam_case(
         readiness.setdefault("pipeline_info", pipeline_info)
         readiness.setdefault("steps", [])
         readiness.setdefault("logs", [])
+        readiness.setdefault(
+            "diagnostics",
+            runtime_blocked_diagnostics(str(readiness.get("reason", "")).strip()),
+        )
         return readiness
 
     case_dir = Path(task.case_dir)
@@ -214,38 +223,64 @@ def run_openfoam_case(
         try:
             step = runner.run_step(command, case_dir, log_path, timeout_seconds)
         except subprocess.TimeoutExpired:
+            log_file = f"logs/{command[0]}.log"
+            diagnostics = diagnostics_for_steps(
+                steps,
+                events=[{
+                    "kind": "timeout",
+                    "command": command[0],
+                    "log_file": log_file,
+                    "timeout_seconds": timeout_seconds,
+                }],
+            )
             return _run_failure(
                 reason=f"{command[0]} timed out after {timeout_seconds} seconds.",
                 steps=steps,
                 pipeline=pipeline,
                 pipeline_info=pipeline_info,
-                logs=[{"path": f"logs/{command[0]}.log", "role": command[0], "format": "text"}],
+                logs=[{"path": log_file, "role": command[0], "format": "text"}],
                 runtime_info=runtime_info,
+                diagnostics=diagnostics,
             )
         except FileNotFoundError:
             missing_command = _missing_command_for_runtime(runtime_info, command[0])
             missing_runtime = {**runtime_info, "available": False, "missing_commands": [missing_command]}
+            reason = _missing_command_reason(runtime_info, missing_command)
             return _run_failure(
-                reason=_missing_command_reason(runtime_info, missing_command),
+                reason=reason,
                 steps=steps,
                 pipeline=pipeline,
                 pipeline_info=pipeline_info,
                 logs=[],
                 runtime_info=missing_runtime,
                 status="run_blocked",
+                diagnostics=runtime_blocked_diagnostics(reason),
             )
 
         step["stage"] = pipeline_step.get("stage", "")
         step["source"] = pipeline_step.get("source", "")
         steps.append(step)
         if step["return_code"] != 0:
+            diagnostics = diagnostics_for_steps(steps)
             return _run_failure(
                 reason=f"{command[0]} failed with return code {step['return_code']}.",
                 steps=steps,
                 pipeline=pipeline,
                 pipeline_info=pipeline_info,
                 runtime_info=runtime_info,
+                diagnostics=diagnostics,
             )
+
+    diagnostics = diagnostics_for_steps(steps)
+    if diagnostics.get("severity") == "failed":
+        return _run_failure(
+            reason=f"OpenFOAM run completed with error diagnostics: {diagnostics.get('summary', '')}",
+            steps=steps,
+            pipeline=pipeline,
+            pipeline_info=pipeline_info,
+            runtime_info=runtime_info,
+            diagnostics=diagnostics,
+        )
 
     output_index = _discover_case_outputs(task)
     commands_text = " and ".join(step["command"] for step in pipeline)
@@ -259,6 +294,7 @@ def run_openfoam_case(
         "wm_project_dir": readiness.get("wm_project_dir", ""),
         "runtime_info": runtime_info,
         "outputs": output_index,
+        "diagnostics": diagnostics,
     }
 
 

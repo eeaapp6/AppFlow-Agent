@@ -279,6 +279,40 @@ class RepairProposalTests(unittest.TestCase):
         self.assertEqual("stabilize_time_step", courant_action["id"])
         self.assertEqual(["enable_adjust_time_step", "adjust_time_step"], [item["op"] for item in courant_action["patches"]])
 
+    def test_run_diagnostics_courant_maps_to_executable_stabilization(self) -> None:
+        action = repair_action_for_gate_review(
+            {
+                "gate": "result_review",
+                "status": "failed",
+                "issues": [{"code": "result.courant_high", "message": "max Co high"}],
+                "diagnostics": {"metrics": {"max_courant": 3.2}},
+            }
+        )
+
+        self.assertEqual("stabilize_time_step", action["id"])
+        self.assertEqual(["enable_adjust_time_step", "adjust_time_step"], [item["op"] for item in action["patches"]])
+
+    def test_run_diagnostics_missing_boundary_field_maps_to_patch_without_applying(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            field_path = Path(task.task_dir) / "case/0/U"
+            field_path.parent.mkdir(parents=True)
+            original = "boundaryField\n{\n}\n"
+            field_path.write_text(original, encoding="utf-8")
+
+            review = {
+                "gate": "result_review",
+                "status": "failed",
+                "issues": [{"code": "result.missing_boundary_field", "message": "U missing inlet"}],
+                "diagnostics": {"metrics": {"missing_boundary_fields": {"U": ["inlet"]}}},
+            }
+            TaskStore().attach_gate_review(task, review)
+
+            action = task.gate_reviews[0]["next_repair_action"]
+            self.assertEqual("repair_case_dictionaries", action["id"])
+            self.assertEqual("add_missing_boundary_field", action["patches"][0]["op"])
+            self.assertEqual(original, field_path.read_text(encoding="utf-8"))
+
     def test_apply_repair_patch_adds_missing_boundary_field(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
