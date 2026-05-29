@@ -202,6 +202,131 @@ class AgentServiceHttpSmokeTests(unittest.TestCase):
         self.assertEqual(saved["repair_history"], saved["plan"]["repair_history"])
         self.assertEqual(saved["repair_history"], manifest["workflow"]["repair_history"])
 
+    def test_repair_action_endpoint_applies_safe_patch(self) -> None:
+        task = self.make_task()
+        control_path = Path(task.task_dir) / "case/system/controlDict"
+        control_path.parent.mkdir(parents=True)
+        control_path.write_text(
+            """FoamFile
+{
+    object controlDict;
+}
+
+deltaT          0.005;
+""",
+            encoding="utf-8",
+        )
+        agent_service.TaskStore().save_task(task)
+
+        status, payload = self.post_json(
+            "/foam/repair-action",
+            {
+                "task_dir": task.task_dir,
+                "repair_action": {
+                    "id": "stabilize_time_step",
+                    "label": "Stabilize time step",
+                    "patches": [
+                        {
+                            "op": "adjust_time_step",
+                            "path": "case/system/controlDict",
+                            "value": "0.001",
+                        }
+                    ],
+                },
+            },
+        )
+
+        self.assertEqual(200, status)
+        self.assertIn("deltaT          0.001;", control_path.read_text(encoding="utf-8"))
+        self.assertEqual("applied", payload["repair_history"][0]["patch_result"]["status"])
+
+    def test_repair_action_endpoint_rejects_path_escape_patch(self) -> None:
+        task = self.make_task()
+        control_path = Path(task.task_dir) / "case/system/controlDict"
+        control_path.parent.mkdir(parents=True)
+        control_path.write_text(
+            """FoamFile
+{
+    object controlDict;
+}
+
+deltaT          0.005;
+""",
+            encoding="utf-8",
+        )
+        agent_service.TaskStore().save_task(task)
+
+        status, payload = self.post_json(
+            "/foam/repair-action",
+            {
+                "task_dir": task.task_dir,
+                "repair_action": {
+                    "id": "bad",
+                    "label": "Bad",
+                    "patches": [
+                        {
+                            "op": "adjust_time_step",
+                            "path": "case/system/controlDict",
+                            "value": "0.001",
+                        },
+                        {
+                            "op": "set_dictionary_value",
+                            "path": "../outside/controlDict",
+                            "key": "deltaT",
+                            "value": "0.001",
+                        }
+                    ],
+                },
+            },
+        )
+
+        self.assertEqual(400, status)
+        self.assertIn("escapes task case", payload["error"])
+        self.assertIn("deltaT          0.005;", control_path.read_text(encoding="utf-8"))
+        saved = json.loads(Path(task.context_path).read_text(encoding="utf-8"))
+        self.assertEqual([], saved["repair_history"])
+
+    def test_repair_action_endpoint_rejects_schema_error_without_history(self) -> None:
+        task = self.make_task()
+        control_path = Path(task.task_dir) / "case/system/controlDict"
+        control_path.parent.mkdir(parents=True)
+        control_path.write_text(
+            """FoamFile
+{
+    object controlDict;
+}
+
+deltaT          0.005;
+""",
+            encoding="utf-8",
+        )
+        agent_service.TaskStore().save_task(task)
+
+        status, payload = self.post_json(
+            "/foam/repair-action",
+            {
+                "task_dir": task.task_dir,
+                "repair_action": {
+                    "id": "bad",
+                    "label": "Bad",
+                    "patches": [
+                        {
+                            "op": "set_dictionary_value",
+                            "path": "case/system/controlDict",
+                            "key": "deltaT; hacked",
+                            "value": "0.001",
+                        }
+                    ],
+                },
+            },
+        )
+
+        self.assertEqual(400, status)
+        self.assertIn("OpenFOAM identifier", payload["error"])
+        self.assertIn("deltaT          0.005;", control_path.read_text(encoding="utf-8"))
+        saved = json.loads(Path(task.context_path).read_text(encoding="utf-8"))
+        self.assertEqual([], saved["repair_history"])
+
     def test_generate_records_optional_repair_action_before_running(self) -> None:
         task = self.make_task()
         agent_service.TaskStore().save_task(task)

@@ -186,13 +186,16 @@ def _with_repair_action(gate_review: dict) -> dict:
 def _repair_history_record(task: TaskContext, repair_action: dict) -> dict:
     action = deepcopy(repair_action) if isinstance(repair_action, dict) else {}
     source_gate = str(action.get("source_gate", "")).strip() or _source_gate_for_action(task, action)
-    return {
+    record = {
         "action_id": str(action.get("id", "")).strip(),
         "label": str(action.get("label", "")).strip(),
         "status": "accepted",
         "source_gate": source_gate,
         "created_at": now_iso(),
     }
+    if isinstance(action.get("patch_result"), dict):
+        record["patch_result"] = action["patch_result"]
+    return record
 
 
 def _source_gate_for_action(task: TaskContext, repair_action: dict) -> str:

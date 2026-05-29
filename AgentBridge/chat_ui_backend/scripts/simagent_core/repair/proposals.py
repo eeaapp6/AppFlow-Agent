@@ -50,6 +50,7 @@ def repair_action_for_gate_review(gate_review: dict[str, Any]) -> dict[str, Any]
 
 
 def _repair_action_for_issue_code(code: str, gate_review: dict[str, Any]) -> dict[str, Any]:
+    gate_name = str(gate_review.get("gate", "")).strip()
     if code in {"execution.not_ready", "result.run_incomplete"}:
         return _action(
             "configure_openfoam_runtime",
@@ -65,13 +66,15 @@ def _repair_action_for_issue_code(code: str, gate_review: dict[str, Any]) -> dic
     if code in {
         "validation.missing_boundary_field",
         "validation.extra_boundary_field",
+        "validation.empty_boundary_field",
         "validation.dictionary_error",
         "validation.failed",
-    }:
+    } or (gate_name == "static_validation" and code.startswith("boundary.")):
         return _action(
             "repair_case_dictionaries",
             "Repair case dictionaries",
             "OpenFOAM dictionary validation failed. Review boundary fields and dictionary entries before running.",
+            patches=_dictionary_repair_patches(gate_review),
         )
     if code in {"result.missing_latest_path", "result.missing_latest_dir"}:
         return _action(
@@ -118,11 +121,25 @@ def _repair_action_for_issue_code(code: str, gate_review: dict[str, Any]) -> dic
 
 def _solver_numerics_action(code: str, gate_review: dict[str, Any]) -> dict[str, Any]:
     metrics = _diagnostic_metrics(gate_review)
+    if _safe_float(metrics.get("max_courant")) is not None and _safe_float(metrics.get("max_courant")) > 1:
+        return _action(
+            "stabilize_time_step",
+            "Stabilize time step",
+            "The run diagnostics indicate a high Courant number. Enable adaptive time stepping and reduce the time step before rerunning.",
+            patches=[
+                {"op": "enable_adjust_time_step", "path": "case/system/controlDict", "maxCo": "0.5"},
+                {"op": "adjust_time_step", "path": "case/system/controlDict", "value": "0.001"},
+            ],
+        )
     if code == "result.residual_nan" or bool(metrics.get("has_nan_or_inf", False)):
         return _action(
             "inspect_solver_numerics",
             "Inspect unstable numerics",
             "The solver log contains nan or inf. Check boundary conditions, field initialization, timestep/Courant number, and mesh quality before rerunning.",
+            patches=[
+                {"op": "enable_adjust_time_step", "path": "case/system/controlDict", "maxCo": "0.5"},
+                {"op": "adjust_time_step", "path": "case/system/controlDict", "value": "0.001"},
+            ],
         )
 
     field = str(metrics.get("worst_residual_field", "")).strip()
@@ -135,18 +152,45 @@ def _solver_numerics_action(code: str, gate_review: dict[str, Any]) -> dict[str,
             "inspect_solver_numerics",
             "Inspect pressure numerics",
             f"Pressure residual is the worst signal{final_text}. Check pressure boundary conditions, pressure solver tolerance, relaxation factors, and pressure-velocity coupling.",
+            patches=[
+                {
+                    "op": "update_solver_tolerance",
+                    "path": "case/system/fvSolution",
+                    "solver": "p",
+                    "tolerance": "1e-07",
+                    "relTol": "0",
+                }
+            ],
         )
     if field_key in {"u", "ux", "uy", "uz"}:
         return _action(
             "inspect_solver_numerics",
             "Inspect velocity numerics",
             f"Velocity residual is the worst signal{final_text}. Check inlet/outlet velocity conditions, timestep/Courant number, mesh quality, and relaxation factors.",
+            patches=[
+                {
+                    "op": "update_solver_tolerance",
+                    "path": "case/system/fvSolution",
+                    "solver": "U",
+                    "tolerance": "1e-06",
+                    "relTol": "0",
+                }
+            ],
         )
     if field:
         return _action(
             "inspect_solver_numerics",
             f"Inspect {field} numerics",
             f"{field} has the highest final residual{final_text}. Review its boundary conditions, solver settings, relaxation factors, and mesh quality.",
+            patches=[
+                {
+                    "op": "update_solver_tolerance",
+                    "path": "case/system/fvSolution",
+                    "solver": field,
+                    "tolerance": "1e-06",
+                    "relTol": "0",
+                }
+            ],
         )
     return _action(
         "inspect_solver_numerics",
@@ -202,6 +246,35 @@ def _diagnostic_metrics(gate_review: dict[str, Any]) -> dict[str, Any]:
     return metrics if isinstance(metrics, dict) else {}
 
 
+def _dictionary_repair_patches(gate_review: dict[str, Any]) -> list[dict[str, Any]]:
+    diagnostics = gate_review.get("diagnostics", {})
+    diagnostics = diagnostics if isinstance(diagnostics, dict) else {}
+    validation = diagnostics.get("validation", {})
+    validation = validation if isinstance(validation, dict) else {}
+    missing_boundary_fields = validation.get("missing_boundary_fields", {})
+    missing_boundary_fields = missing_boundary_fields if isinstance(missing_boundary_fields, dict) else {}
+    mesh_patch_types = validation.get("mesh_patch_types", {})
+    mesh_patch_types = mesh_patch_types if isinstance(mesh_patch_types, dict) else {}
+
+    patches: list[dict[str, Any]] = []
+    for field_name, patch_names in missing_boundary_fields.items():
+        if not isinstance(patch_names, list):
+            continue
+        for patch_name in patch_names:
+            patch_text = str(patch_name).strip()
+            field_text = str(field_name).strip()
+            if not patch_text or not field_text:
+                continue
+            patches.append({
+                "op": "add_missing_boundary_field",
+                "path": f"case/0/{field_text}",
+                "field": field_text,
+                "patch": patch_text,
+                "mesh_patch_type": str(mesh_patch_types.get(patch_text, "")).strip(),
+            })
+    return patches
+
+
 def _safe_float(value: Any) -> float | None:
     try:
         return float(value)
@@ -233,10 +306,19 @@ def _repair_action_for_gate_decision(gate_review: dict[str, Any]) -> dict[str, A
     return {}
 
 
-def _action(action_id: str, label: str, description: str) -> dict[str, Any]:
-    return {
+def _action(
+    action_id: str,
+    label: str,
+    description: str,
+    *,
+    patches: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    action = {
         "id": action_id,
         "label": label,
         "description": description,
         "automatic": False,
     }
+    if patches:
+        action["patches"] = patches
+    return action

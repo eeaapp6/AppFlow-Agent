@@ -5,7 +5,13 @@ from ...gates.spec_gate import review_simulation_spec
 from ...router import parse_case_intent
 from ...spec import SimulationSpec
 from ...spec.from_plan import simulation_spec_from_openfoam_plan
-from .capabilities import generation_mode_for, split_supported_changes, summarize_capabilities
+from .capabilities import (
+    STATUS_NEEDS_USER_INPUT,
+    STATUS_UNSUPPORTED,
+    generation_mode_for,
+    split_supported_changes,
+    summarize_capabilities,
+)
 from .generated import create_rect_channel_plan
 from .knowledge import AllrunScriptDatabase, CommandHelpDatabase, OpenFOAMCaseDatabase, TutorialCase
 from .mesh import GMSH_MESH_CASE_PATH, detect_gmsh_mesh_request, is_block_mesh_dict, plan_uses_external_gmsh_mesh
@@ -170,6 +176,11 @@ REQUESTED_CHANGE_ALIASES = {
     "kinematic_viscosity": ["kinematic_viscosity", "viscosity", "nu"],
     "density": ["density", "rho"],
 }
+REQUESTED_CHANGE_ALIAS_LOOKUP = {
+    alias.lower(): canonical_key
+    for canonical_key, aliases in REQUESTED_CHANGE_ALIASES.items()
+    for alias in aliases
+}
 
 
 def _normalize_requested_changes(parameters: dict, requested_changes: dict) -> dict:
@@ -186,7 +197,22 @@ def _normalize_requested_changes(parameters: dict, requested_changes: dict) -> d
             if value is not None and str(value).strip():
                 normalized[canonical_key] = str(value).strip()
                 break
+
+    if isinstance(requested_changes, dict):
+        for key, value in requested_changes.items():
+            if value is None or not str(value).strip():
+                continue
+            if REQUESTED_CHANGE_ALIAS_LOOKUP.get(str(key).strip().lower()):
+                continue
+            normalized_key = _normalize_requested_change_key(str(key))
+            if normalized_key in REQUESTED_CHANGE_ALIASES:
+                continue
+            normalized[normalized_key] = str(value).strip()
     return normalized
+
+
+def _normalize_requested_change_key(key: str) -> str:
+    return key.strip().replace("-", "_").replace(" ", "_").lower()
 
 
 def _allrun_metadata(reference_case: ReferenceCase | None, solver_name: str) -> dict:
@@ -221,14 +247,15 @@ def _attach_capability_decision(plan: SimulationPlan, decision: CapabilityDecisi
 
 def create_openfoam_plan(user_requirement: str, llm: DeepSeekClient | None = None) -> SimulationPlan:
     intent = parse_case_intent(user_requirement)
-    early_decision = review_openfoam_capability(intent=intent)
+    mesh_request = detect_gmsh_mesh_request(user_requirement)
+    early_decision = review_openfoam_capability(intent=intent, mesh_request=mesh_request)
     if early_decision.mode == "generated_case" and intent.explicit_new_geometry:
         plan = create_rect_channel_plan(user_requirement)
         plan.parameters["case_intent"] = intent.to_dict()
         _attach_capability_decision(plan, early_decision)
-        _attach_spec_gate_review(plan)
+        _attach_spec_gate_review(plan, preserve_generated_spec=True)
         return plan
-    if early_decision.mode == "unsupported" and intent.explicit_new_geometry:
+    if early_decision.support_status in {STATUS_UNSUPPORTED, STATUS_NEEDS_USER_INPUT} and intent.explicit_new_geometry:
         raise ValueError(early_decision.reason)
 
     client = llm or DeepSeekClient()
@@ -286,6 +313,7 @@ def create_openfoam_plan(user_requirement: str, llm: DeepSeekClient | None = Non
         reference_selection=reference_selection,
         supported_changes=supported_changes,
         unsupported_changes=unsupported_changes,
+        mesh_request=mesh_request,
     )
     if decision.mode == "generated_case":
         generated_plan = create_rect_channel_plan(user_requirement)
@@ -295,9 +323,9 @@ def create_openfoam_plan(user_requirement: str, llm: DeepSeekClient | None = Non
         generated_plan.parameters["reference_candidates"] = [
             _summarize_reference_case(item) for item in reference_candidates
         ]
-        _attach_spec_gate_review(generated_plan)
+        _attach_spec_gate_review(generated_plan, preserve_generated_spec=True)
         return generated_plan
-    if decision.mode == "unsupported":
+    if decision.support_status in {STATUS_UNSUPPORTED, STATUS_NEEDS_USER_INPUT}:
         raise ValueError(decision.reason)
 
     plan.case_name = reference_case.case_name if reference_case else "cavity"
@@ -307,7 +335,7 @@ def create_openfoam_plan(user_requirement: str, llm: DeepSeekClient | None = Non
     if not plan.description:
         plan.description = user_requirement
     plan.planned_files = _planned_files_from_reference(reference_case)
-    _apply_mesh_request_to_plan(plan, detect_gmsh_mesh_request(user_requirement))
+    _apply_mesh_request_to_plan(plan, mesh_request)
     if reference_case:
         plan.reference_case = provisional_reference_case
     requested_changes = provisional_changes
@@ -326,17 +354,30 @@ def create_openfoam_plan(user_requirement: str, llm: DeepSeekClient | None = Non
     _attach_capability_decision(plan, decision)
     plan.parameters["requested_changes"] = supported_changes
     plan.parameters["unsupported_changes"] = unsupported_changes
-    plan.parameters["capabilities"] = summarize_capabilities(plan.reference_case, requested_changes)
+    plan.parameters["capabilities"] = summarize_capabilities(
+        plan.reference_case,
+        requested_changes,
+        generation_mode=plan.generation_mode,
+        geometry_type=decision.geometry_type,
+        mesh_request=mesh_request,
+    )
     _attach_spec_gate_review(plan)
 
     return plan
 
 
-def _attach_spec_gate_review(plan: SimulationPlan) -> None:
+def _attach_spec_gate_review(plan: SimulationPlan, *, preserve_generated_spec: bool = False) -> None:
     existing_spec = plan.parameters.get("simulation_spec", {})
+    can_preserve_generated_spec = (
+        preserve_generated_spec
+        and plan.generation_mode == "generated_case"
+        and plan.case_name == "rect_channel"
+        and isinstance(existing_spec, dict)
+        and bool(existing_spec)
+    )
     spec = (
         SimulationSpec.from_dict(existing_spec)
-        if isinstance(existing_spec, dict) and existing_spec
+        if can_preserve_generated_spec
         else simulation_spec_from_openfoam_plan(plan)
     )
     gate_review = review_simulation_spec(spec)

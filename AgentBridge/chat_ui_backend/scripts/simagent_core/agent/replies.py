@@ -70,9 +70,24 @@ def validate_reply(task, validation_result: dict) -> str:
     dictionary_errors = validation_result.get("dictionary_errors", [])
     missing_boundary_fields = validation_result.get("missing_boundary_fields", {})
     extra_boundary_fields = validation_result.get("extra_boundary_fields", {})
-    has_errors = bool(missing_files or dictionary_errors or missing_boundary_fields or extra_boundary_fields)
+    empty_boundary_fields = validation_result.get("empty_boundary_fields", [])
+    boundary_condition_errors = validation_result.get("boundary_condition_errors", [])
+    boundary_condition_warnings = validation_result.get("boundary_condition_warnings", [])
+    has_errors = bool(
+        missing_files
+        or dictionary_errors
+        or missing_boundary_fields
+        or extra_boundary_fields
+        or empty_boundary_fields
+        or boundary_condition_errors
+    )
 
     if not has_errors:
+        if boundary_condition_warnings:
+            lines = ["Case validation passed with warnings."]
+            lines.extend(_boundary_condition_warning_lines(boundary_condition_warnings))
+            lines.append("Next: Run Case.")
+            return "\n".join(lines)
         return "Case validation passed.\nNext: Run Case."
 
     lines = ["Case validation failed."]
@@ -88,11 +103,28 @@ def validate_reply(task, validation_result: dict) -> str:
         lines.append("Extra boundary fields:")
         for field_name, patches in extra_boundary_fields.items():
             lines.append(f"- {field_name}: {', '.join(patches)}")
+    if empty_boundary_fields:
+        lines.append("Empty boundary fields:")
+        for field_name in empty_boundary_fields[:5]:
+            lines.append(f"- {field_name}")
+    if boundary_condition_errors:
+        lines.append("Boundary condition errors:")
+        for item in boundary_condition_errors[:5]:
+            lines.append(f"- {item.get('file', '')}: {item.get('message', '')}")
+    if boundary_condition_warnings:
+        lines.extend(_boundary_condition_warning_lines(boundary_condition_warnings))
     if dictionary_errors:
         lines.append("Dictionary errors:")
         for item in dictionary_errors[:5]:
             lines.append(f"- {item.get('file', '')}: {item.get('message', '')}")
     return "\n".join(lines)
+
+
+def _boundary_condition_warning_lines(warnings: list) -> list[str]:
+    lines = ["Boundary condition warnings:"]
+    for item in warnings[:5]:
+        lines.append(f"- {item.get('file', '')}: {item.get('message', '')}")
+    return lines
 
 
 def pipeline_summary(run_result: dict) -> str:

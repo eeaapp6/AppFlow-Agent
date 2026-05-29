@@ -19,7 +19,7 @@ from simagent_core.agent import (
 from simagent_core.config import Config
 from simagent_core.manifest.writer import ManifestWriter
 from simagent_core.models import SimulationPlan
-from simagent_core.repair import current_repair_action
+from simagent_core.repair import RepairPatchError, apply_repair_action, current_repair_action
 from simagent_core.router_func import select_solver_family
 from simagent_core.state.task_store import TaskStore
 from simagent_core.workflow.nodes.generate_case_node import generate_case_node
@@ -86,6 +86,8 @@ def has_validation_errors(validation_result: dict) -> bool:
         or validation_result.get("dictionary_errors", [])
         or validation_result.get("missing_boundary_fields", {})
         or validation_result.get("extra_boundary_fields", {})
+        or validation_result.get("empty_boundary_fields", [])
+        or validation_result.get("boundary_condition_errors", [])
     )
 
 
@@ -154,11 +156,12 @@ def handle_repair_action(task, body: dict, task_store: TaskStore, manifest_write
     if not isinstance(action, dict) or not str(action.get("id", "")).strip():
         raise RequestError({"error": "repair_action.id must not be empty."}, status=400)
 
-    task_store.record_repair_action(task, action)
+    action = apply_and_record_repair_action(task, action, task_store)
     manifest_writer.write_pending(task)
     return {
         "reply": "",
         "task": task.to_dict(),
+        "repair_action": action,
         "repair_history": task.repair_history,
     }
 
@@ -167,8 +170,20 @@ def record_optional_repair_action(task, body: dict, task_store: TaskStore, manif
     action = body.get("repair_action", {})
     if not isinstance(action, dict) or not str(action.get("id", "")).strip():
         return
-    task_store.record_repair_action(task, action)
+    apply_and_record_repair_action(task, action, task_store)
     manifest_writer.write_pending(task)
+
+
+def apply_and_record_repair_action(task, action: dict, task_store: TaskStore) -> dict:
+    try:
+        patch_result = apply_repair_action(task, action)
+    except RepairPatchError as exc:
+        raise RequestError({"error": str(exc)}, status=400) from exc
+
+    action_with_result = dict(action)
+    action_with_result["patch_result"] = patch_result
+    task_store.record_repair_action(task, action_with_result)
+    return action_with_result
 
 
 def handle_chat(message: str, task, task_store: TaskStore) -> dict:

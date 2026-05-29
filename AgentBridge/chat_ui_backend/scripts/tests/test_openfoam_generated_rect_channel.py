@@ -6,6 +6,7 @@ from pathlib import Path
 from scripts.simagent_core.models import TaskContext
 from scripts.simagent_core.state.task_store import TaskStore
 from scripts.simagent_core.solvers.openfoam.generated import create_rect_channel_plan, is_rect_channel_request
+from scripts.simagent_core.solvers.openfoam.generated.rect_channel import rect_channel_spec_from_text
 from scripts.simagent_core.solvers.openfoam.input_writer import generate_openfoam_files
 from scripts.simagent_core.solvers.openfoam.plan import create_openfoam_plan
 from scripts.simagent_core.solvers.openfoam.run_pipeline import build_basic_run_pipeline
@@ -45,8 +46,70 @@ class OpenFOAMGeneratedRectChannelTests(unittest.TestCase):
     def test_rect_channel_request_detection_accepts_chinese_channel_prompt(self) -> None:
         self.assertTrue(is_rect_channel_request(SIZED_RECT_CHANNEL_PROMPT))
 
+    def test_rect_channel_request_detection_accepts_chinese_rectangular_channel_prompt(self) -> None:
+        self.assertTrue(is_rect_channel_request("\u751f\u6210\u4e00\u4e2a\u4e8c\u7ef4\u77e9\u5f62\u901a\u9053\u6d41"))
+
+    def test_rect_channel_request_detection_accepts_english_prompt(self) -> None:
+        self.assertTrue(is_rect_channel_request("Generate a laminar incompressible rectangular channel case"))
+
     def test_plain_pipe_flow_does_not_force_rect_channel_generation(self) -> None:
         self.assertFalse(is_rect_channel_request("\u751f\u6210\u4e00\u4e2a\u7ba1\u9053\u6d41"))
+
+    def test_rect_channel_spec_uses_stable_defaults(self) -> None:
+        spec = rect_channel_spec_from_text(RECT_CHANNEL_PROMPT)
+
+        self.assertEqual({"length": 5.0, "height": 1.0, "depth": 0.1}, spec.geometry.parameters)
+        self.assertEqual([100, 20, 1], spec.mesh.parameters["cells"])
+        self.assertEqual(20, spec.mesh.parameters["mesh_density_per_meter"])
+        self.assertEqual("icoFoam", spec.solver.name)
+        self.assertEqual(0.005, spec.numerics.time["delta_t"])
+        self.assertEqual(0.5, spec.numerics.controls["max_co"])
+
+    def test_rect_channel_spec_extracts_chinese_parameters(self) -> None:
+        prompt = (
+            "\u751f\u6210\u4e8c\u7ef4\u77e9\u5f62\u901a\u9053\uff0c\u957f\u5ea6 6m\uff0c\u5bbd\u5ea6 0.5m\uff0c"
+            "\u5165\u53e3\u901f\u5ea6 2m/s\uff0c\u8fd0\u52a8\u7c98\u5ea6 0.02\uff0c"
+            "\u7f51\u683c\u5bc6\u5ea6 40\uff0c\u7ed3\u675f\u65f6\u95f4 2s\uff0c\u65f6\u95f4\u6b65 0.001"
+        )
+
+        spec = rect_channel_spec_from_text(prompt)
+
+        self.assertEqual(6.0, spec.geometry.parameters["length"])
+        self.assertEqual(0.5, spec.geometry.parameters["height"])
+        self.assertEqual([240, 20, 1], spec.mesh.parameters["cells"])
+        self.assertEqual([2.0, 0.0, 0.0], spec.boundaries[0].value["velocity"])
+        self.assertEqual(0.02, spec.physics.properties["kinematic_viscosity"])
+        self.assertEqual(2.0, spec.numerics.time["end_time"])
+        self.assertEqual(0.001, spec.numerics.time["delta_t"])
+
+    def test_rect_channel_spec_extracts_english_parameters(self) -> None:
+        prompt = (
+            "Generate a rectangular channel with L=4m, height=0.25m, U=1.5m/s, "
+            "nu=1e-3, mesh density=30, endTime=3, deltaT=0.002"
+        )
+
+        spec = rect_channel_spec_from_text(prompt)
+
+        self.assertEqual(4.0, spec.geometry.parameters["length"])
+        self.assertEqual(0.25, spec.geometry.parameters["height"])
+        self.assertEqual([120, 8, 1], spec.mesh.parameters["cells"])
+        self.assertEqual([1.5, 0.0, 0.0], spec.boundaries[0].value["velocity"])
+        self.assertEqual(1e-3, spec.physics.properties["kinematic_viscosity"])
+        self.assertEqual(3.0, spec.solver.parameters["end_time"])
+        self.assertEqual(0.002, spec.solver.parameters["delta_t"])
+
+    def test_rect_channel_spec_rejects_non_positive_prompt_values(self) -> None:
+        spec = rect_channel_spec_from_text(
+            "rectangular channel length=-1 height=0 U=-2 nu=0 mesh density=-5 endTime=-1 deltaT=0"
+        )
+
+        self.assertEqual(5.0, spec.geometry.parameters["length"])
+        self.assertEqual(1.0, spec.geometry.parameters["height"])
+        self.assertEqual([100, 20, 1], spec.mesh.parameters["cells"])
+        self.assertEqual([1.0, 0.0, 0.0], spec.boundaries[0].value["velocity"])
+        self.assertEqual(0.01, spec.physics.properties["kinematic_viscosity"])
+        self.assertEqual(1.0, spec.numerics.time["end_time"])
+        self.assertEqual(0.005, spec.numerics.time["delta_t"])
 
     def test_rect_channel_plan_uses_generated_case_mode(self) -> None:
         plan = create_rect_channel_plan(SIZED_RECT_CHANNEL_PROMPT)
@@ -55,6 +118,9 @@ class OpenFOAMGeneratedRectChannelTests(unittest.TestCase):
         self.assertEqual("rect_channel", plan.case_name)
         self.assertEqual("rect_channel", plan.parameters["simulation_spec"]["geometry"]["type"])
         self.assertEqual("blockMesh", plan.parameters["simulation_spec"]["mesh"]["type"])
+        self.assertEqual("incompressible", plan.parameters["simulation_spec"]["physics"]["domain"])
+        self.assertEqual("PISO", plan.parameters["simulation_spec"]["numerics"]["algorithm"])
+        self.assertEqual(["U", "p"], plan.parameters["simulation_spec"]["outputs"]["fields"])
 
     def test_generated_rect_channel_case_validates(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -71,6 +137,36 @@ class OpenFOAMGeneratedRectChannelTests(unittest.TestCase):
             self.assertIn("case/0/p", generated_paths)
             self.assertEqual("validated", validation["status"])
             self.assertEqual(["frontAndBack", "inlet", "outlet", "walls"], sorted(validation["mesh_patches"]))
+            self.assertEqual(
+                {"frontAndBack": "empty", "inlet": "fixedValue", "outlet": "zeroGradient", "walls": "noSlip"},
+                validation["boundary_field_types"]["U"],
+            )
+            self.assertEqual(
+                {"frontAndBack": "empty", "inlet": "zeroGradient", "outlet": "fixedValue", "walls": "zeroGradient"},
+                validation["boundary_field_types"]["p"],
+            )
+
+    def test_generated_rect_channel_writes_requested_cfd_controls(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = make_task(root)
+            plan = create_rect_channel_plan(
+                "Generate a rectangular channel with length=3, height=0.5, velocity=2, nu=0.02, "
+                "mesh density=10, endTime=4, deltaT=0.01"
+            )
+
+            generate_openfoam_files(task, plan)
+
+            block_mesh = (Path(task.task_dir) / "case/system/blockMeshDict").read_text(encoding="utf-8")
+            control = (Path(task.task_dir) / "case/system/controlDict").read_text(encoding="utf-8")
+            physical = (Path(task.task_dir) / "case/constant/physicalProperties").read_text(encoding="utf-8")
+            u_field = (Path(task.task_dir) / "case/0/U").read_text(encoding="utf-8")
+            self.assertIn("hex (0 1 2 3 4 5 6 7) (30 5 1)", block_mesh)
+            self.assertIn("endTime         4;", control)
+            self.assertIn("deltaT          0.01;", control)
+            self.assertIn("maxCo           0.5;", control)
+            self.assertIn("nu              [0 2 -1 0 0 0 0] 0.02;", physical)
+            self.assertIn("value           uniform (2 0 0);", u_field)
 
     def test_generated_rect_channel_pipeline_uses_blockmesh_then_solver(self) -> None:
         plan = create_rect_channel_plan(RECT_CHANNEL_PROMPT)

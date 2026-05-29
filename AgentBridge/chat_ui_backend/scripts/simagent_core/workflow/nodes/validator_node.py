@@ -27,7 +27,9 @@ def validator_node(
 
 def _static_validation_gate_review(validation_result: dict) -> dict:
     result = GateResult("static_validation")
+    validation_warnings = validation_result.get("boundary_condition_warnings", [])
     if str(validation_result.get("status", "")).strip() == "validated":
+        _append_boundary_condition_warnings(result, validation_warnings)
         return result.to_dict()
 
     result.status = "failed"
@@ -41,6 +43,18 @@ def _static_validation_gate_review(validation_result: dict) -> dict:
         result.issues.append(
             GateIssue("validation.extra_boundary_field", f"{field_name} has extra patches: {', '.join(patches)}.")
         )
+    for field_name in validation_result.get("empty_boundary_fields", [])[:10]:
+        result.issues.append(
+            GateIssue("validation.empty_boundary_field", f"{field_name} boundaryField is empty or missing.")
+        )
+    for item in validation_result.get("boundary_condition_errors", [])[:10]:
+        result.issues.append(
+            GateIssue(
+                item.get("code", "validation.boundary_condition"),
+                f"{item.get('file', '')}: {item.get('message', '')}",
+            )
+        )
+    _append_boundary_condition_warnings(result, validation_warnings)
     for item in validation_result.get("dictionary_errors", [])[:10]:
         result.issues.append(
             GateIssue(
@@ -50,4 +64,23 @@ def _static_validation_gate_review(validation_result: dict) -> dict:
         )
     if not result.issues:
         result.issues.append(GateIssue("validation.failed", "Case validation failed."))
+    result.metadata["diagnostics"] = _validation_diagnostics(validation_result)
     return result.to_dict()
+
+
+def _append_boundary_condition_warnings(result: GateResult, warnings: list) -> None:
+    for item in warnings[:10]:
+        result.add_warning(
+            item.get("code", "validation.boundary_condition_warning"),
+            f"{item.get('file', '')}: {item.get('message', '')}",
+        )
+
+
+def _validation_diagnostics(validation_result: dict) -> dict:
+    return {
+        "validation": {
+            "mesh_patch_types": validation_result.get("mesh_patch_types", {}),
+            "missing_boundary_fields": validation_result.get("missing_boundary_fields", {}),
+            "boundary_field_types": validation_result.get("boundary_field_types", {}),
+        }
+    }

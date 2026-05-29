@@ -4,7 +4,12 @@ import unittest
 from pathlib import Path
 
 from scripts.simagent_core.models import TaskContext
-from scripts.simagent_core.repair import current_repair_action, repair_action_for_gate_review
+from scripts.simagent_core.repair import (
+    RepairPatchError,
+    apply_repair_action,
+    current_repair_action,
+    repair_action_for_gate_review,
+)
 from scripts.simagent_core.state.task_store import TaskStore
 
 
@@ -27,6 +32,48 @@ def make_task(root: Path) -> TaskContext:
         manifest_path=str(task_dir / "agent_manifest_v1.json"),
         plan={"solver_family": "openfoam"},
     )
+
+
+def write_control_dict(task: TaskContext) -> Path:
+    path = Path(task.task_dir) / "case/system/controlDict"
+    path.parent.mkdir(parents=True)
+    path.write_text(
+        """FoamFile
+{
+    object controlDict;
+}
+
+deltaT          0.005;
+adjustTimeStep  no;
+maxCo           1;
+""",
+        encoding="utf-8",
+    )
+    return path
+
+
+def write_fv_solution(task: TaskContext) -> Path:
+    path = Path(task.task_dir) / "case/system/fvSolution"
+    path.parent.mkdir(parents=True)
+    path.write_text(
+        """FoamFile
+{
+    object fvSolution;
+}
+
+solvers
+{
+    p
+    {
+        solver          PCG;
+        tolerance       1e-06;
+        relTol          0.05;
+    }
+}
+""",
+        encoding="utf-8",
+    )
+    return path
 
 
 class RepairProposalTests(unittest.TestCase):
@@ -158,6 +205,272 @@ class RepairProposalTests(unittest.TestCase):
         )
 
         self.assertEqual("revise_request_scope", action["id"])
+
+    def test_static_validation_boundary_condition_maps_to_dictionary_repair(self) -> None:
+        action = repair_action_for_gate_review(
+            {
+                "gate": "static_validation",
+                "status": "failed",
+                "issues": [
+                    {
+                        "code": "boundary.inlet_velocity_zero_gradient",
+                        "message": "case/0/U: Velocity inlet should not use zeroGradient.",
+                    }
+                ],
+            }
+        )
+
+        self.assertEqual("repair_case_dictionaries", action["id"])
+
+    def test_missing_boundary_field_action_includes_executable_patch(self) -> None:
+        action = repair_action_for_gate_review(
+            {
+                "gate": "static_validation",
+                "status": "failed",
+                "issues": [
+                    {
+                        "code": "validation.missing_boundary_field",
+                        "message": "U missing patches: inlet.",
+                    }
+                ],
+                "diagnostics": {
+                    "validation": {
+                        "missing_boundary_fields": {"U": ["inlet"]},
+                        "mesh_patch_types": {"inlet": "patch"},
+                    }
+                },
+            }
+        )
+
+        self.assertEqual("repair_case_dictionaries", action["id"])
+        self.assertEqual(
+            [
+                {
+                    "op": "add_missing_boundary_field",
+                    "path": "case/0/U",
+                    "field": "U",
+                    "patch": "inlet",
+                    "mesh_patch_type": "patch",
+                }
+            ],
+            action["patches"],
+        )
+
+    def test_solver_numerics_actions_include_executable_patches(self) -> None:
+        residual_action = repair_action_for_gate_review(
+            {
+                "gate": "result_review",
+                "status": "failed",
+                "issues": [{"code": "result.residual_high", "message": "high residual"}],
+                "diagnostics": {"metrics": {"worst_residual_field": "p", "max_final_residual": 2.5}},
+            }
+        )
+        courant_action = repair_action_for_gate_review(
+            {
+                "gate": "result_review",
+                "status": "failed",
+                "issues": [{"code": "result.residual_nan", "message": "nan"}],
+                "diagnostics": {"metrics": {"max_courant": 5.0}},
+            }
+        )
+
+        self.assertEqual("update_solver_tolerance", residual_action["patches"][0]["op"])
+        self.assertEqual("p", residual_action["patches"][0]["solver"])
+        self.assertEqual("stabilize_time_step", courant_action["id"])
+        self.assertEqual(["enable_adjust_time_step", "adjust_time_step"], [item["op"] for item in courant_action["patches"]])
+
+    def test_apply_repair_patch_adds_missing_boundary_field(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = make_task(root)
+            field_path = Path(task.task_dir) / "case/0/U"
+            field_path.parent.mkdir(parents=True)
+            field_path.write_text(
+                """FoamFile
+{
+    object U;
+}
+
+boundaryField
+{
+    outlet
+    {
+        type zeroGradient;
+    }
+}
+""",
+                encoding="utf-8",
+            )
+
+            result = apply_repair_action(
+                task,
+                {
+                    "id": "repair_case_dictionaries",
+                    "patches": [
+                        {
+                            "op": "add_missing_boundary_field",
+                            "path": "case/0/U",
+                            "field": "U",
+                            "patch": "inlet",
+                        }
+                    ],
+                },
+            )
+            updated = field_path.read_text(encoding="utf-8")
+
+        self.assertEqual("applied", result["status"])
+        self.assertIn("inlet", updated)
+        self.assertIn("type            fixedValue;", updated)
+
+    def test_apply_repair_patch_rejects_path_escape(self) -> None:
+        task = make_task(Path("C:/tmp"))
+
+        with self.assertRaises(RepairPatchError):
+            apply_repair_action(
+                task,
+                {
+                    "id": "bad",
+                    "patches": [
+                        {
+                            "op": "set_dictionary_value",
+                            "path": "../outside/controlDict",
+                            "key": "deltaT",
+                            "value": "0.001",
+                        }
+                    ],
+                },
+            )
+
+    def test_apply_repair_patch_rejects_leading_slash_absolute_path(self) -> None:
+        task = make_task(Path("C:/tmp"))
+
+        with self.assertRaises(RepairPatchError):
+            apply_repair_action(
+                task,
+                {
+                    "id": "bad",
+                    "patches": [
+                        {
+                            "op": "set_dictionary_value",
+                            "path": "/case/system/controlDict",
+                            "key": "deltaT",
+                            "value": "0.001",
+                        }
+                    ],
+                },
+            )
+
+    def test_apply_repair_patches_on_same_file_in_order(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            control_path = write_control_dict(task)
+
+            result = apply_repair_action(
+                task,
+                {
+                    "id": "stabilize",
+                    "patches": [
+                        {
+                            "op": "adjust_time_step",
+                            "path": "case/system/controlDict",
+                            "value": "0.001",
+                        },
+                        {
+                            "op": "enable_adjust_time_step",
+                            "path": "case/system/controlDict",
+                            "maxCo": "0.5",
+                        },
+                    ],
+                },
+            )
+            updated = control_path.read_text(encoding="utf-8")
+
+        self.assertEqual("applied", result["status"])
+        self.assertIn("deltaT          0.001;", updated)
+        self.assertIn("adjustTimeStep  yes;", updated)
+        self.assertIn("maxCo           0.5;", updated)
+
+    def test_repair_patch_schema_rejections_do_not_write_file(self) -> None:
+        invalid_actions = [
+            {
+                "name": "bad dictionary key",
+                "file": "control",
+                "patch": {
+                    "op": "set_dictionary_value",
+                    "path": "case/system/controlDict",
+                    "key": "deltaT; hacked",
+                    "value": "0.001",
+                },
+            },
+            {
+                "name": "dictionary value newline",
+                "file": "control",
+                "patch": {
+                    "op": "set_dictionary_value",
+                    "path": "case/system/controlDict",
+                    "key": "deltaT",
+                    "value": "0.001;\nhacked",
+                },
+            },
+            {
+                "name": "non-positive time step",
+                "file": "control",
+                "patch": {
+                    "op": "adjust_time_step",
+                    "path": "case/system/controlDict",
+                    "value": "0",
+                },
+            },
+            {
+                "name": "non-numeric time step",
+                "file": "control",
+                "patch": {
+                    "op": "adjust_time_step",
+                    "path": "case/system/controlDict",
+                    "value": "fast",
+                },
+            },
+            {
+                "name": "negative relTol",
+                "file": "fvSolution",
+                "patch": {
+                    "op": "update_solver_tolerance",
+                    "path": "case/system/fvSolution",
+                    "solver": "p",
+                    "tolerance": "1e-07",
+                    "relTol": "-0.1",
+                },
+            },
+            {
+                "name": "bad boundary patch name",
+                "file": "field",
+                "patch": {
+                    "op": "add_missing_boundary_field",
+                    "path": "case/0/U",
+                    "field": "U",
+                    "patch": "inlet; hacked",
+                },
+            },
+        ]
+
+        for item in invalid_actions:
+            with self.subTest(item["name"]):
+                with tempfile.TemporaryDirectory() as tmp:
+                    task = make_task(Path(tmp))
+                    if item["file"] == "control":
+                        target = write_control_dict(task)
+                    elif item["file"] == "fvSolution":
+                        target = write_fv_solution(task)
+                    else:
+                        target = Path(task.task_dir) / "case/0/U"
+                        target.parent.mkdir(parents=True)
+                        target.write_text("boundaryField\n{\n}\n", encoding="utf-8")
+                    original = target.read_text(encoding="utf-8")
+
+                    with self.assertRaises(RepairPatchError):
+                        apply_repair_action(task, {"id": "bad", "patches": [item["patch"]]})
+
+                    self.assertEqual(original, target.read_text(encoding="utf-8"))
 
     def test_task_store_persists_repair_action_without_mutating_input_review(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

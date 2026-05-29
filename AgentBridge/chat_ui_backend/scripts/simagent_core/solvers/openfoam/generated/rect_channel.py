@@ -3,7 +3,17 @@ from typing import Any
 
 from ....models import PlannedFile, SimulationPlan
 from ....router import parse_case_intent, select_generation_route
-from ....spec import BoundarySpec, GeometrySpec, MeshSpec, SimulationSpec, SolverSpec
+from ....spec import (
+    BoundarySpec,
+    GeometrySpec,
+    MeshSpec,
+    NumericsSpec,
+    OutputsSpec,
+    PhysicsSpec,
+    SimulationSpec,
+    SolverSpec,
+)
+from ..capabilities import summarize_capabilities
 from ..templates.icofoam_cavity import _openfoam_header
 
 
@@ -16,6 +26,19 @@ RECT_CHANNEL_FILES = [
     PlannedFile("initial_condition", "case/0/U", "openfoam-dict"),
     PlannedFile("initial_condition", "case/0/p", "openfoam-dict"),
 ]
+DEFAULT_LENGTH = 5.0
+DEFAULT_HEIGHT = 1.0
+DEFAULT_DEPTH = 0.1
+DEFAULT_INLET_VELOCITY = 1.0
+DEFAULT_OUTLET_PRESSURE = 0.0
+DEFAULT_END_TIME = 1.0
+DEFAULT_DELTA_T = 0.005
+DEFAULT_NU = 0.01
+DEFAULT_WRITE_INTERVAL = 20
+DEFAULT_MESH_DENSITY = 20
+DEFAULT_MAX_CO = 0.5
+
+_NUMBER_PATTERN = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
 
 
 def is_rect_channel_request(user_requirement: str) -> bool:
@@ -33,13 +56,12 @@ def create_rect_channel_plan(user_requirement: str) -> SimulationPlan:
         "case_template": "generated_rect_channel",
         "requested_changes": requested_changes,
         "unsupported_changes": {},
-        "capabilities": {
-            "reference_selection": "generated",
-            "case_generation": "rect_channel",
-            "supported_changes": sorted(requested_changes),
-            "unsupported_changes": [],
-            "run_pipeline": "basic_blockMesh_solver",
-        },
+        "capabilities": summarize_capabilities(
+            None,
+            requested_changes,
+            generation_mode="generated_case",
+            geometry_type="rect_channel",
+        ),
     }
     return SimulationPlan(
         solver_family="openfoam",
@@ -57,17 +79,54 @@ def create_rect_channel_plan(user_requirement: str) -> SimulationPlan:
 
 def rect_channel_spec_from_text(user_requirement: str) -> SimulationSpec:
     text = str(user_requirement or "")
-    length = _extract_dimension(text, ["length", "\u957f", "\u957f\u5ea6"], default=5.0)
-    height = _extract_dimension(text, ["height", "\u9ad8", "\u9ad8\u5ea6"], default=1.0)
-    depth = _extract_dimension(text, ["depth", "\u539a", "\u6df1\u5ea6"], default=0.1)
-    velocity = _extract_dimension(text, ["velocity", "inlet velocity", "\u5165\u53e3\u901f\u5ea6"], default=1.0)
-    pressure = _extract_dimension(text, ["pressure", "outlet pressure", "\u51fa\u53e3\u538b\u529b"], default=0.0)
-    end_time = _extract_dimension(text, ["end_time", "final_time", "\u8fd0\u884c\u5230", "\u7ed3\u675f\u65f6\u95f4"], default=1.0)
-    delta_t = _extract_dimension(text, ["delta_t", "time step", "\u65f6\u95f4\u6b65"], default=0.005)
-    nu = _extract_dimension(text, ["nu", "\u7c98\u5ea6", "\u8fd0\u52a8\u7c98\u5ea6"], default=0.01)
+    length = _extract_positive_float(text, ["length", "channel length", "L", "\u957f\u5ea6", "\u957f"], DEFAULT_LENGTH)
+    height = _extract_positive_float(
+        text,
+        ["height", "channel height", "H", "\u9ad8\u5ea6", "\u9ad8"],
+        _extract_positive_float(text, ["width", "channel width", "W", "\u5bbd\u5ea6", "\u5bbd"], DEFAULT_HEIGHT),
+    )
+    depth = _extract_positive_float(text, ["depth", "thickness", "\u539a\u5ea6", "\u539a", "\u6df1\u5ea6"], DEFAULT_DEPTH)
+    velocity = _extract_positive_float(
+        text,
+        ["inlet velocity", "velocity", "U", "\u5165\u53e3\u901f\u5ea6", "\u6d41\u901f", "\u901f\u5ea6"],
+        DEFAULT_INLET_VELOCITY,
+    )
+    pressure = _extract_float(
+        text,
+        ["pressure", "outlet pressure", "\u51fa\u53e3\u538b\u529b"],
+        DEFAULT_OUTLET_PRESSURE,
+    )
+    end_time = _extract_positive_float(
+        text,
+        ["endTime", "end_time", "end time", "final_time", "final time", "\u8fd0\u884c\u5230", "\u7ed3\u675f\u65f6\u95f4"],
+        DEFAULT_END_TIME,
+    )
+    delta_t = _extract_positive_float(
+        text,
+        ["deltaT", "delta_t", "time step", "timestep", "\u65f6\u95f4\u6b65", "\u65f6\u95f4\u6b65\u957f"],
+        DEFAULT_DELTA_T,
+    )
+    nu = _extract_positive_float(
+        text,
+        ["nu", "kinematic viscosity", "viscosity", "\u8fd0\u52a8\u7c98\u5ea6", "\u8fd0\u52a8\u9ecf\u5ea6", "\u7c98\u5ea6", "\u9ecf\u5ea6"],
+        DEFAULT_NU,
+    )
 
-    nx = max(1, int(round(length * 20)))
-    ny = max(1, int(round(height * 20)))
+    mesh_density = _extract_positive_float(
+        text,
+        [
+            "mesh density",
+            "mesh_density",
+            "cells per meter",
+            "cells/m",
+            "resolution",
+            "\u7f51\u683c\u5bc6\u5ea6",
+            "\u6bcf\u7c73\u7f51\u683c",
+            "\u6bcf\u7c73\u5355\u5143",
+        ],
+        DEFAULT_MESH_DENSITY,
+    )
+    nx, ny = _mesh_cells_from_text(text, length, height, mesh_density)
 
     return SimulationSpec(
         geometry=GeometrySpec(
@@ -82,6 +141,7 @@ def rect_channel_spec_from_text(user_requirement: str) -> SimulationSpec:
             type="blockMesh",
             parameters={
                 "cells": [nx, ny, 1],
+                "mesh_density_per_meter": mesh_density,
             },
         ),
         boundaries=[
@@ -96,11 +156,49 @@ def rect_channel_spec_from_text(user_requirement: str) -> SimulationSpec:
             parameters={
                 "end_time": end_time,
                 "delta_t": delta_t,
-                "write_interval": 20,
+                "write_interval": DEFAULT_WRITE_INTERVAL,
                 "nu": nu,
             },
         ),
         generation_mode="generated_case",
+        physics=PhysicsSpec(
+            domain="incompressible",
+            model="newtonian",
+            properties={
+                "kinematic_viscosity": nu,
+            },
+        ),
+        numerics=NumericsSpec(
+            algorithm="PISO",
+            time={
+                "start_time": 0.0,
+                "end_time": end_time,
+                "delta_t": delta_t,
+            },
+            schemes={
+                "ddt": "Euler",
+                "div_phi_U": "Gauss linear",
+                "laplacian": "Gauss linear orthogonal",
+            },
+            linear_solvers={
+                "p": {"solver": "PCG", "tolerance": 1e-6, "relTol": 0.05},
+                "U": {"solver": "smoothSolver", "tolerance": 1e-5, "relTol": 0},
+            },
+            controls={
+                "adjust_time_step": "no",
+                "max_co": DEFAULT_MAX_CO,
+                "max_delta_t": delta_t,
+            },
+        ),
+        outputs=OutputsSpec(
+            format="openfoam",
+            result_format="vtk",
+            fields=["U", "p"],
+            controls={
+                "write_control": "timeStep",
+                "write_interval": DEFAULT_WRITE_INTERVAL,
+            },
+        ),
     )
 
 
@@ -194,10 +292,11 @@ mergePatchPairs
 
 
 def _render_control_dict(spec: SimulationSpec) -> str:
-    solver = spec.solver.parameters
-    end_time = _float_value(solver, "end_time", 1.0)
-    delta_t = _float_value(solver, "delta_t", 0.005)
-    write_interval = _positive_int(solver.get("write_interval", 20), 20)
+    end_time = _time_value(spec, "end_time", DEFAULT_END_TIME)
+    delta_t = _time_value(spec, "delta_t", DEFAULT_DELTA_T)
+    write_interval = _write_interval(spec)
+    max_co = _float_value(spec.numerics.controls, "max_co", DEFAULT_MAX_CO)
+    max_delta_t = _float_value(spec.numerics.controls, "max_delta_t", delta_t)
     return _openfoam_header("dictionary", "controlDict") + f"""
 application     {spec.solver.name};
 
@@ -206,6 +305,9 @@ startTime       0;
 stopAt          endTime;
 endTime         {end_time:g};
 deltaT          {delta_t:g};
+adjustTimeStep  no;
+maxCo           {max_co:g};
+maxDeltaT       {max_delta_t:g};
 
 writeControl    timeStep;
 writeInterval   {write_interval};
@@ -254,6 +356,12 @@ snGradSchemes
 {
     default         orthogonal;
 }
+
+fluxRequired
+{
+    default         no;
+    p;
+}
 """
 
 
@@ -295,7 +403,7 @@ PISO
 
 
 def _render_physical_properties(spec: SimulationSpec) -> str:
-    nu = _float_value(spec.solver.parameters, "nu", 0.01)
+    nu = _kinematic_viscosity(spec)
     return _openfoam_header("dictionary", "physicalProperties") + f"""
 nu              [0 2 -1 0 0 0 0] {nu:g};
 """
@@ -368,16 +476,29 @@ boundaryField
 
 
 def _requested_changes_from_spec(spec: SimulationSpec) -> dict[str, Any]:
-    solver = spec.solver.parameters
     velocity = _velocity(spec)
     return {
-        "end_time": solver.get("end_time", 1.0),
-        "delta_t": solver.get("delta_t", 0.005),
-        "write_interval": solver.get("write_interval", 20),
-        "kinematic_viscosity": solver.get("nu", 0.01),
+        "end_time": _time_value(spec, "end_time", DEFAULT_END_TIME),
+        "delta_t": _time_value(spec, "delta_t", DEFAULT_DELTA_T),
+        "write_interval": _write_interval(spec),
+        "kinematic_viscosity": _kinematic_viscosity(spec),
         "inlet_velocity": f"({velocity[0]:g} {velocity[1]:g} {velocity[2]:g})",
         "outlet_pressure": _outlet_pressure(spec),
     }
+
+
+def _time_value(spec: SimulationSpec, key: str, default: float) -> float:
+    return _float_value(spec.numerics.time, key, _float_value(spec.solver.parameters, key, default))
+
+
+def _write_interval(spec: SimulationSpec) -> int:
+    fallback = spec.solver.parameters.get("write_interval", DEFAULT_WRITE_INTERVAL)
+    return _positive_int(spec.outputs.controls.get("write_interval", fallback), DEFAULT_WRITE_INTERVAL)
+
+
+def _kinematic_viscosity(spec: SimulationSpec) -> float:
+    fallback = _float_value(spec.solver.parameters, "nu", DEFAULT_NU)
+    return _float_value(spec.physics.properties, "kinematic_viscosity", fallback)
 
 
 def _velocity(spec: SimulationSpec) -> list[float]:
@@ -396,18 +517,61 @@ def _outlet_pressure(spec: SimulationSpec) -> float:
     return 0.0
 
 
-def _extract_dimension(text: str, keys: list[str], default: float) -> float:
+def _extract_float(text: str, keys: list[str], default: float) -> float:
     for key in keys:
-        escaped_key = re.escape(key)
+        key_pattern = _key_pattern(key)
         patterns = [
-            rf"{escaped_key}\s*(?:=|:|\uff1a|\u4e3a|\u662f)?\s*([-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)",
-            rf"([-+]?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?)\s*(?:m/s|m|s)?\s*{escaped_key}",
+            rf"{key_pattern}\s*(?:=|:|\uff1a|\u4e3a|\u662f|to)?\s*({_NUMBER_PATTERN})",
+            rf"({_NUMBER_PATTERN})\s*(?:m/s|m\^2/s|m2/s|m|s|cells/m|\u7c73/\u79d2|\u7c73|\u79d2)?\s*(?:\u7684)?\s*{key_pattern}",
         ]
         for pattern in patterns:
             match = re.search(pattern, text, flags=re.IGNORECASE)
             if match:
                 return float(match.group(1))
     return default
+
+
+def _extract_positive_float(text: str, keys: list[str], default: float) -> float:
+    value = _extract_float(text, keys, default)
+    return value if value > 0 else default
+
+
+def _mesh_cells_from_text(text: str, length: float, height: float, mesh_density: float) -> tuple[int, int]:
+    nx = _extract_positive_int(text, ["nx", "x cells", "length cells", "\u957f\u5ea6\u5355\u5143\u6570", "x\u65b9\u5411\u7f51\u683c"], 0)
+    ny = _extract_positive_int(text, ["ny", "y cells", "height cells", "width cells", "\u9ad8\u5ea6\u5355\u5143\u6570", "\u5bbd\u5ea6\u5355\u5143\u6570", "y\u65b9\u5411\u7f51\u683c"], 0)
+
+    mesh_pair = _extract_mesh_cell_pair(text)
+    if mesh_pair:
+        nx = nx or mesh_pair[0]
+        ny = ny or mesh_pair[1]
+
+    return (
+        nx or max(1, int(round(length * mesh_density))),
+        ny or max(1, int(round(height * mesh_density))),
+    )
+
+
+def _extract_mesh_cell_pair(text: str) -> tuple[int, int] | None:
+    if not re.search(r"mesh|cell|\u7f51\u683c|\u5355\u5143", text, flags=re.IGNORECASE):
+        return None
+    match = re.search(rf"({_NUMBER_PATTERN})\s*(?:x|\*|\u00d7)\s*({_NUMBER_PATTERN})", text, flags=re.IGNORECASE)
+    if not match:
+        return None
+    nx = _positive_int(match.group(1), 0)
+    ny = _positive_int(match.group(2), 0)
+    return (nx, ny) if nx and ny else None
+
+
+def _extract_positive_int(text: str, keys: list[str], default: int) -> int:
+    value = _extract_positive_float(text, keys, float(default))
+    return max(0, int(round(value)))
+
+
+def _key_pattern(key: str) -> str:
+    escaped = re.escape(key).replace(r"\ ", r"\s+")
+    if key.isascii() and re.match(r"^[A-Za-z_][A-Za-z0-9_]*(?:\s+[A-Za-z_][A-Za-z0-9_]*)*$", key):
+        return rf"(?<![A-Za-z0-9_]){escaped}(?![A-Za-z0-9_])"
+    return escaped
 
 
 def _float_value(data: dict[str, Any], key: str, default: float) -> float:
@@ -419,7 +583,7 @@ def _float_value(data: dict[str, Any], key: str, default: float) -> float:
 
 def _positive_int(value: Any, default: int) -> int:
     try:
-        parsed = int(value)
+        parsed = int(float(value))
     except (TypeError, ValueError):
         return default
     return parsed if parsed > 0 else default
