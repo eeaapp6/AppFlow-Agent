@@ -113,6 +113,7 @@ class TaskStore:
         task.status = run_result.get("status", "run_blocked")
         task.run = run_result
         task.plan["run"] = run_result
+        _attach_repair_run_follow_up(task, run_result)
         task.error_message = ""
         if task.status == "run_blocked":
             task.error_message = run_result.get("reason", "")
@@ -186,16 +187,33 @@ def _with_repair_action(gate_review: dict) -> dict:
 def _repair_history_record(task: TaskContext, repair_action: dict) -> dict:
     action = deepcopy(repair_action) if isinstance(repair_action, dict) else {}
     source_gate = str(action.get("source_gate", "")).strip() or _source_gate_for_action(task, action)
+    source_review = _source_review_for_action(task, action, source_gate)
+    patch_result = action.get("patch_result", {})
+    has_patch_result = isinstance(patch_result, dict) and patch_result
+    repair_mode = "executable" if isinstance(action.get("patches"), list) and action.get("patches") else "manual"
     record = {
+        "repair_action_id": str(action.get("id", "")).strip(),
         "action_id": str(action.get("id", "")).strip(),
         "label": str(action.get("label", "")).strip(),
-        "status": "accepted",
+        "status": _repair_record_status(repair_mode, patch_result if has_patch_result else {}),
+        "repair_mode": repair_mode,
         "source_gate": source_gate,
+        "related_diagnostic_codes": _related_diagnostic_codes(action, source_review),
+        "related_diagnostic_categories": _related_diagnostic_categories(action, source_review),
         "created_at": now_iso(),
     }
-    if isinstance(action.get("patch_result"), dict):
-        record["patch_result"] = action["patch_result"]
+    if has_patch_result:
+        record["patch_result"] = patch_result
     return record
+
+
+def _repair_record_status(repair_mode: str, patch_result: dict) -> str:
+    if repair_mode == "manual":
+        return "recorded"
+    status = str(patch_result.get("status", "")).strip()
+    if status in {"applied", "no_changes"}:
+        return "applied"
+    return "recorded"
 
 
 def _source_gate_for_action(task: TaskContext, repair_action: dict) -> str:
@@ -208,6 +226,122 @@ def _source_gate_for_action(task: TaskContext, repair_action: dict) -> str:
         if isinstance(action, dict) and str(action.get("id", "")).strip() == action_id:
             return str(review.get("gate", "")).strip()
     return ""
+
+
+def _source_review_for_action(task: TaskContext, repair_action: dict, source_gate: str) -> dict:
+    action_id = str(repair_action.get("id", "")).strip()
+    gate_reviews = task.gate_reviews if isinstance(task.gate_reviews, list) else []
+    for review in reversed(gate_reviews):
+        if not isinstance(review, dict):
+            continue
+        if source_gate and str(review.get("gate", "")).strip() != source_gate:
+            continue
+        action = review.get("next_repair_action", {})
+        if isinstance(action, dict) and str(action.get("id", "")).strip() == action_id:
+            return review
+    return {}
+
+
+def _related_diagnostic_codes(action: dict, review: dict) -> list[str]:
+    explicit = action.get("related_diagnostic_codes", [])
+    if isinstance(explicit, list):
+        codes = [str(item).strip() for item in explicit if str(item).strip()]
+        if codes:
+            return sorted(set(codes))
+
+    issues = review.get("issues", []) if isinstance(review, dict) else []
+    return sorted({
+        str(item.get("code", "")).strip()
+        for item in issues
+        if isinstance(item, dict) and str(item.get("code", "")).strip()
+    })
+
+
+def _related_diagnostic_categories(action: dict, review: dict) -> list[str]:
+    explicit = action.get("related_diagnostic_categories", [])
+    if isinstance(explicit, list):
+        categories = [str(item).strip() for item in explicit if str(item).strip()]
+        if categories:
+            return sorted(set(categories))
+
+    diagnostics = review.get("diagnostics", {}) if isinstance(review, dict) else {}
+    categories = diagnostics.get("categories", []) if isinstance(diagnostics, dict) else []
+    if isinstance(categories, list) and categories:
+        return sorted({str(item).strip() for item in categories if str(item).strip()})
+
+    return sorted({_category_for_code(code) for code in _related_diagnostic_codes(action, review)})
+
+
+def _category_for_code(code: str) -> str:
+    if code.startswith("result.mesh_"):
+        return "mesh"
+    if code.startswith("result.residual_") or code in {"result.courant_high", "result.divergence"}:
+        return "numerics"
+    if code in {"result.missing_boundary_field", "result.unknown_patch"} or code.startswith("boundary."):
+        return "boundary"
+    if code.startswith("validation."):
+        return "validation"
+    if code.startswith("result.missing_latest_"):
+        return "output"
+    if code.startswith("result.") or code.startswith("execution."):
+        return "runtime"
+    return "result"
+
+
+def _attach_repair_run_follow_up(task: TaskContext, run_result: dict) -> None:
+    record = _latest_repair_history_record(task)
+    if not record:
+        return
+
+    follow_up = _repair_run_follow_up(record, run_result)
+    record["repair_followup"] = follow_up
+    task.plan["repair_history"] = task.repair_history
+
+
+def _latest_repair_history_record(task: TaskContext) -> dict:
+    history = task.repair_history if isinstance(task.repair_history, list) else []
+    for record in reversed(history):
+        if isinstance(record, dict):
+            return record
+    return {}
+
+
+def _repair_run_follow_up(record: dict, run_result: dict) -> dict:
+    related_codes = [
+        str(item).strip()
+        for item in record.get("related_diagnostic_codes", [])
+        if str(item).strip()
+    ] if isinstance(record.get("related_diagnostic_codes", []), list) else []
+    diagnostics = run_result.get("diagnostics", {})
+    if not related_codes or "diagnostics" not in run_result or not isinstance(diagnostics, dict):
+        return {
+            "status": "unknown",
+            "resolved_codes": [],
+            "unresolved_codes": [],
+            "checked_at": now_iso(),
+        }
+
+    current_codes = _diagnostic_codes_from_run_result(run_result)
+    unresolved = sorted(set(related_codes) & set(current_codes))
+    resolved = sorted(set(related_codes) - set(unresolved))
+    return {
+        "status": "resolved" if not unresolved else "unresolved",
+        "resolved_codes": resolved,
+        "unresolved_codes": unresolved,
+        "checked_at": now_iso(),
+    }
+
+
+def _diagnostic_codes_from_run_result(run_result: dict) -> list[str]:
+    diagnostics = run_result.get("diagnostics", {})
+    items = diagnostics.get("items", []) if isinstance(diagnostics, dict) else []
+    if not isinstance(items, list):
+        return []
+    return sorted({
+        str(item.get("code", "")).strip()
+        for item in items
+        if isinstance(item, dict) and str(item.get("code", "")).strip()
+    })
 
 
 def _attach_repair_validation_follow_up(task: TaskContext, validation_result: dict) -> None:

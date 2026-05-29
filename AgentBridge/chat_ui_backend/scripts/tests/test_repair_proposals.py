@@ -575,10 +575,155 @@ boundaryField
             saved = json.loads(Path(task.context_path).read_text(encoding="utf-8"))
 
         self.assertEqual("regenerate_case", saved["repair_history"][0]["action_id"])
+        self.assertEqual("regenerate_case", saved["repair_history"][0]["repair_action_id"])
         self.assertEqual("Regenerate case", saved["repair_history"][0]["label"])
-        self.assertEqual("accepted", saved["repair_history"][0]["status"])
+        self.assertEqual("recorded", saved["repair_history"][0]["status"])
+        self.assertEqual("manual", saved["repair_history"][0]["repair_mode"])
         self.assertEqual("static_validation", saved["repair_history"][0]["source_gate"])
+        self.assertEqual(["validation.missing_file"], saved["repair_history"][0]["related_diagnostic_codes"])
+        self.assertEqual(["validation"], saved["repair_history"][0]["related_diagnostic_categories"])
         self.assertEqual(saved["repair_history"], saved["plan"]["repair_history"])
+
+    def test_task_store_records_executable_repair_history_fields(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = make_task(root)
+            Path(task.task_dir).mkdir(parents=True)
+            store = TaskStore()
+            store.attach_gate_review(
+                task,
+                {
+                    "gate": "result_review",
+                    "status": "failed",
+                    "issues": [{"code": "result.courant_high", "message": "max Co high"}],
+                    "diagnostics": {"categories": ["numerics"], "metrics": {"max_courant": 3.2}},
+                },
+            )
+
+            store.record_repair_action(
+                task,
+                {
+                    "id": "stabilize_time_step",
+                    "label": "Stabilize time step",
+                    "patches": [{"op": "adjust_time_step", "path": "case/system/controlDict", "value": "0.001"}],
+                    "patch_result": {
+                        "status": "applied",
+                        "applied": [{"op": "adjust_time_step", "changed": True}],
+                        "skipped": [],
+                    },
+                },
+            )
+            saved = json.loads(Path(task.context_path).read_text(encoding="utf-8"))
+
+        record = saved["repair_history"][0]
+        self.assertEqual("stabilize_time_step", record["repair_action_id"])
+        self.assertEqual("applied", record["status"])
+        self.assertEqual("executable", record["repair_mode"])
+        self.assertEqual(["result.courant_high"], record["related_diagnostic_codes"])
+        self.assertEqual(["numerics"], record["related_diagnostic_categories"])
+        self.assertEqual("applied", record["patch_result"]["status"])
+
+    def test_task_store_manual_repair_does_not_fabricate_patch_result(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = make_task(root)
+            Path(task.task_dir).mkdir(parents=True)
+            store = TaskStore()
+
+            store.record_repair_action(
+                task,
+                {
+                    "id": "review_solver_logs",
+                    "label": "Review solver logs",
+                },
+            )
+            saved = json.loads(Path(task.context_path).read_text(encoding="utf-8"))
+
+        record = saved["repair_history"][0]
+        self.assertEqual("recorded", record["status"])
+        self.assertEqual("manual", record["repair_mode"])
+        self.assertNotIn("patch_result", record)
+
+    def test_run_followup_marks_repair_resolved_when_related_diagnostics_disappear(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            Path(task.task_dir).mkdir(parents=True)
+            task.repair_history = [
+                {
+                    "repair_action_id": "stabilize_time_step",
+                    "action_id": "stabilize_time_step",
+                    "status": "applied",
+                    "repair_mode": "executable",
+                    "related_diagnostic_codes": ["result.courant_high"],
+                }
+            ]
+            task.plan["repair_history"] = task.repair_history
+
+            TaskStore().attach_run_result(
+                task,
+                {
+                    "status": "run_completed",
+                    "diagnostics": {"severity": "passed", "items": [], "metrics": {}},
+                },
+            )
+
+            follow_up = task.repair_history[0]["repair_followup"]
+        self.assertEqual("resolved", follow_up["status"])
+        self.assertEqual(["result.courant_high"], follow_up["resolved_codes"])
+        self.assertEqual([], follow_up["unresolved_codes"])
+
+    def test_run_followup_marks_repair_unresolved_when_related_diagnostics_remain(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            Path(task.task_dir).mkdir(parents=True)
+            task.repair_history = [
+                {
+                    "repair_action_id": "stabilize_time_step",
+                    "action_id": "stabilize_time_step",
+                    "status": "applied",
+                    "repair_mode": "executable",
+                    "related_diagnostic_codes": ["result.courant_high"],
+                }
+            ]
+            task.plan["repair_history"] = task.repair_history
+
+            TaskStore().attach_run_result(
+                task,
+                {
+                    "status": "run_failed",
+                    "diagnostics": {
+                        "severity": "failed",
+                        "items": [{"code": "result.courant_high", "severity": "error"}],
+                    },
+                },
+            )
+
+            follow_up = task.repair_history[0]["repair_followup"]
+        self.assertEqual("unresolved", follow_up["status"])
+        self.assertEqual([], follow_up["resolved_codes"])
+        self.assertEqual(["result.courant_high"], follow_up["unresolved_codes"])
+
+    def test_run_followup_is_unknown_without_new_diagnostics(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            Path(task.task_dir).mkdir(parents=True)
+            task.repair_history = [
+                {
+                    "repair_action_id": "review_solver_logs",
+                    "action_id": "review_solver_logs",
+                    "status": "recorded",
+                    "repair_mode": "manual",
+                    "related_diagnostic_codes": ["result.log_fatal"],
+                }
+            ]
+            task.plan["repair_history"] = task.repair_history
+
+            TaskStore().attach_run_result(task, {"status": "run_failed"})
+
+            follow_up = task.repair_history[0]["repair_followup"]
+        self.assertEqual("unknown", follow_up["status"])
+        self.assertEqual([], follow_up["resolved_codes"])
+        self.assertEqual([], follow_up["unresolved_codes"])
 
     def test_validation_result_closes_latest_open_repair_history_item(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

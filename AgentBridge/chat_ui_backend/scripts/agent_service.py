@@ -175,13 +175,14 @@ def record_optional_repair_action(task, body: dict, task_store: TaskStore, manif
 
 
 def apply_and_record_repair_action(task, action: dict, task_store: TaskStore) -> dict:
-    try:
-        patch_result = apply_repair_action(task, action)
-    except RepairPatchError as exc:
-        raise RequestError({"error": str(exc)}, status=400) from exc
-
     action_with_result = dict(action)
-    action_with_result["patch_result"] = patch_result
+    patches = action.get("patches", [])
+    if isinstance(patches, list) and patches:
+        try:
+            patch_result = apply_repair_action(task, action)
+        except RepairPatchError as exc:
+            raise RequestError({"error": str(exc)}, status=400) from exc
+        action_with_result["patch_result"] = patch_result
     task_store.record_repair_action(task, action_with_result)
     return action_with_result
 

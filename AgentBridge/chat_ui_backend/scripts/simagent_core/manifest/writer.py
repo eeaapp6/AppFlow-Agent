@@ -109,6 +109,8 @@ class ManifestWriter:
                 "updated_at": now_iso(),
                 "gates": self._gate_summary(task),
                 "repair_history": [item for item in task.repair_history if isinstance(item, dict)],
+                "last_repair_action": self._last_repair_action_summary(task),
+                "repair_followup": self._repair_followup_summary(task),
             },
             "solver": {
                 "family": task.solver_family,
@@ -141,6 +143,8 @@ class ManifestWriter:
                 "foam_to_vtk_backend": "docker",
                 "docker_image": "leoyue123/foamagent:latest",
                 "docker_case_dir": "/case",
+                "offer_repair": False,
+                "offer_rerun": self._last_repair_should_rerun(task),
             },
         }
 
@@ -359,6 +363,65 @@ class ManifestWriter:
     def _has_suggested_repair_action(self, task: TaskContext) -> bool:
         reviews = task.gate_reviews if isinstance(task.gate_reviews, list) else []
         return any(isinstance(item, dict) and isinstance(item.get("next_repair_action"), dict) for item in reviews)
+
+    def _last_repair_action_summary(self, task: TaskContext) -> dict:
+        record = self._last_repair_record(task)
+        if not record:
+            return {}
+        patch_result = record.get("patch_result", {})
+        patch_result = patch_result if isinstance(patch_result, dict) else {}
+        return {
+            "repair_action_id": str(record.get("repair_action_id", record.get("action_id", ""))).strip(),
+            "action_id": str(record.get("action_id", "")).strip(),
+            "label": str(record.get("label", "")).strip(),
+            "status": str(record.get("status", "")).strip(),
+            "repair_mode": str(record.get("repair_mode", "")).strip(),
+            "source_gate": str(record.get("source_gate", "")).strip(),
+            "related_diagnostic_codes": self._string_list(record.get("related_diagnostic_codes", [])),
+            "related_diagnostic_categories": self._string_list(record.get("related_diagnostic_categories", [])),
+            "patch_result": self._patch_result_summary(patch_result),
+            "should_rerun": str(record.get("status", "")).strip() in {"applied", "recorded"},
+            "created_at": str(record.get("created_at", "")).strip(),
+        }
+
+    def _repair_followup_summary(self, task: TaskContext) -> dict:
+        record = self._last_repair_record(task)
+        if not record:
+            return {"status": "unknown", "resolved_codes": [], "unresolved_codes": []}
+        follow_up = record.get("repair_followup", {})
+        if not isinstance(follow_up, dict):
+            return {"status": "unknown", "resolved_codes": [], "unresolved_codes": []}
+        return {
+            "status": str(follow_up.get("status", "unknown")).strip() or "unknown",
+            "resolved_codes": self._string_list(follow_up.get("resolved_codes", [])),
+            "unresolved_codes": self._string_list(follow_up.get("unresolved_codes", [])),
+            "checked_at": str(follow_up.get("checked_at", "")).strip(),
+        }
+
+    def _last_repair_should_rerun(self, task: TaskContext) -> bool:
+        record = self._last_repair_record(task)
+        return bool(record and str(record.get("status", "")).strip() in {"applied", "recorded"})
+
+    def _last_repair_record(self, task: TaskContext) -> dict:
+        history = task.repair_history if isinstance(task.repair_history, list) else []
+        for record in reversed(history):
+            if isinstance(record, dict):
+                return record
+        return {}
+
+    def _patch_result_summary(self, patch_result: dict) -> dict:
+        if not patch_result:
+            return {}
+        applied = patch_result.get("applied", [])
+        skipped = patch_result.get("skipped", [])
+        return {
+            "status": str(patch_result.get("status", "")).strip(),
+            "applied_count": len(applied) if isinstance(applied, list) else 0,
+            "skipped_count": len(skipped) if isinstance(skipped, list) else 0,
+        }
+
+    def _string_list(self, value) -> list[str]:
+        return [str(item).strip() for item in value if str(item).strip()] if isinstance(value, list) else []
 
     def _has_vtk_result(self, task: TaskContext) -> bool:
         vtk_dir = Path(task.case_dir) / "VTK"

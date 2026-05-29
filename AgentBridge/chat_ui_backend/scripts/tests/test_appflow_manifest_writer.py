@@ -118,10 +118,14 @@ class AppFlowManifestWriterTests(unittest.TestCase):
             task = make_task(Path(tmp))
             task.repair_history = [
                 {
+                    "repair_action_id": "regenerate_case",
                     "action_id": "regenerate_case",
                     "label": "Regenerate case",
-                    "status": "accepted",
+                    "status": "recorded",
+                    "repair_mode": "manual",
                     "source_gate": "static_validation",
+                    "related_diagnostic_codes": ["validation.missing_file"],
+                    "related_diagnostic_categories": ["validation"],
                     "created_at": "2026-05-23T00:00:00+08:00",
                 }
             ]
@@ -129,6 +133,84 @@ class AppFlowManifestWriterTests(unittest.TestCase):
             manifest = ManifestWriter().write_pending(task)
 
         self.assertEqual(task.repair_history, manifest["workflow"]["repair_history"])
+        self.assertEqual("regenerate_case", manifest["workflow"]["last_repair_action"]["repair_action_id"])
+        self.assertEqual("recorded", manifest["workflow"]["last_repair_action"]["status"])
+        self.assertEqual("manual", manifest["workflow"]["last_repair_action"]["repair_mode"])
+        self.assertEqual(["validation.missing_file"], manifest["workflow"]["last_repair_action"]["related_diagnostic_codes"])
+        self.assertEqual("unknown", manifest["workflow"]["repair_followup"]["status"])
+        self.assertTrue(manifest["workflow"]["last_repair_action"]["should_rerun"])
+        self.assertTrue(manifest["appflow_hints"]["offer_rerun"])
+
+    def test_manifest_last_repair_action_summarizes_patch_result(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            task.repair_history = [
+                {
+                    "repair_action_id": "stabilize_time_step",
+                    "action_id": "stabilize_time_step",
+                    "label": "Stabilize time step",
+                    "status": "applied",
+                    "repair_mode": "executable",
+                    "source_gate": "result_review",
+                    "related_diagnostic_codes": ["result.courant_high"],
+                    "related_diagnostic_categories": ["numerics"],
+                    "patch_result": {
+                        "status": "applied",
+                        "applied": [{"op": "adjust_time_step"}],
+                        "skipped": [],
+                    },
+                    "created_at": "2026-05-23T00:00:00+08:00",
+                }
+            ]
+
+            manifest = ManifestWriter().write_pending(task)
+
+        summary = manifest["workflow"]["last_repair_action"]
+        self.assertEqual("stabilize_time_step", summary["repair_action_id"])
+        self.assertEqual("executable", summary["repair_mode"])
+        self.assertEqual({"status": "applied", "applied_count": 1, "skipped_count": 0}, summary["patch_result"])
+
+    def test_manifest_repair_followup_states(self) -> None:
+        cases = [
+            ("resolved", ["result.courant_high"], []),
+            ("unresolved", [], ["result.courant_high"]),
+            ("unknown", [], []),
+        ]
+        for status, resolved_codes, unresolved_codes in cases:
+            with self.subTest(status=status):
+                with tempfile.TemporaryDirectory() as tmp:
+                    task = make_task(Path(tmp))
+                    task.repair_history = [
+                        {
+                            "repair_action_id": "stabilize_time_step",
+                            "action_id": "stabilize_time_step",
+                            "status": "applied",
+                            "repair_mode": "executable",
+                            "related_diagnostic_codes": ["result.courant_high"],
+                            "repair_followup": {
+                                "status": status,
+                                "resolved_codes": resolved_codes,
+                                "unresolved_codes": unresolved_codes,
+                                "checked_at": "2026-05-23T01:00:00+08:00",
+                            },
+                        }
+                    ]
+
+                    manifest = ManifestWriter().write_pending(task)
+
+                followup = manifest["workflow"]["repair_followup"]
+                self.assertEqual(status, followup["status"])
+                self.assertEqual(resolved_codes, followup["resolved_codes"])
+                self.assertEqual(unresolved_codes, followup["unresolved_codes"])
+
+    def test_manifest_repair_followup_unknown_without_last_repair(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+
+            manifest = ManifestWriter().write_pending(task)
+
+        self.assertEqual("unknown", manifest["workflow"]["repair_followup"]["status"])
+        self.assertEqual({}, manifest["workflow"]["last_repair_action"])
 
     def test_run_manifest_requests_docker_foam_to_vtk_for_raw_openfoam_results(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

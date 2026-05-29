@@ -231,10 +231,17 @@ class AgentServiceHttpSmokeTests(unittest.TestCase):
 
         self.assertEqual(200, status)
         self.assertEqual("regenerate_case", payload["repair_history"][0]["action_id"])
+        self.assertEqual("regenerate_case", payload["repair_history"][0]["repair_action_id"])
+        self.assertEqual("recorded", payload["repair_history"][0]["status"])
+        self.assertEqual("manual", payload["repair_history"][0]["repair_mode"])
+        self.assertNotIn("patch_result", payload["repair_history"][0])
         saved = json.loads(Path(task.context_path).read_text(encoding="utf-8"))
         manifest = json.loads(Path(task.manifest_path).read_text(encoding="utf-8"))
         self.assertEqual(saved["repair_history"], saved["plan"]["repair_history"])
         self.assertEqual(saved["repair_history"], manifest["workflow"]["repair_history"])
+        self.assertEqual("regenerate_case", manifest["workflow"]["last_repair_action"]["repair_action_id"])
+        self.assertTrue(manifest["workflow"]["last_repair_action"]["should_rerun"])
+        self.assertTrue(manifest["appflow_hints"]["offer_rerun"])
 
     def test_repair_action_endpoint_applies_safe_patch(self) -> None:
         task = self.make_task()
@@ -272,6 +279,8 @@ deltaT          0.005;
 
         self.assertEqual(200, status)
         self.assertIn("deltaT          0.001;", control_path.read_text(encoding="utf-8"))
+        self.assertEqual("applied", payload["repair_history"][0]["status"])
+        self.assertEqual("executable", payload["repair_history"][0]["repair_mode"])
         self.assertEqual("applied", payload["repair_history"][0]["patch_result"]["status"])
 
     def test_repair_action_endpoint_rejects_path_escape_patch(self) -> None:
