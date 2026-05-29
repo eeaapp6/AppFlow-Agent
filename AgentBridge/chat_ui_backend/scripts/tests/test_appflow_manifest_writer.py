@@ -287,6 +287,16 @@ class AppFlowManifestWriterTests(unittest.TestCase):
                     "gate": "result_review",
                     "status": "failed",
                     "issues": [{"code": "result.courant_high", "message": "max Co high", "severity": "error"}],
+                    "result_review": {
+                        "status": "failed",
+                        "summary": "Maximum Courant number 3.2 is above 1.",
+                        "items": [{"code": "result.courant_high", "message": "max Co high", "severity": "error"}],
+                        "can_show_results": False,
+                        "should_offer_repair": True,
+                        "should_offer_rerun": True,
+                        "should_offer_vtk": False,
+                        "should_offer_paraview": False,
+                    },
                     "next_repair_action": {
                         "id": "stabilize_time_step",
                         "label": "Stabilize time step",
@@ -324,12 +334,64 @@ class AppFlowManifestWriterTests(unittest.TestCase):
             )
 
         run = manifest["workflow"]["run"]
+        self.assertEqual("failed", run["result_review"]["status"])
         self.assertEqual("failed", run["diagnostics"]["severity"])
         self.assertEqual("result.courant_high", run["diagnostics"]["items"][0]["code"])
         self.assertEqual(3.2, run["diagnostics"]["metrics"]["max_courant"])
         self.assertEqual("failed", manifest["appflow_hints"]["run_diagnostics_severity"])
         self.assertTrue(manifest["appflow_hints"]["has_run_diagnostics"])
+        self.assertTrue(manifest["appflow_hints"]["offer_repair"])
+        self.assertTrue(manifest["appflow_hints"]["offer_rerun"])
         self.assertTrue(manifest["appflow_hints"]["has_suggested_repair_actions"])
+
+    def test_run_manifest_result_hints_are_driven_by_result_review(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = make_task(root)
+            (Path(task.case_dir) / "0.5").mkdir(parents=True)
+            task.gate_reviews = [
+                {
+                    "gate": "result_review",
+                    "status": "failed",
+                    "issues": [{"code": "result.residual_nan", "message": "nan", "severity": "error"}],
+                    "result_review": {
+                        "status": "failed",
+                        "summary": "numerics failed",
+                        "items": [{"code": "result.residual_nan", "message": "nan", "severity": "error"}],
+                        "can_show_results": False,
+                        "should_offer_repair": True,
+                        "should_offer_rerun": True,
+                        "should_offer_vtk": False,
+                        "should_offer_paraview": False,
+                        "repair_action_id": "inspect_solver_numerics",
+                        "repair_mode": "executable",
+                    },
+                    "next_repair_action": {
+                        "id": "inspect_solver_numerics",
+                        "label": "Inspect unstable numerics",
+                        "description": "test",
+                        "automatic": False,
+                    },
+                }
+            ]
+
+            manifest = ManifestWriter().write_run_result(
+                task,
+                make_plan(),
+                {
+                    "status": "run_completed",
+                    "reason": "completed",
+                    "logs": [],
+                    "outputs": {"results": {"latest_path": "case/0.5", "latest_time": "0.5"}},
+                },
+            )
+
+        self.assertEqual("failed", manifest["workflow"]["status"])
+        self.assertFalse(manifest["appflow_hints"]["show_results"])
+        self.assertFalse(manifest["appflow_hints"]["open_paraview"])
+        self.assertFalse(manifest["appflow_hints"]["run_foam_to_vtk"])
+        self.assertTrue(manifest["appflow_hints"]["offer_repair"])
+        self.assertTrue(manifest["appflow_hints"]["offer_rerun"])
 
 
 if __name__ == "__main__":

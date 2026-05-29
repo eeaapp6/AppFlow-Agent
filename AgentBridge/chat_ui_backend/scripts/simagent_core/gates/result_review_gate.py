@@ -3,6 +3,7 @@ import re
 from typing import Any
 
 from ..models import TaskContext
+from ..repair.proposals import repair_action_for_gate_review
 from .models import GateResult
 
 
@@ -56,7 +57,7 @@ def review_run_results(task: TaskContext, run_result: dict[str, Any]) -> GateRes
     status = str(run_result.get("status", "")).strip()
     if status != "run_completed":
         if _review_run_diagnostics(run_result, result):
-            _attach_diagnostics(result)
+            _finalize_review(task, run_result, result)
             return result
         reason = str(run_result.get("reason", "")).strip() or "Run did not complete."
         _add_error(
@@ -65,13 +66,13 @@ def review_run_results(task: TaskContext, run_result: dict[str, Any]) -> GateRes
             reason,
             {"status": status or "unknown", "reason": reason},
         )
-        _attach_diagnostics(result)
+        _finalize_review(task, run_result, result)
         return result
 
     if not _review_run_diagnostics(run_result, result):
         _review_logs(task, run_result, result)
     _review_latest_result_path(task, run_result, result)
-    _attach_diagnostics(result)
+    _finalize_review(task, run_result, result)
     return result
 
 
@@ -83,6 +84,24 @@ def _review_run_diagnostics(run_result: dict[str, Any], result: GateResult) -> b
     items = diagnostics.get("items", [])
     if not isinstance(items, list) or not items:
         _record_metrics(result, _diagnostic_metrics(diagnostics))
+        severity = str(diagnostics.get("severity", "")).strip()
+        summary = str(diagnostics.get("summary", "")).strip()
+        if severity == "failed":
+            _add_error(
+                result,
+                "result.diagnostics_failed",
+                summary or "Run diagnostics failed without itemized evidence.",
+                {"reason": summary or "Run diagnostics failed."},
+            )
+            return True
+        if severity == "warning":
+            _add_warning(
+                result,
+                "result.diagnostics_warning",
+                summary or "Run diagnostics reported a warning without itemized evidence.",
+                {"reason": summary or "Run diagnostics warning."},
+            )
+            return True
         return False
 
     for item in items:
@@ -271,6 +290,68 @@ def _review_latest_result_path(task: TaskContext, run_result: dict[str, Any], re
         _add_error(result, "result.missing_latest_dir", message, {"path": latest_path})
 
 
+def _finalize_review(task: TaskContext, run_result: dict[str, Any], result: GateResult) -> None:
+    _attach_diagnostics(result)
+    result.metadata["result_review"] = _result_review_summary(task, run_result, result)
+
+
+def _result_review_summary(task: TaskContext, run_result: dict[str, Any], result: GateResult) -> dict[str, Any]:
+    output_state = _output_state(task, run_result)
+    action = repair_action_for_gate_review(result.to_dict())
+    can_show_results = result.status in {"passed", "warning"} and output_state["has_displayable_results"]
+    should_offer_repair = result.status == "failed" and bool(action)
+    should_offer_rerun = result.status in {"failed", "warning"} or str(run_result.get("status", "")).strip() != "run_completed"
+    review = {
+        "status": result.status,
+        "summary": result.metadata.get("diagnostics", {}).get("summary", ""),
+        "items": [item.to_dict() for item in result.issues],
+        "can_show_results": can_show_results,
+        "should_offer_repair": should_offer_repair,
+        "should_offer_rerun": should_offer_rerun,
+        "should_offer_vtk": can_show_results and output_state["has_raw_results"] and not output_state["has_vtk_results"],
+        "should_offer_paraview": can_show_results,
+        "has_raw_results": output_state["has_raw_results"],
+        "has_vtk_results": output_state["has_vtk_results"],
+        "latest_result_path": output_state["latest_result_path"],
+    }
+    if action:
+        review["repair_action_id"] = str(action.get("id", "")).strip()
+        review["repair_mode"] = "executable" if isinstance(action.get("patches"), list) and action.get("patches") else "manual"
+    else:
+        review["repair_mode"] = "none"
+    return review
+
+
+def _output_state(task: TaskContext, run_result: dict[str, Any]) -> dict[str, Any]:
+    outputs = run_result.get("outputs", {})
+    outputs = outputs if isinstance(outputs, dict) else {}
+    results = outputs.get("results", {})
+    results = results if isinstance(results, dict) else {}
+    latest_path = str(results.get("latest_path", "")).strip()
+    latest_resolved = _resolve_task_path(task, latest_path) if latest_path else None
+    has_raw_results = bool(latest_resolved and latest_resolved.exists() and latest_resolved.is_dir() and _is_result_time_path(latest_path))
+    has_vtk_results = _has_vtk_result(task)
+    return {
+        "has_displayable_results": has_raw_results or has_vtk_results,
+        "has_raw_results": has_raw_results,
+        "has_vtk_results": has_vtk_results,
+        "latest_result_path": latest_path if has_raw_results else "",
+    }
+
+
+def _is_result_time_path(path_text: str) -> bool:
+    name = Path(path_text.replace("\\", "/").rstrip("/")).name
+    try:
+        return float(name) != 0
+    except ValueError:
+        return False
+
+
+def _has_vtk_result(task: TaskContext) -> bool:
+    vtk_dir = Path(task.case_dir) / "VTK"
+    return vtk_dir.exists() and any(path.suffix.lower() == ".vtk" for path in vtk_dir.iterdir() if path.is_file())
+
+
 def _resolve_task_path(task: TaskContext, relative_path: str) -> Path | None:
     cleaned = relative_path.replace("\\", "/").strip().strip("/")
     if not cleaned:
@@ -325,6 +406,8 @@ def _category_for_issue(code: str) -> str:
         "result.command_nonzero",
         "result.command_timeout",
         "result.runtime_unavailable",
+        "result.diagnostics_failed",
+        "result.diagnostics_warning",
     }:
         return "runtime"
     if code in {"result.missing_boundary_field", "result.unknown_patch"}:

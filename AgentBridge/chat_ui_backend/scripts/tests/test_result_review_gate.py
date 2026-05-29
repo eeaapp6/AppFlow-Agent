@@ -47,6 +47,13 @@ class ResultReviewGateTests(unittest.TestCase):
         self.assertEqual([], result.issues)
         self.assertEqual("passed", result.metadata["diagnostics"]["severity"])
         self.assertEqual("Result review passed.", result.metadata["diagnostics"]["summary"])
+        review = result.metadata["result_review"]
+        self.assertEqual("passed", review["status"])
+        self.assertTrue(review["can_show_results"])
+        self.assertFalse(review["should_offer_repair"])
+        self.assertFalse(review["should_offer_rerun"])
+        self.assertTrue(review["should_offer_vtk"])
+        self.assertTrue(review["should_offer_paraview"])
 
     def test_fails_when_run_did_not_complete(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -56,6 +63,11 @@ class ResultReviewGateTests(unittest.TestCase):
 
         self.assertEqual("failed", result.status)
         self.assertEqual(["result.run_incomplete"], [issue.code for issue in result.issues])
+        review = result.metadata["result_review"]
+        self.assertEqual("failed", review["status"])
+        self.assertFalse(review["can_show_results"])
+        self.assertTrue(review["should_offer_repair"])
+        self.assertTrue(review["should_offer_rerun"])
 
     def test_failed_run_uses_run_diagnostics_before_generic_incomplete_issue(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -88,6 +100,11 @@ class ResultReviewGateTests(unittest.TestCase):
         self.assertEqual("failed", result.status)
         self.assertEqual(["result.residual_nan"], [issue.code for issue in result.issues])
         self.assertTrue(result.metadata["diagnostics"]["metrics"]["has_nan_or_inf"])
+        review = result.metadata["result_review"]
+        self.assertEqual("failed", review["status"])
+        self.assertTrue(review["should_offer_repair"])
+        self.assertEqual("inspect_solver_numerics", review["repair_action_id"])
+        self.assertEqual("executable", review["repair_mode"])
 
     def test_run_diagnostics_warning_marks_result_review_warning(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -120,6 +137,33 @@ class ResultReviewGateTests(unittest.TestCase):
 
         self.assertEqual("warning", result.status)
         self.assertEqual(["result.log_warning"], [issue.code for issue in result.issues])
+        review = result.metadata["result_review"]
+        self.assertEqual("warning", review["status"])
+        self.assertTrue(review["can_show_results"])
+        self.assertFalse(review["should_offer_repair"])
+        self.assertTrue(review["should_offer_rerun"])
+
+    def test_failed_diagnostics_without_items_still_fails_review(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+            (Path(task.case_dir) / "0.5").mkdir(parents=True)
+
+            result = review_run_results(
+                task,
+                {
+                    "status": "run_completed",
+                    "outputs": {"results": {"latest_path": "case/0.5"}},
+                    "diagnostics": {
+                        "severity": "failed",
+                        "summary": "Diagnostics failed without detailed items.",
+                        "items": [],
+                    },
+                },
+            )
+
+        self.assertEqual("failed", result.status)
+        self.assertEqual(["result.diagnostics_failed"], [issue.code for issue in result.issues])
+        self.assertFalse(result.metadata["result_review"]["can_show_results"])
 
     def test_fails_when_latest_result_dir_is_missing(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -136,6 +180,57 @@ class ResultReviewGateTests(unittest.TestCase):
 
         self.assertEqual("failed", result.status)
         self.assertEqual(["result.missing_latest_dir"], [issue.code for issue in result.issues])
+        review = result.metadata["result_review"]
+        self.assertFalse(review["can_show_results"])
+        self.assertTrue(review["should_offer_repair"])
+        self.assertTrue(review["should_offer_rerun"])
+
+    def test_completed_run_without_result_time_dir_cannot_show_results(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+
+            result = review_run_results(
+                task,
+                {
+                    "status": "run_completed",
+                    "logs": [],
+                    "outputs": {"results": {"latest_path": ""}},
+                },
+            )
+
+        self.assertEqual("failed", result.status)
+        review = result.metadata["result_review"]
+        self.assertFalse(review["can_show_results"])
+        self.assertFalse(review["should_offer_vtk"])
+        self.assertFalse(review["should_offer_paraview"])
+
+    def test_warning_only_without_result_dir_cannot_show_results(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+
+            result = review_run_results(
+                task,
+                {
+                    "status": "run_completed",
+                    "diagnostics": {
+                        "severity": "warning",
+                        "summary": "OpenFOAM log contains a warning.",
+                        "items": [
+                            {
+                                "code": "result.log_warning",
+                                "severity": "warning",
+                                "message": "OpenFOAM log contains a warning.",
+                            }
+                        ],
+                    },
+                    "outputs": {"results": {"latest_path": ""}},
+                },
+            )
+
+        self.assertEqual("failed", result.status)
+        review = result.metadata["result_review"]
+        self.assertFalse(review["can_show_results"])
+        self.assertTrue(review["should_offer_repair"])
 
     def test_fails_when_log_contains_fatal_marker(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

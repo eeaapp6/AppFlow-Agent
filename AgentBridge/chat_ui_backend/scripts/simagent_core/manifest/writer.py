@@ -32,7 +32,8 @@ class ManifestWriter:
 
     def write_run_result(self, task: TaskContext, plan: SimulationPlan, run_result: dict) -> dict:
         status = run_result.get("status", "run_blocked")
-        workflow_status = "succeeded" if status == "run_completed" else "failed"
+        result_review = self._latest_result_review(task)
+        workflow_status = self._run_workflow_status(status, result_review)
         manifest = self._base_manifest(task, workflow_status=workflow_status, plan=plan)
         outputs = run_result.get("outputs", {}) if isinstance(run_result.get("outputs", {}), dict) else {}
         results = outputs.get("results", {}) if isinstance(outputs.get("results", {}), dict) else {}
@@ -40,11 +41,16 @@ class ManifestWriter:
         vtk_path = "case/VTK"
         has_vtk = self._has_vtk_result(task)
         has_raw_results = bool(latest_path)
+        can_show_results = self._review_bool(result_review, "can_show_results", has_vtk or has_raw_results)
+        should_offer_vtk = self._review_bool(result_review, "should_offer_vtk", has_raw_results and not has_vtk)
+        should_offer_paraview = self._review_bool(result_review, "should_offer_paraview", has_vtk or has_raw_results)
 
         manifest["workflow"]["run"] = {
             "status": status,
             "reason": run_result.get("reason", ""),
         }
+        if result_review:
+            manifest["workflow"]["run"]["result_review"] = result_review
         diagnostics = run_result.get("diagnostics", {})
         diagnostics = diagnostics if isinstance(diagnostics, dict) else {}
         if diagnostics:
@@ -53,7 +59,7 @@ class ManifestWriter:
         runtime_info = runtime_info if isinstance(runtime_info, dict) else {}
         if isinstance(runtime_info, dict) and runtime_info:
             manifest["workflow"]["run"]["runtime_info"] = self._runtime_info_for_manifest(runtime_info)
-        manifest["artifacts"]["result_dir"] = self._host_path(task, vtk_path) if has_vtk or has_raw_results else ""
+        manifest["artifacts"]["result_dir"] = self._host_path(task, vtk_path) if can_show_results else ""
         manifest["artifacts"]["logs"] = [
             {
                 "type": item.get("role", ""),
@@ -63,11 +69,11 @@ class ManifestWriter:
             for item in run_result.get("logs", [])
             if isinstance(item, dict)
         ]
-        manifest["appflow_hints"]["show_results"] = has_vtk or has_raw_results
+        manifest["appflow_hints"]["show_results"] = can_show_results
         manifest["appflow_hints"]["preferred_result_format"] = "vtk"
-        manifest["appflow_hints"]["open_paraview"] = has_vtk or has_raw_results
+        manifest["appflow_hints"]["open_paraview"] = should_offer_paraview
         manifest["appflow_hints"]["paraview_open_mode"] = "first_vtk"
-        manifest["appflow_hints"]["run_foam_to_vtk"] = has_raw_results and not has_vtk
+        manifest["appflow_hints"]["run_foam_to_vtk"] = should_offer_vtk
         manifest["appflow_hints"]["export_vtk"] = False
         manifest["appflow_hints"]["foam_to_vtk_backend"] = "docker"
         manifest["appflow_hints"]["docker_image"] = str(runtime_info.get("docker_image", "")).strip() or "leoyue123/foamagent:latest"
@@ -79,6 +85,8 @@ class ManifestWriter:
             manifest["appflow_hints"]["run_diagnostics_summary"] = str(diagnostics.get("summary", "")).strip()
             manifest["appflow_hints"]["run_diagnostics_severity"] = str(diagnostics.get("severity", "")).strip()
             manifest["appflow_hints"]["has_run_diagnostics"] = bool(diagnostics.get("items"))
+        manifest["appflow_hints"]["offer_repair"] = self._review_bool(result_review, "should_offer_repair", False)
+        manifest["appflow_hints"]["offer_rerun"] = self._review_bool(result_review, "should_offer_rerun", status != "run_completed")
         manifest["appflow_hints"]["has_suggested_repair_actions"] = self._has_suggested_repair_action(task)
         return self._write(task, manifest)
 
@@ -269,6 +277,28 @@ class ManifestWriter:
             "metrics": diagnostics.get("metrics", {}) if isinstance(diagnostics.get("metrics", {}), dict) else {},
         }
 
+    def _latest_result_review(self, task: TaskContext) -> dict:
+        reviews = task.gate_reviews if isinstance(task.gate_reviews, list) else []
+        for review in reversed(reviews):
+            if not isinstance(review, dict):
+                continue
+            if str(review.get("gate", "")).strip() != "result_review":
+                continue
+            result_review = review.get("result_review", {})
+            return result_review if isinstance(result_review, dict) else {}
+        return {}
+
+    def _run_workflow_status(self, run_status: str, result_review: dict) -> str:
+        review_status = str(result_review.get("status", "")).strip() if isinstance(result_review, dict) else ""
+        if review_status == "failed":
+            return "failed"
+        return "succeeded" if run_status == "run_completed" else "failed"
+
+    def _review_bool(self, result_review: dict, key: str, fallback: bool) -> bool:
+        if isinstance(result_review, dict) and key in result_review:
+            return bool(result_review.get(key, False))
+        return bool(fallback)
+
     def _gate_summary(self, task: TaskContext) -> dict:
         reviews = [item for item in task.gate_reviews if isinstance(item, dict)]
         summaries = [self._gate_review_summary(item) for item in reviews]
@@ -320,6 +350,8 @@ class ManifestWriter:
             summary["decision"] = review["decision"]
         if isinstance(review.get("diagnostics"), dict):
             summary["diagnostics"] = review["diagnostics"]
+        if isinstance(review.get("result_review"), dict):
+            summary["result_review"] = review["result_review"]
         if isinstance(review.get("next_repair_action"), dict):
             summary["next_repair_action"] = review["next_repair_action"]
         return summary
