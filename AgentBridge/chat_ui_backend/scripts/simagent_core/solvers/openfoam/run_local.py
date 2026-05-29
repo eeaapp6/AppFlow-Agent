@@ -1,6 +1,7 @@
 import os
-import subprocess
 from pathlib import Path
+import subprocess
+from typing import Any
 
 from ...models import SimulationPlan, TaskContext
 from ...gates.execution_gate import review_run_pipeline
@@ -13,10 +14,19 @@ from .run_pipeline import (
     prepare_executable_pipeline,
     run_pipeline_mode,
 )
+from .runtime import DockerOpenFOAMRunner, OpenFOAMRunner, detect_openfoam_runtime
 from .validate import required_openfoam_files
 
 
-def check_openfoam_run_readiness(task: TaskContext, plan: SimulationPlan | None = None) -> dict:
+def check_openfoam_run_readiness(
+    task: TaskContext,
+    plan: SimulationPlan | None = None,
+    *,
+    runtime_info: dict[str, Any] | None = None,
+) -> dict:
+    if runtime_info is None:
+        runtime_info = detect_openfoam_runtime(required_commands=_required_pipeline_commands(build_basic_run_pipeline(plan)))
+
     task_dir = Path(task.task_dir)
     missing_files = [
         rel_path
@@ -29,42 +39,24 @@ def check_openfoam_run_readiness(task: TaskContext, plan: SimulationPlan | None 
             "reason": "OpenFOAM case files are incomplete.",
             "missing_files": missing_files,
             "wm_project_dir": os.environ.get("WM_PROJECT_DIR", ""),
+            "runtime_info": runtime_info or {},
         }
 
-    wm_project_dir = os.environ.get("WM_PROJECT_DIR", "").strip()
-    if not wm_project_dir:
+    if runtime_info and not runtime_info.get("available", False):
         return {
             "status": "run_blocked",
-            "reason": "OpenFOAM runtime is not configured. WM_PROJECT_DIR is not set.",
+            "reason": runtime_info.get("reason", "OpenFOAM runtime is unavailable."),
             "missing_files": [],
-            "wm_project_dir": "",
+            "wm_project_dir": runtime_info.get("wm_project_dir", ""),
+            "runtime_info": runtime_info,
         }
 
     return {
         "status": "run_ready",
         "reason": "OpenFOAM runtime detected.",
         "missing_files": [],
-        "wm_project_dir": wm_project_dir,
-    }
-
-
-def _run_command(command: list[str], case_dir: Path, log_path: Path, timeout_seconds: int) -> dict:
-    log_path.parent.mkdir(parents=True, exist_ok=True)
-    with log_path.open("w", encoding="utf-8", errors="replace") as log:
-        process = subprocess.run(
-            command,
-            cwd=str(case_dir),
-            stdout=log,
-            stderr=subprocess.STDOUT,
-            text=True,
-            timeout=timeout_seconds,
-        )
-
-    return {
-        "command": " ".join(command),
-        "return_code": process.returncode,
-        "log": log_path.name,
-        "log_path": str(log_path),
+        "wm_project_dir": (runtime_info or {}).get("wm_project_dir", os.environ.get("WM_PROJECT_DIR", "").strip()),
+        "runtime_info": runtime_info or {},
     }
 
 
@@ -153,46 +145,74 @@ def _run_failure(
     steps: list[dict],
     pipeline: list[dict],
     pipeline_info: dict,
-    wm_project_dir: str,
+    runtime_info: dict[str, Any],
     logs: list[dict] | None = None,
+    status: str = "run_failed",
 ) -> dict:
     return {
-        "status": "run_failed",
+        "status": status,
         "reason": reason,
         "steps": steps,
         "pipeline": pipeline,
         "pipeline_info": pipeline_info,
         "logs": logs if logs is not None else _logs_from_steps(steps),
-        "wm_project_dir": wm_project_dir,
+        "wm_project_dir": runtime_info.get("wm_project_dir", ""),
+        "runtime_info": runtime_info,
     }
 
 
-def run_openfoam_case(task: TaskContext, plan: SimulationPlan | None = None, timeout_seconds: int = 300) -> dict:
-    readiness = check_openfoam_run_readiness(task, plan)
-    if readiness.get("status") != "run_ready":
-        return readiness
-
-    case_dir = Path(task.case_dir)
-    logs_dir = Path(task.logs_dir)
-    steps = []
+def run_openfoam_case(
+    task: TaskContext,
+    plan: SimulationPlan | None = None,
+    timeout_seconds: int = 300,
+    *,
+    runner: OpenFOAMRunner | None = None,
+    runtime_info: dict[str, Any] | None = None,
+) -> dict:
     pipeline, pipeline_info = _select_run_pipeline(plan)
     execution_gate = review_run_pipeline(pipeline)
     pipeline_info["execution_gate"] = execution_gate.to_dict()
     if execution_gate.status == "failed":
+        runtime_info = runtime_info or detect_openfoam_runtime(required_commands=[])
         return _run_failure(
             reason="Run pipeline failed execution gate.",
             steps=[],
             pipeline=pipeline,
             pipeline_info=pipeline_info,
             logs=[],
-            wm_project_dir=readiness.get("wm_project_dir", ""),
+            runtime_info=runtime_info,
         )
 
+    runtime_info = runtime_info or detect_openfoam_runtime(required_commands=_required_pipeline_commands(pipeline))
+    readiness = check_openfoam_run_readiness(task, plan, runtime_info=runtime_info)
+    if readiness.get("status") != "run_ready":
+        readiness.setdefault("pipeline", pipeline)
+        readiness.setdefault("pipeline_info", pipeline_info)
+        readiness.setdefault("steps", [])
+        readiness.setdefault("logs", [])
+        return readiness
+
+    case_dir = Path(task.case_dir)
+    logs_dir = Path(task.logs_dir)
+    steps = []
+    backend = str(runtime_info.get("backend", "local")).strip().lower() or "local"
+    if backend == "wsl":
+        return _run_failure(
+            reason="WSL OpenFOAM backend is detected but execution through WSL is not implemented yet.",
+            steps=[],
+            pipeline=pipeline,
+            pipeline_info=pipeline_info,
+            logs=[],
+            runtime_info={**runtime_info, "available": False},
+            status="run_blocked",
+        )
+
+    runner = runner or _runner_for_runtime(runtime_info)
     for pipeline_step in pipeline:
         command = pipeline_step_to_command(pipeline_step)
         log_path = logs_dir / f"{command[0]}.log"
         try:
-            step = _run_command(command, case_dir, log_path, timeout_seconds)
+            step = runner.run_step(command, case_dir, log_path, timeout_seconds)
         except subprocess.TimeoutExpired:
             return _run_failure(
                 reason=f"{command[0]} timed out after {timeout_seconds} seconds.",
@@ -200,16 +220,19 @@ def run_openfoam_case(task: TaskContext, plan: SimulationPlan | None = None, tim
                 pipeline=pipeline,
                 pipeline_info=pipeline_info,
                 logs=[{"path": f"logs/{command[0]}.log", "role": command[0], "format": "text"}],
-                wm_project_dir=readiness.get("wm_project_dir", ""),
+                runtime_info=runtime_info,
             )
         except FileNotFoundError:
+            missing_command = _missing_command_for_runtime(runtime_info, command[0])
+            missing_runtime = {**runtime_info, "available": False, "missing_commands": [missing_command]}
             return _run_failure(
-                reason=f"Command not found: {command[0]}. Ensure OpenFOAM is sourced in the backend environment.",
+                reason=_missing_command_reason(runtime_info, missing_command),
                 steps=steps,
                 pipeline=pipeline,
                 pipeline_info=pipeline_info,
                 logs=[],
-                wm_project_dir=readiness.get("wm_project_dir", ""),
+                runtime_info=missing_runtime,
+                status="run_blocked",
             )
 
         step["stage"] = pipeline_step.get("stage", "")
@@ -221,7 +244,7 @@ def run_openfoam_case(task: TaskContext, plan: SimulationPlan | None = None, tim
                 steps=steps,
                 pipeline=pipeline,
                 pipeline_info=pipeline_info,
-                wm_project_dir=readiness.get("wm_project_dir", ""),
+                runtime_info=runtime_info,
             )
 
     output_index = _discover_case_outputs(task)
@@ -234,8 +257,37 @@ def run_openfoam_case(task: TaskContext, plan: SimulationPlan | None = None, tim
         "pipeline_info": pipeline_info,
         "logs": _logs_from_steps(steps),
         "wm_project_dir": readiness.get("wm_project_dir", ""),
+        "runtime_info": runtime_info,
         "outputs": output_index,
     }
+
+
+def _required_pipeline_commands(pipeline: list[dict]) -> list[str]:
+    commands = []
+    for step in pipeline:
+        if not isinstance(step, dict):
+            continue
+        command = str(step.get("command", "")).strip()
+        if command:
+            commands.append(command)
+    return sorted(set(commands))
+
+
+def _runner_for_runtime(runtime_info: dict[str, Any]) -> OpenFOAMRunner:
+    backend = str(runtime_info.get("backend", "local")).strip().lower()
+    if backend == "docker":
+        return DockerOpenFOAMRunner.from_runtime_info(runtime_info)
+    return OpenFOAMRunner()
+
+
+def _missing_command_for_runtime(runtime_info: dict[str, Any], command: str) -> str:
+    return "docker" if str(runtime_info.get("backend", "")).strip().lower() == "docker" else command
+
+
+def _missing_command_reason(runtime_info: dict[str, Any], missing_command: str) -> str:
+    if str(runtime_info.get("backend", "")).strip().lower() == "docker":
+        return "Docker command not found. Install Docker or select a different OpenFOAM backend."
+    return f"Command not found: {missing_command}. Ensure OpenFOAM is sourced in the backend environment."
 
 
 def _select_run_pipeline(plan: SimulationPlan | None) -> tuple[list[dict], dict]:

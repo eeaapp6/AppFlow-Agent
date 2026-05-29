@@ -196,6 +196,88 @@ class AppFlowManifestWriterTests(unittest.TestCase):
             self.assertFalse(manifest["appflow_hints"]["export_vtk"])
             self.assertEqual("first_vtk", manifest["appflow_hints"]["paraview_open_mode"])
 
+    def test_run_manifest_keeps_runtime_info_without_result_hints_on_blocked_run(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = make_task(root)
+            Path(task.case_dir).mkdir(parents=True)
+            (Path(task.case_dir) / "constant" / "polyMesh").mkdir(parents=True)
+
+            manifest = ManifestWriter().write_run_result(
+                task,
+                make_plan(),
+                {
+                    "status": "run_blocked",
+                    "reason": "Required OpenFOAM command is missing: blockMesh.",
+                    "logs": [],
+                    "runtime_info": {
+                        "mode": "unavailable",
+                        "backend": "local",
+                        "available": False,
+                        "reason": "Required OpenFOAM command is missing: blockMesh.",
+                        "missing_commands": ["blockMesh"],
+                        "wm_project_dir": "",
+                        "commands": {
+                            "blockMesh": {"available": False},
+                            "icoFoam": {"available": True},
+                        },
+                    },
+                },
+            )
+
+            self.assertEqual("failed", manifest["workflow"]["status"])
+            self.assertEqual("run_blocked", manifest["workflow"]["run"]["status"])
+            self.assertEqual("local", manifest["workflow"]["run"]["runtime_info"]["backend"])
+            self.assertEqual(["blockMesh"], manifest["workflow"]["run"]["runtime_info"]["missing_commands"])
+            self.assertFalse(manifest["appflow_hints"]["show_results"])
+            self.assertFalse(manifest["appflow_hints"]["open_paraview"])
+            self.assertFalse(manifest["appflow_hints"]["run_foam_to_vtk"])
+            self.assertEqual("local", manifest["appflow_hints"]["runtime_backend"])
+            self.assertFalse(manifest["appflow_hints"]["runtime_available"])
+
+            validation = validate_appflow_manifest(manifest, task)
+
+            self.assertEqual("valid", validation["status"])
+
+    def test_run_manifest_preserves_docker_runtime_hints(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            task = make_task(root)
+            case_dir = Path(task.case_dir)
+            (case_dir / "constant" / "polyMesh").mkdir(parents=True)
+            (case_dir / "0.5").mkdir(parents=True)
+
+            manifest = ManifestWriter().write_run_result(
+                task,
+                make_plan(),
+                {
+                    "status": "run_completed",
+                    "reason": "completed",
+                    "logs": [],
+                    "outputs": {"results": {"latest_path": "case/0.5", "latest_time": "0.5"}},
+                    "runtime_info": {
+                        "mode": "docker",
+                        "backend": "docker",
+                        "available": True,
+                        "reason": "Docker OpenFOAM backend available with image foam:test.",
+                        "missing_commands": [],
+                        "wm_project_dir": "",
+                        "docker_image": "foam:test",
+                        "docker_case_dir": "/case",
+                        "commands": {"blockMesh": {"available": True}},
+                    },
+                },
+            )
+
+            self.assertEqual("docker", manifest["workflow"]["run"]["runtime_info"]["backend"])
+            self.assertEqual("foam:test", manifest["workflow"]["run"]["runtime_info"]["docker_image"])
+            self.assertEqual("/case", manifest["workflow"]["run"]["runtime_info"]["docker_case_dir"])
+            self.assertEqual("docker", manifest["appflow_hints"]["runtime_backend"])
+            self.assertTrue(manifest["appflow_hints"]["runtime_available"])
+            self.assertEqual("foam:test", manifest["appflow_hints"]["docker_image"])
+            self.assertEqual("/case", manifest["appflow_hints"]["docker_case_dir"])
+            self.assertTrue(manifest["appflow_hints"]["show_results"])
+
 
 if __name__ == "__main__":
     unittest.main()

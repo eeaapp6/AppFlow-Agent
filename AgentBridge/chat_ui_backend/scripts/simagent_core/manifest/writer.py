@@ -45,6 +45,10 @@ class ManifestWriter:
             "status": status,
             "reason": run_result.get("reason", ""),
         }
+        runtime_info = run_result.get("runtime_info", {})
+        runtime_info = runtime_info if isinstance(runtime_info, dict) else {}
+        if isinstance(runtime_info, dict) and runtime_info:
+            manifest["workflow"]["run"]["runtime_info"] = self._runtime_info_for_manifest(runtime_info)
         manifest["artifacts"]["result_dir"] = self._host_path(task, vtk_path) if has_vtk or has_raw_results else ""
         manifest["artifacts"]["logs"] = [
             {
@@ -62,8 +66,11 @@ class ManifestWriter:
         manifest["appflow_hints"]["run_foam_to_vtk"] = has_raw_results and not has_vtk
         manifest["appflow_hints"]["export_vtk"] = False
         manifest["appflow_hints"]["foam_to_vtk_backend"] = "docker"
-        manifest["appflow_hints"]["docker_image"] = "leoyue123/foamagent:latest"
-        manifest["appflow_hints"]["docker_case_dir"] = "/case"
+        manifest["appflow_hints"]["docker_image"] = str(runtime_info.get("docker_image", "")).strip() or "leoyue123/foamagent:latest"
+        manifest["appflow_hints"]["docker_case_dir"] = str(runtime_info.get("docker_case_dir", "")).strip() or "/case"
+        if runtime_info:
+            manifest["appflow_hints"]["runtime_backend"] = str(runtime_info.get("backend", "")).strip()
+            manifest["appflow_hints"]["runtime_available"] = bool(runtime_info.get("available", False))
         return self._write(task, manifest)
 
     def _base_manifest(
@@ -202,6 +209,29 @@ class ManifestWriter:
             if source_key in data and data[source_key] not in ["", None]:
                 picked[target_key] = data[source_key]
         return picked
+
+    def _runtime_info_for_manifest(self, runtime_info: dict) -> dict:
+        commands = runtime_info.get("commands", {})
+        command_summary = {}
+        if isinstance(commands, dict):
+            for name, info in commands.items():
+                if isinstance(info, dict):
+                    command_summary[str(name)] = {"available": bool(info.get("available", False))}
+
+        return {
+            "mode": str(runtime_info.get("mode", "")).strip(),
+            "backend": str(runtime_info.get("backend", "")).strip(),
+            "available": bool(runtime_info.get("available", False)),
+            "reason": str(runtime_info.get("reason", "")).strip(),
+            "missing_commands": [
+                str(item) for item in runtime_info.get("missing_commands", [])
+                if str(item).strip()
+            ] if isinstance(runtime_info.get("missing_commands", []), list) else [],
+            "wm_project_dir": str(runtime_info.get("wm_project_dir", "")).strip(),
+            "commands": command_summary,
+            "docker_image": str(runtime_info.get("docker_image", "")).strip(),
+            "docker_case_dir": str(runtime_info.get("docker_case_dir", "")).strip(),
+        }
 
     def _gate_summary(self, task: TaskContext) -> dict:
         reviews = [item for item in task.gate_reviews if isinstance(item, dict)]

@@ -179,6 +179,40 @@ class AgentServiceHttpSmokeTests(unittest.TestCase):
         self.assertEqual({}, payload["next_action"])
         self.assertIn("Result review failed.", payload["reply"])
 
+    def test_run_endpoint_returns_runtime_info_when_openfoam_unavailable(self) -> None:
+        task = self.make_task()
+        for rel_path in [
+            "case/system/controlDict",
+            "case/system/fvSchemes",
+            "case/system/fvSolution",
+            "case/system/blockMeshDict",
+            "case/constant/physicalProperties",
+            "case/0/U",
+            "case/0/p",
+        ]:
+            path = Path(task.task_dir) / rel_path
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text("FoamFile{}\n", encoding="utf-8")
+        agent_service.TaskStore().save_task(task)
+        runtime_info = {
+            "mode": "unavailable",
+            "backend": "local",
+            "available": False,
+            "reason": "OpenFOAM runtime is not configured. WM_PROJECT_DIR is not set.",
+            "missing_commands": ["blockMesh"],
+            "wm_project_dir": "",
+            "commands": {"blockMesh": {"available": False}, "icoFoam": {"available": True}},
+        }
+
+        with patch("simagent_core.solvers.openfoam.run_local.detect_openfoam_runtime", return_value=runtime_info):
+            status, payload = self.post_json("/foam/run", {"task_dir": task.task_dir})
+
+        self.assertEqual(200, status)
+        self.assertEqual("run_blocked", payload["run"]["status"])
+        self.assertEqual(runtime_info, payload["run"]["runtime_info"])
+        self.assertEqual({}, payload["next_action"])
+        self.assertIn("WM_PROJECT_DIR", payload["reply"])
+
     def test_repair_action_endpoint_records_history(self) -> None:
         task = self.make_task()
         task_store = agent_service.TaskStore()
