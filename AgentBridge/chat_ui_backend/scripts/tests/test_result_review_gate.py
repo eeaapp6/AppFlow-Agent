@@ -448,6 +448,54 @@ class ResultReviewGateTests(unittest.TestCase):
         self.assertEqual("logs/simpleFoam.log", diagnostics["evidence"]["log_path"])
         self.assertEqual(2.5, diagnostics["metrics"]["max_final_residual"])
 
+    def test_run_diagnostics_groups_new_configuration_boundary_and_numerics_codes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+
+            result = review_run_results(
+                task,
+                {
+                    "status": "run_failed",
+                    "diagnostics": {
+                        "severity": "failed",
+                        "summary": "configuration and boundary errors",
+                        "items": [
+                            {
+                                "code": "result.pressure_reference_missing",
+                                "severity": "error",
+                                "category": "configuration",
+                                "message": "Pressure reference is missing.",
+                                "source": "solver",
+                                "log_file": "logs/simpleFoam.log",
+                                "matched_line": "Unable to set reference cell for field p",
+                            },
+                            {
+                                "code": "result.patch_type_inconsistent",
+                                "severity": "error",
+                                "category": "boundary",
+                                "message": "Patch type mismatch.",
+                                "source": "solver",
+                                "log_file": "logs/simpleFoam.log",
+                                "matched_line": "patch type wall and patchField type fixedValue",
+                            },
+                            {
+                                "code": "result.continuity_abnormal",
+                                "severity": "warning",
+                                "category": "numerics",
+                                "message": "Continuity error is abnormal.",
+                                "source": "solver",
+                                "log_file": "logs/simpleFoam.log",
+                                "matched_line": "time step continuity errors : sum local = 0.02, global = 0, cumulative = 0.02",
+                            },
+                        ],
+                    },
+                },
+            )
+
+        diagnostics = result.metadata["diagnostics"]
+        self.assertEqual("failed", result.status)
+        self.assertEqual(["boundary", "configuration", "numerics"], diagnostics["categories"])
+
 
 if __name__ == "__main__":
     unittest.main()

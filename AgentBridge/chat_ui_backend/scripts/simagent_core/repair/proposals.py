@@ -71,6 +71,7 @@ def _repair_action_for_issue_code(code: str, gate_review: dict[str, Any]) -> dic
         "validation.failed",
         "result.missing_boundary_field",
         "result.unknown_patch",
+        "result.patch_type_inconsistent",
     } or (gate_name == "static_validation" and code.startswith("boundary.")):
         return _action(
             "repair_case_dictionaries",
@@ -78,15 +79,31 @@ def _repair_action_for_issue_code(code: str, gate_review: dict[str, Any]) -> dic
             "OpenFOAM dictionary validation failed. Review boundary fields and dictionary entries before running.",
             patches=_dictionary_repair_patches(gate_review),
         )
+    if code in {
+        "result.pressure_reference_missing",
+        "result.turbulence_properties_missing",
+        "result.fvsolution_solver_block_missing",
+        "result.fvsolution_solver_keyword_missing",
+    }:
+        return _action(
+            "review_case_configuration",
+            "Review case configuration",
+            "OpenFOAM reported a missing or inconsistent solver configuration. Inspect system and constant dictionaries before rerunning.",
+        )
     if code in {"result.missing_latest_path", "result.missing_latest_dir"}:
         return _action(
             "review_solver_logs",
             "Review solver logs",
             "The run completed but no usable result time directory was found. Inspect solver logs and rerun if needed.",
         )
-    if code in {"result.residual_nan", "result.residual_high", "result.courant_high", "result.divergence"}:
+    if code in {"result.residual_nan", "result.residual_high", "result.courant_high", "result.divergence", "result.continuity_abnormal"}:
         return _solver_numerics_action(code, gate_review)
-    if code in {"result.mesh_quality_failed", "result.mesh_quality_warning"}:
+    if code in {
+        "result.mesh_quality_failed",
+        "result.mesh_quality_warning",
+        "result.mesh_severe_non_orthogonality",
+        "result.mesh_negative_volume",
+    }:
         return _mesh_quality_action(gate_review)
     if code == "result.no_execution_time":
         return _action(

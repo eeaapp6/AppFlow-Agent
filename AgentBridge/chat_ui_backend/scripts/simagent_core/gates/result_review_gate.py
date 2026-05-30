@@ -396,8 +396,15 @@ def _primary_issue(result: GateResult):
 def _category_for_issue(code: str) -> str:
     if code.startswith("result.mesh_"):
         return "mesh"
-    if code.startswith("result.residual_") or code in {"result.courant_high", "result.divergence"}:
+    if code.startswith("result.residual_") or code in {"result.courant_high", "result.divergence", "result.continuity_abnormal"}:
         return "numerics"
+    if code in {
+        "result.pressure_reference_missing",
+        "result.turbulence_properties_missing",
+        "result.fvsolution_solver_block_missing",
+        "result.fvsolution_solver_keyword_missing",
+    }:
+        return "configuration"
     if code in {
         "result.log_fatal",
         "result.log_warning",
@@ -410,7 +417,7 @@ def _category_for_issue(code: str) -> str:
         "result.diagnostics_warning",
     }:
         return "runtime"
-    if code in {"result.missing_boundary_field", "result.unknown_patch"}:
+    if code in {"result.missing_boundary_field", "result.unknown_patch", "result.patch_type_inconsistent"}:
         return "boundary"
     if code.startswith("result.missing_latest_"):
         return "output"

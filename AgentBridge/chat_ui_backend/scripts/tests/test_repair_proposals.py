@@ -194,6 +194,31 @@ class RepairProposalTests(unittest.TestCase):
         self.assertEqual("Review non-orthogonal mesh", action["label"])
         self.assertIn("73.5", action["description"])
 
+    def test_new_mesh_diagnostic_maps_to_mesh_review_action(self) -> None:
+        action = repair_action_for_gate_review(
+            {
+                "gate": "result_review",
+                "status": "failed",
+                "issues": [{"code": "result.mesh_negative_volume", "message": "negative volume"}],
+                "diagnostics": {"metrics": {"min_volume": -1e-9}},
+            }
+        )
+
+        self.assertEqual("review_mesh_quality", action["id"])
+        self.assertEqual("Review invalid cell volumes", action["label"])
+
+    def test_configuration_diagnostic_maps_to_manual_review_action(self) -> None:
+        action = repair_action_for_gate_review(
+            {
+                "gate": "result_review",
+                "status": "failed",
+                "issues": [{"code": "result.pressure_reference_missing", "message": "missing pRefCell"}],
+            }
+        )
+
+        self.assertEqual("review_case_configuration", action["id"])
+        self.assertNotIn("patches", action)
+
     def test_unsupported_capability_decision_maps_to_scope_revision(self) -> None:
         action = repair_action_for_gate_review(
             {
