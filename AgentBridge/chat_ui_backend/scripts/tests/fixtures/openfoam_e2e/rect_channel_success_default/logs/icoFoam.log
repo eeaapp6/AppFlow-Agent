@@ -1,14 +1,75 @@
+==========================================
+Foam-Agent Docker Container Ready!
+==========================================
+OpenFOAM: /opt/openfoam10
+Conda Env: FoamAgent (activated)
+Working Dir: /home/openfoam/Foam-Agent
+
+To update to latest Foam-Agent:
+  cd /home/openfoam/Foam-Agent && git pull
+
+To run Foam-Agent:
+  python foambench_main.py --openfoam_path $WM_PROJECT_DIR --output ./output --prompt_path ./user_requirement.txt
+
+Note: Make sure OPENAI_API_KEY is set before running!
+==========================================
 /*---------------------------------------------------------------------------*\
-| =========                 |                                                 |
-| \\      /  F ield         | OpenFOAM                                        |
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  10
+     \\/     M anipulation  |
 \*---------------------------------------------------------------------------*/
+Build  : 10-c4cf895ad8fa
+Exec   : icoFoam
+Date   : May 30 2026
+Time   : 02:19:41
+Host   : "14b3b9201161"
+PID    : 1
+I/O    : uncollated
+Case   : /home/openfoam/Foam-Agent
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 Create time
 
-Courant Number mean: 0.015 max: 0.12
-smoothSolver:  Solving for Ux, Initial residual = 0.001, Final residual = 1e-06, No Iterations 2
-smoothSolver:  Solving for Uy, Initial residual = 0.0008, Final residual = 8e-07, No Iterations 2
-DICPCG:  Solving for p, Initial residual = 0.002, Final residual = 2e-06, No Iterations 3
-time step continuity errors : sum local = 1e-06, global = -2e-07, cumulative = 1e-06
-ExecutionTime = 0.03 s  ClockTime = 0 s
+Create mesh for time = 0
+
+Reading physicalProperties
+
+Reading field p
+
+Reading field U
+
+Reading/calculating face flux field phi
+
+
+Starting time loop
+
+Time = 0.01s
+
+Courant Number mean: 0.0005 max: 0.01
+smoothSolver:  Solving for Ux, Initial residual = 1, Final residual = 6.31647e-06, No Iterations 2
+smoothSolver:  Solving for Uy, Initial residual = 0, Final residual = 0, No Iterations 0
+DICPCG:  Solving for p, Initial residual = 1, Final residual = 0.00914056, No Iterations 12
+time step continuity errors : sum local = 9.14056e-06, global = -5.26844e-07, cumulative = -5.26844e-07
+DICPCG:  Solving for p, Initial residual = 0.0036157, Final residual = 2.71403e-07, No Iterations 14
+time step continuity errors : sum local = 1.17147e-08, global = 6.83146e-10, cumulative = -5.2616e-07
+ExecutionTime = 0.0115 s  ClockTime = 1 s
+
+Time = 0.02s
+
+Courant Number mean: 0.0200177 max: 0.0207059
+smoothSolver:  Solving for Ux, Initial residual = 0.945159, Final residual = 7.65618e-08, No Iterations 3
+smoothSolver:  Solving for Uy, Initial residual = 0.315844, Final residual = 2.04053e-06, No Iterations 2
+DICPCG:  Solving for p, Initial residual = 0.025962, Final residual = 0.000208573, No Iterations 12
+time step continuity errors : sum local = 7.75911e-06, global = 4.46122e-07, cumulative = -8.00389e-08
+DICPCG:  Solving for p, Initial residual = 0.0392495, Final residual = 4.04368e-07, No Iterations 15
+time step continuity errors : sum local = 1.46349e-09, global = -8.83952e-11, cumulative = -8.01273e-08
+ExecutionTime = 0.012406 s  ClockTime = 1 s
 
 End
+
