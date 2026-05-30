@@ -1,0 +1,23 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM                                        |
+\*---------------------------------------------------------------------------*/
+Create time
+
+Creating block mesh from "system/blockMeshDict"
+Creating topology blocks
+Creating topology patches
+Creating block mesh topology
+Creating block offsets
+Creating merge list
+
+Writing polyMesh
+----------------
+Mesh Information
+----------------
+  boundingBox: (0 0 0) (5 1 0.1)
+  nPoints: 2542
+  nCells: 2000
+  nFaces: 6120
+
+End

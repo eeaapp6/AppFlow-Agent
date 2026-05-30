@@ -1,0 +1,20 @@
+{
+  "case": "rect_channel",
+  "backend": "docker",
+  "solver": "icoFoam",
+  "scenario": "nan_or_divergence",
+  "source": "manual_excerpt",
+  "expected_status": "failed",
+  "expected_codes": [
+    "result.residual_nan",
+    "result.divergence"
+  ],
+  "expected_absent_codes": [
+    "result.courant_high",
+    "result.missing_boundary_field"
+  ],
+  "expected_metrics": [
+    "has_nan_or_inf"
+  ],
+  "notes": "Minimal solver excerpt showing divergence and nan even if a process exit code were zero."
+}

@@ -1,0 +1,8 @@
+Create time
+Time = 0.2
+Courant Number mean: 0.2 max: 0.8
+smoothSolver:  Solving for Ux, Initial residual = 0.2, Final residual = 0.01, No Iterations 5
+DICPCG:  Solving for p, Initial residual = 0.3, Final residual = 0.02, No Iterations 8
+solution diverged
+ExecutionTime = nan s
+End

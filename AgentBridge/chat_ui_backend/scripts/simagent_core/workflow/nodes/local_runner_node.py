@@ -2,6 +2,7 @@ from ...manifest.validator import validate_appflow_manifest
 from ...manifest.writer import ManifestWriter
 from ...gates.execution_gate import review_run_pipeline
 from ...gates.models import GateIssue, GateResult
+from ...gates.physics_sanity_gate import review_physics_sanity
 from ...gates.result_review_gate import review_run_results
 from ...models import SimulationPlan, TaskContext
 from ...state.task_store import TaskStore
@@ -21,6 +22,19 @@ def local_runner_node(
     plan = SimulationPlan.from_dict(task.plan)
 
     store.update_status(task, "running")
+    physics_review = review_physics_sanity(task, plan)
+    store.attach_gate_review(task, physics_review.to_dict(), save=False)
+    if physics_review.status == "failed":
+        run_result = _physics_sanity_blocked_run_result(physics_review)
+        store.attach_gate_review(task, review_run_results(task, run_result).to_dict(), save=False)
+        store.attach_run_result(task, run_result)
+        manifest = writer.write_run_result(task, plan, run_result)
+        run_result["manifest_validation"] = validate_appflow_manifest(manifest, task)
+        store.attach_gate_review(task, _manifest_gate_review(run_result["manifest_validation"]), save=False)
+        store.attach_run_result(task, run_result)
+        writer.write_run_result(task, plan, run_result)
+        return run_result
+
     run_result = run_case(task, plan)
     store.attach_gate_reviews(
         task,
@@ -37,6 +51,38 @@ def local_runner_node(
     store.attach_run_result(task, run_result)
     writer.write_run_result(task, plan, run_result)
     return run_result
+
+
+def _physics_sanity_blocked_run_result(physics_review: GateResult) -> dict:
+    physics = physics_review.metadata.get("physics_sanity", {})
+    physics = physics if isinstance(physics, dict) else {}
+    summary = str(physics.get("summary", "")).strip() or "Physics sanity gate failed."
+    return {
+        "status": "run_blocked",
+        "reason": summary,
+        "steps": [],
+        "pipeline": [],
+        "pipeline_info": {"physics_sanity_gate": physics_review.to_dict()},
+        "logs": [],
+        "missing_files": [],
+        "diagnostics": {
+            "severity": "failed",
+            "summary": summary,
+            "items": [
+                {
+                    "code": issue.code,
+                    "severity": issue.severity,
+                    "category": "physics",
+                    "message": issue.message,
+                    "source": "physics_sanity",
+                    "log_file": "",
+                    "matched_line": "",
+                }
+                for issue in physics_review.issues
+            ],
+            "metrics": physics.get("metrics", {}) if isinstance(physics.get("metrics", {}), dict) else {},
+        },
+    }
 
 
 def _execution_gate_review(run_result: dict) -> dict:

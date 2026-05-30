@@ -396,6 +396,8 @@ def _primary_issue(result: GateResult):
 def _category_for_issue(code: str) -> str:
     if code.startswith("result.mesh_"):
         return "mesh"
+    if code.startswith("physics."):
+        return "physics"
     if code.startswith("result.residual_") or code in {"result.courant_high", "result.divergence", "result.continuity_abnormal"}:
         return "numerics"
     if code in {

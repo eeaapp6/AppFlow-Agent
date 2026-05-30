@@ -100,7 +100,7 @@ class ManifestWriter:
         case_name = plan.case_name if plan else task.task_id
         case_type = plan.case_category if plan else ""
         fields = self._fields_from_plan(plan)
-        return {
+        manifest = {
             "version": 1,
             "workflow": {
                 "id": task.task_id,
@@ -147,6 +147,11 @@ class ManifestWriter:
                 "offer_rerun": self._last_repair_should_rerun(task),
             },
         }
+        physics_sanity = self._latest_physics_sanity(task)
+        if physics_sanity:
+            manifest["appflow_hints"]["physics_sanity_status"] = str(physics_sanity.get("status", "")).strip()
+            manifest["appflow_hints"]["physics_sanity_summary"] = str(physics_sanity.get("summary", "")).strip()
+        return manifest
 
     def _mesh_format(self, task: TaskContext, plan: SimulationPlan | None) -> str:
         if task.solver_family != "openfoam":
@@ -356,9 +361,22 @@ class ManifestWriter:
             summary["diagnostics"] = review["diagnostics"]
         if isinstance(review.get("result_review"), dict):
             summary["result_review"] = review["result_review"]
+        if isinstance(review.get("physics_sanity"), dict):
+            summary["physics_sanity"] = review["physics_sanity"]
         if isinstance(review.get("next_repair_action"), dict):
             summary["next_repair_action"] = review["next_repair_action"]
         return summary
+
+    def _latest_physics_sanity(self, task: TaskContext) -> dict:
+        reviews = task.gate_reviews if isinstance(task.gate_reviews, list) else []
+        for review in reversed(reviews):
+            if not isinstance(review, dict):
+                continue
+            if str(review.get("gate", "")).strip() != "physics_sanity":
+                continue
+            physics = review.get("physics_sanity", {})
+            return physics if isinstance(physics, dict) else {}
+        return {}
 
     def _has_suggested_repair_action(self, task: TaskContext) -> bool:
         reviews = task.gate_reviews if isinstance(task.gate_reviews, list) else []

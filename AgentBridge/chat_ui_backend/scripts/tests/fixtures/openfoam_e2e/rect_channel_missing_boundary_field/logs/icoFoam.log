@@ -1,0 +1,11 @@
+/*---------------------------------------------------------------------------*\
+| =========                 |                                                 |
+\*---------------------------------------------------------------------------*/
+Create time
+
+--> FOAM FATAL IO ERROR:
+file: /case/0/U/boundaryField
+Cannot find patchField entry for patch inlet
+
+From function void Foam::GeometricBoundaryField<Type, PatchField, GeoMesh>::readField
+End

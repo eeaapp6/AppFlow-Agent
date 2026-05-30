@@ -1,0 +1,20 @@
+{
+  "case": "rect_channel",
+  "backend": "docker",
+  "solver": "icoFoam",
+  "scenario": "physics_warning_large_deltaT",
+  "source": "manual_excerpt",
+  "expected_status": "passed",
+  "expected_codes": [],
+  "expected_absent_codes": [
+    "result.courant_high",
+    "result.residual_nan",
+    "result.divergence"
+  ],
+  "expected_metrics": [
+    "max_courant",
+    "max_continuity_local",
+    "max_continuity_global"
+  ],
+  "notes": "Physics sanity can warn on large deltaT even when this run-log excerpt has no runtime diagnostic failure."
+}

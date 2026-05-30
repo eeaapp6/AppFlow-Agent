@@ -1,0 +1,20 @@
+{
+  "case": "rect_channel",
+  "backend": "docker",
+  "solver": "icoFoam",
+  "scenario": "missing_boundary_field",
+  "source": "manual_excerpt",
+  "expected_status": "failed",
+  "expected_codes": [
+    "result.missing_boundary_field"
+  ],
+  "expected_absent_codes": [
+    "result.courant_high",
+    "result.residual_nan",
+    "result.divergence"
+  ],
+  "expected_metrics": [
+    "missing_boundary_fields"
+  ],
+  "notes": "Minimal OpenFOAM fatal IO excerpt for a missing U boundaryField patch entry."
+}

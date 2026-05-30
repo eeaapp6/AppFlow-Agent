@@ -1,5 +1,6 @@
 from ...manifest.writer import ManifestWriter
 from ...gates.models import GateIssue, GateResult
+from ...gates.physics_sanity_gate import review_physics_sanity
 from ...models import SimulationPlan, TaskContext
 from ...state.task_store import TaskStore
 from ...services.validate import validate_case
@@ -19,7 +20,14 @@ def validator_node(
 
     store.update_status(task, "validating")
     validation_result = validate_case(task, plan)
-    store.attach_gate_review(task, _static_validation_gate_review(validation_result), save=False)
+    store.attach_gate_reviews(
+        task,
+        [
+            _static_validation_gate_review(validation_result),
+            review_physics_sanity(task, plan).to_dict(),
+        ],
+        save=False,
+    )
     store.attach_validation_result(task, validation_result)
     writer.write_validation_result(task, plan, validation_result)
     return validation_result

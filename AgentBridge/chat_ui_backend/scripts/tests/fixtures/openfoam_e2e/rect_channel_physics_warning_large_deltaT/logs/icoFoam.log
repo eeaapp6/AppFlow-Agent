@@ -1,0 +1,8 @@
+Create time
+Time = 0.1
+Courant Number mean: 0.25 max: 0.95
+smoothSolver:  Solving for Ux, Initial residual = 0.004, Final residual = 5e-06, No Iterations 2
+DICPCG:  Solving for p, Initial residual = 0.006, Final residual = 7e-06, No Iterations 3
+time step continuity errors : sum local = 5e-05, global = -1e-05, cumulative = 5e-05
+ExecutionTime = 0.05 s  ClockTime = 0 s
+End

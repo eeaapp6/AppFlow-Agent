@@ -277,6 +277,8 @@ def _category_for_code(code: str) -> str:
         return "mesh"
     if code.startswith("result.residual_") or code in {"result.courant_high", "result.divergence"}:
         return "numerics"
+    if code.startswith("physics."):
+        return "physics"
     if code in {"result.missing_boundary_field", "result.unknown_patch"} or code.startswith("boundary."):
         return "boundary"
     if code.startswith("validation."):

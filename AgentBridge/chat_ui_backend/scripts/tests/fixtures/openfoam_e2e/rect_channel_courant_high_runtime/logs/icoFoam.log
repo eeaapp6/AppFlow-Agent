@@ -1,0 +1,7 @@
+Create time
+Time = 0.5
+Courant Number mean: 450.2 max: 12000
+smoothSolver:  Solving for Ux, Initial residual = 0.03, Final residual = 1e-05, No Iterations 2
+DICPCG:  Solving for p, Initial residual = 0.08, Final residual = 2e-05, No Iterations 4
+ExecutionTime = 0.06 s  ClockTime = 0 s
+End

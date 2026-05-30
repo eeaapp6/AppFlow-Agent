@@ -1,0 +1,21 @@
+{
+  "case": "rect_channel",
+  "backend": "docker",
+  "solver": "icoFoam",
+  "scenario": "courant_high",
+  "source": "manual_excerpt",
+  "expected_status": "failed",
+  "expected_codes": [
+    "result.courant_high"
+  ],
+  "expected_absent_codes": [
+    "result.residual_nan",
+    "result.divergence",
+    "result.missing_boundary_field"
+  ],
+  "expected_metrics": [
+    "max_courant",
+    "courant_level"
+  ],
+  "notes": "deltaT increased to trigger a runaway Courant diagnostic in the solver log excerpt."
+}

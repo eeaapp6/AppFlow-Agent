@@ -135,6 +135,18 @@ def _repair_action_for_issue_code(code: str, gate_review: dict[str, Any]) -> dic
             "Fix run pipeline",
             "The selected run pipeline is not executable under the execution gate. Review commands and arguments.",
         )
+    if code.startswith("physics."):
+        if code == "physics.courant_risk":
+            return _action(
+                "inspect_solver_numerics",
+                "Inspect solver numerics",
+                "Physics sanity estimates a Courant number risk. Review deltaT, velocity, and mesh size before running.",
+            )
+        return _action(
+            "revise_simulation_spec",
+            "Revise simulation spec",
+            "Physics sanity found invalid or risky simulation parameters. Revise the generated rect_channel spec before running.",
+        )
     if code.startswith("geometry.") or code.startswith("mesh.") or code.startswith("boundary.") or code.startswith("solver."):
         return _action(
             "revise_simulation_spec",
