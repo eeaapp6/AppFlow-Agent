@@ -170,12 +170,13 @@ namespace ModelOper {
         if (graphOper == nullptr)return;
         // 网格对象
         auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
-        graphOper->updateGraph(mesh->getDataObjectID());
+        if (mesh == nullptr)return;
+        graphOper->updateGraph(mesh->getDataObjectID(), true);
 
         // 获取模型树控制器
         auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
-        if (treeOper == nullptr) return;
-        treeOper->updateTree();
+        if (treeOper) treeOper->updateTree();
+        graphOper->reRender(true);
     }
 
     void ImportReadThread::run()

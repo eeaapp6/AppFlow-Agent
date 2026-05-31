@@ -8,3 +8,11 @@
 *.user
 /output
 /generate
+
+# Python runtime caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
