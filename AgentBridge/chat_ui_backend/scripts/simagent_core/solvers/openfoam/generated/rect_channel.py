@@ -38,7 +38,33 @@ DEFAULT_WRITE_INTERVAL = 20
 DEFAULT_MESH_DENSITY = 20
 DEFAULT_MAX_CO = 0.5
 
+LENGTH_KEYS = ["length", "channel length", "L", "\u957f\u5ea6", "\u957f"]
+HEIGHT_KEYS = ["height", "channel height", "H", "\u9ad8\u5ea6", "\u9ad8"]
+WIDTH_KEYS = ["width", "channel width", "W", "\u5bbd\u5ea6", "\u5bbd"]
+DEPTH_KEYS = ["depth", "\u6df1\u5ea6"]
+THICKNESS_KEYS = ["thickness", "\u539a\u5ea6", "\u539a"]
+
 _NUMBER_PATTERN = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?"
+
+
+class RectChannelGeometryError(ValueError):
+    def __init__(
+        self,
+        dimension: str,
+        value: float,
+        *,
+        provided_as: str = "",
+    ) -> None:
+        self.dimension = dimension
+        self.value = value
+        self.provided_as = provided_as
+        self.code = f"geometry.non_positive_{dimension}"
+        field_label = dimension
+        if provided_as and provided_as != dimension:
+            field_label = f"{dimension} (provided as {provided_as})"
+        super().__init__(
+            f"Rectangular channel {field_label} must be positive; received {value:g}."
+        )
 
 
 def is_rect_channel_request(user_requirement: str) -> bool:
@@ -79,13 +105,14 @@ def create_rect_channel_plan(user_requirement: str) -> SimulationPlan:
 
 def rect_channel_spec_from_text(user_requirement: str) -> SimulationSpec:
     text = str(user_requirement or "")
-    length = _extract_positive_float(text, ["length", "channel length", "L", "\u957f\u5ea6", "\u957f"], DEFAULT_LENGTH)
+    validate_rect_channel_geometry(text)
+    length = _extract_positive_float(text, LENGTH_KEYS, DEFAULT_LENGTH)
     height = _extract_positive_float(
         text,
-        ["height", "channel height", "H", "\u9ad8\u5ea6", "\u9ad8"],
-        _extract_positive_float(text, ["width", "channel width", "W", "\u5bbd\u5ea6", "\u5bbd"], DEFAULT_HEIGHT),
+        HEIGHT_KEYS,
+        _extract_positive_float(text, WIDTH_KEYS, DEFAULT_HEIGHT),
     )
-    depth = _extract_positive_float(text, ["depth", "thickness", "\u539a\u5ea6", "\u539a", "\u6df1\u5ea6"], DEFAULT_DEPTH)
+    depth = _extract_positive_float(text, DEPTH_KEYS + THICKNESS_KEYS, DEFAULT_DEPTH)
     velocity = _extract_positive_float(
         text,
         ["inlet velocity", "velocity", "U", "\u5165\u53e3\u901f\u5ea6", "\u6d41\u901f", "\u901f\u5ea6"],
@@ -200,6 +227,25 @@ def rect_channel_spec_from_text(user_requirement: str) -> SimulationSpec:
             },
         ),
     )
+
+
+def validate_rect_channel_geometry(user_requirement: str) -> None:
+    text = str(user_requirement or "")
+    dimensions = [
+        ("length", "length", LENGTH_KEYS),
+        ("height", "height", HEIGHT_KEYS),
+        ("height", "width", WIDTH_KEYS),
+        ("depth", "depth", DEPTH_KEYS),
+        ("depth", "thickness", THICKNESS_KEYS),
+    ]
+    for dimension, provided_as, keys in dimensions:
+        value = _find_explicit_float(text, keys)
+        if value is not None and value <= 0:
+            raise RectChannelGeometryError(
+                dimension,
+                value,
+                provided_as=provided_as,
+            )
 
 
 def render_rect_channel_case(spec: SimulationSpec) -> list[tuple[PlannedFile, str]]:
@@ -517,7 +563,7 @@ def _outlet_pressure(spec: SimulationSpec) -> float:
     return 0.0
 
 
-def _extract_float(text: str, keys: list[str], default: float) -> float:
+def _find_explicit_float(text: str, keys: list[str]) -> float | None:
     for key in keys:
         key_pattern = _key_pattern(key)
         patterns = [
@@ -528,7 +574,12 @@ def _extract_float(text: str, keys: list[str], default: float) -> float:
             match = re.search(pattern, text, flags=re.IGNORECASE)
             if match:
                 return float(match.group(1))
-    return default
+    return None
+
+
+def _extract_float(text: str, keys: list[str], default: float) -> float:
+    value = _find_explicit_float(text, keys)
+    return default if value is None else value
 
 
 def _extract_positive_float(text: str, keys: list[str], default: float) -> float:

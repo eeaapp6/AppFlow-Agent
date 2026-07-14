@@ -23,11 +23,26 @@ namespace ModelOper
         QString firstVtk{};
     };
 
+    struct OpenFoamVTKExportRequest
+    {
+        QString program{};
+        QStringList arguments{};
+        QString caseDir{};
+        QString resultDir{};
+
+        bool isValid() const { return !program.isEmpty() && !caseDir.isEmpty() && !resultDir.isEmpty(); }
+    };
+
     class OpenFoamAgentAdapter
     {
     public:
         static OpenFoamAgentResult processResults(const QJsonObject& artifacts,
             const QJsonObject& appflowHints,
+            OpenFoamVTKExportRequest& exportRequest,
+            QStringList& messages);
+
+        static OpenFoamAgentResult scanExportedResults(
+            const OpenFoamVTKExportRequest& exportRequest,
             QStringList& messages);
 
         static void openParaViewIfRequested(const OpenFoamAgentResult& result,

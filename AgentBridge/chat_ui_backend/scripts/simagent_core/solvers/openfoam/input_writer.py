@@ -6,6 +6,7 @@ from ...gates.generation_gate import review_generated_files
 from ...spec import SimulationSpec
 from .generated.rect_channel import render_rect_channel_case
 from .knowledge import TutorialDetailsDatabase
+from .knowledge.tutorial_details import is_reference_script_path, reference_file_format
 from .mesh import (
     GMSH_MESH_CASE_PATH,
     copy_external_gmsh_mesh,
@@ -23,17 +24,17 @@ def generate_openfoam_files(task: TaskContext, plan: SimulationPlan) -> list[Pla
 
     if plan.generation_mode == "generated_case":
         generated = _generate_from_simulation_spec(task, plan)
-        _enforce_generation_gate(generated)
+        _enforce_generation_gate(generated, plan.planned_files)
         return generated
 
     if plan.generation_mode in {"reference_copy", "reference_modify"} and plan.reference_case:
         generated = _generate_reference_based_case(task, plan)
         if generated:
-            _enforce_generation_gate(generated)
+            _enforce_generation_gate(generated, plan.planned_files)
             return generated
 
     generated = _generate_from_cavity_template(task, plan)
-    _enforce_generation_gate(generated)
+    _enforce_generation_gate(generated, plan.planned_files)
     return generated
 
 
@@ -94,7 +95,7 @@ def _planned_file_from_reference_file(reference_file: ReferenceFile, modificatio
     planned_file = PlannedFile(
         role=reference_file.role,
         path=reference_file.path,
-        format=reference_file.format,
+        format=reference_file_format(reference_file.path),
         required=True,
     )
     planned_file.source = "reference_modify" if modifications else "reference_copy"
@@ -107,10 +108,16 @@ def _write_reference_file(
     reference_file: ReferenceFile,
     changes: dict,
 ) -> PlannedFile:
-    content, modifications = apply_reference_modifications(reference_file, changes)
+    if is_reference_script_path(reference_file.path):
+        content = reference_file.content
+        modifications = []
+        if not content.strip():
+            raise ValueError(f"Reference script content is empty: {reference_file.path}")
+    else:
+        content, modifications = apply_reference_modifications(reference_file, changes)
     file_path = task_dir / reference_file.path
     file_path.parent.mkdir(parents=True, exist_ok=True)
-    file_path.write_text(content.strip() + "\n", encoding="utf-8")
+    file_path.write_text(content if content.endswith("\n") else content + "\n", encoding="utf-8")
     return _planned_file_from_reference_file(reference_file, modifications)
 
 
@@ -157,8 +164,11 @@ def _external_gmsh_planned_file(source_path: str) -> PlannedFile:
     )
 
 
-def _enforce_generation_gate(generated: list[PlannedFile]) -> None:
-    result = review_generated_files(generated)
+def _enforce_generation_gate(
+    generated: list[PlannedFile],
+    planned_files: list[PlannedFile],
+) -> None:
+    result = review_generated_files(generated, planned_files)
     if result.status == "failed":
         messages = "; ".join(item.message for item in result.issues if item.severity == "error")
         raise ValueError(f"Generated files failed generation gate: {messages}")

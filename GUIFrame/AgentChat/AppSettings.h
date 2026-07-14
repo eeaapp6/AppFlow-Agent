@@ -2,6 +2,7 @@
 
 #include <QString>
 #include <QStringList>
+#include <QtGlobal>
 
 class AppSettings
 {
@@ -20,6 +21,9 @@ public:
 
     QString providerBaseUrl(const QString &providerId) const;
     void setProviderBaseUrl(const QString &providerId, const QString &baseUrl);
+
+    quint16 agentServicePort() const;
+    QString agentServiceBaseUrl() const;
 
     bool hasProviderApiKey(const QString &providerId) const;
     bool hasActiveProviderApiKey() const;

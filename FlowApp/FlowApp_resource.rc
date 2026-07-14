@@ -1,6 +1,6 @@
 #include <windows.h>
 
-IDI_ICON1	ICON	DISCARDABLE	"D:\\study\\appflow\\APPFlow_5936\\FlowApp\\icon.ico"
+IDI_ICON1	ICON	DISCARDABLE	"C:\\Users\\j2005\\Desktop\\chat\\AppFlow-Agent\\FlowApp\\icon.ico"
 
 VS_VERSION_INFO VERSIONINFO
 	FILEVERSION 0,0,0,0

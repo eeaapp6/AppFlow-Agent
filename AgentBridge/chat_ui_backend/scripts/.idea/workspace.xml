@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b1604955-e688-4867-a617-198992ffc986" name="更改" comment="">
+      <change beforePath="$PROJECT_DIR$/../../OPENFOAM_AGENT_PROJECT_ANALYSIS.md" beforeDir="false" afterPath="$PROJECT_DIR$/../../OPENFOAM_AGENT_PROJECT_ANALYSIS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/agent_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/agent_service.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/openfoam_diagnostics_codes.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/openfoam_diagnostics_codes.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/agent/replies.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/agent/replies.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/gates/capability_gate.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/gates/capability_gate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/gates/physics_sanity_gate.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/gates/physics_sanity_gate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/gates/result_review_gate.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/gates/result_review_gate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/gates/spec_gate.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/gates/spec_gate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/manifest/writer.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/manifest/writer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/repair/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/repair/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/repair/patches.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/repair/patches.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/repair/proposals.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/repair/proposals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/router/intent.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/router/intent.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/router/policy.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/router/policy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/solvers/openfoam/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/solvers/openfoam/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/solvers/openfoam/capabilities.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/solvers/openfoam/capabilities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/solvers/openfoam/generated/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/solvers/openfoam/generated/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/solvers/openfoam/generated/rect_channel.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/solvers/openfoam/generated/rect_channel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/solvers/openfoam/mesh.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/solvers/openfoam/mesh.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/solvers/openfoam/plan.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/solvers/openfoam/plan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/solvers/openfoam/run_diagnostics.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/solvers/openfoam/run_diagnostics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/solvers/openfoam/run_local.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/solvers/openfoam/run_local.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/solvers/openfoam/runtime.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/solvers/openfoam/runtime.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/solvers/openfoam/validate.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/solvers/openfoam/validate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/spec/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/spec/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/spec/from_plan.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/spec/from_plan.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/spec/simulation_spec.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/spec/simulation_spec.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/state/task_store.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/state/task_store.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/workflow/nodes/local_runner_node.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/workflow/nodes/local_runner_node.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/simagent_core/workflow/nodes/validator_node.py" beforeDir="false" afterPath="$PROJECT_DIR$/simagent_core/workflow/nodes/validator_node.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_courant_high_runtime/logs/blockMesh.log" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_courant_high_runtime/logs/blockMesh.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_courant_high_runtime/logs/icoFoam.log" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_courant_high_runtime/logs/icoFoam.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_courant_high_runtime/meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_courant_high_runtime/meta.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_missing_boundary_field/logs/icoFoam.log" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_missing_boundary_field/logs/icoFoam.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_missing_boundary_field/meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_missing_boundary_field/meta.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_nan_or_divergence/logs/icoFoam.log" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_nan_or_divergence/logs/icoFoam.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_nan_or_divergence/meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_nan_or_divergence/meta.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_physics_warning_large_deltaT/logs/blockMesh.log" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_physics_warning_large_deltaT/logs/blockMesh.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_physics_warning_large_deltaT/logs/icoFoam.log" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_physics_warning_large_deltaT/logs/icoFoam.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_physics_warning_large_deltaT/meta.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_physics_warning_large_deltaT/meta.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_success_default/logs/blockMesh.log" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_success_default/logs/blockMesh.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_success_default/logs/icoFoam.log" beforeDir="false" afterPath="$PROJECT_DIR$/tests/fixtures/openfoam_e2e/rect_channel_success_default/logs/icoFoam.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_agent_service_http_smoke.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_agent_service_http_smoke.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_appflow_manifest_writer.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_appflow_manifest_writer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_openfoam_agent_scenarios.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_openfoam_agent_scenarios.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_openfoam_boundary_validation.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_openfoam_boundary_validation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_openfoam_capability_matrix.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_openfoam_capability_matrix.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_openfoam_docker_e2e.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_openfoam_docker_e2e.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_openfoam_generated_rect_channel.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_openfoam_generated_rect_channel.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_openfoam_real_log_fixtures.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_openfoam_real_log_fixtures.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_openfoam_run_diagnostics.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_openfoam_run_diagnostics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_openfoam_runtime.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_openfoam_runtime.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_physics_sanity_gate.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_physics_sanity_gate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_repair_proposals.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_repair_proposals.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_result_review_gate.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_result_review_gate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_router_policy.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_router_policy.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_simulation_spec.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_simulation_spec.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Create_Flow_sln.bat" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Create_Flow_sln.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKCompMessageWidget" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKCompMessageWidget" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKFlowOFIOHDF5" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKFlowOFIOHDF5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKFluidVTKGraphAdaptor" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKFluidVTKGraphAdaptor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObjectPickPreview.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKFluidVTKGraphAdaptor/FITKFluidVTKGraphObjectPickPreview.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKFluidVTKGraphAdaptor/vtk.pri" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKFluidVTKGraphAdaptor/vtk.pri" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKGeoCompOCC" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKGeoCompOCC" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKGeoOCCIOHDF5" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKGeoOCCIOHDF5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKMeshGenOF" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKMeshGenOF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKOFDictWriter" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKOFDictWriter" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKOFDriver" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKOFDriver" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKOFMeshIO" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKOFMeshIO" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKRenderWindowVTK" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKRenderWindowVTK" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKRenderWindowVTK/vtk.pri" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKRenderWindowVTK/vtk.pri" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Component/FITKWidget" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Component/FITKWidget" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceFlowOF" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceFlowOF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceGeoIOHDF5" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceGeoIOHDF5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceGeometry" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceGeometry" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceIO" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceIO" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceIO/FITKInterfaceIO.pro" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceIO/FITKInterfaceIO.pro" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceIO/hdf5.pri" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceIO/hdf5.pri" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceIOHDF5" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceIOHDF5" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceMesh" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceMesh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceMesh/vtk.pri" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceMesh/vtk.pri" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceMeshGen" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceMeshGen" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceModel" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKInterfaceModel" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKVTKAlgorithm" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKVTKAlgorithm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKVTKAlgorithm/FITKTransformWidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKVTKAlgorithm/FITKTransformWidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Interface/FITKVTKAlgorithm/vtk.pri" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Interface/FITKVTKAlgorithm/vtk.pri" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Kernel/FITKAdaptor" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Kernel/FITKAdaptor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Kernel/FITKAppFramework" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Kernel/FITKAppFramework" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Kernel/FITKCore" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Kernel/FITKCore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Kernel/FITKEasyParam" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Kernel/FITKEasyParam" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Kernel/FITKPython" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Kernel/FITKPython" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FITK_Kernel/FITKPython/FITKPythonInterface.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FITK_Kernel/FITKPython/FITKPythonInterface.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../FlowApp/FlowApp_resource.rc" beforeDir="false" afterPath="$PROJECT_DIR$/../../../FlowApp/FlowApp_resource.rc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../GUIFrame/AgentChat/AgentController.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../GUIFrame/AgentChat/AgentController.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../GUIFrame/AgentChat/LocalAgentServiceManager.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../GUIFrame/AgentChat/LocalAgentServiceManager.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../OperatorsModel/OpenFoamAgentAdapter.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../OperatorsModel/OpenFoamAgentAdapter.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../OperatorsModel/OperatorsModel.pro" beforeDir="false" afterPath="$PROJECT_DIR$/../../../OperatorsModel/OperatorsModel.pro" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+    <option name="ROOT_SYNC" value="DONT_SYNC" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="3EcOq5ch1N1MxLzx08gFqoAUgjY" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/j2005/Desktop/chat/AppFlow-Agent/AgentBridge/chat_ui_backend/scripts&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-PY-252.26830.99" />
+        <option value="bundled-python-sdk-164cda30dcd9-0af03a5fa574-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-252.26830.99" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="b1604955-e688-4867-a617-198992ffc986" name="更改" comment="" />
+      <created>1780474578534</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1780474578534</updated>
+      <workItem from="1780474579876" duration="2982000" />
+      <workItem from="1780621865266" duration="25000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

@@ -9,6 +9,7 @@ const char *ActiveProviderSetting = "model/activeProvider";
 const char *OutputRootSetting = "workflow/outputRootPath";
 const char *BackendOutputRootSetting = "workflow/backendOutputRootPath";
 const char *DefaultProviderId = "deepseek";
+constexpr quint16 DefaultAgentServicePort = 8765;
 
 QSettings &createSettings()
 {
@@ -143,6 +144,31 @@ void AppSettings::setProviderBaseUrl(const QString &providerId, const QString &b
     createSettings().setValue(
         settingKey(providerId, QStringLiteral("baseUrl")),
         normalizedBaseUrl.isEmpty() ? defaultBaseUrlForProvider(providerId) : normalizedBaseUrl);
+}
+
+quint16 AppSettings::agentServicePort() const
+{
+    const QString value = qEnvironmentVariable("SIMAGENT_PORT").trimmed();
+    if (value.isEmpty()) {
+        return DefaultAgentServicePort;
+    }
+    for (const QChar character : value) {
+        if (character < QChar('0') || character > QChar('9')) {
+            return DefaultAgentServicePort;
+        }
+    }
+
+    bool valid = false;
+    const uint configuredPort = value.toUInt(&valid, 10);
+    if (!valid || configuredPort == 0 || configuredPort > 65535) {
+        return DefaultAgentServicePort;
+    }
+    return static_cast<quint16>(configuredPort);
+}
+
+QString AppSettings::agentServiceBaseUrl() const
+{
+    return QStringLiteral("http://127.0.0.1:%1").arg(agentServicePort());
 }
 
 bool AppSettings::hasProviderApiKey(const QString &providerId) const

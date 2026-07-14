@@ -2,11 +2,15 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from scripts.simagent_core.models import TaskContext
 from scripts.simagent_core.state.task_store import TaskStore
 from scripts.simagent_core.solvers.openfoam.generated import create_rect_channel_plan, is_rect_channel_request
-from scripts.simagent_core.solvers.openfoam.generated.rect_channel import rect_channel_spec_from_text
+from scripts.simagent_core.solvers.openfoam.generated.rect_channel import (
+    RectChannelGeometryError,
+    rect_channel_spec_from_text,
+)
 from scripts.simagent_core.solvers.openfoam.input_writer import generate_openfoam_files
 from scripts.simagent_core.solvers.openfoam.plan import create_openfoam_plan
 from scripts.simagent_core.solvers.openfoam.run_pipeline import build_basic_run_pipeline
@@ -20,6 +24,30 @@ SIZED_RECT_CHANNEL_PROMPT = (
     "\u751f\u6210\u4e00\u4e2a\u4e8c\u7ef4\u77e9\u5f62\u7ba1\u9053\u6d41\uff0c"
     "\u957f\u5ea6 5m\uff0c\u9ad8\u5ea6 1m\uff0c\u5165\u53e3\u901f\u5ea6 1m/s"
 )
+EXACT_RECT_CHANNEL_PROMPT = (
+    "\u751f\u6210\u4e00\u4e2a\u4e8c\u7ef4\u77e9\u5f62\u901a\u9053\uff0c\u957f\u5ea65m\uff0c\u9ad8\u5ea61m\uff0c"
+    "\u5165\u53e3\u901f\u5ea61m/s\uff0c\u51fa\u53e3\u538b\u529b0\uff0c\u8fd0\u52a8\u7c98\u5ea60.01"
+)
+
+
+class CountingPlanningLLM:
+    def __init__(self) -> None:
+        self.call_count = 0
+
+    def chat_json(self, messages: list[dict]) -> dict:
+        self.call_count += 1
+        return {
+            "solver_family": "openfoam",
+            "solver_name": "simpleFoam",
+            "physics_domain": "incompressible",
+            "case_category": "externalAerodynamics",
+            "case_name": "airFoil2D",
+            "description": "must not be used",
+            "generation_mode": "reference_modify",
+            "requested_changes": {},
+            "parameters": {},
+            "planned_files": [],
+        }
 
 
 def make_task(root: Path) -> TaskContext:
@@ -43,6 +71,19 @@ def make_task(root: Path) -> TaskContext:
 
 
 class OpenFOAMGeneratedRectChannelTests(unittest.TestCase):
+    def assert_geometry_error(
+        self,
+        prompt: str,
+        expected_code: str,
+        *message_parts: str,
+    ) -> None:
+        with self.assertRaises(RectChannelGeometryError) as raised:
+            rect_channel_spec_from_text(prompt)
+
+        self.assertEqual(expected_code, raised.exception.code)
+        for part in message_parts:
+            self.assertIn(part, str(raised.exception))
+
     def test_rect_channel_request_detection_accepts_chinese_channel_prompt(self) -> None:
         self.assertTrue(is_rect_channel_request(SIZED_RECT_CHANNEL_PROMPT))
 
@@ -98,18 +139,105 @@ class OpenFOAMGeneratedRectChannelTests(unittest.TestCase):
         self.assertEqual(3.0, spec.solver.parameters["end_time"])
         self.assertEqual(0.002, spec.solver.parameters["delta_t"])
 
-    def test_rect_channel_spec_rejects_non_positive_prompt_values(self) -> None:
-        spec = rect_channel_spec_from_text(
-            "rectangular channel length=-1 height=0 U=-2 nu=0 mesh density=-5 endTime=-1 deltaT=0"
+    def test_rect_channel_spec_uses_default_when_height_is_missing(self) -> None:
+        spec = rect_channel_spec_from_text("rectangular channel length=5")
+
+        self.assertEqual(1.0, spec.geometry.parameters["height"])
+
+    def test_rect_channel_spec_rejects_negative_height(self) -> None:
+        self.assert_geometry_error(
+            "rectangular channel height=-1",
+            "geometry.non_positive_height",
+            "height",
+            "-1",
         )
 
-        self.assertEqual(5.0, spec.geometry.parameters["length"])
-        self.assertEqual(1.0, spec.geometry.parameters["height"])
-        self.assertEqual([100, 20, 1], spec.mesh.parameters["cells"])
-        self.assertEqual([1.0, 0.0, 0.0], spec.boundaries[0].value["velocity"])
-        self.assertEqual(0.01, spec.physics.properties["kinematic_viscosity"])
-        self.assertEqual(1.0, spec.numerics.time["end_time"])
-        self.assertEqual(0.005, spec.numerics.time["delta_t"])
+    def test_rect_channel_spec_rejects_zero_height(self) -> None:
+        self.assert_geometry_error(
+            "rectangular channel height=0",
+            "geometry.non_positive_height",
+            "height",
+            "0",
+        )
+
+    def test_rect_channel_spec_rejects_negative_length(self) -> None:
+        self.assert_geometry_error(
+            "rectangular channel length=-5",
+            "geometry.non_positive_length",
+            "length",
+            "-5",
+        )
+
+    def test_rect_channel_spec_rejects_zero_depth(self) -> None:
+        self.assert_geometry_error(
+            "rectangular channel depth=0",
+            "geometry.non_positive_depth",
+            "depth",
+            "0",
+        )
+
+    def test_rect_channel_spec_rejects_negative_width_as_height(self) -> None:
+        self.assert_geometry_error(
+            "rectangular channel width=-1",
+            "geometry.non_positive_height",
+            "height",
+            "width",
+            "-1",
+        )
+
+    def test_rect_channel_spec_preserves_positive_fractional_height(self) -> None:
+        spec = rect_channel_spec_from_text("rectangular channel height=0.5")
+
+        self.assertEqual(0.5, spec.geometry.parameters["height"])
+
+    def test_openfoam_plan_rejects_invalid_rect_channel_before_llm_or_reference(self) -> None:
+        llm = CountingPlanningLLM()
+        prompt = (
+            "\u751f\u6210\u4e00\u4e2a\u4e8c\u7ef4\u77e9\u5f62\u901a\u9053\uff0c\u957f\u5ea6 5m\uff0c\u9ad8\u5ea6 -1m\uff0c"
+            "\u5165\u53e3\u901f\u5ea6 1m/s\uff0c\u51fa\u53e3\u538b\u529b 0\uff0c\u8fd0\u52a8\u9ecf\u5ea6 0.01"
+        )
+
+        with patch("scripts.simagent_core.solvers.openfoam.plan.select_reference") as select_reference:
+            with self.assertRaises(RectChannelGeometryError) as raised:
+                create_openfoam_plan(prompt, llm=llm)
+
+        self.assertEqual("geometry.non_positive_height", raised.exception.code)
+        self.assertEqual(0, llm.call_count)
+        select_reference.assert_not_called()
+
+    def test_real_openfoam_plan_entry_uses_authoritative_generated_route(self) -> None:
+        llm = CountingPlanningLLM()
+
+        with patch("scripts.simagent_core.solvers.openfoam.plan.select_reference") as select_reference:
+            plan = create_openfoam_plan(EXACT_RECT_CHANNEL_PROMPT, llm=llm)
+
+        route = plan.parameters["route_decision"]
+        decision = plan.parameters["capability_decision"]
+        capability_gate = next(
+            item for item in plan.parameters["gate_reviews"] if item["gate"] == "capability"
+        )
+
+        self.assertEqual(0, llm.call_count)
+        select_reference.assert_not_called()
+        self.assertEqual("generated_case", route["selected_mode"])
+        self.assertEqual("generated_case", plan.generation_mode)
+        self.assertEqual("rect_channel", route["geometry_type"])
+        self.assertEqual("rect_channel", plan.case_name)
+        self.assertEqual("icoFoam", plan.solver_name)
+        self.assertEqual("rect_channel", plan.parameters["simulation_spec"]["geometry"]["type"])
+        self.assertEqual("passed", capability_gate["status"])
+        self.assertEqual({}, decision["unsupported_changes"])
+        self.assertNotEqual("airFoil2D", plan.case_name)
+
+    def test_unsupported_created_geometry_fails_before_llm_or_reference(self) -> None:
+        llm = CountingPlanningLLM()
+
+        with patch("scripts.simagent_core.solvers.openfoam.plan.select_reference") as select_reference:
+            with self.assertRaisesRegex(ValueError, "not supported"):
+                create_openfoam_plan("Generate a 3D turbine blade flow field", llm=llm)
+
+        self.assertEqual(0, llm.call_count)
+        select_reference.assert_not_called()
 
     def test_rect_channel_plan_uses_generated_case_mode(self) -> None:
         plan = create_rect_channel_plan(SIZED_RECT_CHANNEL_PROMPT)

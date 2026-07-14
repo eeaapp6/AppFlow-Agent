@@ -28,6 +28,7 @@ namespace ModelOper
     };
 
     bool loadAgentManifest(const QString& fileName, AgentManifestData& data, QString& errorMessage);
+    bool validateAgentManifestImportReadiness(const AgentManifestData& data, QString& errorMessage);
 }
 
 #endif

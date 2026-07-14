@@ -21,7 +21,7 @@ def input_writer_node(
     store.update_status(task, "generating_files")
     generated = generate_files(task, plan)
     generated_dicts = [item.to_dict() for item in generated]
-    store.attach_gate_review(task, review_generated_files(generated).to_dict(), save=False)
+    store.attach_gate_review(task, review_generated_files(generated, plan.planned_files).to_dict(), save=False)
     store.attach_generated_files(task, generated_dicts)
     _remove_reference_files_if_present(task)
     store.mark_reference_files_removed(task, True)

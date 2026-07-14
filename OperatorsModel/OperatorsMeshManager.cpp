@@ -127,30 +127,36 @@ namespace ModelOper
     {
         // 获取单例
         auto meshGen = Interface::FITKMeshGenInterface::getInstance();
+        if (meshGen == nullptr) return;
         // 读取网格
         auto meshProcessor = meshGen->getMeshProcessor();
         if (meshProcessor == nullptr) return;
+        auto app = FITKAPP;
+        if (app == nullptr) return;
 
         //工作路径获取
         QString workDir = "";
-        if (FITKAPP->getAppSettings()) {
-            workDir = FITKAPP->getAppSettings()->getWorkingDir();
+        if (app->getAppSettings()) {
+            workDir = app->getAppSettings()->getWorkingDir();
         }
         if (workDir.isEmpty()) workDir = QApplication::applicationDirPath() + "/../WorkDir";
 
         //网格划分路径指定
         QString meshGenDir = workDir + "/case";
 
-        meshProcessor->setValue("WorkDir", meshGenDir);
-        meshProcessor->start();
+        if (!meshProcessor->start(QStringList() << meshGenDir)) return;
         //刷新渲染窗口
         EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
         if (graphOper == nullptr)return;
         // 网格对象
-        auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
+        if (app->getGlobalData() == nullptr) return;
+        auto mesh = app->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
+        if (mesh == nullptr) return;
         graphOper->updateGraph(mesh->getDataObjectID());
         //更新边界与边界网格的对应关系
-        Interface::FITKFlowPhysicsHandlerFactory* factoryData = FITKAPP->getComponents()->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
+        auto components = app->getComponents();
+        if (components == nullptr) return;
+        Interface::FITKFlowPhysicsHandlerFactory* factoryData = components->getComponentTByName<Interface::FITKFlowPhysicsHandlerFactory>("FITKFlowPhysicsHandlerFactory");
         if (!factoryData) return;
         factoryData->resetBoundaryMesh();
 

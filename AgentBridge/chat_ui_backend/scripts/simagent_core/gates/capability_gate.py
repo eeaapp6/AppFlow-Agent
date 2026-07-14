@@ -2,8 +2,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Any
 
 from ..models import ReferenceCase
-from ..router import CaseIntent
-from ..router.policy import GENERATED_CONFIDENCE_THRESHOLD, STRONG_REFERENCE_THRESHOLD, SUPPORTED_GENERATED_GEOMETRIES
+from ..router import CaseIntent, RouteDecision, select_generation_route
 from ..solvers.openfoam.capabilities import (
     STATUS_NEEDS_USER_INPUT,
     STATUS_PARTIALLY_SUPPORTED,
@@ -48,34 +47,22 @@ def review_openfoam_capability(
     supported_changes: dict[str, Any] | None = None,
     unsupported_changes: dict[str, Any] | None = None,
     mesh_request: dict[str, Any] | None = None,
+    route_decision: RouteDecision | None = None,
 ) -> CapabilityDecision:
     reference_score = _reference_score(reference_selection)
     supported = supported_changes or {}
     unsupported = unsupported_changes or {}
+    route = route_decision or select_generation_route(intent, reference_score=reference_score)
 
-    if intent.explicit_new_geometry:
-        if intent.geometry_type in SUPPORTED_GENERATED_GEOMETRIES:
-            return _decision_from_matrix(
-                mode="generated_case",
-                reason="User explicitly requested new geometry and the geometry type is supported.",
-                intent=intent,
-                reference_case=reference_case,
-                reference_score=reference_score,
-                supported_changes=supported,
-                unsupported_changes=unsupported,
-                mesh_request=mesh_request,
-            )
+    if route.selected_mode == "unsupported":
         return CapabilityDecision(
             status="unsupported",
             mode="unsupported",
             boundary="unsupported",
-            reason=(
-                "The request asks for a generated case, but this geometry is not supported yet. "
-                "Supported generated geometry: rect_channel."
-            ),
+            reason=route.reason,
             support_status=STATUS_UNSUPPORTED,
-            geometry_type=intent.geometry_type,
-            confidence=intent.confidence,
+            geometry_type=route.geometry_type,
+            confidence=route.confidence,
             reference_score=reference_score,
             supported_changes=supported,
             unsupported_changes=unsupported,
@@ -83,53 +70,14 @@ def review_openfoam_capability(
                 reference_case=reference_case,
                 requested_changes={**supported, **unsupported},
                 generation_mode="generated_case",
-                geometry_type=intent.geometry_type,
+                geometry_type=route.geometry_type,
                 mesh_request=mesh_request,
             ).to_dict(),
         )
 
-    if reference_case and reference_score >= STRONG_REFERENCE_THRESHOLD:
-        return _decision_from_matrix(
-            mode="reference_modify" if supported else "reference_copy",
-            reason=f"Reference score is {reference_score}, so use the official tutorial reference.",
-            intent=intent,
-            reference_case=reference_case,
-            reference_score=reference_score,
-            supported_changes=supported,
-            unsupported_changes=unsupported,
-            mesh_request=mesh_request,
-        )
-
-    if (
-        intent.geometry_type in SUPPORTED_GENERATED_GEOMETRIES
-        and intent.confidence >= GENERATED_CONFIDENCE_THRESHOLD
-    ):
-        return _decision_from_matrix(
-            mode="generated_case",
-            reason="Reference match is weak, but the detected geometry type is supported.",
-            intent=intent,
-            reference_case=reference_case,
-            reference_score=reference_score,
-            supported_changes=supported,
-            unsupported_changes=unsupported,
-            mesh_request=mesh_request,
-        )
-
-    if reference_case:
-        return _decision_from_matrix(
-            mode="reference_modify" if supported else "reference_copy",
-            reason="Use the best available tutorial reference because no supported generated geometry was selected.",
-            intent=intent,
-            reference_case=reference_case,
-            reference_score=reference_score,
-            supported_changes=supported,
-            unsupported_changes=unsupported,
-            mesh_request=mesh_request,
-        )
-
     return _decision_from_matrix(
-        mode="unsupported",
-        reason="No reliable reference case or supported generated geometry is available.",
+        mode=route.selected_mode,
+        reason=route.reason,
         intent=intent,
         reference_case=reference_case,
         reference_score=reference_score,

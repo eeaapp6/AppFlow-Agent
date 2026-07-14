@@ -25,6 +25,7 @@ ChatHeader::ChatHeader(QWidget *parent)
     m_stopButton = new QPushButton(QString::fromUtf8("\xE5\x81\x9C\xE6\xAD\xA2"), this);
     m_stopButton->setObjectName("chatHeaderStopButton");
     m_stopButton->setEnabled(false);
+    m_stopButton->setToolTip(QString::fromUtf8("\xE5\x90\x8E\xE7\xAB\xAF\xE6\x9A\x82\xE4\xB8\x8D\xE6\x94\xAF\xE6\x8C\x81\xE5\xAE\x89\xE5\x85\xA8\xE5\x8F\x96\xE6\xB6\x88"));
 
     layout->addWidget(m_titleLabel);
     layout->addStretch(1);
@@ -39,5 +40,5 @@ ChatHeader::ChatHeader(QWidget *parent)
 void ChatHeader::setTaskRunning(bool running)
 {
     m_statusLabel->setText(running ? QString::fromUtf8("\xE8\xBF\x90\xE8\xA1\x8C\xE4\xB8\xAD") : QString::fromUtf8("\xE7\xA9\xBA\xE9\x97\xB2"));
-    m_stopButton->setEnabled(running);
+    m_stopButton->setEnabled(false);
 }

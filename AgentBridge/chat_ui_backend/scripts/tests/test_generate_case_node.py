@@ -3,7 +3,15 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from scripts.simagent_core.models import ReferenceCase, SimulationPlan, TaskContext
+from scripts.simagent_core.models import (
+    PlannedFile,
+    ReferenceCase,
+    ReferenceFile,
+    ReferenceFileSet,
+    SimulationPlan,
+    TaskContext,
+)
+from scripts.simagent_core.solvers.openfoam.validate import validate_openfoam_case
 from scripts.simagent_core.workflow.nodes.generate_case_node import generate_case_node
 
 
@@ -102,6 +110,78 @@ class GenerateCaseNodeTests(unittest.TestCase):
         input_writer_node.assert_called_once()
         self.assertEqual(reference_files, actual_reference_files)
         self.assertEqual(generated_files, actual_generated_files)
+
+    def test_regenerate_reloads_and_restores_canonical_allclean(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            plan = reference_plan()
+            plan.reference_case.directory_structure = {".": ["Allclean"]}
+            plan.planned_files = [
+                PlannedFile("case_file", "case/Allclean", "text", required=True),
+            ]
+            task = make_task(root, plan)
+            reference_file_set = ReferenceFileSet(
+                reference_case=plan.reference_case,
+                files=[
+                    ReferenceFile(
+                        path="case/Allclean",
+                        role="case_file",
+                        format="text",
+                        content="#!/bin/sh\nrm -rf constant/polyMesh\n",
+                    )
+                ],
+            )
+
+            class ReferenceDatabase:
+                def load_reference_files(self, _reference_case):
+                    return reference_file_set
+
+            with patch(
+                "scripts.simagent_core.workflow.nodes.reference_loader_node."
+                "TutorialDetailsDatabase.from_default_data",
+                return_value=ReferenceDatabase(),
+            ):
+                _, first_generated = generate_case_node(task)
+                allclean_path = Path(task.task_dir) / "case/Allclean"
+                self.assertTrue(allclean_path.exists())
+                allclean_path.unlink()
+                _, second_generated = generate_case_node(task)
+
+            validation = validate_openfoam_case(task, plan)
+            generated_paths = [item["path"] for item in second_generated]
+            allclean_content = allclean_path.read_text(encoding="utf-8")
+
+        self.assertEqual(["case/Allclean"], [item["path"] for item in first_generated])
+        self.assertEqual(["case/Allclean"], generated_paths)
+        self.assertEqual("text", second_generated[0]["format"])
+        self.assertTrue(allclean_content.startswith("#!/bin/sh"))
+        self.assertEqual("validated", validation["status"])
+        self.assertNotIn("case/./Allclean", generated_paths)
+
+    def test_validator_skips_legacy_script_dictionary_check_but_keeps_required_check(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            plan = reference_plan()
+            plan.planned_files = [
+                PlannedFile("case_file", "case/./Allclean", "openfoam-dict", required=True),
+                PlannedFile("control", "case/system/controlDict", "openfoam-dict", required=False),
+            ]
+            task = make_task(root, plan)
+            allclean_path = Path(task.task_dir) / "case/Allclean"
+            control_path = Path(task.task_dir) / "case/system/controlDict"
+            allclean_path.parent.mkdir(parents=True, exist_ok=True)
+            control_path.parent.mkdir(parents=True, exist_ok=True)
+            allclean_path.write_text("#!/bin/sh\n", encoding="utf-8")
+            control_path.write_text("not an OpenFOAM dictionary\n", encoding="utf-8")
+
+            validation = validate_openfoam_case(task, plan)
+            dictionary_error_files = [item["file"] for item in validation["dictionary_errors"]]
+            allclean_path.unlink()
+            missing_validation = validate_openfoam_case(task, plan)
+
+        self.assertNotIn("case/./Allclean", dictionary_error_files)
+        self.assertIn("case/system/controlDict", dictionary_error_files)
+        self.assertEqual(["case/./Allclean"], missing_validation["missing_files"])
 
 
 if __name__ == "__main__":

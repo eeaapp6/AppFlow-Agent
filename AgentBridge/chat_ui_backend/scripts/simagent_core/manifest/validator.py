@@ -62,11 +62,55 @@ def validate_appflow_manifest(manifest: dict[str, Any], task: TaskContext | None
             missing_paths.append({"field": field, "path": value})
 
     status = "valid" if not missing_fields and not missing_paths else "invalid"
+    readiness = appflow_import_readiness(manifest, status)
     return {
         "status": status,
         "missing_fields": missing_fields,
         "checked_paths": checked_paths,
         "missing_paths": missing_paths,
+        **readiness,
+    }
+
+
+def appflow_import_readiness(manifest: dict[str, Any], structure_status: str) -> dict[str, Any]:
+    blockers: list[dict[str, str]] = []
+    blocker_codes: set[str] = set()
+
+    def add_blocker(code: str, message: str) -> None:
+        if code in blocker_codes:
+            return
+        blocker_codes.add(code)
+        blockers.append({"code": code, "message": message})
+
+    workflow = manifest.get("workflow", {}) if isinstance(manifest.get("workflow", {}), dict) else {}
+    run = workflow.get("run", {}) if isinstance(workflow.get("run", {}), dict) else {}
+    solver = manifest.get("solver", {}) if isinstance(manifest.get("solver", {}), dict) else {}
+    appflow_hints = (
+        manifest.get("appflow_hints", {})
+        if isinstance(manifest.get("appflow_hints", {}), dict)
+        else {}
+    )
+
+    if structure_status != "valid":
+        add_blocker("manifest.invalid_structure", "Manifest structure or required paths are invalid.")
+    if manifest.get("version") != 1:
+        add_blocker("manifest.unsupported_version", "Manifest version must be 1.")
+    if str(workflow.get("status", "")).strip() != "succeeded":
+        add_blocker("manifest.workflow_not_succeeded", "Workflow has not succeeded.")
+    if str(run.get("status", "")).strip() != "run_completed":
+        add_blocker("manifest.run_not_completed", "OpenFOAM run has not completed.")
+    if str(solver.get("family", "")).strip().lower() != "openfoam":
+        add_blocker("manifest.unsupported_solver", "Only OpenFOAM manifests can be imported.")
+    if not str(solver.get("command", "")).strip():
+        add_blocker("manifest.missing_solver_command", "Solver command is required for import.")
+    if bool(appflow_hints.get("offer_repair")) or bool(
+        appflow_hints.get("has_suggested_repair_actions")
+    ):
+        add_blocker("manifest.repair_required", "A suggested repair must be handled before import.")
+
+    return {
+        "import_ready": not blockers,
+        "import_blockers": blockers,
     }
 
 

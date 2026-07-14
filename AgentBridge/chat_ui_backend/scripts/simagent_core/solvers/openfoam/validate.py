@@ -4,6 +4,7 @@ from typing import Any
 
 from ...models import SimulationPlan, TaskContext
 from .mesh import GMSH_MESH_CASE_PATH, is_block_mesh_dict, plan_uses_external_gmsh_mesh
+from .knowledge.tutorial_details import is_reference_script_path
 
 
 REQUIRED_OPENFOAM_FILES = [
@@ -144,7 +145,7 @@ def _dictionary_files_to_check(plan: SimulationPlan | None) -> dict[str, str]:
 
     files = {}
     for item in plan.planned_files:
-        if item.format != "openfoam-dict" or not item.path:
+        if item.format != "openfoam-dict" or not item.path or is_reference_script_path(item.path):
             continue
         files[item.path] = Path(item.path).name
     return files

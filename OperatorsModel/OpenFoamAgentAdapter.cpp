@@ -20,13 +20,47 @@ namespace ModelOper
 {
     namespace
     {
+        const QStringList& vtkResultExtensions()
+        {
+            static const QStringList extensions = { "vtk", "vtp", "vtu" };
+            return extensions;
+        }
+
+        QFileInfoList vtkResultFiles(const QString& resultDir)
+        {
+            QDir dir(resultDir);
+            if (!dir.exists()) return QFileInfoList();
+
+            QFileInfoList vtkFiles;
+            const QFileInfoList files = dir.entryInfoList(QDir::Files, QDir::Name);
+            for (const QFileInfo& file : files) {
+                if (vtkResultExtensions().contains(file.suffix(), Qt::CaseInsensitive)) {
+                    vtkFiles << file;
+                }
+            }
+            return vtkFiles;
+        }
+
         QStringList resultFileSummary(const QString& resultDir)
         {
             QDir dir(resultDir);
             if (!dir.exists()) return QStringList();
 
             QStringList messages;
-            const QStringList filters = { "*.vtk", "*.vtp", "*.vtu", "*.foam", "*.png", "*.jpg", "*.jpeg", "*.csv" };
+            const QFileInfoList vtkFiles = vtkResultFiles(resultDir);
+            for (const QString& extension : vtkResultExtensions()) {
+                int count = 0;
+                for (const QFileInfo& file : vtkFiles) {
+                    if (file.suffix().compare(extension, Qt::CaseInsensitive) == 0) {
+                        ++count;
+                    }
+                }
+                if (count > 0) {
+                    messages << QString("*.%1: %2").arg(extension).arg(count);
+                }
+            }
+
+            const QStringList filters = { "*.foam", "*.png", "*.jpg", "*.jpeg", "*.csv" };
             for (const QString& filter : filters) {
                 const QStringList files = dir.entryList(QStringList() << filter, QDir::Files, QDir::Name);
                 if (!files.isEmpty()) {
@@ -36,14 +70,11 @@ namespace ModelOper
             return messages;
         }
 
-        QString firstResultFile(const QString& resultDir, const QStringList& filters)
+        QString firstVtkResultFile(const QString& resultDir)
         {
-            QDir dir(resultDir);
-            if (!dir.exists()) return QString();
-
-            const QStringList files = dir.entryList(filters, QDir::Files, QDir::Name);
+            const QFileInfoList files = vtkResultFiles(resultDir);
             if (files.isEmpty()) return QString();
-            return dir.absoluteFilePath(files.first());
+            return files.first().absoluteFilePath();
         }
 
         QStringList openFoamTimeDirs(const QString& caseDir)
@@ -122,17 +153,16 @@ namespace ModelOper
             return "docker";
         }
 
-        QString processOutputPreview(const QString& text, int maxChars)
+        bool buildOpenFoamVTKExportRequest(const QString& caseDir,
+            const QJsonObject& appflowHints,
+            OpenFoamVTKExportRequest& request,
+            QStringList& messages)
         {
-            if (text.size() <= maxChars) return text;
-            return text.left(maxChars) + "\n...";
-        }
+            request = OpenFoamVTKExportRequest();
+            request.caseDir = caseDir;
+            request.resultDir = QDir(caseDir).absoluteFilePath("VTK");
 
-        bool exportOpenFoamVTK(const QString& caseDir, const QJsonObject& appflowHints, QStringList& messages)
-        {
             QString backend = appflowHints.value("foam_to_vtk_backend").toString("native").toLower();
-            QString exe;
-            QStringList args;
             if (backend == "docker") {
                 QString image = appflowHints.value("docker_image").toString();
                 QString dockerCaseDir = appflowHints.value("docker_case_dir").toString("/case");
@@ -141,66 +171,36 @@ namespace ModelOper
                     return false;
                 }
 
-                exe = dockerExecutable();
+                request.program = dockerExecutable();
                 QString hostCaseDir = QDir::fromNativeSeparators(QFileInfo(caseDir).absoluteFilePath());
-                args << "run" << "--rm"
+                request.arguments << "run" << "--rm"
                     << "-v" << QString("%1:%2").arg(hostCaseDir).arg(dockerCaseDir)
                     << "-w" << dockerCaseDir
                     << image
                     << "foamToVTK" << "-ascii" << "-case" << dockerCaseDir;
 
-                messages << QObject::tr("foamToVTK docker export requested from: %1").arg(caseDir);
+                messages << QObject::tr("foamToVTK docker export prepared from: %1").arg(caseDir);
                 messages << QObject::tr("foamToVTK backend: docker");
-                messages << QObject::tr("Docker executable: %1").arg(exe);
+                messages << QObject::tr("Docker executable: %1").arg(request.program);
                 messages << QObject::tr("Docker image: %1").arg(image);
                 messages << QObject::tr("Docker case dir: %1").arg(dockerCaseDir);
             }
             else {
-                exe = foamToVTKExecutable();
-                args << "-ascii" << "-case" << caseDir;
+                request.program = foamToVTKExecutable();
+                request.arguments << "-ascii" << "-case" << caseDir;
 
-                messages << QObject::tr("foamToVTK export requested from: %1").arg(caseDir);
+                messages << QObject::tr("foamToVTK export prepared from: %1").arg(caseDir);
                 messages << QObject::tr("foamToVTK backend: native");
-                messages << QObject::tr("foamToVTK executable: %1").arg(exe);
+                messages << QObject::tr("foamToVTK executable: %1").arg(request.program);
             }
-
-            QProcess process;
-            process.start(exe, args);
-            if (!process.waitForStarted(5000)) {
-                messages << QObject::tr("foamToVTK export failed. Check whether the selected backend is available in PATH.");
-                messages << QObject::tr("foamToVTK error: %1").arg(process.errorString());
-                return false;
-            }
-
-            if (!process.waitForFinished(600000)) {
-                process.kill();
-                process.waitForFinished(3000);
-                messages << QObject::tr("foamToVTK export timeout.");
-                return false;
-            }
-
-            QString standardOutput = QString::fromLocal8Bit(process.readAllStandardOutput());
-            QString standardError = QString::fromLocal8Bit(process.readAllStandardError());
-            if (!standardOutput.isEmpty()) {
-                messages << QObject::tr("foamToVTK output:");
-                messages << processOutputPreview(standardOutput, 4000);
-            }
-            if (!standardError.isEmpty()) {
-                messages << QObject::tr("foamToVTK error output:");
-                messages << processOutputPreview(standardError, 4000);
-            }
-
-            if (process.exitStatus() != QProcess::NormalExit || process.exitCode() != 0) {
-                messages << QObject::tr("foamToVTK export failed. Exit code: %1").arg(process.exitCode());
-                return false;
-            }
-
-            messages << QObject::tr("foamToVTK export finished.");
-            return true;
+            return request.isValid();
         }
 
         void scanResultDir(const QString& resultDir, OpenFoamAgentResult& result, QStringList& messages, const QString& prefix)
         {
+            result.firstVtk = firstVtkResultFile(resultDir);
+            result.hasVtkResult = !result.firstVtk.isEmpty();
+
             QStringList resultSummary = resultFileSummary(resultDir);
             if (resultSummary.isEmpty()) {
                 messages << QObject::tr("%1none of supported types found.").arg(prefix);
@@ -209,26 +209,22 @@ namespace ModelOper
                 messages << prefix.left(prefix.size() - 2) + ":";
                 for (const QString& line : resultSummary) {
                     messages << QString("  %1").arg(line);
-                    if (line.startsWith("*.vtk:")) {
-                        result.hasVtkResult = true;
-                    }
                 }
             }
 
             if (result.hasVtkResult) {
                 messages << QObject::tr("VTK result is ready: %1").arg(resultDir);
-                result.firstVtk = firstResultFile(resultDir, QStringList() << "*.vtk");
-                if (!result.firstVtk.isEmpty()) {
-                    messages << QObject::tr("ParaView can open VTK file: %1").arg(result.firstVtk);
-                }
+                messages << QObject::tr("ParaView can open VTK file: %1").arg(result.firstVtk);
             }
         }
     }
 
     OpenFoamAgentResult OpenFoamAgentAdapter::processResults(const QJsonObject& artifacts,
         const QJsonObject& appflowHints,
+        OpenFoamVTKExportRequest& exportRequest,
         QStringList& messages)
     {
+        exportRequest = OpenFoamVTKExportRequest();
         OpenFoamAgentResult result;
         result.caseDir = artifacts.value("case_dir").toString();
         result.resultDir = artifacts.value("result_dir").toString();
@@ -255,18 +251,24 @@ namespace ModelOper
         bool exportVtk = appflowHints.value("run_foam_to_vtk").toBool(false)
             || appflowHints.value("export_vtk").toBool(false);
         if (!result.hasVtkResult && exportVtk && !timeDirs.isEmpty() && QFileInfo(caseDir).isDir()) {
-            if (exportOpenFoamVTK(caseDir, appflowHints, messages)) {
-                result.resultDir = QDir(caseDir).absoluteFilePath("VTK");
-                messages << QObject::tr("VTK result dir after export: %1").arg(result.resultDir);
-                result.hasVtkResult = false;
-                result.firstVtk.clear();
-                scanResultDir(result.resultDir, result, messages, QObject::tr("Result files after export: "));
-            }
+            buildOpenFoamVTKExportRequest(caseDir, appflowHints, exportRequest, messages);
         }
         else if (!result.hasVtkResult && exportVtk && timeDirs.isEmpty()) {
             messages << QObject::tr("foamToVTK export skipped. No OpenFOAM time directories are ready.");
         }
 
+        return result;
+    }
+
+    OpenFoamAgentResult OpenFoamAgentAdapter::scanExportedResults(
+        const OpenFoamVTKExportRequest& exportRequest,
+        QStringList& messages)
+    {
+        OpenFoamAgentResult result;
+        result.caseDir = exportRequest.caseDir;
+        result.resultDir = exportRequest.resultDir;
+        messages << QObject::tr("VTK result dir after export: %1").arg(result.resultDir);
+        scanResultDir(result.resultDir, result, messages, QObject::tr("Result files after export: "));
         return result;
     }
 

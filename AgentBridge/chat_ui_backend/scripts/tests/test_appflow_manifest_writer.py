@@ -1,3 +1,4 @@
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -5,6 +6,7 @@ from pathlib import Path
 from scripts.simagent_core.manifest.validator import validate_appflow_manifest
 from scripts.simagent_core.manifest.writer import ManifestWriter
 from scripts.simagent_core.models import SimulationPlan, TaskContext
+from scripts.simagent_core.workflow.nodes.local_runner_node import _manifest_gate_review
 
 
 def make_task(root: Path) -> TaskContext:
@@ -44,6 +46,10 @@ def make_plan() -> SimulationPlan:
             "kinematic_viscosity": 0.01,
         },
     )
+
+
+def read_written_manifest(task: TaskContext) -> dict:
+    return json.loads(Path(task.manifest_path).read_text(encoding="utf-8"))
 
 
 class AppFlowManifestWriterTests(unittest.TestCase):
@@ -88,6 +94,7 @@ class AppFlowManifestWriterTests(unittest.TestCase):
             ]
 
             manifest = ManifestWriter().write_planned(task, make_plan())
+            written = read_written_manifest(task)
             gates = manifest["workflow"]["gates"]
 
             self.assertEqual("failed", gates["status"])
@@ -101,17 +108,22 @@ class AppFlowManifestWriterTests(unittest.TestCase):
             self.assertEqual(1, gates["reviews"][1]["warning_count"])
             self.assertEqual("regenerate_case", gates["reviews"][1]["next_repair_action"]["id"])
             self.assertEqual("output failed", gates["reviews"][1]["diagnostics"]["summary"])
+            self.assertFalse(written["appflow_hints"]["import_ready"])
+            self.assertTrue(written["appflow_hints"]["import_blockers"])
 
     def test_manifest_gate_summary_is_pending_when_no_reviews_exist(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             task = make_task(Path(tmp))
 
             manifest = ManifestWriter().write_pending(task)
+            written = read_written_manifest(task)
             gates = manifest["workflow"]["gates"]
 
             self.assertEqual("pending", gates["status"])
             self.assertEqual(0, gates["total"])
             self.assertEqual([], gates["reviews"])
+            self.assertFalse(written["appflow_hints"]["import_ready"])
+            self.assertTrue(written["appflow_hints"]["import_blockers"])
 
     def test_manifest_includes_repair_history(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -238,6 +250,7 @@ class AppFlowManifestWriterTests(unittest.TestCase):
                     },
                 },
             )
+            written = read_written_manifest(task)
 
             self.assertEqual("succeeded", manifest["workflow"]["status"])
             self.assertEqual("openfoam", manifest["solver"]["family"])
@@ -254,6 +267,11 @@ class AppFlowManifestWriterTests(unittest.TestCase):
             validation = validate_appflow_manifest(manifest, task)
 
             self.assertEqual("valid", validation["status"])
+            self.assertTrue(validation["import_ready"])
+            self.assertEqual([], validation["import_blockers"])
+            self.assertTrue(written["appflow_hints"]["import_ready"])
+            self.assertEqual([], written["appflow_hints"]["import_blockers"])
+            self.assertEqual("passed", _manifest_gate_review(validation)["status"])
 
     def test_run_manifest_uses_existing_vtk_without_requesting_export(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -306,6 +324,7 @@ class AppFlowManifestWriterTests(unittest.TestCase):
                     },
                 },
             )
+            written = read_written_manifest(task)
 
             self.assertEqual("failed", manifest["workflow"]["status"])
             self.assertEqual("run_blocked", manifest["workflow"]["run"]["status"])
@@ -320,6 +339,70 @@ class AppFlowManifestWriterTests(unittest.TestCase):
             validation = validate_appflow_manifest(manifest, task)
 
             self.assertEqual("valid", validation["status"])
+            self.assertFalse(validation["import_ready"])
+            blocker_codes = {item["code"] for item in validation["import_blockers"]}
+            self.assertIn("manifest.workflow_not_succeeded", blocker_codes)
+            self.assertIn("manifest.run_not_completed", blocker_codes)
+            self.assertFalse(written["appflow_hints"]["import_ready"])
+            manifest_gate = _manifest_gate_review(validation)
+            self.assertEqual("failed", manifest_gate["status"])
+            self.assertIn("manifest.run_not_completed", {item["code"] for item in manifest_gate["issues"]})
+
+    def test_run_manifest_rejects_unsupported_solver_and_missing_command(self) -> None:
+        cases = [
+            ("calculix", "icoFoam", "manifest.unsupported_solver"),
+            ("openfoam", "", "manifest.missing_solver_command"),
+        ]
+        for solver_family, solver_command, expected_code in cases:
+            with self.subTest(expected_code=expected_code), tempfile.TemporaryDirectory() as tmp:
+                task = make_task(Path(tmp))
+                task.solver_family = solver_family
+                (Path(task.case_dir) / "constant" / "polyMesh").mkdir(parents=True)
+                plan = make_plan()
+                plan.solver_name = solver_command
+
+                ManifestWriter().write_run_result(
+                    task,
+                    plan,
+                    {
+                        "status": "run_completed",
+                        "reason": "completed",
+                        "logs": [],
+                        "outputs": {"results": {}},
+                    },
+                )
+                written = read_written_manifest(task)
+                validation = validate_appflow_manifest(written, task)
+
+                self.assertEqual("valid", validation["status"])
+                self.assertFalse(validation["import_ready"])
+                self.assertIn(expected_code, {item["code"] for item in validation["import_blockers"]})
+                self.assertFalse(written["appflow_hints"]["import_ready"])
+
+    def test_run_manifest_with_missing_artifact_paths_is_invalid_and_not_ready(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            task = make_task(Path(tmp))
+
+            ManifestWriter().write_run_result(
+                task,
+                make_plan(),
+                {
+                    "status": "run_completed",
+                    "reason": "completed",
+                    "logs": [],
+                    "outputs": {"results": {}},
+                },
+            )
+            written = read_written_manifest(task)
+            validation = validate_appflow_manifest(written, task)
+
+            self.assertEqual("invalid", validation["status"])
+            self.assertFalse(validation["import_ready"])
+            self.assertIn(
+                "manifest.invalid_structure",
+                {item["code"] for item in validation["import_blockers"]},
+            )
+            self.assertFalse(written["appflow_hints"]["import_ready"])
 
     def test_run_manifest_preserves_docker_runtime_hints(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -414,6 +497,7 @@ class AppFlowManifestWriterTests(unittest.TestCase):
                     },
                 },
             )
+            written = read_written_manifest(task)
 
         run = manifest["workflow"]["run"]
         self.assertEqual("failed", run["result_review"]["status"])
@@ -425,6 +509,10 @@ class AppFlowManifestWriterTests(unittest.TestCase):
         self.assertTrue(manifest["appflow_hints"]["offer_repair"])
         self.assertTrue(manifest["appflow_hints"]["offer_rerun"])
         self.assertTrue(manifest["appflow_hints"]["has_suggested_repair_actions"])
+        self.assertFalse(written["appflow_hints"]["import_ready"])
+        blocker_codes = {item["code"] for item in written["appflow_hints"]["import_blockers"]}
+        self.assertIn("manifest.run_not_completed", blocker_codes)
+        self.assertIn("manifest.repair_required", blocker_codes)
 
     def test_run_manifest_result_hints_are_driven_by_result_review(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -467,6 +555,7 @@ class AppFlowManifestWriterTests(unittest.TestCase):
                     "outputs": {"results": {"latest_path": "case/0.5", "latest_time": "0.5"}},
                 },
             )
+            written = read_written_manifest(task)
 
         self.assertEqual("failed", manifest["workflow"]["status"])
         self.assertFalse(manifest["appflow_hints"]["show_results"])
@@ -474,6 +563,10 @@ class AppFlowManifestWriterTests(unittest.TestCase):
         self.assertFalse(manifest["appflow_hints"]["run_foam_to_vtk"])
         self.assertTrue(manifest["appflow_hints"]["offer_repair"])
         self.assertTrue(manifest["appflow_hints"]["offer_rerun"])
+        self.assertFalse(written["appflow_hints"]["import_ready"])
+        blocker_codes = {item["code"] for item in written["appflow_hints"]["import_blockers"]}
+        self.assertIn("manifest.workflow_not_succeeded", blocker_codes)
+        self.assertIn("manifest.repair_required", blocker_codes)
 
 
 if __name__ == "__main__":

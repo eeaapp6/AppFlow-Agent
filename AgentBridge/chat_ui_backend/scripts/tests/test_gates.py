@@ -10,7 +10,7 @@ from scripts.simagent_core.spec import BoundarySpec, GeometrySpec, MeshSpec, Sim
 
 
 class GateTests(unittest.TestCase):
-    def test_capability_gate_prefers_strong_reference_when_new_geometry_is_not_explicit(self) -> None:
+    def test_capability_gate_keeps_explicit_generated_route_with_strong_reference(self) -> None:
         decision = review_openfoam_capability(
             intent=parse_case_intent("\u751f\u6210\u4e00\u4e2a\u4e8c\u7ef4\u7ba1\u9053\u6d41"),
             reference_case=ReferenceCase("cavity", "incompressible", "cavity", "icoFoam"),
@@ -19,7 +19,7 @@ class GateTests(unittest.TestCase):
         )
 
         self.assertEqual("passed", decision.status)
-        self.assertEqual("reference_modify", decision.mode)
+        self.assertEqual("generated_case", decision.mode)
         self.assertEqual("controlled", decision.boundary)
 
     def test_capability_gate_uses_generated_case_when_reference_is_weak(self) -> None:
@@ -76,6 +76,30 @@ class GateTests(unittest.TestCase):
 
         self.assertEqual("failed", result.status)
         self.assertIn("file.empty_path", [issue.code for issue in result.issues])
+
+    def test_generation_gate_rejects_missing_required_planned_file(self) -> None:
+        result = review_generated_files(
+            [PlannedFile("control", "case/system/controlDict", "openfoam-dict")],
+            [
+                PlannedFile("control", "case/system/controlDict", "openfoam-dict"),
+                PlannedFile("case_file", "case/Allclean", "text", required=True),
+                PlannedFile("case_file", "case/optional", "text", required=False),
+            ],
+        )
+
+        self.assertEqual("failed", result.status)
+        issue = next(item for item in result.issues if item.code == "generation.missing_required_file")
+        self.assertIn("case/Allclean", issue.message)
+        self.assertNotIn("case/optional", issue.message)
+
+    def test_generation_gate_matches_legacy_dot_path_to_canonical_path(self) -> None:
+        result = review_generated_files(
+            [PlannedFile("case_file", "case/Allclean", "text")],
+            [PlannedFile("case_file", "case/./Allclean", "openfoam-dict", required=True)],
+        )
+
+        self.assertEqual("passed", result.status)
+        self.assertNotIn("generation.missing_required_file", [issue.code for issue in result.issues])
 
     def test_execution_gate_rejects_shell_syntax_and_unknown_command(self) -> None:
         result = review_run_pipeline([

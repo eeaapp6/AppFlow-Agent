@@ -19,6 +19,7 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QRegularExpression>
 #include <QTimer>
 #include <QUrl>
 #include <QVBoxLayout>
@@ -59,6 +60,46 @@ RepairUiAction repairUiActionForId(const QString &actionId)
     }
 
     return RepairUiAction::None;
+}
+
+QString normalizedManifestPath(const QString &path)
+{
+    const QString trimmed = path.trimmed();
+    if (trimmed.isEmpty()) {
+        return QString();
+    }
+    return QDir::cleanPath(QDir::fromNativeSeparators(trimmed));
+}
+
+bool manifestPathsMatch(const QString &left, const QString &right)
+{
+    const QString normalizedLeft = normalizedManifestPath(left);
+    const QString normalizedRight = normalizedManifestPath(right);
+    if (normalizedLeft.isEmpty() || normalizedRight.isEmpty()) {
+        return false;
+    }
+
+    const bool windowsDrivePath = normalizedLeft.size() > 1
+        && normalizedRight.size() > 1
+        && normalizedLeft.at(1) == QLatin1Char(':')
+        && normalizedRight.at(1) == QLatin1Char(':');
+    return normalizedLeft.compare(
+        normalizedRight,
+        windowsDrivePath ? Qt::CaseInsensitive : Qt::CaseSensitive) == 0;
+}
+
+QString safeImportResultMessage(const QString &message)
+{
+    QString text = message.trimmed();
+    static const QRegularExpression sensitiveValue(
+        QStringLiteral("(api[_-]?key|authorization|bearer)[^\\r\\n]*"),
+        QRegularExpression::CaseInsensitiveOption);
+    text.replace(sensitiveValue, QStringLiteral("\\1 [redacted]"));
+    const int maximumLength = 500;
+    if (text.size() > maximumLength) {
+        text = text.left(maximumLength - 3).trimmed() + QStringLiteral("...");
+    }
+    return text;
 }
 
 }
@@ -119,8 +160,6 @@ FoamAgentChatPanel::FoamAgentChatPanel(QWidget *parent)
             this, &FoamAgentChatPanel::handleImportToAppFlowRequested);
     connect(m_header, &ChatHeader::settingsRequested,
             this, &FoamAgentChatPanel::handleSettingsRequested);
-    connect(m_header, &ChatHeader::stopRequested,
-            this, &FoamAgentChatPanel::handleStopRequested);
     connect(m_agentController, &AgentController::agentMessageReceived,
             this, &FoamAgentChatPanel::handleAgentMessageReceived);
     connect(m_agentController, &AgentController::workflowMessageReceived,
@@ -133,14 +172,27 @@ FoamAgentChatPanel::FoamAgentChatPanel(QWidget *parent)
             m_workspaceBar, &WorkflowWorkspaceBar::setTaskRunning);
     connect(m_agentController, &AgentController::taskRunningChanged,
             m_actionBar, &WorkflowActionBar::setTaskRunning);
+    connect(m_agentController, &AgentController::taskRunningChanged,
+            this, [this](bool running) {
+                m_agentRequestRunning = running;
+                refreshInteractionAvailability();
+            });
     connect(m_agentController, &AgentController::taskContextReceived,
             this, &FoamAgentChatPanel::handleTaskContextReceived);
-    connect(m_agentController, &AgentController::caseGenerated,
-            this, &FoamAgentChatPanel::handleCaseGenerated);
-    connect(m_agentController, &AgentController::caseValidated,
-            this, &FoamAgentChatPanel::handleCaseValidated);
-    connect(m_agentController, &AgentController::manifestPathReceived,
-            this, &FoamAgentChatPanel::handleManifestPathReceived);
+    connect(m_agentController, &AgentController::workflowActionStarted,
+            m_statusBar, &WorkflowStatusBar::beginWorkflowAction);
+    connect(m_agentController, &AgentController::workflowActionStarted,
+            m_gateStatusBar, &GateStatusBar::clearRequestUncertainty);
+    connect(m_agentController, &AgentController::workflowStatusReceived,
+            m_statusBar, &WorkflowStatusBar::applyBackendStatus);
+    connect(m_agentController, &AgentController::workflowActionUncertain,
+            m_statusBar, &WorkflowStatusBar::markWorkflowActionUncertain);
+    connect(m_agentController, &AgentController::workflowActionUncertain,
+            m_gateStatusBar, &GateStatusBar::setRequestUncertain);
+    connect(m_agentController, &AgentController::manifestReadinessReceived,
+            this, &FoamAgentChatPanel::handleManifestReadinessReceived);
+    connect(m_agentController, &AgentController::workflowActionsReceived,
+            this, &FoamAgentChatPanel::handleWorkflowActionsReceived);
     connect(m_agentController, &AgentController::nextActionReceived,
             this, &FoamAgentChatPanel::handleNextActionReceived);
     connect(m_agentController, &AgentController::gateReviewsReceived,
@@ -235,6 +287,75 @@ FoamAgentChatPanel::FoamAgentChatPanel(QWidget *parent)
             background: #fef2f2;
         }
 
+        QFrame#workflowFailureCard {
+            border: 1px solid #fca5a5;
+            border-radius: 8px;
+            background: #fef2f2;
+        }
+
+        QFrame#workflowFailureCard[severity="error"] {
+            border-color: #f87171;
+            background: #fef2f2;
+        }
+
+        QFrame#workflowFailureCard[severity="blocked"] {
+            border-color: #fb923c;
+            background: #fff7ed;
+        }
+
+        QFrame#workflowFailureCard[severity="unsupported"] {
+            border-color: #c2410c;
+            background: #fff7ed;
+        }
+
+        QFrame#workflowFailureCard[severity="uncertain"] {
+            border-color: #eab308;
+            background: #fefce8;
+        }
+
+        QLabel#workflowFailureStage {
+            color: #7f1d1d;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        QFrame#workflowFailureCard[severity="blocked"] QLabel#workflowFailureStage,
+        QFrame#workflowFailureCard[severity="unsupported"] QLabel#workflowFailureStage {
+            color: #9a3412;
+        }
+
+        QFrame#workflowFailureCard[severity="uncertain"] QLabel#workflowFailureStage {
+            color: #854d0e;
+        }
+
+        QLabel#workflowFailureTitle {
+            color: #172033;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        QLabel#workflowFailureSummary,
+        QLabel#workflowFailureIssue,
+        QLabel#workflowFailureEvidence,
+        QLabel#workflowFailureMore {
+            color: #334155;
+            font-size: 12px;
+        }
+
+        QLabel#workflowFailureIssue {
+            padding-left: 8px;
+        }
+
+        QLabel#workflowFailureEvidence {
+            color: #475569;
+            padding-top: 3px;
+        }
+
+        QLabel#workflowFailureMore {
+            color: #64748b;
+            font-style: italic;
+        }
+
         QLabel#workflowStatusItem {
             color: #334155;
             font-size: 12px;
@@ -242,6 +363,65 @@ FoamAgentChatPanel::FoamAgentChatPanel(QWidget *parent)
             border: 1px solid #cbd5e1;
             border-radius: 8px;
             background: #ffffff;
+        }
+
+        QLabel#workflowProgressStep {
+            color: #64748b;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 9px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: #f8fafc;
+        }
+
+        QLabel#workflowProgressStep[state="pending"] {
+            color: #64748b;
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        QLabel#workflowProgressStep[state="active"] {
+            color: #1e3a8a;
+            border-color: #60a5fa;
+            background: #eff6ff;
+        }
+
+        QLabel#workflowProgressStep[state="completed"] {
+            color: #14532d;
+            border-color: #86efac;
+            background: #f0fdf4;
+        }
+
+        QLabel#workflowProgressStep[state="failed"] {
+            color: #7f1d1d;
+            border-color: #fca5a5;
+            background: #fef2f2;
+        }
+
+        QLabel#workflowProgressStep[state="blocked"],
+        QLabel#workflowProgressStep[state="uncertain"] {
+            color: #713f12;
+            border-color: #fbbf24;
+            background: #fffbeb;
+        }
+
+        QLabel#workflowProgressStep[state="ready"] {
+            color: #581c87;
+            border-color: #c084fc;
+            background: #faf5ff;
+        }
+
+        QLabel#workflowProgressStep[state="submitted"] {
+            color: #3730a3;
+            border-color: #a5b4fc;
+            background: #eef2ff;
+        }
+
+        QLabel#workflowProgressArrow {
+            color: #94a3b8;
+            font-size: 14px;
+            font-weight: 700;
         }
 
         QLabel#workflowWorkspaceLabel {
@@ -491,6 +671,15 @@ void FoamAgentChatPanel::ensureLocalAgentService()
 
 void FoamAgentChatPanel::handleMessageSubmitted(const QString &text)
 {
+    if (rejectIfManifestImportPending()) {
+        return;
+    }
+
+    if (m_agentController->isRunning()) {
+        m_messageList->addErrorMessage(QString::fromUtf8("\xE5\xBD\x93\xE5\x89\x8D\x20\x41\x67\x65\x6E\x74\x20\xE8\xAF\xB7\xE6\xB1\x82\xE4\xBB\x8D\xE5\x9C\xA8\xE6\x89\xA7\xE8\xA1\x8C\xEF\xBC\x8C\xE8\xAF\xB7\xE7\xAD\x89\xE5\xBE\x85\xE5\xAE\x8C\xE6\x88\x90\xE5\x90\x8E\xE5\x86\x8D\xE6\x93\x8D\xE4\xBD\x9C\xE3\x80\x82"));
+        return;
+    }
+
     if (!m_currentNextActionId.isEmpty() && AgentChatIntent::isNextActionConfirmation(text)) {
         m_messageList->addUserMessage(text);
         executeCurrentNextAction();
@@ -512,6 +701,8 @@ void FoamAgentChatPanel::handleMessageSubmitted(const QString &text)
     m_currentBackendTaskDir.clear();
     m_currentHostTaskDir.clear();
     m_latestManifestPath.clear();
+    m_manifestImportReady = false;
+    m_manifestBlockerMessage.clear();
     m_currentRepairActionId.clear();
     m_currentRepairAction = {};
     clearCurrentNextAction();
@@ -519,7 +710,6 @@ void FoamAgentChatPanel::handleMessageSubmitted(const QString &text)
     m_repairHistoryBar->clear();
     m_messageList->setRepairMessage(QString());
     m_statusBar->reset();
-    m_statusBar->setStageText(QString::fromUtf8("\xE8\xA7\x84\xE5\x88\x92\xE4\xB8\xAD"));
     m_actionBar->setGenerateCaseEnabled(false);
     m_actionBar->setValidateCaseEnabled(false);
     m_actionBar->setRunCaseEnabled(false);
@@ -547,14 +737,9 @@ QString FoamAgentChatPanel::hostTaskDirectoryForBackendTask(const QString &backe
 
 void FoamAgentChatPanel::handleTaskContextReceived(const QString &taskDir)
 {
-    const bool newTask = m_currentBackendTaskDir != taskDir;
     m_currentBackendTaskDir = taskDir;
     m_currentHostTaskDir = hostTaskDirectoryForBackendTask(taskDir);
     m_statusBar->setTaskId(AgentChatIntent::taskIdFromDirectory(taskDir));
-    if (newTask) {
-        m_statusBar->setStageText(QString::fromUtf8("\xE5\xB7\xB2\xE8\xA7\x84\xE5\x88\x92"));
-    }
-    m_actionBar->setGenerateCaseEnabled(!m_currentBackendTaskDir.isEmpty());
 }
 
 void FoamAgentChatPanel::handleRepairActionReceived(const QJsonObject &action)
@@ -584,6 +769,10 @@ void FoamAgentChatPanel::handleRepairActionReceived(const QJsonObject &action)
 
 void FoamAgentChatPanel::handleRepairActionRequested()
 {
+    if (rejectIfManifestImportPending()) {
+        return;
+    }
+
     const RepairUiAction action = repairUiActionForId(m_currentRepairActionId);
     if (action == RepairUiAction::GenerateCase) {
         requestGenerateCase(m_currentRepairAction);
@@ -607,20 +796,11 @@ void FoamAgentChatPanel::handleRepairActionRequested()
     m_messageList->addToolMessage(QString::fromUtf8("\xE5\xBD\x93\xE5\x89\x8D\xE4\xBF\xAE\xE5\xA4\x8D\xE5\xBB\xBA\xE8\xAE\xAE\xE6\xB2\xA1\xE6\x9C\x89\xE7\x9B\xB4\xE6\x8E\xA5\x20\x55\x49\x20\xE5\x8A\xA8\xE4\xBD\x9C\xE3\x80\x82"));
 }
 
-void FoamAgentChatPanel::handleCaseGenerated(const QString &taskDir)
+void FoamAgentChatPanel::handleWorkflowActionsReceived(const QStringList &actions)
 {
-    if (taskDir == m_currentBackendTaskDir) {
-        m_statusBar->setStageText(QString::fromUtf8("\xE5\xB7\xB2\xE7\x94\x9F\xE6\x88\x90"));
-        m_actionBar->setValidateCaseEnabled(true);
-    }
-}
-
-void FoamAgentChatPanel::handleCaseValidated(const QString &taskDir)
-{
-    if (taskDir == m_currentBackendTaskDir) {
-        m_statusBar->setStageText(QString::fromUtf8("\xE5\xB7\xB2\xE6\xA0\xA1\xE9\xAA\x8C"));
-        m_actionBar->setRunCaseEnabled(true);
-    }
+    m_actionBar->setGenerateCaseEnabled(actions.contains(QStringLiteral("generate")));
+    m_actionBar->setValidateCaseEnabled(actions.contains(QStringLiteral("validate")));
+    m_actionBar->setRunCaseEnabled(actions.contains(QStringLiteral("run")));
 }
 
 void FoamAgentChatPanel::handleOpenFolderRequested()
@@ -643,13 +823,16 @@ void FoamAgentChatPanel::handleGenerateCaseRequested()
 
 void FoamAgentChatPanel::requestGenerateCase(const QJsonObject &repairAction)
 {
+    if (rejectIfManifestImportPending()) {
+        return;
+    }
+
     if (m_currentBackendTaskDir.isEmpty()) {
         m_messageList->addErrorMessage(QString::fromUtf8("\xE5\xBD\x93\xE5\x89\x8D\xE6\xB2\xA1\xE6\x9C\x89\xE5\xB7\xB2\xE8\xA7\x84\xE5\x88\x92\xE4\xBB\xBB\xE5\x8A\xA1\xEF\xBC\x8C\xE8\xAF\xB7\xE5\x85\x88\xE5\x8F\x91\xE9\x80\x81\xE9\x9C\x80\xE6\xB1\x82\xE8\xBF\x9B\xE8\xA1\x8C\xE8\xA7\x84\xE5\x88\x92\xE3\x80\x82"));
         return;
     }
 
     m_messageList->addToolMessage(QString::fromUtf8("\xE6\xAD\xA3\xE5\x9C\xA8\xE7\x94\x9F\xE6\x88\x90\xE7\xAE\x97\xE4\xBE\x8B\xE6\x96\x87\xE4\xBB\xB6\x2E\x2E\x2E"));
-    m_statusBar->setStageText(QString::fromUtf8("\xE7\x94\x9F\xE6\x88\x90\xE4\xB8\xAD"));
     m_currentRepairActionId.clear();
     m_currentRepairAction = {};
     m_messageList->setRepairMessage(QString());
@@ -658,66 +841,148 @@ void FoamAgentChatPanel::requestGenerateCase(const QJsonObject &repairAction)
 
 void FoamAgentChatPanel::handleValidateCaseRequested()
 {
+    if (rejectIfManifestImportPending()) {
+        return;
+    }
+
     if (m_currentBackendTaskDir.isEmpty()) {
         m_messageList->addErrorMessage(QString::fromUtf8("\xE5\xBD\x93\xE5\x89\x8D\xE6\xB2\xA1\xE6\x9C\x89\xE5\xB7\xB2\xE7\x94\x9F\xE6\x88\x90\xE4\xBB\xBB\xE5\x8A\xA1\xEF\xBC\x8C\xE8\xAF\xB7\xE5\x85\x88\xE7\x94\x9F\xE6\x88\x90\xE7\xAE\x97\xE4\xBE\x8B\xE3\x80\x82"));
         return;
     }
 
     m_messageList->addToolMessage(QString::fromUtf8("\xE6\xAD\xA3\xE5\x9C\xA8\xE6\xA0\xA1\xE9\xAA\x8C\xE7\xAE\x97\xE4\xBE\x8B\x2E\x2E\x2E"));
-    m_statusBar->setStageText(QString::fromUtf8("\xE6\xA0\xA1\xE9\xAA\x8C\xE4\xB8\xAD"));
     m_agentController->validateCaseForTask(m_currentBackendTaskDir);
 }
 
 void FoamAgentChatPanel::handleRunCaseRequested()
 {
+    if (rejectIfManifestImportPending()) {
+        return;
+    }
+
     if (m_currentBackendTaskDir.isEmpty()) {
         m_messageList->addErrorMessage(QString::fromUtf8("\xE5\xBD\x93\xE5\x89\x8D\xE6\xB2\xA1\xE6\x9C\x89\xE5\xB7\xB2\xE6\xA0\xA1\xE9\xAA\x8C\xE4\xBB\xBB\xE5\x8A\xA1\xEF\xBC\x8C\xE8\xAF\xB7\xE5\x85\x88\xE6\xA0\xA1\xE9\xAA\x8C\xE7\xAE\x97\xE4\xBE\x8B\xE3\x80\x82"));
         return;
     }
 
     m_messageList->addToolMessage(QString::fromUtf8("\xE6\xAD\xA3\xE5\x9C\xA8\xE8\xBF\x90\xE8\xA1\x8C\x20\x4F\x70\x65\x6E\x46\x4F\x41\x4D\x2E\x2E\x2E"));
-    m_statusBar->setStageText(QString::fromUtf8("\xE8\xBF\x90\xE8\xA1\x8C\xE4\xB8\xAD"));
     m_agentController->runCaseForTask(m_currentBackendTaskDir);
 }
 
-void FoamAgentChatPanel::handleManifestPathReceived(const QString &manifestPath)
+void FoamAgentChatPanel::handleManifestReadinessReceived(const QString &manifestPath,
+                                                         bool importReady,
+                                                         const QString &blockerMessage)
 {
-    m_latestManifestPath = QDir::toNativeSeparators(manifestPath);
-    m_statusBar->setManifestReady(!m_latestManifestPath.isEmpty());
-    m_actionBar->setImportToAppFlowEnabled(!m_latestManifestPath.isEmpty());
-    m_messageList->addToolMessage(QString::fromUtf8("\xE5\xB7\xB2\xE6\x94\xB6\xE5\x88\xB0\x20\x41\x67\x65\x6E\x74\x20\xE6\xB8\x85\xE5\x8D\x95\xEF\xBC\x9A\x25\x31").arg(m_latestManifestPath));
+    m_latestManifestPath = QDir::toNativeSeparators(manifestPath.trimmed());
+    m_manifestImportReady = importReady && !m_latestManifestPath.isEmpty();
+    m_manifestBlockerMessage = blockerMessage.trimmed();
+
+    m_statusBar->setManifestReady(m_manifestImportReady);
+    m_actionBar->setImportToAppFlowEnabled(m_manifestImportReady);
+    if (!m_latestManifestPath.isEmpty()) {
+        m_messageList->addToolMessage(QString::fromUtf8("\xE5\xB7\xB2\xE6\x94\xB6\xE5\x88\xB0\x20\x41\x67\x65\x6E\x74\x20\xE6\xB8\x85\xE5\x8D\x95\xEF\xBC\x9A\x25\x31").arg(m_latestManifestPath));
+    }
 }
 
 void FoamAgentChatPanel::handleImportToAppFlowRequested()
 {
-    if (m_latestManifestPath.isEmpty()) {
-        m_messageList->addErrorMessage(QString::fromUtf8("\xE5\xBD\x93\xE5\x89\x8D\xE6\xB2\xA1\xE6\x9C\x89\xE5\x8F\xAF\xE5\xAF\xBC\xE5\x85\xA5\xE7\x9A\x84\x20\x41\x67\x65\x6E\x74\x20\xE6\xB8\x85\xE5\x8D\x95\xE3\x80\x82"));
+    if (!m_pendingManifestImportPath.isEmpty()) {
+        m_messageList->addErrorMessage(QString::fromUtf8("\x41\x50\x50\x46\x6C\x6F\x77\x20\xE5\xAF\xBC\xE5\x85\xA5\xE4\xBB\x8D\xE5\x9C\xA8\xE8\xBF\x9B\xE8\xA1\x8C\xEF\xBC\x8C\xE8\xAF\xB7\xE7\xAD\x89\xE5\xBE\x85\xE6\x9C\x80\xE7\xBB\x88\xE7\xBB\x93\xE6\x9E\x9C\xE3\x80\x82"));
+        return;
+    }
+
+    if (!m_manifestImportReady || m_latestManifestPath.isEmpty()) {
+        const QString message = m_manifestBlockerMessage.isEmpty()
+            ? QString::fromUtf8("\xE5\xBD\x93\xE5\x89\x8D\x20\x41\x67\x65\x6E\x74\x20\xE6\xB8\x85\xE5\x8D\x95\xE5\xB0\x9A\xE6\x9C\xAA\xE5\xB0\xB1\xE7\xBB\xAA\xEF\xBC\x8C\xE6\x97\xA0\xE6\xB3\x95\xE5\xAF\xBC\xE5\x85\xA5\xE3\x80\x82")
+            : m_manifestBlockerMessage;
+        m_messageList->addErrorMessage(message);
         return;
     }
 
     if (!QFileInfo(m_latestManifestPath).isFile()) {
+        m_statusBar->setImportSubmissionFailed();
         m_messageList->addErrorMessage(QString::fromUtf8("\x41\x67\x65\x6E\x74\x20\xE6\xB8\x85\xE5\x8D\x95\xE5\xAF\xBC\xE5\x85\xA5\xE5\xA4\xB1\xE8\xB4\xA5\xEF\xBC\x9A\x25\x31").arg(m_latestManifestPath));
         return;
     }
 
     Core::FITKActionOperator* oper = FITKOPERREPO->getOperatorT<Core::FITKActionOperator>(QStringLiteral("actionLoadAgentManifest"));
     if (oper == nullptr) {
+        m_statusBar->setImportSubmissionFailed();
         m_messageList->addErrorMessage(QString::fromUtf8("\x41\x67\x65\x6E\x74\x20\xE6\xB8\x85\xE5\x8D\x95\xE5\xAF\xBC\xE5\x85\xA5\xE6\x93\x8D\xE4\xBD\x9C\xE6\x9C\xAA\xE6\x89\xBE\xE5\x88\xB0\xE3\x80\x82"));
         return;
     }
 
+    Core::FITKActionOperator* resultSource = FITKOPERREPO->getOperatorT<Core::FITKActionOperator>(
+        QStringLiteral("actionImportOpenFoamMesh"));
+    if (resultSource == nullptr) {
+        m_statusBar->setImportSubmissionFailed();
+        m_messageList->addErrorMessage(QString::fromUtf8("\x41\x50\x50\x46\x6C\x6F\x77\x20\xE5\xAF\xBC\xE5\x85\xA5\xE7\xBB\x93\xE6\x9E\x9C\xE4\xBF\xA1\xE5\x8F\xB7\xE6\xBA\x90\xE4\xB8\x8D\xE5\x8F\xAF\xE7\x94\xA8\xEF\xBC\x8C\xE6\x9C\xAA\xE5\x90\xAF\xE5\x8A\xA8\xE5\xAF\xBC\xE5\x85\xA5\xE3\x80\x82"));
+        return;
+    }
+
+    if (m_manifestImportResultSource.data() != resultSource) {
+        if (!m_manifestImportResultSource.isNull()) {
+            QObject::disconnect(m_manifestImportResultSource.data(), nullptr, this, nullptr);
+            m_manifestImportResultSource.clear();
+        }
+        const QMetaObject::Connection connection = QObject::connect(
+            resultSource,
+            SIGNAL(agentManifestImportFinished(QString,bool,QString)),
+            this,
+            SLOT(handleAgentManifestImportFinished(QString,bool,QString)),
+            Qt::UniqueConnection);
+        if (!connection) {
+            m_statusBar->setImportSubmissionFailed();
+            m_messageList->addErrorMessage(QString::fromUtf8("\x41\x50\x50\x46\x6C\x6F\x77\x20\xE5\xAF\xBC\xE5\x85\xA5\xE7\xBB\x93\xE6\x9E\x9C\xE4\xBF\xA1\xE5\x8F\xB7\xE8\xBF\x9E\xE6\x8E\xA5\xE5\xA4\xB1\xE8\xB4\xA5\xEF\xBC\x8C\xE6\x9C\xAA\xE5\x90\xAF\xE5\x8A\xA8\xE5\xAF\xBC\xE5\x85\xA5\xE3\x80\x82"));
+            return;
+        }
+        m_manifestImportResultSource = resultSource;
+    }
+
+    const QString manifestPathSnapshot = m_latestManifestPath;
     m_messageList->addToolMessage(QString::fromUtf8("\xE6\xAD\xA3\xE5\x9C\xA8\xE5\xAF\xBC\xE5\x85\xA5\x20\x41\x67\x65\x6E\x74\x20\xE6\xB8\x85\xE5\x8D\x95\xE5\x88\xB0\x20\x41\x50\x50\x46\x6C\x6F\x77\xEF\xBC\x9A\x25\x31").arg(m_latestManifestPath));
-    m_statusBar->setStageText(QString::fromUtf8("\xE5\xAF\xBC\xE5\x85\xA5\xE4\xB8\xAD"));
     oper->setArgs("FileName", m_latestManifestPath);
     if (oper->execProfession()) {
+        m_pendingManifestImportPath = manifestPathSnapshot;
+        m_statusBar->setImportSubmitted();
+        m_actionBar->setManifestImportRunning(true);
+        refreshInteractionAvailability();
         clearCurrentNextAction();
-        m_statusBar->setStageText(QString::fromUtf8("\xE5\xB7\xB2\xE5\xAE\x8C\xE6\x88\x90"));
-        m_messageList->addToolMessage(QString::fromUtf8("\x41\x67\x65\x6E\x74\x20\xE6\xB8\x85\xE5\x8D\x95\xE5\xAF\xBC\xE5\x85\xA5\xE5\xB7\xB2\xE5\xAE\x8C\xE6\x88\x90\xE3\x80\x82"));
+        m_messageList->addToolMessage(QString::fromUtf8("\x41\x50\x50\x46\x6C\x6F\x77\x20\xE5\xA4\x84\xE7\x90\x86\xE8\xAF\xB7\xE6\xB1\x82\xE5\xB7\xB2\xE6\x8F\x90\xE4\xBA\xA4\xE3\x80\x82"));
     }
     else {
-        m_statusBar->setStageText(QString::fromUtf8("\xE5\xAF\xBC\xE5\x85\xA5\xE5\xA4\xB1\xE8\xB4\xA5"));
+        m_statusBar->setImportSubmissionFailed();
         m_messageList->addErrorMessage(QString::fromUtf8("\x41\x67\x65\x6E\x74\x20\xE6\xB8\x85\xE5\x8D\x95\xE5\xAF\xBC\xE5\x85\xA5\xE5\xA4\xB1\xE8\xB4\xA5\xEF\xBC\x9A\x25\x31").arg(m_latestManifestPath));
     }
+}
+
+void FoamAgentChatPanel::handleAgentManifestImportFinished(
+    const QString &manifestPath,
+    bool success,
+    const QString &message)
+{
+    if (m_pendingManifestImportPath.isEmpty()
+        || !manifestPathsMatch(manifestPath, m_pendingManifestImportPath)) {
+        return;
+    }
+
+    m_pendingManifestImportPath.clear();
+    m_actionBar->setManifestImportRunning(false);
+    refreshInteractionAvailability();
+    if (success) {
+        m_statusBar->setImportCompleted();
+        m_actionBar->setImportToAppFlowEnabled(false);
+        m_messageList->addToolMessage(QString::fromUtf8("\x41\x50\x50\x46\x6C\x6F\x77\x20\xE5\xAF\xBC\xE5\x85\xA5\xE5\xB7\xB2\xE5\xAE\x8C\xE6\x88\x90\xE3\x80\x82"));
+        return;
+    }
+
+    m_statusBar->setImportFailed();
+    m_actionBar->setImportToAppFlowEnabled(m_manifestImportReady);
+    QString detail = safeImportResultMessage(message);
+    if (detail.isEmpty()) {
+        detail = QString::fromUtf8("\xE6\x9C\xAA\xE6\x94\xB6\xE5\x88\xB0\xE5\x8F\xAF\xE7\x94\xA8\xE7\x9A\x84\xE5\xA4\xB1\xE8\xB4\xA5\xE8\xAF\xA6\xE6\x83\x85\xE3\x80\x82");
+    }
+    m_messageList->addErrorMessage(QString::fromUtf8("\x41\x50\x50\x46\x6C\x6F\x77\x20\xE5\xAF\xBC\xE5\x85\xA5\xE5\xA4\xB1\xE8\xB4\xA5\xEF\xBC\x9A\x25\x31").arg(detail));
 }
 
 void FoamAgentChatPanel::handleNextActionReceived(const QString &id, const QString &label, const QString &endpoint, const QString &text)
@@ -730,17 +995,15 @@ void FoamAgentChatPanel::handleNextActionReceived(const QString &id, const QStri
     m_currentNextActionLabel = label.trimmed();
     m_currentNextActionEndpoint = endpoint.trimmed();
     m_statusBar->setNextActionText(AgentChatIntent::nextActionTitle(m_currentNextActionLabel, m_currentNextActionId));
-    if (m_currentNextActionId == QStringLiteral("generate")) {
-        m_statusBar->setStageText(QString::fromUtf8("\xE5\xB7\xB2\xE8\xA7\x84\xE5\x88\x92"));
-    }
-    if (m_currentNextActionId == QStringLiteral("import_manifest")) {
-        m_statusBar->setStageText(QString::fromUtf8("\xE5\xB7\xB2\xE8\xBF\x90\xE8\xA1\x8C"));
-    }
     m_messageList->addToolMessage(text);
 }
 
 void FoamAgentChatPanel::requestParameterReplan(const QString &message)
 {
+    if (rejectIfManifestImportPending()) {
+        return;
+    }
+
     if (m_agentController->isRunning()) {
         m_messageList->addErrorMessage(QString::fromUtf8("\xE5\xBD\x93\xE5\x89\x8D\x20\x41\x67\x65\x6E\x74\x20\xE6\xAD\xA3\xE5\x9C\xA8\xE6\x89\xA7\xE8\xA1\x8C\xE4\xBB\xBB\xE5\x8A\xA1\xEF\xBC\x8C\xE8\xAF\xB7\xE7\xAD\x89\xE5\xBE\x85\xE5\xAE\x8C\xE6\x88\x90\xE5\x90\x8E\xE5\x86\x8D\xE4\xBF\xAE\xE6\x94\xB9\xE5\x8F\x82\xE6\x95\xB0\xE3\x80\x82"));
         return;
@@ -759,6 +1022,10 @@ void FoamAgentChatPanel::requestParameterReplan(const QString &message)
 
 void FoamAgentChatPanel::executeCurrentNextAction()
 {
+    if (rejectIfManifestImportPending()) {
+        return;
+    }
+
     if (m_agentController->isRunning()) {
         m_messageList->addErrorMessage(QString::fromUtf8("\xE5\xBD\x93\xE5\x89\x8D\x20\x41\x67\x65\x6E\x74\x20\xE6\xAD\xA3\xE5\x9C\xA8\xE6\x89\xA7\xE8\xA1\x8C\xE4\xBB\xBB\xE5\x8A\xA1\xEF\xBC\x8C\xE8\xAF\xB7\xE7\xAD\x89\xE5\xBE\x85\xE5\xAE\x8C\xE6\x88\x90\xE3\x80\x82"));
         return;
@@ -798,6 +1065,23 @@ void FoamAgentChatPanel::clearCurrentNextAction()
     m_currentNextActionLabel.clear();
     m_currentNextActionEndpoint.clear();
     m_statusBar->setNextActionText(QString());
+}
+
+bool FoamAgentChatPanel::rejectIfManifestImportPending()
+{
+    if (m_pendingManifestImportPath.isEmpty()) {
+        return false;
+    }
+
+    m_messageList->addErrorMessage(QStringLiteral(
+        "APPFlow \u5bfc\u5165\u4ecd\u5728\u8fdb\u884c\uff0c\u8bf7\u7b49\u5f85\u6700\u7ec8\u5b8c\u6210\u540e\u518d\u542f\u52a8\u65b0\u7684\u5de5\u4f5c\u6d41\u64cd\u4f5c\u3002"));
+    return true;
+}
+
+void FoamAgentChatPanel::refreshInteractionAvailability()
+{
+    m_composer->setEnabled(
+        !m_agentRequestRunning && m_pendingManifestImportPath.isEmpty());
 }
 
 void FoamAgentChatPanel::handleOutputDirectoryChanged(const QString &path)
@@ -845,12 +1129,3 @@ void FoamAgentChatPanel::handleSettingsRequested()
     }
 }
 
-void FoamAgentChatPanel::handleStopRequested()
-{
-    if (!m_agentController->isRunning()) {
-        return;
-    }
-
-    m_agentController->cancelCurrentTask();
-    m_typingRenderer->queueMessage(QString::fromUtf8("\xE5\xBD\x93\xE5\x89\x8D\xE4\xBB\xBB\xE5\x8A\xA1\xE5\xB7\xB2\xE5\x8F\x96\xE6\xB6\x88\xE3\x80\x82"));
-}

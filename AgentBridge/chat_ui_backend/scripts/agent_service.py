@@ -21,7 +21,9 @@ from simagent_core.manifest.writer import ManifestWriter
 from simagent_core.models import SimulationPlan
 from simagent_core.repair import RepairPatchError, apply_repair_action, current_repair_action
 from simagent_core.router_func import select_solver_family
+from simagent_core.solvers.openfoam.generated.rect_channel import RectChannelGeometryError
 from simagent_core.state.task_store import TaskStore
+from simagent_core.workflow.state import allowed_workflow_actions, workflow_state_error
 from simagent_core.workflow.nodes.generate_case_node import generate_case_node
 from simagent_core.workflow.nodes.local_runner_node import local_runner_node
 from simagent_core.workflow.nodes.planner_node import planner_node
@@ -29,7 +31,7 @@ from simagent_core.workflow.nodes.validator_node import validator_node
 
 
 HOST = os.environ.get("SIMAGENT_HOST", "127.0.0.1").strip() or "127.0.0.1"
-PORT = 8765
+PORT = int(os.environ.get("SIMAGENT_PORT", "8765").strip() or "8765")
 SUPPORTED_POST_PATHS = {
     "/chat",
     "/foam/plan",
@@ -45,6 +47,13 @@ TASK_CONTINUATION_PATHS = {
     "/foam/run",
     "/foam/replan",
     "/foam/repair-action",
+}
+WORKFLOW_ACTION_BY_PATH = {
+    "/foam/generate": "generate",
+    "/foam/validate": "validate",
+    "/foam/run": "run",
+    "/foam/replan": "replan",
+    "/foam/repair-action": "repair_action",
 }
 
 
@@ -91,56 +100,67 @@ def has_validation_errors(validation_result: dict) -> bool:
     )
 
 
+def workflow_response(task, payload: dict) -> dict:
+    response = dict(payload)
+    response["allowed_actions"] = allowed_workflow_actions(task)
+    return response
+
+
 def handle_plan(task, task_store: TaskStore, manifest_writer: ManifestWriter, config: Config) -> dict:
     plan = planner_node(task, task_store, manifest_writer, config)
-    return {
+    return workflow_response(task, {
         "reply": plan_reply(plan, task),
         "task": task.to_dict(),
         "plan": plan.to_dict(),
         "next_action": next_action("generate"),
-    }
+    })
 
 
 def handle_generate(task, task_store: TaskStore, manifest_writer: ManifestWriter) -> dict:
     reference_files, generated_files = generate_case_node(task, task_store, manifest_writer)
-    return {
+    return workflow_response(task, {
         "reply": generate_reply(task, generated_files, reference_files),
         "task": task.to_dict(),
         "reference_files": reference_files,
         "generated_files": generated_files,
         "next_action": next_action("validate"),
-    }
+    })
 
 
 def handle_validate(task, task_store: TaskStore, manifest_writer: ManifestWriter) -> dict:
     validation_result = validator_node(task, task_store, manifest_writer)
-    return {
+    return workflow_response(task, {
         "reply": validate_reply(task, validation_result),
         "task": task.to_dict(),
         "validation": validation_result,
         "repair_action": current_repair_action(task),
         "next_action": {} if has_validation_errors(validation_result) else next_action("run"),
-    }
+    })
 
 
 def handle_run(task, task_store: TaskStore, manifest_writer: ManifestWriter) -> dict:
     run_result = local_runner_node(task, task_store, manifest_writer)
-    run_succeeded = str(run_result.get("status", "")).strip() == "run_completed"
+    manifest_validation = run_result.get("manifest_validation", {})
+    import_ready = (
+        isinstance(manifest_validation, dict)
+        and manifest_validation.get("import_ready") is True
+    )
     repair_action = current_repair_action(task)
-    return {
+    return workflow_response(task, {
         "reply": run_reply(task, run_result),
         "task": task.to_dict(),
         "run": run_result,
         "repair_action": repair_action,
-        "next_action": next_action("import_manifest") if run_succeeded and not repair_action else {},
-    }
+        "next_action": next_action("import_manifest") if import_ready and not repair_action else {},
+    })
 
 
 def handle_replan(task, body: dict, task_store: TaskStore, manifest_writer: ManifestWriter) -> dict:
     message = require_message(body)
     plan, replan_result = apply_replan(task, message, task_store)
-    manifest_writer.write_planned(task, SimulationPlan.from_dict(plan))
-    return {
+    if replan_result.get("status") == "updated":
+        manifest_writer.write_planned(task, SimulationPlan.from_dict(plan))
+    return workflow_response(task, {
         "reply": replan_reply(replan_result),
         "task": task.to_dict(),
         "plan": plan,
@@ -148,7 +168,7 @@ def handle_replan(task, body: dict, task_store: TaskStore, manifest_writer: Mani
         "next_action": next_action("generate")
         if replan_result.get("status") == "updated"
         else {},
-    }
+    })
 
 
 def handle_repair_action(task, body: dict, task_store: TaskStore, manifest_writer: ManifestWriter) -> dict:
@@ -158,12 +178,12 @@ def handle_repair_action(task, body: dict, task_store: TaskStore, manifest_write
 
     action = apply_and_record_repair_action(task, action, task_store)
     manifest_writer.write_pending(task)
-    return {
+    return workflow_response(task, {
         "reply": "",
         "task": task.to_dict(),
         "repair_action": action,
         "repair_history": task.repair_history,
-    }
+    })
 
 
 def record_optional_repair_action(task, body: dict, task_store: TaskStore, manifest_writer: ManifestWriter) -> None:
@@ -205,6 +225,9 @@ class AgentHandler(BaseHTTPRequestHandler):
         task_dir = require_task_dir(body)
         config, task_store, manifest_writer = make_runtime()
         task = task_store.load_task(task_dir)
+        state_error = workflow_state_error(task, WORKFLOW_ACTION_BY_PATH[self.path])
+        if state_error:
+            raise RequestError(state_error, status=409)
         try:
             if self.path == "/foam/replan":
                 return handle_replan(task, body, task_store, manifest_writer)
@@ -243,6 +266,19 @@ class AgentHandler(BaseHTTPRequestHandler):
                 return handle_plan(task, task_store, manifest_writer, config)
 
             return handle_chat(message, task, task_store)
+        except RectChannelGeometryError as exc:
+            error_message = str(exc)
+            task_store.update_status(task, "failed", error_message)
+            manifest_writer.write_failed(task, error_message)
+            raise RequestError(
+                {
+                    "error": error_message,
+                    "code": exc.code,
+                    "current_status": "failed",
+                    "allowed_actions": [],
+                },
+                status=422,
+            ) from exc
         except Exception as exc:
             task_store.update_status(task, "failed", str(exc))
             manifest_writer.write_failed(task, str(exc))

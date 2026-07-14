@@ -8,6 +8,17 @@ from ..repair import repair_action_for_gate_review
 from ..utils import atomic_write_json, make_task_id, now_iso
 
 
+REPLAN_INVALIDATED_GATES = frozenset({
+    "generation",
+    "static_validation",
+    "validation",
+    "physics_sanity",
+    "execution",
+    "result_review",
+    "manifest",
+})
+
+
 class TaskStore:
     def __init__(self, config: Config | None = None):
         self._config = config or Config.from_environment()
@@ -71,6 +82,31 @@ class TaskStore:
         task.plan = plan.to_dict()
         task.solver_family = plan.solver_family
         self.attach_gate_reviews(task, _gate_reviews_from_plan(plan), save=False)
+        self.save_task(task)
+        return task
+
+    def invalidate_after_replan(
+        self,
+        task: TaskContext,
+        plan: SimulationPlan,
+        spec_gate_review: dict,
+    ) -> TaskContext:
+        retained_gate_reviews = _retained_after_replan(task.gate_reviews)
+        retained_gate_reviews = _replace_gate_review(retained_gate_reviews, spec_gate_review)
+        parameters = dict(plan.parameters)
+        parameters["gate_reviews"] = retained_gate_reviews
+        plan.parameters = parameters
+
+        task.status = "planned"
+        task.plan = plan.to_dict()
+        task.solver_family = plan.solver_family
+        task.generated_files = []
+        task.validation = {}
+        task.run = {}
+        task.error_message = ""
+        task.gate_reviews = retained_gate_reviews
+        task.plan["gate_reviews"] = task.gate_reviews
+        task.plan["repair_history"] = task.repair_history
         self.save_task(task)
         return task
 
@@ -148,6 +184,29 @@ def _gate_reviews_from_plan(plan: SimulationPlan) -> list[dict]:
     parameters = plan.parameters if isinstance(plan.parameters, dict) else {}
     gate_reviews = parameters.get("gate_reviews", [])
     return [item for item in gate_reviews if isinstance(item, dict)] if isinstance(gate_reviews, list) else []
+
+
+def _retained_after_replan(gate_reviews: list[dict]) -> list[dict]:
+    return [
+        deepcopy(review)
+        for review in gate_reviews
+        if isinstance(review, dict) and str(review.get("gate", "")).strip() not in REPLAN_INVALIDATED_GATES
+    ]
+
+
+def _replace_gate_review(gate_reviews: list[dict], replacement: dict) -> list[dict]:
+    target_gate = str(replacement.get("gate", "")).strip()
+    result: list[dict] = []
+    replaced = False
+    for review in gate_reviews:
+        if str(review.get("gate", "")).strip() != target_gate:
+            result.append(deepcopy(review))
+        elif not replaced:
+            result.append(deepcopy(replacement))
+            replaced = True
+    if not replaced:
+        result.append(deepcopy(replacement))
+    return result
 
 
 def _merge_gate_reviews(existing: list[dict], incoming: list[dict]) -> list[dict]:

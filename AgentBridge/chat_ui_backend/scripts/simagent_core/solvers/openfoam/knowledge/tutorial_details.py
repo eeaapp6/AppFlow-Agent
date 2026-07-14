@@ -1,7 +1,36 @@
 import re
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 from ....models import ReferenceCase, ReferenceFile, ReferenceFileSet
+
+
+OPENFOAM_REFERENCE_SCRIPTS = {"allclean", "allrun"}
+
+
+def normalize_reference_file_path(directory_name: str, file_name: str) -> str:
+    directory = str(directory_name or "").strip().replace("\\", "/")
+    name = str(file_name or "").strip().replace("\\", "/")
+    directory_path = PurePosixPath(directory or ".")
+    file_path = PurePosixPath(name)
+    if directory_path.is_absolute() or file_path.is_absolute():
+        raise ValueError("Reference file path must be relative.")
+    if ".." in directory_path.parts or ".." in file_path.parts:
+        raise ValueError("Reference file path must not escape the case directory.")
+
+    parts = [part for part in directory_path.parts if part not in {"", "."}]
+    file_parts = [part for part in file_path.parts if part not in {"", "."}]
+    if not file_parts:
+        raise ValueError("Reference file name must not be empty.")
+    return str(PurePosixPath("case", *parts, *file_parts))
+
+
+def is_reference_script_path(path: str) -> bool:
+    normalized = str(path or "").strip().replace("\\", "/")
+    return PurePosixPath(normalized).name.lower() in OPENFOAM_REFERENCE_SCRIPTS
+
+
+def reference_file_format(path: str) -> str:
+    return "text" if is_reference_script_path(path) else "openfoam-dict"
 
 
 class TutorialDetailsDatabase:
@@ -84,31 +113,40 @@ class TutorialDetailsDatabase:
         reference_case: ReferenceCase,
     ) -> list[ReferenceFile]:
         files: list[ReferenceFile] = []
-        file_matches = re.findall(
-            r"<file_begin>file name:\s*(.*?)\n<file_content>\n(.*?)\n</file_content>\n</file_end>",
+        expected_files = set(reference_case.directory_structure.get(directory_name, []))
+        for file_block_match in re.finditer(
+            r"<file_begin>(.*?)</file_end>",
             directory_body,
             flags=re.DOTALL,
-        )
-        expected_files = set(reference_case.directory_structure.get(directory_name, []))
-        for file_name, content in file_matches:
-            file_name = file_name.strip()
+        ):
+            file_block = file_block_match.group(1)
+            file_name_match = re.search(r"file name:\s*([^\r\n]+)", file_block)
+            content_start = file_block.find("<file_content>")
+            if not file_name_match or content_start == -1:
+                continue
+            content_start += len("<file_content>")
+            content_end = file_block.find("</file_content>", content_start)
+            if content_end == -1:
+                continue
+
+            file_name = file_name_match.group(1).strip()
             if expected_files and file_name not in expected_files:
                 continue
+            content = file_block[content_start:content_end]
+            if content.startswith("\r\n"):
+                content = content[2:]
+            elif content.startswith("\n"):
+                content = content[1:]
+            path = normalize_reference_file_path(directory_name, file_name)
             files.append(
                 ReferenceFile(
-                    path=self._case_relative_path(directory_name, file_name),
+                    path=path,
                     role=self._role_for_openfoam_file(directory_name, file_name),
-                    format="openfoam-dict",
-                    content=content.strip() + "\n",
+                    format=reference_file_format(path),
+                    content=content,
                 )
             )
         return files
-
-    def _case_relative_path(self, directory_name: str, file_name: str) -> str:
-        directory_name = directory_name.strip().strip("/")
-        if directory_name in {"", "."}:
-            return f"case/{file_name}"
-        return f"case/{directory_name}/{file_name}".replace("//", "/")
 
     def _role_for_openfoam_file(self, directory: str, file_name: str) -> str:
         if directory == "system":

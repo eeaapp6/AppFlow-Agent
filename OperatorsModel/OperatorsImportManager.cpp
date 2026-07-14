@@ -19,6 +19,7 @@ BSD 3-Clause License. See the LICENSE file in the project root for details.
 #include "FITK_Kernel/FITKAppFramework/FITKGlobalData.h"
 #include "FITK_Kernel/FITKAppFramework/FITKComponents.h"
 #include "FITK_Kernel/FITKAppFramework/FITKAppSettings.h"
+#include "FITK_Kernel/FITKAppFramework/FITKMessage.h"
 #include "FITK_Kernel/FITKCore/FITKThreadPool.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKGeoInterfaceFactory.h"
 #include "FITK_Interface/FITKInterfaceGeometry/FITKAbsGeoModelImport.h"
@@ -32,6 +33,7 @@ BSD 3-Clause License. See the LICENSE file in the project root for details.
 
 #include <QFileDialog>
 #include <QApplication>
+#include <QVariant>
 
 namespace ModelOper {
     OperatorsImportManager::OperatorsImportManager()
@@ -44,8 +46,28 @@ namespace ModelOper {
 
     }
 
+    void OperatorsImportManager::publishAgentManifestImportFinished(
+        const QString &manifestPath,
+        bool success,
+        const QString &message)
+    {
+        emit agentManifestImportFinished(manifestPath, success, message);
+    }
+
     bool OperatorsImportManager::execGUI()
     {
+        this->clearArgs();
+        const QString senderName = _senderName.trimmed();
+        if (senderName == QStringLiteral("actionImportMesh")) {
+            AppFrame::FITKMessageError(tr("Normal mesh import is not implemented."));
+            return false;
+        }
+        if (senderName != QStringLiteral("actionImportGeometry")
+            && senderName != QStringLiteral("actionImportOpenFoamMesh")) {
+            AppFrame::FITKMessageError(tr("Unknown import action: %1").arg(senderName));
+            return false;
+        }
+
         GUI::MainWindow* mainWindow = dynamic_cast<GUI::MainWindow*>(FITKAPP->getGlobalData()->getMainWindow());
         if (mainWindow == nullptr)return false;
         GUI::PropertyWidget* propertyWidget = mainWindow->getPropertyWidget();
@@ -59,63 +81,84 @@ namespace ModelOper {
         if (workDir.isEmpty()) workDir = QApplication::applicationDirPath();
         QString fileName;
         QFileDialog fileDialog;
-        if (_senderName == "actionImportGeometry") {
+        if (senderName == QStringLiteral("actionImportGeometry")) {
             fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Geometry"), workDir, tr("File(*.brep ; *.stp ; *.step ; *.igs)"));
             if (fileName.isEmpty())return false;
         }
-        else  if (_senderName == "actionImportMesh") {
-            fileName = fileDialog.getOpenFileName(_mainWindow, tr("Import Mesh"), workDir);
-            if (fileName.isEmpty())return false;
-        }
-        else if (_senderName == "actionImportOpenFoamMesh") {
+        else if (senderName == QStringLiteral("actionImportOpenFoamMesh")) {
             fileName = fileDialog.getExistingDirectory(_mainWindow, tr("Import OpenFoam Mesh"), workDir);
             if (fileName.isEmpty())return false;
-        }        
+        }
         this->setArgs("FileName", fileName);
-        this->setArgs("SenderName", _senderName);
+        this->setArgs("SenderName", senderName);
 
         return true;
     }
 
     bool OperatorsImportManager::execProfession()
     {
+        QString fileName;
+        QString senderName;
+        const bool fileNameTypeValid = _operArgs.value(QStringLiteral("FileName")).type() == QVariant::String;
+        const bool senderNameTypeValid = _operArgs.value(QStringLiteral("SenderName")).type() == QVariant::String;
+        const bool fileNameRead = this->argValue<QString>(QStringLiteral("FileName"), fileName);
+        const bool senderNameRead = this->argValue<QString>(QStringLiteral("SenderName"), senderName);
+        this->clearArgs();
 
-        //获取线程池
+        fileName = fileName.trimmed();
+        senderName = senderName.trimmed();
+        if (!fileNameRead || !fileNameTypeValid || fileName.isEmpty()) {
+            AppFrame::FITKMessageError(tr("Import FileName is missing, invalid, or empty."));
+            return false;
+        }
+        if (!senderNameRead || !senderNameTypeValid || senderName.isEmpty()) {
+            AppFrame::FITKMessageError(tr("Import SenderName is missing, invalid, or empty."));
+            return false;
+        }
+
+        if (senderName == QStringLiteral("actionImportMesh")) {
+            AppFrame::FITKMessageError(tr("Normal mesh import is not implemented."));
+            return false;
+        }
+        if (senderName != QStringLiteral("actionImportGeometry")
+            && senderName != QStringLiteral("actionImportOpenFoamMesh")) {
+            AppFrame::FITKMessageError(tr("Unknown import action: %1").arg(senderName));
+            return false;
+        }
+        if (senderName == QStringLiteral("actionImportOpenFoamMesh")
+            && m_openFoamImportPending) {
+            AppFrame::FITKMessageError(tr("OpenFOAM mesh import is already running."));
+            return false;
+        }
+
         Core::FITKThreadPool* pool = Core::FITKThreadPool::getInstance();
-        if (pool == nullptr)return false;
-        QString fileName, senderName; 
-        this->argValue<QString>("FileName",fileName);
-        if (fileName.isEmpty()) return false;
-        this->argValue<QString>("SenderName", senderName);
-        if (senderName.isEmpty()) return false;
+        if (pool == nullptr) {
+            AppFrame::FITKMessageError(tr("Import thread pool is unavailable."));
+            return false;
+        }
 
-        if (senderName == "actionImportGeometry")
+        if (senderName == QStringLiteral("actionImportGeometry"))
         {
-            
             ImportReadThread* importThread = new ImportReadThread();
             importThread->_type = ImportType::ImportGeo;
             importThread->_fileName = fileName;
             connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotGeoImportFinish(bool, int)));
             pool->execTask(importThread);
+            return true;
         }
-        else  if (senderName == "actionImportMesh") 
-        {
-            ImportReadThread* importThread = new ImportReadThread();
-            importThread->_type = ImportType::ImportMesh;
-            importThread->_fileName = fileName;
-            connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotMeshImportFinish(bool, int)));
-            pool->execTask(importThread);
-        }
-		else if (senderName == "actionImportOpenFoamMesh" || _senderName == "actionImportOpenFoamMesh") {
+
+        if (senderName == QStringLiteral("actionImportOpenFoamMesh")) {
             ImportReadThread* importThread = new ImportReadThread();
             importThread->_type = ImportType::ImportOpenFoamMesh;
             importThread->_fileName = fileName;
-            connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotFoamMeshInportFinish()));
+            connect(importThread, SIGNAL(sigImportFinish(bool, int)), this, SLOT(slotFoamMeshImportFinish(bool, int)));
+            m_openFoamImportPending = true;
+            m_openFoamImportPath = fileName;
             pool->execTask(importThread);
+            return true;
         }
 
-        this->clearArgs();
-        return true;
+        return false;
     }
 
     void OperatorsImportManager::slotGeoImportFinish(bool result, int objID)
@@ -163,20 +206,56 @@ namespace ModelOper {
         graphOper->reRender(true);
     }
 
-    void OperatorsImportManager::slotFoamMeshInportFinish()
+    void OperatorsImportManager::slotFoamMeshImportFinish(bool result, int objID)
     {
+        m_openFoamImportPending = false;
+        const QString caseDir = m_openFoamImportPath;
+        m_openFoamImportPath.clear();
+        Q_UNUSED(objID);
+
+        const auto finishImport = [this, &caseDir](bool success, const QString &message) {
+            if (!success) {
+                AppFrame::FITKMessageError(message);
+            }
+            emit openFoamMeshImportFinished(caseDir, success, message);
+        };
+
+        if (!result) {
+            finishImport(false, tr("OpenFOAM mesh reader failed for: %1").arg(caseDir));
+            return;
+        }
+
+        auto app = FITKAPP;
+        if (app == nullptr) {
+            finishImport(false, tr("OpenFOAM mesh import could not finish because FITKAPP is unavailable."));
+            return;
+        }
+        if (app->getGlobalData() == nullptr) {
+            finishImport(false, tr("OpenFOAM mesh import could not finish because GlobalData is unavailable."));
+            return;
+        }
         //刷新渲染窗口
-        EventOper::GraphEventOperator* graphOper = FITKOPERREPO->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
-        if (graphOper == nullptr)return;
+        auto operatorRepo = Core::FITKOperatorRepo::getInstance();
+        EventOper::GraphEventOperator* graphOper = operatorRepo == nullptr
+            ? nullptr
+            : operatorRepo->getOperatorT<EventOper::GraphEventOperator>("GraphPreprocess");
+        if (graphOper == nullptr) {
+            finishImport(false, tr("OpenFOAM mesh import could not finish because GraphPreprocess is unavailable."));
+            return;
+        }
         // 网格对象
-        auto mesh = FITKAPP->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
-        if (mesh == nullptr)return;
+        auto mesh = app->getGlobalData()->getMeshData<Interface::FITKUnstructuredFluidMeshVTK>();
+        if (mesh == nullptr) {
+            finishImport(false, tr("OpenFOAM mesh import could not finish because the target mesh is unavailable."));
+            return;
+        }
         graphOper->updateGraph(mesh->getDataObjectID(), true);
 
         // 获取模型树控制器
-        auto treeOper = Core::FITKOperatorRepo::getInstance()->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
+        auto treeOper = operatorRepo->getOperatorT<EventOper::TreeEventOperator>("ModelTreeEvent");
         if (treeOper) treeOper->updateTree();
         graphOper->reRender(true);
+        finishImport(true, tr("OpenFOAM mesh import completed for: %1").arg(caseDir));
     }
 
     void ImportReadThread::run()
@@ -206,18 +285,21 @@ namespace ModelOper {
             break;
         }
         case ModelOper::ImportType::ImportMesh: {
+            emit sigImportFinish(false, -1);
             break;
         }
         case ModelOper::ImportType::ImportOpenFoamMesh:{
             // 获取单例
             auto meshGen = Interface::FITKMeshGenInterface::getInstance();
+            bool result = false;
             // 读取网格
-            auto meshProcessor = meshGen->getMeshProcessor();
-            if (meshProcessor == nullptr) return;
-            meshProcessor->setValue("WorkDir", _fileName);
-            meshProcessor->start();
-            bool result = true;
-            emit sigImportFinish(true, -1);
+            if (meshGen != nullptr) {
+                auto meshProcessor = meshGen->getMeshProcessor();
+                if (meshProcessor != nullptr) {
+                    result = meshProcessor->start(QStringList() << _fileName);
+                }
+            }
+            emit sigImportFinish(result, -1);
             break;
         }
         }

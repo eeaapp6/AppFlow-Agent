@@ -1,6 +1,7 @@
 from pathlib import Path
 from pathlib import PureWindowsPath
 
+from .validator import validate_appflow_manifest
 from ..models import SimulationPlan, TaskContext
 from ..utils import atomic_write_json, now_iso
 
@@ -447,5 +448,8 @@ class ManifestWriter:
 
     def _write(self, task: TaskContext, manifest: dict) -> dict:
         manifest["workflow"]["updated_at"] = now_iso()
+        validation = validate_appflow_manifest(manifest, task)
+        manifest["appflow_hints"]["import_ready"] = validation["import_ready"]
+        manifest["appflow_hints"]["import_blockers"] = validation["import_blockers"]
         atomic_write_json(Path(task.manifest_path), manifest)
         return manifest

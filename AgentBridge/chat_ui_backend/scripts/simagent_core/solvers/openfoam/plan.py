@@ -2,18 +2,19 @@ from ...llm_client import DeepSeekClient
 from ...models import PlannedFile, ReferenceCase, SimulationPlan
 from ...gates.capability_gate import CapabilityDecision, review_openfoam_capability
 from ...gates.spec_gate import review_simulation_spec
-from ...router import parse_case_intent
+from ...router import CaseIntent, RouteDecision, parse_case_intent, select_generation_route
 from ...spec import SimulationSpec
 from ...spec.from_plan import simulation_spec_from_openfoam_plan
 from .capabilities import (
     STATUS_NEEDS_USER_INPUT,
     STATUS_UNSUPPORTED,
-    generation_mode_for,
     split_supported_changes,
     summarize_capabilities,
 )
 from .generated import create_rect_channel_plan
+from .generated.rect_channel import validate_rect_channel_geometry
 from .knowledge import AllrunScriptDatabase, CommandHelpDatabase, OpenFOAMCaseDatabase, TutorialCase
+from .knowledge.tutorial_details import normalize_reference_file_path, reference_file_format
 from .mesh import GMSH_MESH_CASE_PATH, detect_gmsh_mesh_request, is_block_mesh_dict, plan_uses_external_gmsh_mesh
 from .reference_selector import select_reference
 from .run_pipeline import parse_allrun_pipeline_preview
@@ -55,12 +56,12 @@ def _planned_files_from_reference(reference_case: TutorialCase | None) -> list[P
     planned_files: list[PlannedFile] = []
     for directory, file_names in reference_case.directory_structure.items():
         for file_name in file_names:
-            relative_path = f"case/{directory}/{file_name}".replace("//", "/")
+            relative_path = normalize_reference_file_path(directory, file_name)
             planned_files.append(
                 PlannedFile(
                     role=_role_for_openfoam_file(directory, file_name),
                     path=relative_path,
-                    format="openfoam-dict",
+                    format=reference_file_format(relative_path),
                     required=True,
                 )
             )
@@ -183,13 +184,9 @@ REQUESTED_CHANGE_ALIAS_LOOKUP = {
 }
 
 
-def _normalize_requested_changes(parameters: dict, requested_changes: dict) -> dict:
+def _normalize_requested_changes(requested_changes: dict) -> dict:
     normalized = {}
-    source = {}
-    if isinstance(parameters, dict):
-        source.update(parameters)
-    if isinstance(requested_changes, dict):
-        source.update(requested_changes)
+    source = requested_changes if isinstance(requested_changes, dict) else {}
 
     for canonical_key, aliases in REQUESTED_CHANGE_ALIASES.items():
         for alias in aliases:
@@ -230,14 +227,13 @@ def _allrun_metadata(reference_case: ReferenceCase | None, solver_name: str) -> 
     return metadata
 
 
-def _attach_capability_decision(plan: SimulationPlan, decision: CapabilityDecision) -> None:
+def _attach_capability_decision(
+    plan: SimulationPlan,
+    decision: CapabilityDecision,
+    route: RouteDecision,
+) -> None:
     plan.parameters["capability_decision"] = decision.to_dict()
-    plan.parameters["route_decision"] = {
-        "selected_mode": decision.mode,
-        "geometry_type": decision.geometry_type,
-        "confidence": decision.confidence,
-        "reason": decision.reason,
-    }
+    plan.parameters["route_decision"] = route.to_dict()
     gate_reviews = plan.parameters.get("gate_reviews", [])
     if not isinstance(gate_reviews, list):
         gate_reviews = []
@@ -245,18 +241,62 @@ def _attach_capability_decision(plan: SimulationPlan, decision: CapabilityDecisi
     plan.parameters["gate_reviews"] = gate_reviews
 
 
+def _finalize_generated_case_capability(
+    plan: SimulationPlan,
+    *,
+    intent: CaseIntent,
+    mesh_request: dict,
+    route: RouteDecision,
+) -> CapabilityDecision:
+    requested_changes = _normalize_requested_changes(plan.requested_changes)
+    geometry_type = intent.geometry_type or plan.case_name
+    supported_changes, unsupported_changes = split_supported_changes(
+        None,
+        requested_changes,
+        generation_mode="generated_case",
+        geometry_type=geometry_type,
+    )
+    decision = review_openfoam_capability(
+        intent=intent,
+        supported_changes=supported_changes,
+        unsupported_changes=unsupported_changes,
+        mesh_request=mesh_request,
+        route_decision=route,
+    )
+
+    plan.requested_changes = requested_changes
+    plan.parameters["requested_changes"] = requested_changes
+    plan.parameters["unsupported_changes"] = unsupported_changes
+    plan.parameters["capabilities"] = summarize_capabilities(
+        None,
+        requested_changes,
+        generation_mode="generated_case",
+        geometry_type=geometry_type,
+        mesh_request=mesh_request,
+    )
+    _attach_capability_decision(plan, decision, route)
+    return decision
+
+
 def create_openfoam_plan(user_requirement: str, llm: DeepSeekClient | None = None) -> SimulationPlan:
     intent = parse_case_intent(user_requirement)
+    if intent.geometry_type == "rect_channel":
+        validate_rect_channel_geometry(user_requirement)
     mesh_request = detect_gmsh_mesh_request(user_requirement)
-    early_decision = review_openfoam_capability(intent=intent, mesh_request=mesh_request)
-    if early_decision.mode == "generated_case" and intent.explicit_new_geometry:
+    if intent.explicit_new_geometry:
+        route = select_generation_route(intent)
+        if route.selected_mode == "unsupported":
+            raise ValueError(route.reason)
         plan = create_rect_channel_plan(user_requirement)
         plan.parameters["case_intent"] = intent.to_dict()
-        _attach_capability_decision(plan, early_decision)
+        _finalize_generated_case_capability(
+            plan,
+            intent=intent,
+            mesh_request=mesh_request,
+            route=route,
+        )
         _attach_spec_gate_review(plan, preserve_generated_spec=True)
         return plan
-    if early_decision.support_status in {STATUS_UNSUPPORTED, STATUS_NEEDS_USER_INPUT} and intent.explicit_new_geometry:
-        raise ValueError(early_decision.reason)
 
     client = llm or DeepSeekClient()
     messages = [
@@ -300,13 +340,17 @@ def create_openfoam_plan(user_requirement: str, llm: DeepSeekClient | None = Non
         lookup_strategy=lookup_strategy,
         user_requirement=user_requirement,
     )
-    provisional_changes = _normalize_requested_changes(plan.parameters, plan.requested_changes)
+    provisional_changes = _normalize_requested_changes(plan.requested_changes)
     provisional_reference_case = (
         ReferenceCase.from_dict(reference_case.to_dict())
         if reference_case
         else None
     )
     supported_changes, unsupported_changes = split_supported_changes(provisional_reference_case, provisional_changes)
+    route = select_generation_route(
+        intent,
+        reference_score=_selected_reference_score(reference_selection),
+    )
     decision = review_openfoam_capability(
         intent=intent,
         reference_case=provisional_reference_case,
@@ -314,11 +358,17 @@ def create_openfoam_plan(user_requirement: str, llm: DeepSeekClient | None = Non
         supported_changes=supported_changes,
         unsupported_changes=unsupported_changes,
         mesh_request=mesh_request,
+        route_decision=route,
     )
     if decision.mode == "generated_case":
         generated_plan = create_rect_channel_plan(user_requirement)
         generated_plan.parameters["case_intent"] = intent.to_dict()
-        _attach_capability_decision(generated_plan, decision)
+        _finalize_generated_case_capability(
+            generated_plan,
+            intent=intent,
+            mesh_request=mesh_request,
+            route=route,
+        )
         generated_plan.parameters["reference_selection"] = reference_selection
         generated_plan.parameters["reference_candidates"] = [
             _summarize_reference_case(item) for item in reference_candidates
@@ -340,7 +390,7 @@ def create_openfoam_plan(user_requirement: str, llm: DeepSeekClient | None = Non
         plan.reference_case = provisional_reference_case
     requested_changes = provisional_changes
     plan.requested_changes = supported_changes
-    plan.generation_mode = decision.mode if decision.mode in {"reference_copy", "reference_modify"} else generation_mode_for(plan.reference_case, requested_changes)
+    plan.generation_mode = decision.mode
     template_solver = (plan.solver_name or "openfoam").lower()
     template_case = (plan.case_name or "reference").lower()
     plan.parameters["case_template"] = f"{template_solver}_{template_case}"
@@ -351,7 +401,7 @@ def create_openfoam_plan(user_requirement: str, llm: DeepSeekClient | None = Non
     plan.parameters.update(_allrun_metadata(plan.reference_case, plan.solver_name))
     plan.parameters["generation_mode"] = plan.generation_mode
     plan.parameters["case_intent"] = intent.to_dict()
-    _attach_capability_decision(plan, decision)
+    _attach_capability_decision(plan, decision, route)
     plan.parameters["requested_changes"] = supported_changes
     plan.parameters["unsupported_changes"] = unsupported_changes
     plan.parameters["capabilities"] = summarize_capabilities(
@@ -364,6 +414,13 @@ def create_openfoam_plan(user_requirement: str, llm: DeepSeekClient | None = Non
     _attach_spec_gate_review(plan)
 
     return plan
+
+
+def _selected_reference_score(reference_selection: dict) -> int:
+    try:
+        return int(reference_selection.get("selected_score", 0) or 0)
+    except (AttributeError, TypeError, ValueError):
+        return 0
 
 
 def _attach_spec_gate_review(plan: SimulationPlan, *, preserve_generated_spec: bool = False) -> None:

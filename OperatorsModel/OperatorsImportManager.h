@@ -70,6 +70,16 @@ namespace ModelOper
          * @date 2024-08-14
          */
         virtual bool execProfession();
+        void publishAgentManifestImportFinished(const QString &manifestPath,
+                                                bool success,
+                                                const QString &message);
+    signals:
+        void openFoamMeshImportFinished(const QString &caseDir,
+                                        bool success,
+                                        const QString &message);
+        void agentManifestImportFinished(const QString &manifestPath,
+                                         bool success,
+                                         const QString &message);
     private slots:
         ;
         /**
@@ -93,7 +103,10 @@ namespace ModelOper
          * @author   BaGuijun (baguijun@163.com)
          * @date     2024-09-05
          */
-        void slotFoamMeshInportFinish();
+        void slotFoamMeshImportFinish(bool result, int objID);
+    private:
+        bool m_openFoamImportPending{ false };
+        QString m_openFoamImportPath{};
     };
 
     /**

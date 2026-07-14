@@ -105,16 +105,36 @@ def _execution_gate_review(run_result: dict) -> dict:
 
 def _manifest_gate_review(manifest_validation: dict) -> dict:
     result = GateResult("manifest")
-    if str(manifest_validation.get("status", "")).strip() == "valid":
+    if (
+        str(manifest_validation.get("status", "")).strip() == "valid"
+        and manifest_validation.get("import_ready") is True
+    ):
         return result.to_dict()
 
     result.status = "failed"
+    issue_codes: set[str] = set()
+
+    def add_issue(code: str, message: str) -> None:
+        if not code or code in issue_codes:
+            return
+        issue_codes.add(code)
+        result.issues.append(GateIssue(code, message))
+
     for item in manifest_validation.get("missing_fields", [])[:20]:
-        result.issues.append(GateIssue("manifest.missing_field", f"Missing manifest field: {item}."))
+        add_issue("manifest.missing_field", f"Missing manifest field: {item}.")
     for item in manifest_validation.get("missing_paths", [])[:20]:
         field = item.get("field", "")
         path = item.get("path", "")
-        result.issues.append(GateIssue("manifest.missing_path", f"{field} path does not exist: {path}."))
+        add_issue("manifest.missing_path", f"{field} path does not exist: {path}.")
+    blockers = manifest_validation.get("import_blockers", [])
+    if isinstance(blockers, list):
+        for blocker in blockers:
+            if not isinstance(blocker, dict):
+                continue
+            add_issue(
+                str(blocker.get("code", "")).strip(),
+                str(blocker.get("message", "")).strip() or "Manifest import is blocked.",
+            )
     if not result.issues:
-        result.issues.append(GateIssue("manifest.invalid", "AppFlow manifest validation failed."))
+        add_issue("manifest.invalid", "AppFlow manifest validation failed.")
     return result.to_dict()

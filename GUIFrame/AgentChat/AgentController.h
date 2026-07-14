@@ -1,9 +1,11 @@
 #pragma once
 
+#include <QByteArray>
 #include <QObject>
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QString>
+#include <QStringList>
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -24,7 +26,6 @@ public:
     void runCaseForTask(const QString &taskDir);
     void replanTaskForMessage(const QString &taskDir, const QString &message);
     void recordRepairActionForTask(const QString &taskDir, const QJsonObject &repairAction);
-    void cancelCurrentTask();
 
 signals:
     void agentMessageReceived(const QString &text);
@@ -34,15 +35,24 @@ signals:
     void taskContextReceived(const QString &taskDir);
     void caseGenerated(const QString &taskDir);
     void caseValidated(const QString &taskDir);
-    void manifestPathReceived(const QString &manifestPath);
+    void manifestReadinessReceived(const QString &manifestPath, bool importReady, const QString &blockerMessage);
+    void workflowActionsReceived(const QStringList &actions);
     void nextActionReceived(const QString &id, const QString &label, const QString &endpoint, const QString &text);
     void gateReviewsReceived(const QJsonArray &reviews);
     void repairHistoryReceived(const QJsonArray &history);
     void repairActionReceived(const QJsonObject &action);
+    void workflowActionStarted(const QString &action);
+    void workflowStatusReceived(const QString &status);
+    void workflowActionUncertain(const QString &action);
 
 private:
+    bool rejectIfRequestBusy();
+    void invalidateManifestReadiness();
+    void invalidateWorkflowActions();
+    void synchronizeWorkflowActions(const QByteArray &body);
     void postJson(const QString &path, const QJsonObject &payload);
     void handleReplyFinished(QNetworkReply *reply);
+    void handleRepairActionReplyFinished(QNetworkReply *reply);
     QString hostPathForBackendPath(const QString &backendPath) const;
 
     QNetworkAccessManager *m_network = nullptr;
